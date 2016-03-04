@@ -69,15 +69,26 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 
 \chapter{Současný stav}
 
-Způsobů, jak řešit správu úkolů existuje spoustu a liší se podle toho, kdo je má využívat. V této části práce představím několik zástupců pro každou ze tří kategorií. Těmi jsou:
+Způsobů, jak řešit správu úkolů, existuje spoustu a liší se podle toho, kdo je má využívat. V této části práce představím několik zástupců pro každou ze tří kategorií. Těmi jsou:
 \begin{enumerate}
   \item Řešení pro větší firmy s množstvím pracovníků
   \item Řešení pro střední a menší týmy, jednotky až desítky pracovníků
   \item Řešení pro jednotlivce
 \end{enumerate}
 
-Zástupce vybírám podle osobních zkušenosti a podle výsledků vyhledávání na \texttt{Google}, na základě jejich pořadí a popularity mezi uživateli. U uvedených zástupců zvážím klady a zápory jak pro jejich cílovou skupinu, tak pro cílovou skupinu této práce, tj. menší týmy a jednotlivce.
-\textbf{<tady ještě něco napsat, nějakej odstavec>}
+Zástupce vybírám podle osobních zkušenosti a podle výsledků získaných z vyhledávače \texttt{Google}, na základě jejich pořadí a popularity mezi uživateli. U uvedených zástupců zvážím klady a zápory jak pro jejich cílovou skupinu, tak pro cílovou skupinu této práce, tj. menší týmy a jednotlivce.
+
+Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
+\begin{enumerate}
+	\item \textbf{Nevyžaduje vlastní infrastrukturu, rychlé zprovoznění} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně minut.
+	\item \textbf{Jednoduché používání} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
+	\item \textbf{Absence nepotřebné funkcionality} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
+	\item \textbf{Použití zdarma} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
+	\item \textbf{Funkce} -- Aplikace má umožňovat spravovat úkoly jak pro jednotlivce, tak týmy. Mezi požadavky na funkce tedy patří možnost vytvářet osobní i sdílené úkoly, u nich uvádět datum \textit{deadlinu}, pracnost, prioritu; dále sdružovat se do skupin, v rámci skupin přiřazovat odpovědnosti za úkoly a zaznamenávat odpracovanou práci jednotlivých uživatelů. Aplikace by také měla uživateli doporučit, kterému úkolu se věnovat, v závislosti na jeho prioritě, pracnosti a času zbývajícímu do deadlinu.
+	\item \textbf{REST API} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
+	\item \textbf{Open-source} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
+\end{enumerate}
+Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nejznámějších řešení. 
 
 \section{Řešení pro firmy}
 \section{Řešení pro střední a menší týmy}
