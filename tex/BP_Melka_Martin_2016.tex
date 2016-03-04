@@ -13,6 +13,8 @@
 \usepackage{graphicx} %graphics files inclusion
 % \usepackage{amsmath} %advanced maths
 % \usepackage{amssymb} %additional math symbols
+\usepackage[figuresleft]{rotating}
+\usepackage[flushleft]{threeparttable} % for footnote in tabular
 
 \usepackage{dirtree} %directory tree visualisation
 
@@ -88,18 +90,23 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 
 	\section{Řešení pro firmy}
 		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často mnoho dalších funkcí pro integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
+		
 		\subsection{JIRA}
 			JIRA \cite{jira} je software, který nabízí bug tracking, issue tracking a funkce pro správu projektů. Je možné ho používat jak na vlastní HW infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
 			
 			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale ne najednou (\textit{assignee} může být v jednu chvíli jen jeden uživatel). Úkolům lze přiřadit deadline, ale uživatelé nemůžou dostat doporučení, na kterém úkolu by měli pracovat.
 			
 			JIRA nabízí REST API a je closed-source.
-		\subsection{BugZilla}
-			Bugzilla \cite{bugzilla}
-		\subsection{Team Foundation Server}
-			Team Foundation Server \cite{tfs}
-		\subsection{Redmine}
-			Redmine \cite{redmine} 
+			
+		\subsection{Bugzilla}
+			Bugzilla \cite{bugzilla} je bug tracking nástroj, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. 
+			
+			Bugzilla je open-source, licencovaná pod MPL, a lze ji využít zdarma i pro komerční účely. Je nutné ji ale provozovat na vlastním hardware. Existují hosting služby, které jsou ale neoficiální a placené. Bugzilla nabízí REST API.
+			
+		\subsection{Redmine}		
+			Redmine \cite{redmine} je issue tracking nástroj, který nabízí více flexibility než Bugzilla a obsahuje i některé nástroje pro řízení projektů. Tyto nástroje mohou být přínosné pro větší projekty, které mají danou strukturu, ale nepočítám s tím, že by cílovou skupinu této práce zajímaly. 
+			
+			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě Bugzilly není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open-source a nabízí REST API.
 
 	\section{Řešení pro střední a menší týmy}
 		\subsection{Trackie}
@@ -119,7 +126,29 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 		\subsection{Poznámky v telefonu, kalendář}
 	
 	\section{Splnění kritérií}
-	
+	% Please add the following required packages to your document preamble:
+	% 
+	\begin{sidewaystable}
+	\begin{threeparttable}
+		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
+			\hline
+			      & JIRA & Bugzilla & Redmine & Trackie & Trello & FogBugz & Todoist & Toodledo & Inbox & Poznámky \\ \hline \hline
+			Kr. 1 & + & + & + & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 2 & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 3 & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 4 & ~ & * & * & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 5 & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 6 & + & + & + & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 7 & ~ & + & + & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\
+			\hline
+		\end{tabular}
+		
+		\begin{tablenotes}
+			\item[+] Splněno
+			\item[*] Zdarma na vlastním HW.
+		\end{tablenotes}
+	\end{threeparttable}		
+	\end{sidewaystable}
 	
 	
 \chapter{Analýza a návrh}
