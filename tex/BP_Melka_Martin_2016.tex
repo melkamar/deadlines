@@ -26,6 +26,17 @@
 \newcommand{\tg}{\mathop{\mathrm{tg}}} %cesky tangens
 \newcommand{\cotg}{\mathop{\mathrm{cotg}}} %cesky cotangens
 
+% Macros to use as research features criteria. 
+% The text is used repeatedly, so in case of its change I want the change
+% to happen everywhere.
+\newcommand{\crita}{Nevyžaduje vlastní infrastrukturu, rychlé zprovoznení}
+\newcommand{\critb}{Jednoduché používání}
+\newcommand{\critc}{Absence nepotrebné funkcionality}
+\newcommand{\critd}{Použití zdarma}
+\newcommand{\crite}{Funkce}
+\newcommand{\critf}{REST API}
+\newcommand{\critg}{Open-source}
+
 \department{Katedra Softwarového Inženýrství}
 \title{Systém správy úkolů pro jednotlivce a malé týmy}
 \authorGN{Martin} %(křestní) jméno (jména) autora
@@ -78,18 +89,19 @@ Zástupce vybírám podle osobních zkušenosti a podle výsledků získaných z
 
 Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
 \begin{enumerate}
-	\item \textbf{Nevyžaduje vlastní infrastrukturu, rychlé zprovoznění} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně minut.
-	\item \textbf{Jednoduché používání} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
-	\item \textbf{Absence nepotřebné funkcionality} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
-	\item \textbf{Použití zdarma} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
-	\item \textbf{Funkce} -- Aplikace má umožňovat spravovat úkoly jak pro jednotlivce, tak týmy. Mezi požadavky na funkce tedy patří možnost vytvářet osobní i sdílené úkoly, u nich uvádět datum \textit{deadlinu}, pracnost, prioritu; dále sdružovat se do skupin, v rámci skupin přiřazovat odpovědnosti za úkoly a zaznamenávat odpracovanou práci jednotlivých uživatelů. Aplikace by také měla uživateli doporučit, kterému úkolu se věnovat, v závislosti na jeho prioritě, pracnosti a času zbývajícímu do deadlinu.
-	\item \textbf{REST API} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
-	\item \textbf{Open-source} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
+	\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně minut.
+	\item \textbf{\critb} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
+	\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
+	\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
+	\item \textbf{\crite} -- Aplikace má umožňovat spravovat úkoly jak pro jednotlivce, tak týmy. Mezi požadavky na funkce tedy patří možnost vytvářet osobní i sdílené úkoly, u nich uvádět datum \textit{deadlinu}, pracnost, prioritu; dále sdružovat se do skupin, v rámci skupin přiřazovat odpovědnosti za úkoly a zaznamenávat odpracovanou práci jednotlivých uživatelů. Aplikace by také měla uživateli doporučit, kterému úkolu se věnovat, v závislosti na jeho prioritě, pracnosti a času zbývajícímu do deadlinu. Úkol také nemusí mít deadline a jeho priorita sama postupně časem poroste.
+	\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
+	\item \textbf{\critg} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
 \end{enumerate}
 Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nejznámějších řešení. 
 
 	\section{Řešení pro firmy}
-		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často mnoho dalších funkcí pro integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
+		\label{sec:solutions-companies}
+		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často mnoho dalších funkcí pro řízení projektů a integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
 		
 		\subsection{JIRA}
 			JIRA \cite{jira} je software, který nabízí bug tracking, issue tracking a funkce pro správu projektů. Je možné ho používat jak na vlastní HW infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
@@ -109,20 +121,38 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě Bugzilly není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open-source a nabízí REST API.
 
 	\section{Řešení pro střední a menší týmy}
-		\subsection{Trackie}
-			\cite{trackie}
+		Nástroje v této kategorii se snaží cílit na týmy, spíše než celé firmy, a práce s nimi není tak formální. Používat je lze on-line, není nutné vlastní instalace. Oproti řešením v bodu \ref{sec:solutions-companies} obsahují tyto méně funkcí, chybí hlavně různé manažerské nástroje a integrace s dalšími systémy.
+	
 		\subsection{Trello}
-			\cite{trello}
+			Trello \cite{trello} je on-line aplikace, která vznikla v roce 2011. Způsob správy úkolů staví na konceptu \textit{kanban}\cite{kanban}. Umožňuje vytvářet nástěnky (boards), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (lists) a v nich karty (cards), které představují nejmenší jednotku práce - úkol. Ten má svou prioritu, deadline a zodpovědné uživatele.
+			
+			Funkčně bohatý nástroj, s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo deadlinu. U karet ale není možné uvést odhad pracnosti a aplikace tak nedokáže radit, které kartě by se měl uživatel věnovat, aby ji do deadlinu stihl.
+			
+			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody\cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, ale zdrojové kódy nejsou dostupné.
+		
+			
+		\subsection{Trackie}
+			Trackie \cite{trackie} je on-line aplikace, která je určena pro správu úkolů na společných projektech. Ty lze zakládat a zvát do nich uživatele, v rámci projektů pak tvořit úkoly. Úkol může být někomu přiřazen, ale vždy jen jednomu uživateli. Funkčností i vzhledem jednoduché na použití, ale některé funkce chybí. Úkolům například nelze nastavit deadline ani odhad trvání. Zobrazit je možné jen úkoly každého projektu zvlášť, chybí přehled všech úkolů uživatele. 
+			
+			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a její zdrojové kódy nejsou veřejné.
+			
 		\subsection{FogBugz}
-			\cite{fogbugz}
+			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě issue trackingu nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentu ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, ale i přesto se s ním pracuje jednoduše. 
+			
+			Uživatelé spolu mohou pracovat na úkolech (cases), které se dělí do projektů (projects). Na úkolu lze evidovat všechny potřebné informace pro využití v agilní metodice plánování, včetně \textit{story points}, dále zodpovědného uživatele, odhad pracnosti a deadline. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá. Uživatel ale nedostane informaci o tom, na kterém úkolu by měl pracovat, aby ho bylo ještě možné stihnout v závislosti na času pracnosti a času zbývajícího do deadlinu.
+			
+			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API, ale zdrojové kódy nejsou veřejně dostupné.
 
 	\section{Řešení pro jednotlivce}
 		\subsection{Todoist}
 			\cite{todoist}
+			
 		\subsection{Toodledo}
 			\cite{toodledo}
+			
 		\subsection{Google Inbox Reminders}
 			\cite{ginbox}
+			
 		\subsection{Poznámky v telefonu, kalendář}
 	
 	\section{Splnění kritérií}
@@ -132,20 +162,28 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 	\begin{threeparttable}
 		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
 			\hline
-			      & JIRA & Bugzilla & Redmine & Trackie & Trello & FogBugz & Todoist & Toodledo & Inbox & Poznámky \\ \hline \hline
-			Kr. 1 & + & + & + & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 2 & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 3 & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 4 & ~ & * & * & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 5 & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 6 & + & + & + & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 7 & ~ & + & + & ~ & ~ & ~ & ~ & ~ & ~ & ~ \\
+			      & JIRA & Bugzilla & Redmine & Trello & Trackie & FogBugz & Todoist & Toodledo & Inbox & Poznámky \\ \hline \hline
+			Kr. 1 & + & + & + & +  & + & +  & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 2 & ~ & ~ & ~ & +  & + & +  & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 3 & ~ & ~ & ~ & +  & + & ~  & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 4 & ~ & * & * & +  & ~ & ~  & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 5 & ~ & ~ & ~ & ** & ~ & ** & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 6 & + & + & + & +  & ~ & +  & ~ & ~ & ~ & ~ \\ \hline
+			Kr. 7 & ~ & + & + & ~  & ~ & ~  & ~ & ~ & ~ & ~ \\
 			\hline
 		\end{tabular}
 		
 		\begin{tablenotes}
 			\item[+] Splněno
 			\item[*] Zdarma na vlastním HW.
+			\item[**] Velká část splněna
+			\item Kr. 1 -- \crita
+			\item Kr. 2 -- \critb
+			\item Kr. 3 -- \critc
+			\item Kr. 4 -- \critd
+			\item Kr. 5 -- \crite
+			\item Kr. 6 -- \critf
+			\item Kr. 7 -- \critg
 		\end{tablenotes}
 	\end{threeparttable}		
 	\end{sidewaystable}
@@ -167,8 +205,8 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 \chapter{Seznam použitých zkratek}
 % \printglossaries
 \begin{description}
-	\item[GUI] Graphical user interface
-	\item[XML] Extensible markup language
+	\item[HW] Hardware
+	\item[SW] Software
 \end{description}
 
 
