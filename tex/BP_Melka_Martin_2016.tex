@@ -121,6 +121,7 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě Bugzilly není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open-source a nabízí REST API.
 
 	\section{Řešení pro střední a menší týmy}
+		\label{sec:solutions-teams}
 		Nástroje v této kategorii se snaží cílit na týmy, spíše než celé firmy, a práce s nimi není tak formální. Používat je lze on-line, není nutné vlastní instalace. Oproti řešením v bodu \ref{sec:solutions-companies} obsahují tyto méně funkcí, chybí hlavně různé manažerské nástroje a integrace s dalšími systémy.
 	
 		\subsection{Trello}
@@ -144,32 +145,50 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API, ale zdrojové kódy nejsou veřejně dostupné.
 
 	\section{Řešení pro jednotlivce}
+		Poslední kategorií jsou nástroje pro správu úkolů jednotlivců. Některé z nich mohou umožňovat sdílení úkolů, takže by se daly zařadit i do kategorie \ref{sec:solutions-teams}, nicméně svým zaměřením cílí primárně na využití jako osobní úkolníček, proto jsou zařazeny zde. Také jsem do této kategorie zařadil nástroje, které nejsou primárně určeny pro správu úkolů, ale někteří je k tomuto účelu využívají, například kalendář nebo poznámky.
+		
 		\subsection{Todoist}
-			\cite{todoist}
+			Todoist \cite{todoist} je on-line aplikace pro organizaci úkolů, která má uživatele motivovat k lepší produktivitě. Za splněné úkoly jsou přidělovány body (karma), jejichž historický vývoj je možné sledovat v grafu, lze nastavit denní a týdenní cíl a získávat další \uv{odměny} za jeho splnění. Úkoly lze rozdělit do projektů, nastavit jim deadline, prioritu a zda se mají opakovat. Projekty je možné sdílet s dalšími uživateli a dají se zobrazit buď po projektech, ke kterým patří, nebo všechny na jednom místě -- ve schránce (inbox). 
+			
+			Vytvoření nového úkolu se může provést jen zadáním (anglického) textu, aplikace sama rozpozná řídící slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Sometask at 1 PM every day} vytvoří úkol, který má deadline ve 13 hodin a opakuje se každý den. U úkolů ale nelze nastavit pracnost a aplikace uživateli neporadí, kterému úkolu se má věnovat.
+			
+			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a jeho zdrojové kódy nejsou veřejně dostupné.
 			
 		\subsection{Toodledo}
-			\cite{toodledo}
+			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (habits). To jsou opakující se úkoly, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po splnění zvyku je možné ho označit za splněný, přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (notes), seznamy (lists), nebo nástiny (outlines). 
+			
+			Úkoly lze třídit do složek, nastavit jim deadline a prioritu. Nelze ale určovat pracnost a spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace. Webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a zdrojové kódy nejsou veřejně dostupné.
 			
 		\subsection{Google Inbox Reminders}
-			\cite{ginbox}
+			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (reminders). Ty lze také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit deadline, ale je možné je odložit (snooze) tak, aby se zobrazily později. Aktivní úkoly se zobrazují mezi příchozími e-maily.
 			
-		\subsection{Poznámky v telefonu, kalendář}
+			Úkoly nelze nijak třídit, určovat pracnost ani prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API a jeho zdrojové kódy nejsou dostupné.
+			
+			
+			
+		\subsection{Poznámky, kalendář}
+			Tato sekce není jeden konkrétní produkt, ale typ produktů. Uvádím je pro úplnost, jelikož je stále využívá velké množství lidí. Patří sem všechny nástroje pro psaní poznámek a vytváření úkolů v kalendáři, a to jak elektronické, tak papírové. 
+			
+			Některé elektronické nástroje umožňují sdílení poznámek či kalendářů, takže se dají při dobře definovaných pravidlech použít i pro týmovou práci. Jejich použití je ale složitější s rostoucím počtem úkolů a projektů, protože neumožňují žádné filtrování, řazení úkolů ani přiřazování zodpovědností. Pro nenáročného uživatele, který si chce zapisovat nejdůležitější úkoly a sám se postará o to, že na nich nezapomene včas začít, může být toto řešení dostačující.
+			
+			Pro papírové \uv{nástroje} platí předchozí odstavec podobné, jen možnost spolupráce je ještě více omezena. Pokud celá skupina nemá společnou místnost pro práci, pak prakticky vyloučena. Navíc vzniká problém s archivací a doslovnou ztrátou úkolů.
+		
 	
 	\section{Splnění kritérií}
-	% Please add the following required packages to your document preamble:
-	% 
+
+
 	\begin{sidewaystable}
 	\begin{threeparttable}
 		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
 			\hline
 			      & JIRA & Bugzilla & Redmine & Trello & Trackie & FogBugz & Todoist & Toodledo & Inbox & Poznámky \\ \hline \hline
-			Kr. 1 & + & + & + & +  & + & +  & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 2 & ~ & ~ & ~ & +  & + & +  & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 3 & ~ & ~ & ~ & +  & + & ~  & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 4 & ~ & * & * & +  & ~ & ~  & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 5 & ~ & ~ & ~ & ** & ~ & ** & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 6 & + & + & + & +  & ~ & +  & ~ & ~ & ~ & ~ \\ \hline
-			Kr. 7 & ~ & + & + & ~  & ~ & ~  & ~ & ~ & ~ & ~ \\
+			Kr. 1 & + & + & + & +  & + & +  & + & +   & + & +    \\ \hline
+			Kr. 2 & ~ & ~ & ~ & +  & + & +  & + & ~   & + & +    \\ \hline
+			Kr. 3 & ~ & ~ & ~ & +  & + & ~  & + & +   & ~ & +    \\ \hline
+			Kr. 4 & ~ & * & * & +  & ~ & ~  & + & *** & + & +    \\ \hline
+			Kr. 5 & ~ & ~ & ~ & ** & ~ & ** & ~ & ~   & ~ & ~    \\ \hline
+			Kr. 6 & + & + & + & +  & ~ & +  & + & +   & ~ & ****    \\ \hline
+			Kr. 7 & ~ & + & + & ~  & ~ & ~  & ~ & ~   & ~ & **** \\
 			\hline
 		\end{tabular}
 		
@@ -177,6 +196,8 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 			\item[+] Splněno
 			\item[*] Zdarma na vlastním HW.
 			\item[**] Velká část splněna
+			\item[***] Zdarma jen bez spolupráce na úkolech
+			\item[****] Záleží na konkrétním produktu
 			\item Kr. 1 -- \crita
 			\item Kr. 2 -- \critb
 			\item Kr. 3 -- \critc
