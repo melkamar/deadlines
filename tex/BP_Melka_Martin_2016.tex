@@ -77,27 +77,28 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 \end{introduction}
 
 \chapter{Současný stav}
+	\label{chapter:current-state}
 
-Způsobů, jak řešit správu úkolů, existuje spoustu a liší se podle toho, kdo je má využívat. V této části práce představím několik zástupců pro každou ze tří kategorií. Těmi jsou:
-\begin{enumerate}
-  \item Řešení pro větší firmy s množstvím pracovníků
-  \item Řešení pro střední a menší týmy, jednotky až desítky pracovníků
-  \item Řešení pro jednotlivce
-\end{enumerate}
+	Způsobů, jak řešit správu úkolů, existuje spoustu a liší se podle toho, kdo je má využívat. V této části práce představím několik zástupců pro každou ze tří kategorií. Těmi jsou:
+	\begin{enumerate}
+	  \item Řešení pro větší firmy s množstvím pracovníků
+	  \item Řešení pro střední a menší týmy, jednotky až desítky pracovníků
+	  \item Řešení pro jednotlivce
+	\end{enumerate}
 
-Zástupce vybírám podle osobních zkušenosti a podle výsledků získaných z vyhledávače \texttt{Google}, na základě jejich pořadí a popularity mezi uživateli. U uvedených zástupců zvážím klady a zápory jak pro jejich cílovou skupinu, tak pro cílovou skupinu této práce, tj. menší týmy a jednotlivce.
+	Zástupce vybírám podle osobních zkušenosti a podle výsledků získaných z vyhledávače \texttt{Google}, na základě jejich pořadí a popularity mezi uživateli. U uvedených zástupců zvážím klady a zápory jak pro jejich cílovou skupinu, tak pro cílovou skupinu této práce, tj. menší týmy a jednotlivce.
 
-Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
-\begin{enumerate}
-	\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně minut.
-	\item \textbf{\critb} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
-	\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
-	\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
-	\item \textbf{\crite} -- Aplikace má umožňovat spravovat úkoly jak pro jednotlivce, tak týmy. Mezi požadavky na funkce tedy patří možnost vytvářet osobní i sdílené úkoly, u nich uvádět datum \textit{deadlinu}, pracnost, prioritu; dále sdružovat se do skupin, v rámci skupin přiřazovat odpovědnosti za úkoly a zaznamenávat odpracovanou práci jednotlivých uživatelů. Aplikace by také měla uživateli doporučit, kterému úkolu se věnovat, v závislosti na jeho prioritě, pracnosti a času zbývajícímu do deadlinu. Úkol také nemusí mít deadline a jeho priorita sama postupně časem poroste.
-	\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
-	\item \textbf{\critg} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
-\end{enumerate}
-Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nejznámějších řešení. 
+	Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
+	\begin{enumerate}
+		\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně minut.
+		\item \textbf{\critb} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
+		\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
+		\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
+		\item \textbf{\crite} -- Aplikace má umožňovat spravovat úkoly jak pro jednotlivce, tak týmy. Mezi požadavky na funkce tedy patří možnost vytvářet osobní i sdílené úkoly, u nich uvádět datum \textit{deadlinu}, pracnost, prioritu; dále sdružovat se do skupin, v rámci skupin přiřazovat odpovědnosti za úkoly a zaznamenávat odpracovanou práci jednotlivých uživatelů. Aplikace by také měla uživateli doporučit, kterému úkolu se věnovat, v závislosti na jeho prioritě, pracnosti a času zbývajícímu do deadlinu. Úkol také nemusí mít deadline a jeho priorita sama postupně časem poroste.
+		\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
+		\item \textbf{\critg} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
+	\end{enumerate}
+	Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nejznámějších řešení. 
 
 	\section{Řešení pro firmy}
 		\label{sec:solutions-companies}
@@ -145,6 +146,7 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API, ale zdrojové kódy nejsou veřejně dostupné.
 
 	\section{Řešení pro jednotlivce}
+		\label{sec:solutions-individuals}
 		Poslední kategorií jsou nástroje pro správu úkolů jednotlivců. Některé z nich mohou umožňovat sdílení úkolů, takže by se daly zařadit i do kategorie \ref{sec:solutions-teams}, nicméně svým zaměřením cílí primárně na využití jako osobní úkolníček, proto jsou zařazeny zde. Také jsem do této kategorie zařadil nástroje, které nejsou primárně určeny pro správu úkolů, ale někteří je k tomuto účelu využívají, například kalendář nebo poznámky.
 		
 		\subsection{Todoist}
@@ -175,10 +177,17 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 		
 	
 	\section{Splnění kritérií}
+		Žádný z uvedených nástrojů nesplnil všech 7 požadavků stanovených na začátku kapitoly \ref{chapter:current-state}. Všechny nástroje je možné používat bez vlastního HW, ale v dalších požadavcích se lišily. 
+		
+		Nejlépe dopadly nástroje ze sekce \ref{sec:solutions-teams}, jmenovitě Trello a Todoist. Chyběly jim některé funkce oproti definovaným požadavkům, zejména možnost vytvoření úkolu bez deadlinu s postupně rostoucí prioritou a doporučení uživatelům, na jakém úkolu by měli pracovat vzhledem k prioritě, zbývající pracnosti úkolu a deadlinu. Nástroje také nejsou open-source. Splnění požadavků jednotlivými je detailně zobrazeno v tabulce \ref{table:criteria}.
+		
+		Backend část aplikace, jež bude výstupem této práce, bude spadat na pomezí sekcí \ref{sec:solutions-teams} a \ref{sec:solutions-individuals}. Bude obsahovat vybrané funkce pro správu práce týmů i jednotlivců, které analyzuji v kapitole \ref{chapter:analysis}.
 
 
 	\begin{sidewaystable}
 	\begin{threeparttable}
+		\caption{Tabulka splnění kritérií rešerše}
+		\label{table:criteria}
 		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
 			\hline
 			      & JIRA & Bugzilla & Redmine & Trello & Trackie & FogBugz & Todoist & Toodledo & Inbox & Poznámky \\ \hline \hline
@@ -187,7 +196,7 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 			Kr. 3 & ~ & ~ & ~ & +  & + & ~  & + & +   & ~ & +    \\ \hline
 			Kr. 4 & ~ & * & * & +  & ~ & ~  & + & *** & + & +    \\ \hline
 			Kr. 5 & ~ & ~ & ~ & ** & ~ & ** & ~ & ~   & ~ & ~    \\ \hline
-			Kr. 6 & + & + & + & +  & ~ & +  & + & +   & ~ & ****    \\ \hline
+			Kr. 6 & + & + & + & +  & ~ & +  & + & +   & ~ & **** \\ \hline
 			Kr. 7 & ~ & + & + & ~  & ~ & ~  & ~ & ~   & ~ & **** \\
 			\hline
 		\end{tabular}
@@ -211,6 +220,7 @@ Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nej
 	
 	
 \chapter{Analýza a návrh}
+	\label{chapter:analysis}
 
 \chapter{Realizace}
 
