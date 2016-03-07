@@ -18,6 +18,9 @@
 
 \usepackage{dirtree} %directory tree visualisation
 
+\usepackage{enumitem}
+\setlist[enumerate]{label*=\arabic*.}
+
 % % list of acronyms
 % \usepackage[acronym,nonumberlist,toc,numberedsection=autolabel]{glossaries}
 % \iflanguage{czech}{\renewcommand*{\acronymname}{Seznam pou{\v z}it{\' y}ch zkratek}}{}
@@ -225,6 +228,51 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 \chapter{Analýza}
 	\label{chapter:analysis}
+	
+	V této sekci se budu věnovat specifikování požadavků na aplikaci a jejich analýze. To mi poskytne konkrétní přehled o tom, co má výsledná aplikace umět a jaké entity v ní budou existovat.
+	
+	\section{Požadavky na aplikaci}
+		Požadavky na aplikaci popíšu pomocí user stories (uživatelské příběhy)\cite{user-stories}. Jedná se o jednoduchý způsob, jakým vyjádřit požadavek na aplikaci z pohledu jejího uživatele (stakeholder). Měl by být krátký a napsán samotným uživatelem budoucí aplikace, v jeho terminologii.
+		
+		Formální způsob zápisu user story se dá definovat \cite{user-stories-applied-book} například takto:
+		\begin{center}
+			Jako $\langle$role$\rangle$ chci $\langle$něco$\rangle$, abych dosáhl $\langle$něčeho$\rangle$.
+		\end{center}
+		Pomocí user stories lze testovat funkčnost výsledné aplikace. Pokud jsou všechny user stories uspokojeny, pak je aplikace z hlediska funkčnosti hotova.
+		
+		\subsection{User stories}
+		\begin{enumerate}
+			\item \textbf{Uživatel}
+			\begin{enumerate}
+				\item Jako uživatel chci mít svůj účet, abych mohl spravovat své úkoly a pracovní skupiny.
+				\item Jako uživatel chci zobrazovat profily ostatních a vidět jejich e-mail, pokud je veřejný, abych je mohl kontaktovat.
+				\item Jako uživatel si chci vybrat, zda umožním ostatním uživatelům vidět můj e-mail, abych mohl chránit své soukromí.
+				\item Jako uživatel chci vytvářet úkoly a sdílet je s ostatními uživateli, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat.
+				\item Jako uživatel chci měnit úkoly, které jsem vytvořil, abych mohl reagovat na případné změny.
+				\item Jako uživatel chci znát \textit{urgentnost} úkolů, abych věděl, kterým úkolům se mám věnovat tak, abych stihl jejich deadline. Čím méně času zbývá na vypracování úkolu vzhledem k jeho pracnosti a deadlinu, tím více je urgentní.
+				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí -- moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem -- abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle různých kritérií.
+				\item Jako uživatel chci u úkolu mít vždy jednu ze dvou rolí -- pozorovatel a pracovník -- abych dal najevo, v jakém vztahu k úkolu jsem. Jako pozorovatel mám jen pasivní roli, úkol ale vidím ve svém seznamu. Jako pracovník se na úkolu aktivně podílím.
+				\item Jako uživatel chci přijímat nebo zamítat příchozí návrhy na sdílení úkolů, abych se mohl rozhodnout, na kterých se chci podílet a na kterých ne.
+				\item Jako uživatel chci na úkolu, jehož jsem součástí, zaznamenávat odvedenou práci, abych měl já i mí spolupracovníci lepší představu o tom, kolik práce na něm zbývá.
+				\item Jako uživatel chci úkol, jehož jsem součástí, prohlašovat za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
+				\item Jako uživatel chci zakládat pracovní skupiny a po založení se stát jejich adminem, abych se mohl sdružovat s dalšími uživateli a pracovat společně.
+				\item Jako uživatel chci vidět seznam skupin, jichž jsem členem, manažerem nebo adminem, a jejich detaily, abych rychle viděl, se kterými skupinami spolupracuji.
+			\end{enumerate}
+			\item \textbf{Manažer skupiny}
+			\begin{enumerate}
+				\item Jako manažer skupiny do ní chci zvát a odebírat z ní uživatele. Členům chci přiřazovat role pozorovatel nebo pracovník na úkolech, které jsou se skupinou sdíleny, abych tím mohl organizovat skupinu a rozdělovat zodpovědnost za práci mezi její členy. 
+				\item Jako manažer skupiny chci vytvářet úkoly pro skupinu a přijímat nebo zamítat návrhy na sdílení úkolů s mou skupinou, abych mohl určovat, na čem má skupina pracovat.
+				\item Jako manažer skupiny chci mít možnost odebrat ji z úkolu, který je s ní sdílen, aby úkoly, které již nejsou relevantní, nezůstávaly v seznamu úkolů skupiny.
+			\end{enumerate}
+			\item \textbf{Admin skupiny}
+			\begin{enumerate}
+				\item Jako admin skupiny chci mít možnost měnit její název a popis, abych je mohl udržovat aktuální.
+				\item Jako admin skupiny chci jmenovat manažery skupiny, abych mohl pověřit další uživatele správou skupiny.
+				\item Jako admin skupiny chci mít možnost přenechat svou roli jinému členovi skupiny, abych mohl skupinu opustit a ta pořád měla admina.
+			\end{enumerate}
+		\end{enumerate}	
+		
+		
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
