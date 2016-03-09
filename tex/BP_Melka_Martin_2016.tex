@@ -1,11 +1,3 @@
-% options:
-% thesis=B bachelor's thesis
-% thesis=M master's thesis
-% czech thesis in Czech language
-% slovak thesis in Slovak language
-% english thesis in English language
-% hidelinks remove colour boxes around hyperlinks
-
 \documentclass[thesis=B,czech]{FITthesis}[2012/06/26]
 
 \usepackage[utf8]{inputenc} % LaTeX source encoded as UTF-8
@@ -64,24 +56,34 @@
 \begin{introduction}
 	Výpočetní technika umožnila rozvoj rychlejší a efektivnější komunikace, práce a vůbec způsobu života. Je běžné mít svůj kalendář on-line a sdílet ho s ostatními, případně používat některý nástroj s funkcí úkolníčku. Zejména ve velkých firmách, kde existuje silná potřeba koordinovat úsilí mnoha lidí, tak vznikla poptávka po nástrojích pro správu úkolů, které by jim umožnily efektivnější rozdělování zodpovědností a práce. Řešení, které na tento popud vznikly, slouží právě potřebám velkých firem. Potřeby menších skupin a jednotlivců jsou ale jiné. Pro ně jsou tyto nástroje příliš komplexní, těžkopádné a nedostatečně intuitivní.
 
-Tato práce se zabývá přehledem existujících řešení pro správu úkolů malých i velkých skupin a tvorbou backendu nové aplikace. Aplikace bude zaměřena na potřeby menších týmů a jednotlivců a bude umožňovat uživatelům vytvářet úkoly, sdílet je s ostatními uživateli, sdružovat se do skupin a zaznamenávat průběh práce na úkolech. 
-
-V první části porovnám současná řešení pro správu úkolů z pohledu malých týmů a jednotlivců. 
-
-Ve druhé části se zabývám analýzou problému. Definuji požadavky na aplikaci ve formě uživatelských příběhů a podrobím je analýze.
-
-Ve třetí části vypracuji návrh řešení aplikace. Zde vybírám technologii pro implementaci a popisuji architekturu aplikace, návrhový model tříd a databázový model.
-
-Ve čtvrté části popisuji implementaci aplikace.
-
-V páté části se věnuji testování aplikace za účelem zjištění její správné funkčnosti. Popíšu zde použité technologie a způsob testování.
-
-V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spustit.
+	Tato práce se zabývá přehledem existujících řešení pro správu úkolů malých i velkých skupin a tvorbou backendu nové aplikace. Aplikace bude zaměřena na potřeby menších týmů a jednotlivců a bude umožňovat uživatelům vytvářet úkoly, sdílet je s ostatními uživateli, sdružovat se do skupin a zaznamenávat průběh práce na úkolech. 
+	
+	V první části porovnám současná řešení pro správu úkolů z pohledu malých týmů a jednotlivců. 
+	
+	Ve druhé části se zabývám analýzou problému. Definuji požadavky na aplikaci ve formě uživatelských příběhů a podrobím je analýze.
+	
+	Ve třetí části vypracuji návrh řešení aplikace. Zde vybírám technologii pro implementaci a popisuji architekturu aplikace, návrhový model tříd a databázový model.
+	
+	Ve čtvrté části popisuji implementaci aplikace.
+	
+	V páté části se věnuji testování aplikace za účelem zjištění její správné funkčnosti. Popíšu zde použité technologie a způsob testování.
+	
+	V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spustit.
 \end{introduction}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\chapter{Slovník pojmů}
+	\begin{itemize}
+		\item[] \textbf{Deadline} 
+		<todo vysvětlení aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>
+		
+		\item[] \textbf{Assignee} 
+		<todo vysvětlení aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>
+		\item[] \textbf{Closed source}
+		\item[] \textbf{Gamifikace}
+		\item[] \textbf{Backend}		
+	\end{itemize}
 \chapter{Současný stav}
 	\label{chapter:current-state}
 
@@ -92,15 +94,14 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 	  \item Řešení pro jednotlivce
 	\end{enumerate}
 
-	Zástupce vybírám podle osobních zkušenosti a podle výsledků získaných z vyhledávače \texttt{Google}, na základě jejich pořadí a popularity mezi uživateli. U uvedených zástupců zvážím klady a zápory jak pro jejich cílovou skupinu, tak pro cílovou skupinu této práce, tj. menší týmy a jednotlivce.
+	Zástupce vybírám podle osobních zkušenosti a podle výsledků získaných z vyhledávače \texttt{Google}, na základě jejich pořadí a popularity mezi uživateli. U uvedených zástupců uvedu krátký popis a jejich použitelnost cílovou skupinou této práce, tj. menšími týmy a jednotlivci.
 
 	Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
 	\begin{enumerate}
-		\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně minut.
+		\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně několika málo minut.
 		\item \textbf{\critb} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
 		\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
 		\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
-		\item \textbf{\crite} -- Aplikace má umožňovat spravovat úkoly jak pro jednotlivce, tak týmy. Mezi požadavky na funkce tedy patří možnost vytvářet osobní i sdílené úkoly, u nich uvádět datum \textit{deadlinu}, pracnost, prioritu; dále sdružovat se do skupin, v rámci skupin přiřazovat odpovědnosti za úkoly a zaznamenávat odpracovanou práci jednotlivých uživatelů. Aplikace by také měla uživateli doporučit, kterému úkolu se věnovat, v závislosti na jeho prioritě, pracnosti a času zbývajícímu do deadlinu. Úkol také nemusí mít deadline a jeho priorita sama postupně časem poroste.
 		\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
 		\item \textbf{\critg} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
 	\end{enumerate}
@@ -108,121 +109,95 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 
 	\section{Řešení pro firmy}
 		\label{sec:solutions-companies}
-		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často mnoho dalších funkcí pro řízení projektů a integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
+		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často další funkce pro řízení projektů a integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
 		
 		\subsection{JIRA}
 			JIRA \cite{jira} je software, který nabízí bug tracking, issue tracking a funkce pro správu projektů. Je možné ho používat jak na vlastní HW infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
 			
-			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale ne najednou (\textit{assignee} může být v jednu chvíli jen jeden uživatel). Úkolům lze přiřadit deadline, ale uživatelé nemůžou dostat doporučení, na kterém úkolu by měli pracovat.
+			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale přiřazen může být v jednu chvíli jen jednomu uživateli (\textit{assignee}). Úkolům lze také přiřadit \textit{deadline}.
 			
-			JIRA nabízí REST API a je closed-source.
+			JIRA nabízí REST API a je closed source.
 			
 		\subsection{Bugzilla}
-			Bugzilla \cite{bugzilla} je bug tracking nástroj, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. 
+			Bugzilla \cite{bugzilla} je bug tracking nástroj, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. Samotná správa a práce s úkoly funguje stejně jako u nástroje JIRA.
 			
-			Bugzilla je open-source, licencovaná pod MPL, a lze ji využít zdarma i pro komerční účely. Je nutné ji ale provozovat na vlastním hardware. Existují hosting služby, které jsou ale neoficiální a placené. Bugzilla nabízí REST API.
+			Bugzilla je open source, licencovaná pod MPL, a lze ji využít zdarma i pro komerční účely. Je nutné ji ale provozovat na vlastním hardware. Existují hosting služby, které jsou ale neoficiální a placené. Bugzilla nabízí REST API.
 			
 		\subsection{Redmine}		
-			Redmine \cite{redmine} je issue tracking nástroj, který nabízí více flexibility než Bugzilla a obsahuje i některé nástroje pro řízení projektů. Tyto nástroje mohou být přínosné pro větší projekty, které mají danou strukturu, ale nepočítám s tím, že by cílovou skupinu této práce zajímaly. 
+			Redmine \cite{redmine} je issue tracking nástroj, který nabízí více flexibility než Bugzilla a obsahuje i některé nástroje pro řízení projektů. Tyto nástroje mohou být přínosné pro větší projekty, které mají danou strukturu, ale nepočítám s tím, že by cílovou skupinu této práce zajímaly. Funkcionalita, která se týká správy úkolů, je srovnatelná s předchozími dvěma nástroji.
 			
-			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě Bugzilly není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open-source a nabízí REST API.
+			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě Bugzilly není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open source a nabízí REST API.
 
 	\section{Řešení pro střední a menší týmy}
 		\label{sec:solutions-teams}
 		Nástroje v této kategorii se snaží cílit na týmy, spíše než celé firmy, a práce s nimi není tak formální. Používat je lze on-line, není nutné vlastní instalace. Oproti řešením v bodu \ref{sec:solutions-companies} obsahují tyto méně funkcí, chybí hlavně různé manažerské nástroje a integrace s dalšími systémy.
 	
 		\subsection{Trello}
-			Trello \cite{trello} je on-line aplikace, která vznikla v roce 2011. Způsob správy úkolů staví na konceptu \textit{kanban}\cite{kanban}. Umožňuje vytvářet nástěnky (boards), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (lists) a v nich karty (cards), které představují nejmenší jednotku práce - úkol. Ten má svou prioritu, deadline a zodpovědné uživatele.
+			Trello \cite{trello} je on-line aplikace, která vznikla v roce 2011. Způsob správy úkolů staví na konceptu \textit{kanban}\cite{kanban}. Umožňuje vytvářet nástěnky (boards), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (lists) a v nich karty (cards), které představují nejmenší jednotku práce - úkol. Ten má svou prioritu, \textit{deadline} a zodpovědné uživatele. Těch může být libovolný počet.
 			
-			Funkčně bohatý nástroj, s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo deadlinu. U karet ale není možné uvést odhad pracnosti a aplikace tak nedokáže radit, které kartě by se měl uživatel věnovat, aby ji do deadlinu stihl.
+			Funkčně bohatý nástroj, s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo podle \textit{deadlinu}. 
 			
-			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody\cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, ale zdrojové kódy nejsou dostupné.
+			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody\cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, aplikace je \textit{closed source}.
 		
 			
 		\subsection{Trackie}
-			Trackie \cite{trackie} je on-line aplikace, která je určena pro správu úkolů na společných projektech. Ty lze zakládat a zvát do nich uživatele, v rámci projektů pak tvořit úkoly. Úkol může být někomu přiřazen, ale vždy jen jednomu uživateli. Funkčností i vzhledem jednoduché na použití, ale některé funkce chybí. Úkolům například nelze nastavit deadline ani odhad trvání. Zobrazit je možné jen úkoly každého projektu zvlášť, chybí přehled všech úkolů uživatele. 
+			Trackie \cite{trackie} je on-line aplikace, která je určena pro správu úkolů na společných projektech. Ty lze zakládat a zvát do nich uživatele, v rámci projektů pak tvořit úkoly. Úkol může být někomu přiřazen, ale vždy jen jednomu uživateli. Funkčností i vzhledem jednoduché na použití, ale některé funkce oproti předchozím nástrojům chybí. Úkolům například nelze nastavit \textit{deadline}. Zobrazit je možné jen úkoly každého projektu zvlášť, nelze zobrazit přehled všech úkolů uživatele. 
 			
-			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a její zdrojové kódy nejsou veřejné.
+			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a je closed source.
 			
 		\subsection{FogBugz}
-			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě issue trackingu nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentu ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, ale i přesto se s ním pracuje jednoduše. 
+			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě issue trackingu nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentu ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, i přesto se v aplikaci uživatel neztratí. 
 			
-			Uživatelé spolu mohou pracovat na úkolech (cases), které se dělí do projektů (projects). Na úkolu lze evidovat všechny potřebné informace pro využití v agilní metodice plánování, včetně \textit{story points}, dále zodpovědného uživatele, odhad pracnosti a deadline. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá. Uživatel ale nedostane informaci o tom, na kterém úkolu by měl pracovat, aby ho bylo ještě možné stihnout v závislosti na času pracnosti a času zbývajícího do deadlinu.
+			Uživatelé spolu mohou pracovat na úkolech (cases), které se dělí do projektů (projects). Na úkolu lze evidovat informace potřebné pro využití agilní metodiky plánování, včetně \textit{story points}. Úkolu je možné určit zodpovědného uživatele, odhad pracnosti a deadline. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá.
 			
-			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API, ale zdrojové kódy nejsou veřejně dostupné.
+			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API a je closed source.
 
 	\section{Řešení pro jednotlivce}
 		\label{sec:solutions-individuals}
 		Poslední kategorií jsou nástroje pro správu úkolů jednotlivců. Některé z nich mohou umožňovat sdílení úkolů, takže by se daly zařadit i do kategorie \ref{sec:solutions-teams}, nicméně svým zaměřením cílí primárně na využití jako osobní úkolníček, proto jsou zařazeny zde. Také jsem do této kategorie zařadil nástroje, které nejsou primárně určeny pro správu úkolů, ale někteří je k tomuto účelu využívají, například kalendář nebo poznámky.
 		
 		\subsection{Todoist}
-			Todoist \cite{todoist} je on-line aplikace pro organizaci úkolů, která má uživatele motivovat k lepší produktivitě. Za splněné úkoly jsou přidělovány body (karma), jejichž historický vývoj je možné sledovat v grafu, lze nastavit denní a týdenní cíl a získávat další \uv{odměny} za jeho splnění. Úkoly lze rozdělit do projektů, nastavit jim deadline, prioritu a zda se mají opakovat. Projekty je možné sdílet s dalšími uživateli a dají se zobrazit buď po projektech, ke kterým patří, nebo všechny na jednom místě -- ve schránce (inbox). 
+			Todoist \cite{todoist} je on-line aplikace pro organizaci úkolů, která má uživatele motivovat k lepší produktivitě. Za splněné úkoly jsou přidělovány body (karma), jejichž historický vývoj je možné sledovat v grafu, lze nastavit denní a týdenní cíl a získávat další \uv{odměny} za jeho splnění. Úkoly lze rozdělit do projektů, nastavit jim \textit{deadline}, prioritu a opakování. Projekty je možné sdílet s dalšími uživateli a dají se zobrazit buď po projektech, ke kterým patří, nebo všechny na jednom místě -- ve schránce (inbox). 
 			
-			Vytvoření nového úkolu se může provést jen zadáním (anglického) textu, aplikace sama rozpozná řídící slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Sometask at 1 PM every day} vytvoří úkol, který má deadline ve 13 hodin a opakuje se každý den. U úkolů ale nelze nastavit pracnost a aplikace uživateli neporadí, kterému úkolu se má věnovat.
+			Vytvoření nového úkolu se může provést zadáním (anglického) textu, aplikace sama rozpozná klíčová slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Go jogging at 1 PM every day} vytvoří úkol \textit{Go jogging}, který má \textit{deadline} ve 13 hodin a opakuje se každý den. 
 			
-			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a jeho zdrojové kódy nejsou veřejně dostupné.
+			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a je closed source.
 			
 		\subsection{Toodledo}
-			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (habits). To jsou opakující se úkoly, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po splnění zvyku je možné ho označit za splněný, přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (notes), seznamy (lists), nebo nástiny (outlines). 
+			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (habits). To jsou úkoly, které se opakují ve volitelné dny každý týden, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po vykonání zvyku je možné označit ho za splněný a přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (notes), seznamy (lists), nebo nástiny (outlines). 
 			
-			Úkoly lze třídit do složek, nastavit jim deadline a prioritu. Nelze ale určovat pracnost a spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace. Webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a zdrojové kódy nejsou veřejně dostupné.
+			Úkoly lze třídit do složek, nastavit jim \textit{deadline} a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a Webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a je closed source.
 			
 		\subsection{Google Inbox Reminders}
-			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (reminders). Ty lze také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit deadline, ale je možné je odložit (snooze) tak, aby se zobrazily později. Aktivní úkoly se zobrazují mezi příchozími e-maily.
+			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (reminders). Ty lze kromě aplikace Inbox také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit \textit{deadline}, ale je možné je odložit (snooze) tak, aby se zobrazily později. Aktivní úkoly se zobrazují mezi příchozími e-maily.
 			
-			Úkoly nelze nijak třídit, určovat pracnost ani prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a jeho zdrojové kódy nejsou dostupné.
+			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a je closed source.
 			
 			
 			
 		\subsection{Poznámky, kalendář}
-			Tato sekce není jeden konkrétní produkt, ale typ produktů. Uvádím je pro úplnost, jelikož je stále využívá velké množství lidí. Patří sem všechny nástroje pro psaní poznámek a vytváření úkolů v kalendáři, a to jak elektronické, tak papírové. 
+			Tato sekce nepopisuje jeden konkrétní produkt, ale jejich skupinu. Uvádím je pro úplnost, jelikož je stále využívá velké množství lidí. Patří sem všechny nástroje pro psaní poznámek a vytváření událostí v kalendáři, a to jak elektronické, tak papírové. 
 			
 			Některé elektronické nástroje umožňují sdílení poznámek či kalendářů, takže se dají při dobře definovaných pravidlech použít i pro týmovou práci. Jejich použití je ale složitější s rostoucím počtem úkolů a projektů, protože neumožňují žádné filtrování, řazení úkolů ani přiřazování zodpovědností. Pro nenáročného uživatele, který si chce zapisovat nejdůležitější úkoly a sám se postará o to, že na nich nezapomene včas začít, může být toto řešení dostačující.
 			
-			Pro papírové \uv{nástroje} platí předchozí odstavec podobné, jen možnost spolupráce je ještě více omezena. Pokud celá skupina nemá společnou místnost pro práci, pak prakticky vyloučena. Navíc vzniká problém s archivací a doslovnou ztrátou úkolů.
+			Pro papírové \uv{nástroje} platí předchozí odstavec podobně, jen možnost spolupráce je ještě více omezena. A pokud celá skupina nemá společnou místnost pro práci, pak prakticky vyloučena. Navíc vzniká problém s archivací a uchováváním historie úkolů.
 		
 	
-	\section{Splnění kritérií}
-		Žádný z uvedených nástrojů nesplnil všech 7 požadavků stanovených na začátku kapitoly \ref{chapter:current-state}. Všechny nástroje je možné používat bez vlastního HW, ale v dalších požadavcích se lišily. 
+	\section{Shrnutí}
+		Přehled kritérií stanovených na začátku kapitoly \ref{chapter:current-state} a jejich splnění uvedenými nástroji prezentuji v tabulce \ref{table:criteria} (příloha).
 		
-		Nejlépe dopadly nástroje ze sekce \ref{sec:solutions-teams}, jmenovitě Trello a Todoist. Chyběly jim některé funkce oproti definovaným požadavkům, zejména možnost vytvoření úkolu bez deadlinu s postupně rostoucí prioritou a doporučení uživatelům, na jakém úkolu by měli pracovat vzhledem k prioritě, zbývající pracnosti úkolu a deadlinu. Nástroje také nejsou open-source. Splnění požadavků jednotlivými je detailně zobrazeno v tabulce \ref{table:criteria}.
+		Všechny nástroje umožňují vytvářet úkoly, ale v možnostech se liší. Nyní zvážím, které funkce jsou užitečné pro cílovou skupinu této práce a mají být obsaženy ve výsledné aplikaci. Při odkazování se k nástrojům nebo aplikacím v této sekci mám na mysli ty představené výše.
 		
-		Backend část aplikace, jež bude výstupem této práce, bude spadat na pomezí sekcí \ref{sec:solutions-teams} a \ref{sec:solutions-individuals}. Bude obsahovat vybrané funkce pro správu práce týmů i jednotlivců, které analyzuji v kapitole \ref{chapter:analysis}.
+		Většina nástrojů umožňuje úkoly sdílet s jinými uživateli a společně s nimi pracovat na projektu. Možnost seskupit se do jednoho celku se spolupracovníky je užitečná, proto budou v aplikaci existovat pro uživatele pracovní skupiny.
+		
+		V aplikacích je u úkolu možné určit uživatele za něj odpovědné. Většinou lze přiřadit k úkolu v jednu chvíli jen jednoho uživatele, ale v nástroji Trello jich lze přiřadit libovolný počet. To může být pro některé typy úkolů užitečné. 
+		
+		Kromě \textit{deadlinu} a priority jako ve většině ostatních aplikací, lze ve FogBugz u úkolu nastavit i odhad pracnosti -- dobu, jakou by měla práce na úkolu trvat. Uživatel pracující na úkolu pak může průbězně zaznamenávat odpracovanou dobu a celá skupina tak vidí, v jaké fázi se úkol nachází. Toto chci zahrnout do výsledné aplikace a ještě rozšířit o další funkci. Na základě doby zbývající do \textit{deadlinu} a zbývající pracnosti na úkolu lze určit \uv{urgentnost}, tedy jakou má ještě uživatel rezervu, než \textit{deadline} zmešká. Tato informace o rezervě může uživatelům pomoct s rozhodováním, kterému úkolu se prioritně věnovat, aby jej ještě stihli.
+		
+		Například Todoist nabízí možnost vytvořený úkol opakovat v zadaném intervalu. Google Inbox kromě opakování umožňuje také úkol odložit na později, čímž uživateli zmizí z očí. V aplikaci chci vyjít z těchto funkcí a vytvořit funkci podobnou. Myšlenka je, že opakující se úkoly nebudou mít pevně daný \textit{deadline}. Uživatel se jim chce věnovat zhruba po nějakých intervalech, ale ne na den přesně. Při vytvoření úkol nebude důležitý, ale bude postupně nabývat na urgentnosti, až se důležitým stane. Poté uživatel úkol buď ukončí, nebo vynuluje a úkol znovu poroste.
+		
+		Backend část aplikace, jež bude výstupem této práce, bude zaměřením spadat na pomezí sekcí \ref{sec:solutions-teams} a \ref{sec:solutions-individuals}. Bude obsahovat vybrané funkce pro správu práce týmů i jednotlivců, které analyzuji v kapitole \ref{chapter:analysis}.
 
-
-	\begin{sidewaystable}
-	\begin{threeparttable}
-		\caption{Tabulka splnění kritérií rešerše}
-		\label{table:criteria}
-		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
-			\hline
-			      & JIRA & Bugzilla & Redmine & Trello & Trackie & FogBugz & Todoist & Toodledo & Inbox & Poznámky \\ \hline \hline
-			Kr. 1 & + & + & + & +  & + & +  & + & +   & + & +    \\ \hline
-			Kr. 2 & ~ & ~ & ~ & +  & + & +  & + & ~   & + & +    \\ \hline
-			Kr. 3 & ~ & ~ & ~ & +  & + & ~  & + & +   & ~ & +    \\ \hline
-			Kr. 4 & ~ & * & * & +  & ~ & ~  & + & *** & + & +    \\ \hline
-			Kr. 5 & ~ & ~ & ~ & ** & ~ & ** & ~ & ~   & ~ & ~    \\ \hline
-			Kr. 6 & + & + & + & +  & ~ & +  & + & +   & ~ & **** \\ \hline
-			Kr. 7 & ~ & + & + & ~  & ~ & ~  & ~ & ~   & ~ & **** \\
-			\hline
-		\end{tabular}
-		
-		\begin{tablenotes}
-			\item[+] Splněno
-			\item[*] Zdarma na vlastním HW.
-			\item[**] Velká část splněna
-			\item[***] Zdarma jen bez spolupráce na úkolech
-			\item[****] Záleží na konkrétním produktu
-			\item Kr. 1 -- \crita
-			\item Kr. 2 -- \critb
-			\item Kr. 3 -- \critc
-			\item Kr. 4 -- \critd
-			\item Kr. 5 -- \crite
-			\item Kr. 6 -- \critf
-			\item Kr. 7 -- \critg
-		\end{tablenotes}
-	\end{threeparttable}		
-	\end{sidewaystable}
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
@@ -251,7 +226,7 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 				\item Jako uživatel chci měnit úkoly, které jsem vytvořil, abych mohl reagovat na případné změny.
 				\item Jako uživatel chci znát \textit{urgentnost} úkolů, abych věděl, kterým úkolům se mám věnovat tak, abych stihl jejich deadline. Čím méně času zbývá na vypracování úkolu vzhledem k jeho pracnosti a deadlinu, tím více je urgentní.
 				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí -- moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem -- abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle různých kritérií.
-				\item Jako uživatel chci u úkolu mít vždy jednu ze dvou rolí -- pozorovatel a pracovník -- abych dal najevo, v jakém vztahu k úkolu jsem. Jako pozorovatel mám jen pasivní roli, úkol ale vidím ve svém seznamu. Jako pracovník se na úkolu aktivně podílím.
+				\item Jako uživatel chci u úkolu mít vždy jednu ze dvou rolí -- pozorovatel a pracovník -- abych dal najevo, v jakém vztahu k úkolu jsem. Jako pozorovatel mám jen pasivní roli, úkol vidím ve svém seznamu. Jako pracovník se na úkolu aktivně podílím.
 				\item Jako uživatel chci přijímat nebo zamítat příchozí návrhy na sdílení úkolů, abych se mohl rozhodnout, na kterých se chci podílet a na kterých ne.
 				\item Jako uživatel chci na úkolu, jehož jsem součástí, zaznamenávat odvedenou práci, abych měl já i mí spolupracovníci lepší představu o tom, kolik práce na něm zbývá.
 				\item Jako uživatel chci úkol, jehož jsem součástí, prohlašovat za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
@@ -272,13 +247,34 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 			\end{enumerate}
 		\end{enumerate}	
 		
+	\section{Případy užití}
+		USECASE - zmáčknout tlačítko pro start počítání odpracované doby, pak tlačítkem vypnout. Nebo rovnou ručně zadat.
+	
+		Tady bude:
+		\begin{enumerate}
+			\item Usecase diagram
+			\item Číslovaný seznam usecases
+			\item U zajímavých usecases rozepsaný detailnější scénář, případně activity diagram
+		\end{enumerate}
 		
+	\section{Doménový model}
+		Tady bude:
+		\begin{enumerate}
+			\item Seznam entit, slovní popis
+			\item Diagram
+		\end{enumerate}
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Návrh}
+\chapter{Návrh řešení}
 	\label{chapter:design}
+	
+	\section{Technologie}
+	\section{Architektura aplikace}
+	\section{? REST API ?}
+	\section{Návrhový model}
+	\section{Databázový model}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -316,6 +312,42 @@ V poslední, šesté části, vysvětlím, jak výslednou aplikaci nasadit a spu
 	\item[HW] Hardware
 	\item[SW] Software
 \end{description}
+
+\chapter{Splnění kritérií rešerše}
+	\begin{center}
+	\begin{threeparttable}
+		\caption{Tabulka splnění kritérií rešerše}
+		\label{table:criteria}
+		\begin{tabular}{|c||c|c|c|c|c|c|}
+			\hline
+			           & Kr. 1 & Kr. 2 & Kr. 3 & Kr. 4 & Kr. 5 & Kr. 6 \\ \hline
+			JIRA       & +     & ~     & ~     & ~     & +     & ~     \\ \hline
+			Bugzilla   & +     & ~     & ~     & *     & +     & +     \\ \hline
+			Redmine    & +     & ~     & ~     & *     & +     & +     \\ \hline
+			Trello     & +     & +     & +     & +     & +     & ~     \\ \hline
+			Trackie    & +     & +     & +     & ~     & ~     & ~     \\ \hline
+			FogBugz    & +     & +     & ~     & ~     & +     & ~     \\ \hline
+			Todoist    & +     & +     & +     & +     & +     & ~     \\ \hline
+			Toodledo   & +     & ~     & +     & **    & +     & ~     \\ \hline
+			Inbox      & +     & +     & ~     & +     & ~     & ~     \\ \hline
+			Poznámky   & +     & +     & +     & +     & N/A   & N/A   \\ \hline
+			
+		\end{tabular}
+		
+		\begin{tablenotes}
+			\item[+] Splněno
+			\item[*] Zdarma na vlastním HW.
+			\item[**] Zdarma jen bez spolupráce na úkolech
+			\item Kr. 1 -- \crita
+			\item Kr. 2 -- \critb
+			\item Kr. 3 -- \critc
+			\item Kr. 4 -- \critd
+			\item Kr. 5 -- \critf
+			\item Kr. 6 -- \critg
+		\end{tablenotes}
+		
+	\end{threeparttable}
+	\end{center}
 
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
