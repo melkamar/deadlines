@@ -25,7 +25,7 @@
 % The text is used repeatedly, so in case of its change I want the change
 % to happen everywhere.
 \newcommand{\crita}{Nevyžaduje vlastní infrastrukturu, rychlé zprovoznení}
-\newcommand{\critb}{Jednoduché používání}
+\newcommand{\critb}{Použitelnost}
 \newcommand{\critc}{Absence nepotrebné funkcionality}
 \newcommand{\critd}{Použití zdarma}
 \newcommand{\crite}{Funkce}
@@ -74,17 +74,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Slovník pojmů}
-	\begin{itemize}
-		\item[] \textbf{Deadline} 
-		<todo vysvětlení aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>
+	\begin{description}
+		\item[Deadline] <todo vysvětlení aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>
 		
-		\item[] \textbf{Assignee} 
-		<todo vysvětlení aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>
-		\item[] \textbf{Closed source}
-		\item[] \textbf{Gamifikace}
-		\item[] \textbf{Backend}		
-		\item[] \textbf{Manhour}
-	\end{itemize}
+		\item[Assignee] <todo vysvětlení aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>
+		\item[Closed source]
+		\item[Gamifikace]
+		\item[Backend]
+		\item[Manhour]
+	\end{description}
 \chapter{Současný stav}
 	\label{chapter:current-state}
 
@@ -100,7 +98,7 @@
 	Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
 	\begin{enumerate}
 		\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně několika málo minut.
-		\item \textbf{\critb} -- Relativně subjektivní kritérium; uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat.
+		\item \textbf{\critb} -- Kritérium jsem hodnotil subjektivně, podle mého názoru na pět kvalitativních částí použitelnosti\cite{usability}. Uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat. 
 		\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
 		\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
 		\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
@@ -323,10 +321,48 @@
 		
 		Případů užití typicky bude více než \textit{user stories}\cite{si-usecases}, protože \textit{user stories} jsou více obecné, a tak na pokrytí jednoho může být potřeba více interakcí s aplikací a tedy více případů užití.
 		
-		\subsection{Seznam účastníků}
-			Aplikace bude rozlišovat účastníky na základě několika kritérií a těm bude dostupné různé množství funkcí. Účastníci jsou zobrazeni na obrázku \textbf{TODO USER DIAGRAM}
+		\subsection{Účastníci}
+			Aplikace bude rozlišovat účastníky na základě několika kritérií a těm bude dostupné různé množství funkcí. Účastníci jsou zobrazeni podle standardu UML na obrázku \ref{diagram:actors}.
+			Účastníky jsou v tomto případě uživatelé, kteří budou aplikaci používat. Každý uživatel může v různých případech užití vystupovat jako jiný účastník, v rámci jednotlivých případů užití ale musí být neměnný. \cite{uml-unified-process} 
+			
+			Účastníci od sebe mohou dědit, v tom případě potomek může kromě svých akcí vykonávat navíc všechny akce svého rodiče.
+			\begin{description}
+				\item[Nepřihlášený uživatel] \hfill \\ 
+					Nepřihlášený uživatel je účastník, který používá aplikaci poprvé, nebo se z ní po předchozím používání odhlásil.
+					
+				\item[Přihlášený uživatel] \hfill \\ 
+					Uživatel se stane přihlášením po zadání svého jména a hesla. Jsou mu dostupné funkce aplikace a může ji používat.
+				
+				\item[Člen skupiny] \hfill \\ 
+					Uživatel je Člen skupiny, pokud k této skupině patří. Členové skupiny mohou mít také další role v rámci této skupiny.
+				
+				\item[Manažer skupiny] \hfill \\ 
+					Uživatel je Manažer skupiny, pokud mu Admin dal tuto roli. Jako Manažer má více privilegií pro správu skupiny.
+				
+				\item[Admin skupiny] \hfill \\ 
+					Uživatel je Admin skupiny, pokud ji založil, nebo mu současný Admin dal tuto roli. Jako Admin má nejvyšší privilegia ve skupině a tato role v rámci skupiny patří vždy právě jednomu uživateli.
+					
+				\item[Účastník úkolu] \hfill \\
+					Účastník úkolu je abstraktní účastník. Reprezentuje uživatele, který je součástí úkolu v jako jeden z účastníků, kteří od tohoto dědí.
+				
+				\item[Pozorovatel úkolu] \hfill \\ 
+					Pozorovatel úkolu je součástí úkolu v pasivní roli. Na úkolu přímo nepracuje, ale má zájem sledovat jeho průběh.
+				
+				\item[Pracovník úkolu] \hfill \\ 
+					Pracovník úkolu je součástí úkolu v aktivní roli. Na úkolu pracuje a má tak zpřístupněny některé funkce navíc oproti Pozorovateli.
+				
+				\item[Čas] \hfill \\ 								
+					Účastník Čas nereprezentuje žádného fyzického uživatele, ale spouští události, které mají nastat s uplynulým časem. \cite{uml-unified-process}
+
+			\end{description}
 			
 		USECASE - zmáčknout tlačítko pro start počítání odpracované doby, pak tlačítkem vypnout. Nebo rovnou ručně zadat.
+	
+		\begin{figure}\centering
+			\includegraphics[width=0.7\textwidth]{ea-diagrams/actors.png}
+			\caption[Diagram účastníků]{Diagram účastníků aplikace}
+			\label{diagram:actors}
+		\end{figure}
 	
 		Tady bude:
 		\begin{enumerate}
