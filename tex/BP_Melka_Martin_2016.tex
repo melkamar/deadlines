@@ -83,6 +83,7 @@
 		\item[] \textbf{Closed source}
 		\item[] \textbf{Gamifikace}
 		\item[] \textbf{Backend}		
+		\item[] \textbf{Manhour}
 	\end{itemize}
 \chapter{Současný stav}
 	\label{chapter:current-state}
@@ -216,29 +217,90 @@
 		Pomocí user stories lze testovat funkčnost výsledné aplikace. Pokud jsou všechny user stories uspokojeny, pak je aplikace z hlediska funkčnosti hotova.
 		
 		\subsection{User stories}
+		\label{sec:user-stories}
 		\begin{enumerate}
 			\item \textbf{Uživatel}
 			\begin{enumerate}
-				\item Jako uživatel chci mít svůj účet, abych mohl spravovat své úkoly a pracovní skupiny.
+				\item Jako uživatel chci mít svůj účet, abych mohl spravovat své úkoly a pracovní skupiny. Účet bude jednoznačně identifikován e-mailem uživatele a pro přihlášení bude potřeba heslo. Dále bude účet obsahovat jméno uživatele. Svůj účet budu moci zobrazit a upravit svoje jméno a heslo.
+				
 				\item Jako uživatel chci zobrazovat profily ostatních a vidět jejich e-mail, pokud je veřejný, abych je mohl kontaktovat.
+				
 				\item Jako uživatel si chci vybrat, zda umožním ostatním uživatelům vidět můj e-mail, abych mohl chránit své soukromí.
-				\item Jako uživatel chci vytvářet úkoly a sdílet je s ostatními uživateli, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat.
-				\item Jako uživatel chci měnit úkoly, které jsem vytvořil, abych mohl reagovat na případné změny.
-				\item Jako uživatel chci znát \textit{urgentnost} úkolů, abych věděl, kterým úkolům se mám věnovat tak, abych stihl jejich deadline. Čím méně času zbývá na vypracování úkolu vzhledem k jeho pracnosti a deadlinu, tím více je urgentní.
-				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí -- moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem -- abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle různých kritérií.
+				
 				\item Jako uživatel chci u úkolu mít vždy jednu ze dvou rolí -- pozorovatel a pracovník -- abych dal najevo, v jakém vztahu k úkolu jsem. Jako pozorovatel mám jen pasivní roli, úkol vidím ve svém seznamu. Jako pracovník se na úkolu aktivně podílím.
+				
+				\item Jako uživatel chci vytvářet úkoly a sdílet je s ostatními uživateli a pracovními skupinami, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat. Úkol bude obsahovat následující informace:
+				\begin{itemize}
+					\item Název
+					\item Popis
+					\item Datum a čas začátku
+					\item Datum a čas \textit{deadlinu}
+					\item Pracnost (\textit{manhours})
+					\item Priorita
+					\item Typ
+					\begin{itemize}
+						\item S deadlinem -- úkol má daný \textit{deadline}, kdy má být splněn
+						\item Rostoucí -- úkol nemá daný \textit{deadline}, ale jeho urgentnost postupně roste
+					\end{itemize}
+					\item Stav
+					\begin{itemize}
+						\item Otevřený
+						\item Splněný
+						\item Zavřený
+					\end{itemize}
+				\end{itemize}
+				
+				\item Jako uživatel chci měnit úkoly, které jsem vytvořil, abych mohl reagovat na případné změny. Změnit budu moct všechny údaje, kromě jeho typu.
+				
+				\item Jako uživatel chci znát \textit{urgentnost} úkolů, abych věděl, kterým úkolům se mám věnovat tak, abych stihl jejich deadline. Čím méně času zbývá na vypracování úkolu vzhledem k jeho pracnosti a deadlinu, tím více je urgentní.
+				
+				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí -- moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem -- abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle následujících kritérií:
+				\begin{itemize}
+					\item Filtr
+					\begin{itemize}
+						\item Role (pozorovatel / pracovník)
+						\item Typ
+						\item Stav
+						\item Vlastnictví (můj / sdílený se mnou)
+						\item Priorita
+					\end{itemize}
+					\item Řazení
+					\begin{itemize}
+						\item Název
+						\item Datum začátku úkolu
+						\item Datum \textit{deadlinu}
+						\item Rozpracovanost (kolik procentuelně odpracováno)
+						\item Priorita
+						\item Urgentnost
+					\end{itemize}
+				\end{itemize}
+				
 				\item Jako uživatel chci přijímat nebo zamítat příchozí návrhy na sdílení úkolů, abych se mohl rozhodnout, na kterých se chci podílet a na kterých ne.
+				
 				\item Jako uživatel chci na úkolu, jehož jsem součástí, zaznamenávat odvedenou práci, abych měl já i mí spolupracovníci lepší představu o tom, kolik práce na něm zbývá.
+				
 				\item Jako uživatel chci úkol, jehož jsem součástí, prohlašovat za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
-				\item Jako uživatel chci zakládat pracovní skupiny a po založení se stát jejich adminem, abych se mohl sdružovat s dalšími uživateli a pracovat společně.
+				
+				\item Jako uživatel chci zakládat pracovní skupiny a po založení se stát jejich adminem, abych se mohl sdružovat s dalšími uživateli a pracovat společně. Pracovní skupina obsahuje tyto informace:
+				\begin{itemize}
+					\item Název
+					\item Popis
+				\end{itemize}
+				
 				\item Jako uživatel chci vidět seznam skupin, jichž jsem členem, manažerem nebo adminem, a jejich detaily, abych rychle viděl, se kterými skupinami spolupracuji.
 			\end{enumerate}
+			
+			
 			\item \textbf{Manažer skupiny}
 			\begin{enumerate}
 				\item Jako manažer skupiny do ní chci zvát a odebírat z ní uživatele. Členům chci přiřazovat role pozorovatel nebo pracovník na úkolech, které jsou se skupinou sdíleny, abych tím mohl organizovat skupinu a rozdělovat zodpovědnost za práci mezi její členy. 
+				
 				\item Jako manažer skupiny chci vytvářet úkoly pro skupinu a přijímat nebo zamítat návrhy na sdílení úkolů s mou skupinou, abych mohl určovat, na čem má skupina pracovat.
+				
 				\item Jako manažer skupiny chci mít možnost odebrat ji z úkolu, který je s ní sdílen, aby úkoly, které již nejsou relevantní, nezůstávaly v seznamu úkolů skupiny.
 			\end{enumerate}
+			
+			
 			\item \textbf{Admin skupiny}
 			\begin{enumerate}
 				\item Jako admin skupiny chci mít možnost měnit její název a popis, abych je mohl udržovat aktuální.
@@ -247,7 +309,23 @@
 			\end{enumerate}
 		\end{enumerate}	
 		
+		\subsection{Nefunkční požadavky}
+		\begin{enumerate}
+			\item Aplikace bude dostupná přes REST API. Jedná se o pouze o backend, takže k dispozici nebude žádné grafické rozhraní.
+			
+			\item Aplikace nebude z důvodu bezpečnosti uchovávat hesla jako prostý text. Oveření bude provedeno vhodným způsobem, který znemožní únik hesel.
+			
+			\item Zdrojové kódy aplikace budou veřejně dostupné pod MIT licencí.
+		\end{enumerate}
+		
 	\section{Případy užití}
+		\textit{User stories} ze sekce \ref{sec:user-stories} nyní budu specifikovat detailněji pomocí modelu případů užití (\textit{use case model}). \textit{User story} by měl obsahovat tolik informací, aby i technicky nezkušený uživatel dokázal pochopit, co má aplikace dělat. Oproti tomu případy užití popisují konkrétní interakce uživatele s aplikací. \textit{User stories} popisují potřeby na aplikaci. Případy užití popisují chování, které má aplikace mít, aby splnila potřeby na ní kladené.\cite{user-stories-vs-use-cases}
+		
+		Případů užití typicky bude více než \textit{user stories}\cite{si-usecases}, protože \textit{user stories} jsou více obecné, a tak na pokrytí jednoho může být potřeba více interakcí s aplikací a tedy více případů užití.
+		
+		\subsection{Seznam účastníků}
+			Aplikace bude rozlišovat účastníky na základě několika kritérií a těm bude dostupné různé množství funkcí. Účastníci jsou zobrazeni na obrázku \textbf{TODO USER DIAGRAM}
+			
 		USECASE - zmáčknout tlačítko pro start počítání odpracované doby, pak tlačítkem vypnout. Nebo rovnou ručně zadat.
 	
 		Tady bude:
