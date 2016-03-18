@@ -221,10 +221,6 @@
 			\begin{enumerate}
 				\item Jako uživatel chci mít svůj účet, abych mohl spravovat své úkoly a pracovní skupiny. Účet bude jednoznačně identifikován e-mailem uživatele a pro přihlášení bude potřeba heslo. Dále bude účet obsahovat jméno uživatele. Svůj účet budu moci zobrazit a upravit svoje jméno a heslo.
 				
-				\item Jako uživatel chci zobrazovat profily ostatních a vidět jejich e-mail, pokud je veřejný, abych je mohl kontaktovat.
-				
-				\item Jako uživatel si chci vybrat, zda umožním ostatním uživatelům vidět můj e-mail, abych mohl chránit své soukromí.
-				
 				\item Jako uživatel chci u úkolu mít vždy jednu ze dvou rolí -- pozorovatel a pracovník -- abych dal najevo, v jakém vztahu k úkolu jsem. Jako pozorovatel mám jen pasivní roli, úkol vidím ve svém seznamu. Jako pracovník se na úkolu aktivně podílím.
 				
 				\item Jako uživatel chci vytvářet úkoly soukromé nebo sdílené s ostatními uživateli a pracovními skupinami, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat. Úkol bude obsahovat následující informace:
@@ -318,7 +314,7 @@
 			\item Zdrojové kódy aplikace budou veřejně dostupné pod MIT licencí.
 		\end{enumerate}
 		
-	\section{Případy užití}
+	\section{Model případů užití}
 		\textit{User stories} ze sekce \ref{sec:user-stories} nyní budu specifikovat detailněji pomocí modelu případů užití (\textit{use case model}). \textit{User story} by měl obsahovat tolik informací, aby i technicky nezkušený uživatel dokázal pochopit, co má aplikace dělat. Oproti tomu případy užití popisují konkrétní interakce uživatele s aplikací, tedy chování, které má aplikace mít, aby splnila potřeby na ní kladené. \cite{user-stories-vs-use-cases}
 		
 		Případů užití typicky bude více než \textit{user stories}\cite{si-usecases}, protože \textit{user stories} jsou více obecné, a tak na pokrytí jednoho může být potřeba více interakcí s aplikací a tedy více případů užití.
@@ -366,9 +362,10 @@
 			
 			
 			
-		\subsection{Diagram případů užití}
+		\subsection{Případy užití}
 			Případy užití získané analýzou \textit{user stories} zobrazuji v diagramech případů užití. Rozdělil jsem je do čtyř balíků podle jejich účastníků pro lepší přehlednost.
 			
+			\subsubsection{Nepřihlášený uživatel}
 			V diagramu \ref{diagram:uc-unauthorized} jsou zachyceny případy užití pro Nepřihlášeného uživatele.
 			\begin{figure}\centering
 				\includegraphics[width=0.7\textwidth]{ea-diagrams/uc-unauthorized.png}
@@ -376,6 +373,21 @@
 				\label{diagram:uc-unauthorized}
 			\end{figure}
 			
+			\begin{description}
+				\item[UC 1.01 Registrovat se] \hfill \\
+					Umožní uživateli aplikace zaregistrovat se. Zadá svůj e-mail, heslo a jméno.
+					
+				\item[UC 1.02 Přihlásit se] \hfill \\
+					Umožní uživateli přihlásit se pomocí svého e-mailu a hesla.	
+					
+			\end{description}
+		
+		
+		
+		
+		
+		
+			\subsubsection{Případy užití pro jednotlivce}	
 			V diagramu \ref{diagram:uc-individual} jsou zachyceny případy užití aplikace jednotlivci. Jsou zde případy užití z pohledu Přihlášeného uživatele, Pozorovatele a Pracovníka úkolu.
 			\begin{figure}\centering
 				\includegraphics[width=1.0\textwidth]{ea-diagrams/uc-individual.png}
@@ -383,6 +395,97 @@
 				\label{diagram:uc-individual}
 			\end{figure}
 			
+			\begin{description}
+				\item[UC 2.01 Odhlásit se] \hfill \\
+					Odhlásí uživatele z aplikace.
+					
+				\item[UC 2.02 Upravit svůj profil] \hfill \\
+					Umožní uživateli upravit si své jméno a heslo.
+				
+				\item[UC 2.03 Vytvořit úkol] \hfill \\
+					1. Uživatel chce vytvořit úkol \\
+					2. Uživatel vyplní informace k úkolu, povinně název a typ. Pokud je typ \uv{S deadlinem},  pak je povinné i datum a čas deadlinu. Volitelně může zadat popis, pracnost v \textit{manhours} a prioritu jako celé číslo v intervalu 1--5. \\
+					3. <Sdílet úkol> \\
+					4. Aplikace vytvoří úkol, uživatel se stane jeho Pracovníkem. \\
+				
+				\item[UC 2.04 Sdílet úkol] \hfill \\
+					1. Uživatel chce sdílet úkol. \\
+					2. <Zobrazit seznam uživatelů> \\
+					3. Uživatel určí seznam uživatelů, se kterými chce úkol sdílet. \\
+					4. Aplikace pošle vybraným uživatelům nabídku ke sdílení úkolu.
+				
+				\item[UC 2.05 Zobrazit seznam mých úkolů] \hfill \\
+				    1. <Filtrovat úkoly> \\
+				    2. <Řadit úkoly> \\
+					3. Zobrazí seznam všech úkolů, kterých je uživatel součástí, se zvoleným filtrem a řazením. \\
+					
+				\item[UC 2.06 Filtrovat úkoly] \hfill \\
+					Úkoly je možné filtrovat podle role uživatele v nich (pozorovatel nebo pracovník), podle jejich typu (s deadlinem nebo rostoucí), stavu (otevřený, splněný nebo zavřený) a priority (celé číslo 1--5).
+					
+				\item[UC 2.07 Řadit úkoly] \hfill \\
+					Úkoly je možné řadit podle zvoleného kritéria. Tím může být název, datum začátku nebo \textit{deadlinu} úkolu, rozpracovanost (procentuelní rozpracovanost úkolu), priorita a urgentnost.
+				
+				\item[UC 2.08 Rozhodnout o příchozí nabídce sdílení úkolu] \hfill \\
+					1. <Zobrazit seznam příchozích nabídek na sdílení úkolu> \\
+					2. Uživatel rozhodne, zda chce nabídku přijmout, nebo zamítnout. \\
+					3. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
+				
+				\item[UC 2.09 Zobrazit seznam nabídek na sdílení úkolu] \hfill \\
+					Zobrazí seznam nabídek pro uživatele k připojení se ke sdílenému úkolu, v němž bude u každé nabídky uvedeno jméno sdílejícího uživatele a název úkolu.
+				
+				\item[UC 2.10 Založit pracovní skupinu] \hfill \\
+					1. Uživatel chce založit pracovní skupinu \\
+					2. <Zobrazit seznam uživatelů> \\
+					3. Uživatel zadá jméno skupiny a volitelně její popis. Dále zadá seznam e-mailů uživatelů, které chce do skupiny pozvat. \\
+					4. Aplikace vytvoří novou skupinu s daným názvem a popisem. Zakládající uživatel se stane jejím Adminem. \\
+					5. Aplikace rozešle nabídky ke vstupu do skupiny zadaným uživatelům. \\
+					
+				\item[UC 2.11 Rozhodnout o příchozí nabídce ke vstupu do skupiny] \hfill \\
+					Uživatel rozhodne, zda chce přijmout nebo odmítnout nabídku ke vstupu do skupiny. Pokud ji přijme, stane se jejím Členem.
+					
+				\item[UC 2.12 Zobrazit seznam nabídek ke vstupu do skupiny] \hfill \\
+					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny a jméno uživatele, od něhož nabídka pochází.
+				
+				\item[UC 2.13 Zobrazit seznam uživatelů] \hfill \\
+					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho jméno a e-mail.
+					
+				\item[UC 2.14 Zobrazit úkol] \hfill \\
+					1. Uživatel chce zobrazit detaily úkolu \\
+					2. <Zobrazit seznam mých úkolů> \\
+					3. Aplikace zobrazí všechny informace o úkolu, tedy název, popis, datum a čas začátku a \textit{deadlinu}, pracnost, prioritu, typ, stav a seznam jeho Pracovníků a Pozorovatelů. \\
+
+				\item[UC 2.15 Stát se pracovníkem úkolu] \hfill \\
+					Umožňuje Pozorovateli úkolu stát se jeho Pracovníkem.				
+								
+				\item[UC 2.16 Změnit stav úkolu] \hfill \\
+					Umožňuje Pracovníkovi změnit stav úkolu na jakýkoliv z jeho možných stavů.
+				
+				\item[UC 2.17 Upravit úkol] \hfill \\
+					Umožňuje Pracovníkovi upravit u úkolu jeho popis, \textit{deadline}, pracnost a prioritu.
+				
+				\item[UC 2.18 Stát se pozorovatelem úkolu] \hfill \\
+					Umožňuje Pracovníkovi úkolu stát se jeho Pozorovatelem.
+					
+				\item[UC 2.19 Zadat odvedenou práci] \hfill \\
+					Umožňuje Pracovníkovi zadat u úkolu odvedenou práci.
+					
+					\textbf{TODO} - chci umožnit měření času?
+					\begin{description}
+						\item[Hlavní scénář]: Pracovník chce zadat počet odpracovaných hodin. \\
+						1. Include(Zobrazit úkol) \\
+						2. Uživatel zadá počet odpracovaných hodin a potvrdí. \\
+						3. Aplikace k úkolu přidá zadaný počet hodin. \\
+						
+						\item[Alternativní scénář]: Pracovník chce měřit odpracovaný čas.
+						1. Include(Zobrazit úkol)
+						2. 
+					\end{description}
+			\end{description}
+			
+			
+			
+			
+			\subsubsection{Případy užití pro skupiny}
 			V diagramu \ref{diagram:uc-shared} jsou zachyceny případy užití aplikace členy pracovních skupin. Týkají se správy skupinových úkolů a skupin samotných. 
 			\begin{figure}\centering
 				\includegraphics[width=1.0\textwidth]{ea-diagrams/uc-shared.png}
