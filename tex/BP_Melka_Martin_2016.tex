@@ -206,13 +206,13 @@
 	V této sekci se budu věnovat specifikování požadavků na aplikaci a jejich analýze. To mi poskytne konkrétní přehled o tom, co má výsledná aplikace umět a jaké entity v ní budou existovat.
 	
 	\section{Požadavky na aplikaci}
-		Požadavky na aplikaci popíšu pomocí user stories (uživatelské příběhy)\cite{user-stories}. Jedná se o jednoduchý způsob, jakým vyjádřit požadavek na aplikaci z pohledu jejího uživatele (stakeholder). Měl by být krátký a napsán samotným uživatelem budoucí aplikace, v jeho terminologii.
+		Požadavky na aplikaci popíšu pomocí \textit{user stories} (uživatelské příběhy)\cite{user-stories}. Jedná se o jednoduchý způsob, jakým vyjádřit požadavek na aplikaci z pohledu jejího uživatele. Měl by být krátký a napsán v terminologii uživatele budoucí aplikace.
 		
 		Formální způsob zápisu user story se dá definovat \cite{user-stories-applied-book} například takto:
 		\begin{center}
 			Jako $\langle$role$\rangle$ chci $\langle$něco$\rangle$, abych dosáhl $\langle$něčeho$\rangle$.
 		\end{center}
-		Pomocí user stories lze testovat funkčnost výsledné aplikace. Pokud jsou všechny user stories uspokojeny, pak je aplikace z hlediska funkčnosti hotova.
+		Pomocí \textit{user stories} lze také testovat, zda aplikace obsahuje všechny požadované funkce. Pokud jsou všechny \textit{user stories} uspokojeny, pak je aplikace z hlediska funkčnosti hotova.
 		
 		\subsection{User stories}
 		\label{sec:user-stories}
@@ -227,7 +227,7 @@
 				
 				\item Jako uživatel chci u úkolu mít vždy jednu ze dvou rolí -- pozorovatel a pracovník -- abych dal najevo, v jakém vztahu k úkolu jsem. Jako pozorovatel mám jen pasivní roli, úkol vidím ve svém seznamu. Jako pracovník se na úkolu aktivně podílím.
 				
-				\item Jako uživatel chci vytvářet úkoly a sdílet je s ostatními uživateli a pracovními skupinami, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat. Úkol bude obsahovat následující informace:
+				\item Jako uživatel chci vytvářet úkoly soukromé nebo sdílené s ostatními uživateli a pracovními skupinami, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat. Úkol bude obsahovat následující informace:
 				\begin{itemize}
 					\item Název
 					\item Popis
@@ -248,7 +248,9 @@
 					\end{itemize}
 				\end{itemize}
 				
-				\item Jako uživatel chci měnit úkoly, které jsem vytvořil, abych mohl reagovat na případné změny. Změnit budu moct všechny údaje, kromě jeho typu.
+				\item Jako pozorovatel nebo pracovník úkolu ho chci sdílet s dalšími uživateli 
+				
+				\item Jako pracovník úkolu ho chci modifikovat, abych mohl reagovat na případné změny. Změnit budu moct všechny údaje, kromě jeho typu.
 				
 				\item Jako uživatel chci znát \textit{urgentnost} úkolů, abych věděl, kterým úkolům se mám věnovat tak, abych stihl jejich deadline. Čím méně času zbývá na vypracování úkolu vzhledem k jeho pracnosti a deadlinu, tím více je urgentní.
 				
@@ -275,9 +277,9 @@
 				
 				\item Jako uživatel chci přijímat nebo zamítat příchozí návrhy na sdílení úkolů, abych se mohl rozhodnout, na kterých se chci podílet a na kterých ne.
 				
-				\item Jako uživatel chci na úkolu, jehož jsem součástí, zaznamenávat odvedenou práci, abych měl já i mí spolupracovníci lepší představu o tom, kolik práce na něm zbývá.
+				\item Jako pracovník úkolu na něm chci zaznamenávat odvedenou práci, abych měl já i mí spolupracovníci lepší představu o tom, kolik práce na něm zbývá.
 				
-				\item Jako uživatel chci úkol, jehož jsem součástí, prohlašovat za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
+				\item Jako uživatel chci úkol, jehož jsem pracovníkem, prohlašovat za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
 				
 				\item Jako uživatel chci zakládat pracovní skupiny a po založení se stát jejich adminem, abych se mohl sdružovat s dalšími uživateli a pracovat společně. Pracovní skupina obsahuje tyto informace:
 				\begin{itemize}
@@ -317,7 +319,7 @@
 		\end{enumerate}
 		
 	\section{Případy užití}
-		\textit{User stories} ze sekce \ref{sec:user-stories} nyní budu specifikovat detailněji pomocí modelu případů užití (\textit{use case model}). \textit{User story} by měl obsahovat tolik informací, aby i technicky nezkušený uživatel dokázal pochopit, co má aplikace dělat. Oproti tomu případy užití popisují konkrétní interakce uživatele s aplikací. \textit{User stories} popisují potřeby na aplikaci. Případy užití popisují chování, které má aplikace mít, aby splnila potřeby na ní kladené.\cite{user-stories-vs-use-cases}
+		\textit{User stories} ze sekce \ref{sec:user-stories} nyní budu specifikovat detailněji pomocí modelu případů užití (\textit{use case model}). \textit{User story} by měl obsahovat tolik informací, aby i technicky nezkušený uživatel dokázal pochopit, co má aplikace dělat. Oproti tomu případy užití popisují konkrétní interakce uživatele s aplikací, tedy chování, které má aplikace mít, aby splnila potřeby na ní kladené. \cite{user-stories-vs-use-cases}
 		
 		Případů užití typicky bude více než \textit{user stories}\cite{si-usecases}, protože \textit{user stories} jsou více obecné, a tak na pokrytí jednoho může být potřeba více interakcí s aplikací a tedy více případů užití.
 		
@@ -331,19 +333,19 @@
 					Nepřihlášený uživatel je účastník, který používá aplikaci poprvé, nebo se z ní po předchozím používání odhlásil.
 					
 				\item[Přihlášený uživatel] \hfill \\ 
-					Uživatel se stane přihlášením po zadání svého jména a hesla. Jsou mu dostupné funkce aplikace a může ji používat.
+					Uživatel se stane přihlášeným po zadání svého jména a hesla. Jsou mu dostupné funkce aplikace a může ji používat.
 				
 				\item[Člen skupiny] \hfill \\ 
 					Uživatel je Člen skupiny, pokud k této skupině patří. Členové skupiny mohou mít také další role v rámci této skupiny.
 				
 				\item[Manažer skupiny] \hfill \\ 
-					Uživatel je Manažer skupiny, pokud mu Admin dal tuto roli. Jako Manažer má více privilegií pro správu skupiny.
+					Uživatel je Manažer skupiny, pokud mu Admin tuto roli přiřadil. Jako Manažer má více privilegií pro správu skupiny.
 				
 				\item[Admin skupiny] \hfill \\ 
-					Uživatel je Admin skupiny, pokud ji založil, nebo mu současný Admin dal tuto roli. Jako Admin má nejvyšší privilegia ve skupině a tato role v rámci skupiny patří vždy právě jednomu uživateli.
+					Uživatel je Admin skupiny, pokud ji založil, nebo mu současný Admin tuto roli přenechal. Jako Admin má nejvyšší privilegia ve skupině a tato role v rámci skupiny patří vždy právě jednomu uživateli.
 					
 				\item[Účastník úkolu] \hfill \\
-					Účastník úkolu je abstraktní účastník. Reprezentuje uživatele, který je součástí úkolu v jako jeden z účastníků, kteří od tohoto dědí.
+					Účastník úkolu je abstraktní účastník. Reprezentuje uživatele, který je součástí úkolu v nějaké roli.
 				
 				\item[Pozorovatel úkolu] \hfill \\ 
 					Pozorovatel úkolu je součástí úkolu v pasivní roli. Na úkolu přímo nepracuje, ale má zájem sledovat jeho průběh.
@@ -353,25 +355,60 @@
 				
 				\item[Čas] \hfill \\ 								
 					Účastník Čas nereprezentuje žádného fyzického uživatele, ale spouští události, které mají nastat s uplynulým časem. \cite{uml-unified-process}
+					
 
-			\end{description}
+			\end{description}			
+			\begin{figure}\centering
+				\includegraphics[width=0.7\textwidth]{ea-diagrams/uc-actors.png}
+				\caption[Diagram účastníků]{Diagram účastníků aplikace}
+				\label{diagram:actors}
+			\end{figure}
 			
-		USECASE - zmáčknout tlačítko pro start počítání odpracované doby, pak tlačítkem vypnout. Nebo rovnou ručně zadat.
-	
-		\begin{figure}\centering
-			\includegraphics[width=0.7\textwidth]{ea-diagrams/actors.png}
-			\caption[Diagram účastníků]{Diagram účastníků aplikace}
-			\label{diagram:actors}
-		\end{figure}
-	
-		Tady bude:
-		\begin{enumerate}
-			\item Usecase diagram
-			\item Číslovaný seznam usecases
-			\item U zajímavých usecases rozepsaný detailnější scénář, případně activity diagram
-		\end{enumerate}
+			
+			
+		\subsection{Diagram případů užití}
+			Případy užití získané analýzou \textit{user stories} zobrazuji v diagramech případů užití. Rozdělil jsem je do čtyř balíků podle jejich účastníků pro lepší přehlednost.
+			
+			V diagramu \ref{diagram:uc-unauthorized} jsou zachyceny případy užití pro Nepřihlášeného uživatele.
+			\begin{figure}\centering
+				\includegraphics[width=0.7\textwidth]{ea-diagrams/uc-unauthorized.png}
+				\caption[Případy užití nepřihlášených uživatelů]{Diagram případů užití pro nepřihlášeného uživatele}
+				\label{diagram:uc-unauthorized}
+			\end{figure}
+			
+			V diagramu \ref{diagram:uc-individual} jsou zachyceny případy užití aplikace jednotlivci. Jsou zde případy užití z pohledu Přihlášeného uživatele, Pozorovatele a Pracovníka úkolu.
+			\begin{figure}\centering
+				\includegraphics[width=1.0\textwidth]{ea-diagrams/uc-individual.png}
+				\caption[Případy užití jednotlivců]{Diagram případů užití pro jednotlivce}
+				\label{diagram:uc-individual}
+			\end{figure}
+			
+			V diagramu \ref{diagram:uc-shared} jsou zachyceny případy užití aplikace členy pracovních skupin. Týkají se správy skupinových úkolů a skupin samotných. 
+			\begin{figure}\centering
+				\includegraphics[width=1.0\textwidth]{ea-diagrams/uc-shared.png}
+				\caption[Případy užití skupin]{Diagram případů užití pro členy pracovní skupiny}
+				\label{diagram:uc-shared}
+			\end{figure}
+			
+			Diagram \ref{diagram:uc-time} zachycuje časově závislé případy užití, které se pravidelně vykonávají bez přičinění uživatelů aplikace.
+			\begin{figure}\centering
+				\includegraphics[width=0.6\textwidth]{ea-diagrams/uc-time.png}
+				\caption[Případy užití časových událostí]{Diagram případů užití pro časově závislé události}
+				\label{diagram:uc-time}
+			\end{figure}
+			
+			
+			
+			
+			
+			
+			
+		
+		
+
 		
 	\section{Doménový model}
+		\textit{\textbf{TODO}} \\
 		Tady bude:
 		\begin{enumerate}
 			\item Seznam entit, slovní popis
