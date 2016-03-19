@@ -305,6 +305,7 @@
 				\item Jako admin skupiny chci mít možnost měnit její název a popis, abych je mohl udržovat aktuální.
 				\item Jako admin skupiny chci jmenovat manažery skupiny, abych mohl pověřit další uživatele správou skupiny.
 				\item Jako admin skupiny chci mít možnost přenechat svou roli jinému členovi skupiny, abych mohl skupinu opustit a ta pořád měla admina.
+				\item Jako admin skupiny chci mít možnost skupinu zrušit.
 			\end{enumerate}
 		\end{enumerate}	
 		
@@ -414,8 +415,9 @@
 				\item[UC 2.04 Sdílet úkol] \hfill \\
 					1. Uživatel chce sdílet úkol. \\
 					2. <Zobrazit seznam uživatelů> \\
-					3. Uživatel určí seznam uživatelů, se kterými chce úkol sdílet. \\
-					4. Aplikace pošle vybraným uživatelům nabídku ke sdílení úkolu.
+					3. <Zobrazit seznam skupin> \\
+					3. Uživatel určí uživatele a skupiny, se kterými chce úkol sdílet. \\
+					4. Aplikace pošle vybraným uživatelům a skupinám nabídku ke sdílení úkolu.
 				
 				\item[UC 2.05 Zobrazit seznam mých úkolů] \hfill \\
 				    1. <Filtrovat úkoly> \\
@@ -426,7 +428,7 @@
 					Úkoly je možné filtrovat podle role uživatele v nich (pozorovatel nebo pracovník), podle jejich typu (s deadlinem nebo rostoucí), stavu (otevřený, splněný nebo zavřený) a priority (celé číslo 1--5).
 					
 				\item[UC 2.07 Řadit úkoly] \hfill \\
-					Úkoly je možné řadit podle zvoleného kritéria. Tím může být název, datum začátku nebo \textit{deadlinu} úkolu, rozpracovanost (procentuelní rozpracovanost úkolu), priorita a urgentnost.
+					Úkoly je možné řadit podle zvoleného kritéria. Tím může být název, datum začátku nebo \textit{deadlinu} úkolu, rozpracovanost (v procentech odpracováno ku celkové pracnosti), priorita a urgentnost.
 				
 				\item[UC 2.08 Rozhodnout o příchozí nabídce sdílení úkolu] \hfill \\
 					1. <Zobrazit seznam příchozích nabídek na sdílení úkolu> \\
@@ -447,33 +449,33 @@
 					Uživatel rozhodne, zda chce přijmout nebo odmítnout nabídku ke vstupu do skupiny. Pokud ji přijme, stane se jejím Členem.
 					
 				\item[UC 2.12 Zobrazit seznam nabídek ke vstupu do skupiny] \hfill \\
-					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny a jméno uživatele, od něhož nabídka pochází.
+					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny a jméno a e-mail uživatele, od něhož nabídka pochází.
 				
 				\item[UC 2.13 Zobrazit seznam uživatelů] \hfill \\
 					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho jméno a e-mail.
 					
-				\item[UC 2.14 Zobrazit úkol] \hfill \\
+				\item[UC 2.14 Zobrazit seznam skupin] \hfill \\
+					Zobrazí seznam skupin v aplikaci. U skupiny bude uvedeno její jméno a admin.
+					
+				\item[UC 2.15 Zobrazit úkol] \hfill \\
 					1. Uživatel chce zobrazit detaily úkolu \\
 					2. <Zobrazit seznam mých úkolů> \\
 					3. Aplikace zobrazí všechny informace o úkolu, tedy název, popis, datum a čas začátku a \textit{deadlinu}, pracnost, prioritu, typ, stav a seznam jeho Pracovníků a Pozorovatelů. \\
 
-				\item[UC 2.15 Stát se pracovníkem úkolu] \hfill \\
+				\item[UC 2.16 Stát se pracovníkem úkolu] \hfill \\
 					Umožňuje Pozorovateli úkolu stát se jeho Pracovníkem.				
 								
-				\item[UC 2.16 Změnit stav úkolu] \hfill \\
+				\item[UC 2.17 Změnit stav úkolu] \hfill \\
 					Umožňuje Pracovníkovi změnit stav úkolu na jakýkoliv z jeho možných stavů.
 				
-				\item[UC 2.17 Upravit úkol] \hfill \\
+				\item[UC 2.18 Upravit úkol] \hfill \\
 					Umožňuje Pracovníkovi upravit u úkolu jeho popis, \textit{deadline}, pracnost a prioritu.
 				
-				\item[UC 2.18 Stát se pozorovatelem úkolu] \hfill \\
+				\item[UC 2.19 Stát se pozorovatelem úkolu] \hfill \\
 					Umožňuje Pracovníkovi úkolu stát se jeho Pozorovatelem.
 					
-				\item[UC 2.19 Zadat odvedenou práci] \hfill \\
+				\item[UC 2.20 Zadat odvedenou práci] \hfill \\
 					Umožňuje Pracovníkovi zadat u úkolu odvedenou práci.
-					
-				\item[UC 2.20 Vynulovat urgentnost rostoucího úkolu] \hfill \\
-					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
 					
 					\textbf{TODO} - chci umožnit měření času?
 					\begin{description}
@@ -486,6 +488,20 @@
 						1. Include(Zobrazit úkol)
 						2. 
 					\end{description}
+					
+					
+					
+				\item[UC 2.21 Vynulovat urgentnost rostoucího úkolu] \hfill \\
+					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
+					
+				\item[UC 2.21 Opustit úkol] \hfill \\
+					Umožňuje Účastníkovi úkolu opustit ho. Účastníkem úkolu je možné být přímo a/nebo skrze skupinu. Opustit úkol lze pouze, pokud je Účastník součástí úkolu přímo.
+				
+					1. Případ užití začíná, když se Účastník úkolu rozhodne opustit úkol. \\
+					2. Include(Zobrazit úkol) \\
+					3. Účastník zašle požadavek na opuštění úkolu. \\
+					4. Pokud nebyl úkol sdílen přímo s Účastníkem (ale skupinou, ve které je Členem), scénář končí. \\
+					5. Aplikace odebere Účastníka z úkolu. Pokud byl ale Účastník navíc součástí úkolu skrze skupinu, jíž je členem, nadále zůstane součástí úkolu skrze tuto skupinu.
 			\end{description}
 			
 			
@@ -555,7 +571,7 @@
 					2. <Zobrazit úkol> \\
 					3. <Zobrazit seznam úkolů skupiny> \\
 					4. Manažer vybere úkol, ze kterého chce skupinu odebrat, a zašle požadavek. \\
-					5. Aplikace u úkolu odebere sdílení se skupinou a odebere z úkolu všechny Členy skupiny. \\
+					5. Aplikace u úkolu odebere sdílení se skupinou a odebere z úkolu všechny Členy skupiny, pokud nejsou součástí úkolu i mimo skupinu. \\
 					
 				\item[UC 3.12 Upravit detail skupiny] \hfill \\
 					Umožňuje Adminovi měnit popis skupiny.
@@ -565,6 +581,16 @@
 					
 				\item[UC 3.14 Přenechat roli admina] \hfill \\
 					Umožňuje Adminovi přenechat svou roli jinému členovi skupiny.
+					
+				\item[UC 3.15 Smazat skupinu] \hfill \\
+					1. Případ užití začíná, když se Admin rozhodne smazat skupinu. \\
+					2. Include(Zobrazit detail skupiny) \\
+					3. Admin zašle požadavek na smazání skupiny. \\
+					4. Pokud Admin není Adminem ve skupině, kterou chce smazat, scénář končí. \\
+					5. Aplikace odebere všechny ostatní členy ze skupiny (\uv{Odebrat uživatele ze skupiny}). \\
+					6. Aplikace odebere skupinu ze všech jejích úkolů (\uv{Odebrat skupinu z úkolu}). \\
+					7. Aplikace odebere Admina ze skupiny. \\
+					8. Aplikace smaže skupinu. \\
 					
 			\end{description}
 				
@@ -596,12 +622,54 @@
 
 		
 	\section{Doménový model}
-		\textit{\textbf{TODO}} \\
-		Tady bude:
-		\begin{enumerate}
-			\item Seznam entit, slovní popis
-			\item Diagram
-		\end{enumerate}
+		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi. \cite{domain-model} Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen údaje dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
+		
+		Diagram doménového modelu je znázorněn na obrázku \ref{diagram:domain-model}. V této části se dále budu věnovat popisu jednotlivých entit modelu.
+		
+		\begin{figure}\centering
+			\includegraphics[width=0.8\textwidth]{ea-diagrams/domain-model.png}
+			\caption[Doménový model]{Doménový model aplikace Deadlines}
+			\label{diagram:domain-model}
+		\end{figure}
+		
+		\subsection{User}
+			Entita User reprezentuje uživatele aplikace. Uchovává jeho e-mail, který je unikátní v rámci aplikace, jméno a heslo k jeho přihlášení.
+			
+		\subsection{Group}
+			Entita Group reprezentuje pracovní skupinu. Má název a popis. Uživatelé s ní mohou být ve třech různých vztazích -- jako Člen, Manažer a Admin. Tyto vztahy jsou vzájemně vylučující, takže uživatel nemůže být zároveň například Člen a Manažer.
+		
+		\subsection{Task}
+			Entita Task reprezentuje úkol. Obsahuje informace definované v předchozích krocích analýzy. Uživatel může být součástí úkolu jako pozorovatel, nebo pracovník. Nemůže být ale oboje zároveň. 
+		
+		\subsection{DeadlineTask}
+			Entita DeadlineTask je typ entity Task, reprezentující úkol s \textit{deadlinem}. 
+		
+		\subsection{GrowingTask}
+			Entita GrowingTask je typ entity Task, reprezentující rostoucí úkol. Obsahuje informaci o rychlosti růstu jeho urgentnosti.
+		
+		\subsection{TaskParticipant}
+			TaskParticipant je entita reprezentující dvojici entit User--Group. Tato dvojice je v aplikaci unikátní, takže nemůžou existovat dvě stejné dvojice zároveň. 
+			
+			Skrze tuto entitu je uživatel součástí úkolu. Součástí úkolu může být sám, pokud není k entitě TaskParticipant přiřazena žádná skupina, nebo může být součástí úkolu jako člen skupiny, pokud k entitě skupina přiřazena je. Uživatel také může být součástí úkolu jako člen více skupin zároveň.
+		
+		\subsection{TaskWork}
+			Entita TaskWork reprezentuje práci vykonanou na úkolu uživatelem. Je spjata s entitou User, místo TaskParticipant, takže i když uživatel úkol opustí, pořád bude záznam o jeho práci na úkolu existovat.
+		
+		\subsection{Offer}
+			Entita Offer reprezentuje nabídku, kterou uživatel někomu zasílá.
+		
+		\subsection{TaskSharingOffer}
+			Entita TaskSharingOffer je typ nabídky, která reprezentuje nabídku ke sdílení úkolu.
+		
+		\subsection{UserTaskSharingOffer}
+			Entita UserTaskSharingOffer je typ nabídky ke sdílení úkolu, která je určena pro uživatele. Vznikne, pokud jeden uživatel chce k úkolu, na kterém pracuje, pozvat jiného uživatele.
+		
+		\subsection{GroupTaskSharingOffer}
+			Entita UserTaskSharingOffer je typ nabídky ke sdílení úkolu, která je určena pro skupinu. Vznikne, pokud jeden uživatel chce k úkolu, na kterém pracuje, pozvat skupinu.
+		
+		\subsection{MembershipOffer}
+			Entita MembershipOffer je typ nabídky, která reprezentuje nabídku ke vstupu do skupiny. Vznikne, pokud manažer skupiny do ní chce pozvat nového uživatele.
+		
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -687,6 +755,8 @@
 		
 	\end{threeparttable}
 	\end{center}
+
+\chapter{Doménový model}
 
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
