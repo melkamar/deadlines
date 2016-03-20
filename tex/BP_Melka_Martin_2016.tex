@@ -82,6 +82,7 @@
 		\item[Gamifikace]
 		\item[Backend]
 		\item[Manhour]
+		\item[Embedded]
 	\end{description}
 \chapter{Současný stav}
 	\label{chapter:current-state}
@@ -677,9 +678,49 @@
 \chapter{Návrh řešení}
 	\label{chapter:design}
 	
+	V této kapitole představím technologie zvolené k vypracování aplikace a navrhnu REST API, které bude aplikace nabízet. Dále se budu věnovat architektuře aplikace, návrhovému modelu tříd a databázovému modelu, což bude představovat podklad pro následující implementaci prototypu aplikace ve zvolené technologii.
+
 	\section{Technologie}
+	
+		\subsection{Java}
+			Již v zadání práce je avizováno, že aplikace bude postavena na platformě Java. \cite{java} Jazyk Java byl vyvinutý společností Sun Microsystems a veřejnosti představen v roce 1996. Syntaxí je podobný C/C++ a je silně objektově orientovaný. Program napsaný v Javě je kompilován do podoby \textit{bytecode}, který je následně spouštěn na \textit{Java Virtual Machine} (JVM), který bytecode interpretuje. To znamená, že jazyk je platformně nezávislý -- \textit{bytecode} vzniklý kompilací zdrojového Java kódu je možné spustit na jakékoliv platformě, pokud na ní je přítomný odpovídající \textit{JVM}. 
+			
+			Oproti jazykům C/C++ navíc Java disponuje automatickou správou paměti, nazvanou \textit{garbage collection}, takže vývojáři se nemusí tolik starat o životní cyklus objektů a následné \textit{memory leaks}. \cite{what-is-java} \cite{pjv-java}
+		
+		\subsection{Spring}
+			Spring je framework, který zjednodušuje tvorbu enterprise aplikací v Javě. \cite{spring} Jednou z výhod Springu je jeho podpora návrhového vzoru \textit{dependency injection}, díky kterému je program lépe modularizovatelný, testovatelný a znovupoužitelný.\cite{dependency-injection}
+			
+			Další součástí Springu je webový modul \textit{Web MVC framework}. \cite{spring-mvc-framework} Ten umožňuje tvorbu webových aplikací podle architektonického vzoru MVC. Je také možné využít ho pro tvorbu \textit{RESTful} aplikace, což je cílem implementační části této práce.
+			
+			\subsubsection{Spring Boot}
+				Nadstavbou k frameworku Spring je projekt Spring Boot. \cite{spring-boot} Vztah mezi Spring a Spring Boot je zobrazen na obrázku \ref{pic:spring-boot}. Byl vyvinut k usnadnění tvorby Spring aplikací. Představuje více \uv{dogmatický} (\textit{opinionated}) pohled na Spring, což znamená, že od vývojáře očekává \uv{standardní} chování podle zaběhlých postupů. \cite{opinionated-software} Vývojáře za to ale odstiňuje od nutnosti (nejen) počáteční konfigurace a nabízí navíc některé funkce, jako \textit{embedded server}, bezpečnost, metriky, kontrolu stavu aplikace a další. V případě, že výchozí konfigurace nevyhovuje, je možné si ji ručně přizpůsobit. \cite{spring-boot-blog}
+				
+				Spring Boot také umožňuje sestavit aplikaci do podoby jednoho JAR souboru (\uv{\textit{fat jar}}), který obsahuje vše, co je nutné k jejímu spuštění. Není tedy potřeba mít pro nasazení zprovozněný aplikační server, jako například Tomcat či GlassFish. Stále je ale možné aplikaci sestavit do WAR souboru a vlastní server použít.
+				
+				\begin{figure}\centering
+					\includegraphics[width=0.5\textwidth]{spring-boot.png}
+					\caption[Spring Boot]{Vztah Spring a Spring Boot \cite{spring-boot-blog}}
+					\label{pic:spring-boot}
+				\end{figure}
+				
+		\subsection{Hibernate}
+			Hibernate \cite{hibernate} je framework pro platformu Java, usnadňující persistenci dat. Jedná se o nástroj pro ORM (objektově-relační mapování), který se stará o transformaci objektů aplikace do podoby vhodné pro uložení do relační databáze, jejich uložení, a následné načtení a transformaci z databáze zpět na objekty. Způsob mapování objektů do databáze lze nastavit buď v konfiguračním XML souboru, nebo přímo ve zdrojovém kódu anotacemi.
+			
+			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny uložiště. Kód aplikace komunikuje s jeho API stejným způsobem, nehledě na typ databáze, ke které je připojen.
+			
+		\subsection{apiary/dredd?}
+			% TODO!
+		
+		\subsection{MySQL}
+			Persistence dat aplikace bude zprostředkována relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace.
+			
+		\subsection{Apache Tomcat}
+			Pro nasazení aplikace bude použit server Apache Tomcat. \cite{tomcat} Je to \textit{lightweight} server, nenáročný na hardware a jednoduchý na zprovoznění. 
+			
+			V případě spuštění aplikace jako JAR souboru je v něm Tomcat automaticky zahrnutý.
+	
+	\section{REST API}
 	\section{Architektura aplikace}
-	\section{? REST API ?}
 	\section{Návrhový model}
 	\section{Databázový model}
 
@@ -718,6 +759,7 @@
 \begin{description}
 	\item[HW] Hardware
 	\item[SW] Software
+	\item[MVC] Model-View-Controller
 \end{description}
 
 \chapter{Splnění kritérií rešerše}
@@ -758,6 +800,24 @@
 
 \chapter{Doménový model}
 
+\chapter{Obsah přiloženého CD}
+
+%upravte podle skutecnosti
+
+\begin{figure}
+	\dirtree{%
+		.1 readme.txt\DTcomment{stručný popis obsahu CD}.
+		.1 exe\DTcomment{adresář se spustitelnou formou implementace}.
+		.1 src.
+		.2 impl\DTcomment{zdrojové kódy implementace}.
+		.2 thesis\DTcomment{zdrojová forma práce ve formátu \LaTeX{}}.
+		.1 text\DTcomment{text práce}.
+		.2 thesis.pdf\DTcomment{text práce ve formátu PDF}.
+		.2 thesis.ps\DTcomment{text práce ve formátu PS}.
+	}
+\end{figure}
+
+\end{document}
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 % % Tuto kapitolu z výsledné práce ODSTRAŇTE.
@@ -864,22 +924,3 @@
 % \end{table}
 % 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
-
-\chapter{Obsah přiloženého CD}
-
-%upravte podle skutecnosti
-
-\begin{figure}
-	\dirtree{%
-		.1 readme.txt\DTcomment{stručný popis obsahu CD}.
-		.1 exe\DTcomment{adresář se spustitelnou formou implementace}.
-		.1 src.
-		.2 impl\DTcomment{zdrojové kódy implementace}.
-		.2 thesis\DTcomment{zdrojová forma práce ve formátu \LaTeX{}}.
-		.1 text\DTcomment{text práce}.
-		.2 thesis.pdf\DTcomment{text práce ve formátu PDF}.
-		.2 thesis.ps\DTcomment{text práce ve formátu PS}.
-	}
-\end{figure}
-
-\end{document}
