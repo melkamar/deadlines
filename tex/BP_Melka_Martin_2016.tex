@@ -368,6 +368,7 @@
 			
 			
 		\subsection{Případy užití}
+			%TODO - scénáře užití aby začínaly "Scénář začíná, když ..."
 			Případy užití získané analýzou \textit{user stories} zobrazuji v diagramech případů užití. Rozdělil jsem je do čtyř balíků podle jejich účastníků pro lepší přehlednost.
 			
 			\subsubsection{Nepřihlášený uživatel}
@@ -393,12 +394,9 @@
 		
 		
 			\subsubsection{Případy užití pro jednotlivce}	
-			V diagramu \ref{diagram:uc-individual} jsou zachyceny případy užití aplikace jednotlivci. Jsou zde případy užití z pohledu Přihlášeného uživatele, Pozorovatele a Pracovníka úkolu.
-			\begin{figure}\centering
-				\includegraphics[width=1.0\textwidth]{ea-diagrams/uc-individual.png}
-				\caption[Případy užití jednotlivců]{Diagram případů užití pro jednotlivce}
-				\label{diagram:uc-individual}
-			\end{figure}
+			V diagramu \ref{diagram:uc-logged-user} a \ref{diagram:uc-task-members} jsou zachyceny případy užití aplikace jednotlivci. V prvním diagramu jsou případy užití z pohledu Přihlášeného uživatele v druhém pak z pohledu Pozorovatele a Pracovníka úkolu.
+			
+			
 			
 			\begin{description}
 				\item[UC 2.01 Odhlásit se] \hfill \\
@@ -462,7 +460,25 @@
 					1. Uživatel chce zobrazit detaily úkolu \\
 					2. <Zobrazit seznam mých úkolů> \\
 					3. Aplikace zobrazí všechny informace o úkolu, tedy název, popis, datum a čas začátku a \textit{deadlinu}, pracnost, prioritu, typ, stav a seznam jeho Pracovníků a Pozorovatelů. \\
-
+					
+					
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				% Diagramy %
+				%%%%%%%%%%%%
+				\begin{figure}\centering
+					\includegraphics[width=0.9\textwidth]{ea-diagrams/uc-logged-user.png}
+					\caption[Případy užití přihlášeného uživatele]{Diagram případů užití pro přihlášeného uživatele}
+					\label{diagram:uc-logged-user}
+				\end{figure}
+				
+				\begin{figure}\centering
+					\includegraphics[width=0.7\textwidth]{ea-diagrams/uc-task-members.png}
+					\caption[Případy užití účastníky úkolu]{Diagram případů užití pro účastníky úkolu}
+					\label{diagram:uc-task-members}
+				\end{figure}
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				
+				
 				\item[UC 2.16 Stát se pracovníkem úkolu] \hfill \\
 					Umožňuje Pozorovateli úkolu stát se jeho Pracovníkem.				
 								
@@ -478,7 +494,7 @@
 				\item[UC 2.20 Zadat odvedenou práci] \hfill \\
 					Umožňuje Pracovníkovi zadat u úkolu odvedenou práci.
 					
-					\textbf{TODO} - chci umožnit měření času?
+					%TODO - chci umožnit měření času?
 					\begin{description}
 						\item[Hlavní scénář]: Pracovník chce zadat počet odpracovaných hodin. \\
 						1. Include(Zobrazit úkol) \\
@@ -508,8 +524,14 @@
 			
 			
 			
+			
+			
+			
+			
 			\subsubsection{Případy užití pro skupiny}
 			V diagramu \ref{diagram:uc-shared} jsou zachyceny případy užití aplikace členy pracovních skupin. Týkají se správy skupinových úkolů a skupin samotných. 
+			
+			% TODO Pokud je diagram moc velký, přesunout do přílohy?
 			\begin{figure}\centering
 				\includegraphics[width=1.0\textwidth]{ea-diagrams/uc-shared.png}
 				\caption[Případy užití skupin]{Diagram případů užití pro členy pracovní skupiny}
@@ -599,7 +621,7 @@
 			
 			Diagram \ref{diagram:uc-time} zachycuje časově závislé případy užití, které se pravidelně vykonávají bez přičinění uživatelů aplikace.
 			\begin{figure}\centering
-				\includegraphics[width=0.6\textwidth]{ea-diagrams/uc-time.png}
+				\includegraphics[width=0.5\textwidth]{ea-diagrams/uc-time.png}
 				\caption[Případy užití časových událostí]{Diagram případů užití pro časově závislé události}
 				\label{diagram:uc-time}
 			\end{figure}
@@ -626,12 +648,6 @@
 		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi. \cite{domain-model} Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen entity a jejich vlastnosti dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
 		
 		Diagram doménového modelu je znázorněn na obrázku \ref{diagram:domain-model}. Znázorňuje vztahy mezi entitami a některá omezení, jako například vzájemnou výlučnost. \cite{domain-model-multiple-association} V této části se dále budu věnovat popisu jednotlivých entit modelu.
-		
-		\begin{figure}\centering
-			\includegraphics[width=0.8\textwidth]{ea-diagrams/domain-model.png}
-			\caption[Doménový model]{Doménový model aplikace Deadlines}
-			\label{diagram:domain-model}
-		\end{figure}
 		
 		\subsection{User}
 			Entita User reprezentuje uživatele aplikace. Uchovává jeho e-mail, který je unikátní v rámci aplikace, jméno a heslo k jeho přihlášení.
@@ -709,7 +725,7 @@
 			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny uložiště. Kód aplikace komunikuje s jeho API stejným způsobem, nehledě na typ databáze, ke které je připojen.
 			
 		\subsection{apiary/dredd?}
-			% TODO!
+			% TODO - budu používate dredd na testování API?
 		
 		\subsection{MySQL}
 			Persistence dat aplikace bude zprostředkována relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace.
@@ -799,6 +815,11 @@
 	\end{center}
 
 \chapter{Doménový model}
+		\begin{figure}\centering
+			\includegraphics[width=1\textwidth]{ea-diagrams/domain-model.png}
+			\caption[Doménový model]{Doménový model aplikace Deadlines}
+			\label{diagram:domain-model}
+		\end{figure}
 
 \chapter{Obsah přiloženého CD}
 
