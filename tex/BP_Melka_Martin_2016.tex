@@ -763,7 +763,66 @@
 			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
 			
 		\subsection{REST API aplikace Deadlines}
-			API aplikace budu dokumentovat ve formátu API Blueprint. \cite{api-blueprint} Ten představuje jednoduchý způsob, jak popsat zdroje, jejich \textit{endpointy}, návratové hodnoty a další informace. Jeho syntaxe vychází z jazyka Markdown. \cite{markdown}
+			API aplikace budu dokumentovat ve formátu API Blueprint. \cite{api-blueprint} Ten představuje jednoduchý způsob, jak popsat zdroje, jejich \textit{endpointy}, návratové hodnoty a další informace. Jeho syntaxe vychází z jazyka Markdown. \cite{markdown} 
+			
+			%TODO příloha, nebo online?
+			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze [....] a dostupný na webu Apiary\footnote{\texttt{http://docs.deadlines.apiary.io/}}. Zde jen uvedu \textit{endpoints} a popíšu jejich funkci. 
+			
+			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth}
+			
+			% TODO - číslovat endpointy a pak udělat tabulku pokrytí usecases tímhle API.
+			\hfill \\
+			\subsubsection{\texttt{/user [GET, POST]}}
+				GET vrátí seznam všech uživatelů v systému. \\
+				POST vytvoří nového uživatele z poskytnutých dat. \\
+				
+				Tento \textit{endpoint} je přístupný i neautentifikovaným voláním.
+				
+			\subsubsection{\texttt{/user/\{user\_id\} [GET, PUT]}}
+				GET vrátí informace uživatele s ID \texttt{user\_id}. \\
+				PUT upraví profil uživatele s ID \texttt{user\_id} předanými daty.
+			
+			\subsubsection{\texttt{/task [GET, POST]}}
+				GET vrátí seznam všech úkolů, které odpovídají zadanému filtru. Zobrazit lze jen úkoly, jichž je volající účastníkem. \\
+				POST vytvoří nový úkol z poskytnutých dat.
+				
+			
+			\subsubsection{\texttt{/task/\{task\_id\} [GET, PUT]}}
+			
+			\subsubsection{\texttt{/task/share/\{task\_id\ [POST]}}
+			
+			\subsubsection{\texttt{/task/leave/\{task\_id\} [POST]}}
+			
+			\subsubsection{\texttt{/task/userrole/\{task\_id\} [PUT]}}
+			
+			\subsubsection{\texttt{/task/status/\{task\_id\} [PUT]}}
+			
+			\subsubsection{\texttt{/task/report/\{task\_id\} [POST]}}
+				Reports work done on a task.
+				
+			\subsubsection{\texttt{/offer/task [GET]}}
+			
+			\subsubsection{\texttt{/offer/task/\{task\_offer\_id\} [POST]}}
+			
+			\subsubsection{\texttt{/offer/group [GET]}}
+			
+			\subsubsection{\texttt{/offer/group/\{membership\_offer\_id\} [POST]}}
+			
+			\subsubsection{\texttt{/group [GET, POST]}}
+			
+			\subsubsection{\texttt{/group/\{group\_id\} [GET, PUT, DELETE]}}
+			
+			\subsubsection{\texttt{/group/manager/invite/\{group\_id\} [POST, DELETE]}}
+			
+			\subsubsection{\texttt{/group/manager/offer/task [GET]}}
+			
+			\subsubsection{\texttt{/group/manager/removetask/\{group\_id\}/\{task\_id\} [POST]}}
+			
+			\subsubsection{\texttt{/group/admin/setmanager/\{group\_id\}/\{user\_id\} [POST]}}
+			
+			\subsubsection{\texttt{/group/admin/setadmin/\{group\_id\}/\{user\_id\} [POST]}}
+			
+			
 			
 	
 	\section{Architektura aplikace}
