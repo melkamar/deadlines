@@ -1,0 +1,3 @@
+1 - User already exists
+2 - Wrong e-mail format
+3 - No password provided 
