@@ -646,6 +646,7 @@
 
 		
 	\section{Doménový model}
+	% TODO podívat se na http://stackoverflow.com/questions/36100826/uml-domain-model-how-to-model-multiple-roles-of-association-between-two-entiti/36101591   -- možná upravit model?
 		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi. \cite{domain-model} Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen entity a jejich vlastnosti dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
 		
 		Diagram doménového modelu je znázorněn na obrázku \ref{diagram:domain-model}. Znázorňuje vztahy mezi entitami a některá omezení, jako například vzájemnou výlučnost. \cite{domain-model-multiple-association} V této části se dále budu věnovat popisu jednotlivých entit modelu.
@@ -737,6 +738,34 @@
 			V případě spuštění aplikace jako JAR souboru je v něm Tomcat automaticky zahrnutý.
 	
 	\section{REST API}
+		V této sekci nejprve krátce vysvětlím pojmy API a REST API. Poté přistoupím ke konkrétnímu návrhu REST API pro aplikaci Deadlines.
+	
+		\subsection{API}
+			API (\textit{Application Programming Interface}) slouží k jednoduché a spolehlivé komunikaci mezi aplikacemi nebo moduly aplikace. API představuje kontrakt, kterým se \textit{producent} zavazuje k nabízení svých služeb v dané zdokumentované podobě, jež mohou být využity \textit{konzumenty}.
+			
+			Autoři knihy \textit{APIs: A Strategy Guide} \cite{apis-a-strategy-guide} definují API takto:
+			
+			\textit{API je v podstatě kontrakt. Ve chvíli, kdy tento kontrakt existuje, vývojáři tíhnou k využívání API, protože ví, že se na něj mohou spolehnout. Kontrakt zvyšuje důvěru, což zlepšuje použitelnost. Tento kontrakt také zefektivňuje spojení mezi producentem a konzumentem, protože rozhraní jsou dokumentována, jsou konzistentní a předvídatelná.}
+	
+		\subsection{REST}
+			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci. \cite{rest-dissertation} Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (resources). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
+			Zdroje v kontextu REST jsou identifikované pomocí URI a komunikovány mezi klientem a serverem v podobě reprezentací v libovolné textové, strojově zpracovatelné podobě (například JSON nebo XML). \cite{rest-youtube}
+			
+			Architektonický styl REST popisuje šest podmínek:
+			\begin{itemize}
+				\item Uniform Interface (Jednotné rozhraní)
+				\item Stateless (Bezstavovost)
+				\item Cacheable (Cachovatelnost)
+				\item Client-Server
+				\item Layered System (Systém z vrstev)
+				\item Code on Demand (Kód na vyžádání)
+			\end{itemize}
+			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
+			
+		\subsection{REST API aplikace Deadlines}
+			API aplikace budu dokumentovat ve formátu API Blueprint. \cite{api-blueprint} Ten představuje jednoduchý způsob, jak popsat zdroje, jejich \textit{endpointy}, návratové hodnoty a další informace. Jeho syntaxe vychází z jazyka Markdown. \cite{markdown}
+			
+	
 	\section{Architektura aplikace}
 	\section{Návrhový model}
 	\section{Databázový model}
