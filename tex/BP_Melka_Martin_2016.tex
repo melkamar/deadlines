@@ -34,6 +34,8 @@
 \newcommand{\critg}{Open-source}
 
 
+\newcommand{\forwatchers}{Povoleno jen pro Pozorovatele úkolu.}
+\newcommand{\forworkers}{Povoleno jen pro Pracovníky úkolu.}
 \newcommand{\foradmin}{Povoleno jen pro Admina skupiny.}
 \newcommand{\formanagers}{Povoleno jen pro Manažery skupiny.}
 % _________________________________________________________________________
@@ -267,7 +269,6 @@
 						\item Role (pozorovatel / pracovník)
 						\item Typ
 						\item Stav
-						\item Vlastnictví (můj / sdílený se mnou)
 						\item Priorita
 					\end{itemize}
 					\item Řazení
@@ -275,7 +276,7 @@
 						\item Název
 						\item Datum začátku úkolu
 						\item Datum \textit{deadlinu}
-						\item Rozpracovanost (kolik procentuelně odpracováno)
+						\item Rozpracovanost (poměr odpracováno ku celkové náročnosti)
 						\item Priorita
 						\item Urgentnost
 					\end{itemize}
@@ -389,10 +390,10 @@
 			
 			\begin{description}
 				\item[UC 1.01 Registrovat se] \hfill \\
-					Umožní uživateli aplikace zaregistrovat se. Zadá svůj e-mail, heslo a jméno.
+					Umožní uživateli aplikace zaregistrovat se. Zadá svoje unikátní uživatelské jméno, e-mail, heslo a svoje jméno.
 					
 				\item[UC 1.02 Přihlásit se] \hfill \\
-					Umožní uživateli přihlásit se pomocí svého e-mailu a hesla.	
+					Umožní uživateli přihlásit se pomocí svého uživatelského jména a hesla.	
 					
 			\end{description}
 		
@@ -411,10 +412,10 @@
 					Odhlásí uživatele z aplikace.
 					
 				\item[UC 2.02 Upravit svůj profil] \hfill \\
-					Umožní uživateli upravit si své jméno a heslo.
+					Umožní uživateli upravit si své jméno, heslo a e-mail.
 				
 				\item[UC 2.03 Vytvořit úkol] \hfill \\
-					1. Uživatel chce vytvořit úkol \\
+					1. Uživatel chce vytvořit úkol. \\
 					2. Uživatel vyplní informace k úkolu, povinně název a typ. Pokud je typ \uv{S deadlinem},  pak je povinné i datum a čas deadlinu. Volitelně může zadat popis, pracnost v \textit{manhours} a prioritu jako celé číslo v intervalu 1--5. \\
 					3. <Sdílet úkol> \\
 					4. Aplikace vytvoří úkol, uživatel se stane jeho Pracovníkem. \\
@@ -443,12 +444,12 @@
 					3. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
 				
 				\item[UC 2.09 Zobrazit seznam nabídek na sdílení úkolu] \hfill \\
-					Zobrazí seznam nabídek pro uživatele k připojení se ke sdílenému úkolu, v němž bude u každé nabídky uvedeno jméno sdílejícího uživatele a název úkolu.
+					Zobrazí seznam nabídek pro uživatele k připojení se ke sdílenému úkolu, v němž bude u každé nabídky uvedeno uživatelské a skutečné jméno sdílejícího uživatele a název úkolu.
 				
 				\item[UC 2.10 Založit pracovní skupinu] \hfill \\
 					1. Uživatel chce založit pracovní skupinu \\
 					2. <Zobrazit seznam uživatelů> \\
-					3. Uživatel zadá jméno skupiny a volitelně její popis. Dále zadá seznam e-mailů uživatelů, které chce do skupiny pozvat. \\
+					3. Uživatel zadá jméno skupiny a volitelně její popis. Dále zadá seznam uživatelských jmen uživatelů, které chce do skupiny pozvat. \\
 					4. Aplikace vytvoří novou skupinu s daným názvem a popisem. Zakládající uživatel se stane jejím Adminem. \\
 					5. Aplikace rozešle nabídky ke vstupu do skupiny zadaným uživatelům. \\
 					
@@ -456,21 +457,22 @@
 					Uživatel rozhodne, zda chce přijmout nebo odmítnout nabídku ke vstupu do skupiny. Pokud ji přijme, stane se jejím Členem.
 					
 				\item[UC 2.12 Zobrazit seznam nabídek ke vstupu do skupiny] \hfill \\
-					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny a jméno a e-mail uživatele, od něhož nabídka pochází.
+					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny, uživatelské a skutečné jméno uživatele, od něhož nabídka pochází.
 				
 				\item[UC 2.13 Zobrazit seznam uživatelů] \hfill \\
-					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho jméno a e-mail.
+					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho uživatelské a skutečné jméno.
 					
 				\item[UC 2.14 Zobrazit seznam skupin] \hfill \\
-					Zobrazí seznam skupin v aplikaci. U skupiny bude uvedeno její jméno a admin. 
+					Zobrazí seznam skupin v aplikaci. U skupiny bude uvedeno její jméno a uživatelské i skutečné jméno jejího Admina. 
 					
 				\item[UC 2.15 Filtrovat skupiny] \hfill \\
-					Umožňuje filtrovat skupiny podle toho, jestli je uživatel jejich Členem.
+					Umožňuje filtrovat skupiny podle toho, zda je uživatel jejich Členem.
 					
 				\item[UC 2.16 Zobrazit úkol] \hfill \\
 					1. Uživatel chce zobrazit detaily úkolu \\
 					2. <Zobrazit seznam mých úkolů> \\
-					3. Aplikace zobrazí všechny informace o úkolu, tedy název, popis, datum a čas začátku a \textit{deadlinu}, pracnost, prioritu, typ, stav a seznam jeho Pracovníků a Pozorovatelů. \\
+					3. Uživatel zašle požadavek na zobrazení úkolu.
+					4. Aplikace zobrazí všechny informace o úkolu, tedy název, popis, datum a čas začátku a \textit{deadlinu}, pracnost, prioritu, typ, stav a seznam jeho Pracovníků a Pozorovatelů. \\
 					
 					
 				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -503,21 +505,9 @@
 					Umožňuje Pracovníkovi úkolu stát se jeho Pozorovatelem.
 					
 				\item[UC 2.21 Zadat odvedenou práci] \hfill \\
-					Umožňuje Pracovníkovi zadat u úkolu odvedenou práci.
-					
-					%TODO - chci umožnit měření času?
-					\begin{description}
-						\item[Hlavní scénář]: Pracovník chce zadat počet odpracovaných hodin. \\
-						1. Include(Zobrazit úkol) \\
-						2. Uživatel zadá počet odpracovaných hodin a potvrdí. \\
-						3. Aplikace k úkolu přidá zadaný počet hodin. \\
-						
-						\item[Alternativní scénář]: Pracovník chce měřit odpracovaný čas.
-						1. Include(Zobrazit úkol)
-						2. 
-					\end{description}
-					
-					
+					1. Include(Zobrazit úkol) \\
+					2. Uživatel zašle požadavek s počtem odpracovaných hodin. \\
+					3. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
 					
 				\item[UC 2.22 Vynulovat urgentnost rostoucího úkolu] \hfill \\
 					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
@@ -549,9 +539,10 @@
 				\label{diagram:uc-shared}
 			\end{figure}
 			
+			% TODO projít usecases a u všech doplnit podmínky, jestli má uživatel právo to vykonat?
 			\begin{description}
 				\item[UC 3.01 Zobrazit seznam úkolů skupiny] \hfill \\
-					1. Člen skupiny chce zobrazit úkoly své skupiny \\
+					1. Člen skupiny chce zobrazit úkoly své skupiny. \\
 					2. <Filtrovat úkoly> \\
 					3. <Řadit úkoly> \\
 					4. Aplikace zobrazí seznam všech úkolů skupiny se zvoleným filtrem a řazením. Výchozí řazení je podle urgentnosti. \\
@@ -582,7 +573,7 @@
 					Umožňuje přiřadit Členům skupiny roli Pozorovatele nebo Pracovníka na úkolech skupiny.
 					
 				\item[UC 3.07 Zobrazit seznam nabídek na sdílení úkolu se skupinou] \hfill \\
-					Zobrazí seznam příchozích nabídek ke sdílení úkolů. U nabídky bude jméno uživatele, od kterého pochází, a název úkolu, kterého se týká.
+					Zobrazí seznam příchozích nabídek ke sdílení úkolů. U nabídky bude uživatelské a skutečné jméno uživatele, od kterého pochází, a název úkolu, kterého se týká.
 					
 				\item[UC 3.08 Rozhodnout o nabídce sdílení úkolu se skupinou] \hfill \\
 					1. Případ užití začíná, když Manažer chce rozhodnout o nabídce sdílení úkolu se skupinou. \\
@@ -662,7 +653,7 @@
 		Diagram doménového modelu je znázorněn na obrázku \ref{diagram:domain-model}. Znázorňuje vztahy mezi entitami a některá omezení, jako například vzájemnou výlučnost. \cite{domain-model-multiple-association} V této části se dále budu věnovat popisu jednotlivých entit modelu.
 		
 		\subsection{User}
-			Entita User reprezentuje uživatele aplikace. Uchovává jeho e-mail, který je unikátní v rámci aplikace, jméno a heslo k jeho přihlášení.
+			Entita User reprezentuje uživatele aplikace. Uchovává jeho uživatelské jméno, které je unikátní v rámci aplikace, e-mail, jméno a heslo k jeho přihlášení.
 			
 		\subsection{Group}
 			Entita Group reprezentuje pracovní skupinu. Má název a popis. Uživatelé s ní mohou být ve třech různých vztazích -- jako Člen, Manažer a Admin. Tyto vztahy jsou vzájemně vylučující, takže uživatel nemůže být zároveň například Člen a Manažer.
@@ -778,7 +769,7 @@
 			%TODO příloha, nebo online?
 			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze [....] a dostupný na webu Apiary\footnote{\texttt{http://docs.deadlines.apiary.io/}}. Zde jen uvedu \textit{endpoints} a popíšu jejich funkci. 
 			
-			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth}
+			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
 			\hfill \\
 			\subsubsection{\texttt{/user [GET, POST]}}
@@ -798,11 +789,11 @@
 			
 			\subsubsection{\texttt{/task/\{task\_id\} [GET, PUT]}}
 				GET vrátí informace o úkolu se zadaným ID. \\
-				PUT upraví úkol se zadaným ID. Dostupné jen Pracovníkům úkolu.
+				PUT upraví úkol se zadaným ID. \forworkers
 			
 			
 			\subsubsection{\texttt{/task/share/\{task\_id\} [POST]}}
-				POST zašle nabídku na sdílení úkolu předaným uživatelům a skupinám. Dostupné jen Pracovníkům úkolu.
+				POST zašle nabídku na sdílení úkolu předaným uživatelům a skupinám. \forworkers
 			
 			\subsubsection{\texttt{/task/leave/\{task\_id\} [POST]}}
 				POST odebere volajícího uživatele z úkolu se zadaným ID.
