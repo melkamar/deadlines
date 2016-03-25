@@ -668,9 +668,9 @@
 			Entita GrowingTask je typ entity Task, reprezentující rostoucí úkol. Obsahuje informaci o rychlosti růstu jeho urgentnosti.
 		
 		\subsection{TaskParticipant}
-			TaskParticipant je entita reprezentující dvojici entit User--Group. Tato dvojice je v aplikaci unikátní, takže nemůžou existovat dvě stejné dvojice zároveň. 
+			TaskParticipant je entita reprezentující dvojici entit User--Task. Tato dvojice je v aplikaci unikátní, takže nemohou existovat dvě stejné zároveň. 
 			
-			Skrze tuto entitu je uživatel součástí úkolu. Součástí úkolu může být sám, pokud není k entitě TaskParticipant přiřazena žádná skupina, nebo může být součástí úkolu jako člen skupiny, pokud k entitě skupina přiřazena je. Uživatel také může být součástí úkolu jako člen více skupin zároveň.
+			Skrze tuto entitu je uživatel součástí úkolu. Součástí úkolu může být sám, pokud je nastaven příznak \texttt{solo}, nebo jako člen skupiny či skupin, pokud jsou k entitě TaskParticipant přiřazeny.
 		
 		\subsection{TaskWork}
 			Entita TaskWork reprezentuje práci vykonanou na úkolu uživatelem. Je spjata s entitou User, místo TaskParticipant, takže i když uživatel úkol opustí, pořád bude záznam o jeho práci na úkolu existovat.
@@ -783,7 +783,7 @@
 				GET vrátí informace uživatele s ID \texttt{user\_id}. \\
 				PUT upraví profil uživatele s ID \texttt{user\_id} předanými daty.
 			
-			\subsubsection{\texttt{/task [GET, POST]}}
+			\subsubsection{\texttt{/task\{?filter\} [GET, POST]}}
 				GET vrátí seznam všech úkolů, které odpovídají zadanému filtru. Zobrazit lze jen úkoly, jichž je volající účastníkem. \\
 				POST vytvoří nový úkol z poskytnutých dat. 
 			
@@ -819,7 +819,7 @@
 			\subsubsection{\texttt{/offer/group/\{membership\_offer\_id\} [POST]}}
 				POST přijme nebo zamítne nabídku ke vstupu do skupiny s předaným ID. 
 			
-			\subsubsection{\texttt{/group{?filter} [GET, POST]}}
+			\subsubsection{\texttt{/group\{?filter\} [GET, POST]}}
 				GET vrátí seznam skupin v aplikaci. Parametr \texttt{filter} určuje, zda vracet všechny skupiny, nebo jen ty, jichž je volající Členem. \\
 				POST vytvoří novou skupinu z informací předaných v těle požadavku. Volající uživatel se stane jejím Adminem.
 			
