@@ -1,0 +1,1 @@
+Hibernate - annotations should be at getters
