@@ -1,5 +1,9 @@
 package com.melkamar.deadlines;
 
+import com.melkamar.deadlines.model.TaskParticipant;
+import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.DeadlineTask;
+import com.melkamar.deadlines.model.task.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -13,6 +17,17 @@ public class DeadlinesApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
+	}
+
+	@Test
+	public void createParticipant(){
+		User user = new User();
+		user.setName("User1");
+
+		Task task = new DeadlineTask();
+
+		TaskParticipant participant = TaskParticipant.createTaskParticipant(user, task);
 	}
 
 }
