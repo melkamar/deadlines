@@ -15,29 +15,37 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "TASK_TYPE", discriminatorType = DiscriminatorType.STRING)
 public abstract class Task {
+    public final static String COL_TASK_ID = "TASK_ID";
+    public final static String COL_TASK_DATE_CREATED = "DATE_CREATED";
+    public final static String COL_TASK_NAME = "NAME";
+    public final static String COL_TASK_DESCRIPTION = "DESCRIPTION";
+    public final static String COL_TASK_WORK_ESTIMATE = "WORK_ESTIMATE";
+    public final static String COL_TASK_PRIORITY = "PRIORITY";
+    public final static String COL_TASK_STATUS = "STATUS";
+
     @Id
-    @Column(name = "TASK_ID", nullable = false)
+    @Column(name = COL_TASK_ID, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "DATE_CREATED", nullable = false)
+    @Column(name = COL_TASK_DATE_CREATED, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = COL_TASK_NAME, nullable = false)
     private String name;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = COL_TASK_DESCRIPTION)
     private String description;
 
-    @Column(name = "WORK_ESTIMATE")
+    @Column(name = COL_TASK_WORK_ESTIMATE)
     private Double workEstimate; // In manhours
 
-    @Column(name = "PRIORITY")
+    @Column(name = COL_TASK_PRIORITY)
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @Column(name = "STATUS")
+    @Column(name = COL_TASK_STATUS)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
