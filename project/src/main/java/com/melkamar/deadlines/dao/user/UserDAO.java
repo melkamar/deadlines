@@ -9,4 +9,5 @@ import com.melkamar.deadlines.model.User;
 public interface UserDAO {
     public long count();
     public User save(User user);
+    public User findByUsername(String username);
 }

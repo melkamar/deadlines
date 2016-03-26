@@ -2,7 +2,7 @@ package com.melkamar.deadlines.dao.user;
 
 import com.melkamar.deadlines.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 26.03.2016 12:20
  */
 
-@Component("userDAO")
+@Service("userDAO")
 @Transactional
 public class UserDAOHibernate implements UserDAO {
     @Autowired
@@ -25,5 +25,10 @@ public class UserDAOHibernate implements UserDAO {
     public User save(User user) {
         userRepository.save(user);
         return user;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

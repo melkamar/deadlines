@@ -2,7 +2,7 @@ package com.melkamar.deadlines.dao.group;
 
 import com.melkamar.deadlines.model.Group;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 26.03.2016 12:20
  */
 
-@Component("groupDAO")
+@Service("groupDAO")
 @Transactional
 public class GroupDAOHibernate implements GroupDAO {
     @Autowired

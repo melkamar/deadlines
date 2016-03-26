@@ -33,23 +33,25 @@ public class User {
     private Long id;
 
     @Column(name = COL_USERNAME, nullable = false)
-    private String username;
+    private final String username;
 
     @Column(name = COL_EMAIL)
     private String email;
 
     @Column(name = COL_PASSWORD_HASH, nullable = false)
-    private String passwordHash;
+    private final String passwordHash;
 
     @Column(name = COL_PASSWORD_SALT, nullable = false)
-    private String passwordSalt;
+    private final String passwordSalt;
 
     @Column(name = COL_NAME)
     private String name;
 
 
     public User() {
-
+        this.username = null;
+        this.passwordHash = null;
+        this.passwordSalt = null;
     }
 
     public User(String username, String passwordHash, String passwordSalt) {
