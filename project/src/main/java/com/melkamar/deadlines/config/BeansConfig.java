@@ -17,7 +17,7 @@ public class BeansConfig {
     }
 
     @Bean
-    public StringKeyGenerator stringKeyGenerator() {
+    public StringKeyGenerator randomStringGenerator() {
         return org.springframework.security.crypto.keygen.KeyGenerators.string();
     }
 }
