@@ -1,1 +1,2 @@
-Hibernate - annotations should be at getters
+LazyInitializationException - mark method @Transactional
+Cannot use identity column key generation with <union-subclass> ( TABLE_PER_CLASS ) -- change ID generatedvalue to .TABLE
