@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services.constructors;
+package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.user.UserDAO;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * 26.03.2016 14:49
  */
 @Component
-public class UserConstructor {
+public class UserHelper {
     @Autowired
     private StringConstants stringConstants;
     @Autowired

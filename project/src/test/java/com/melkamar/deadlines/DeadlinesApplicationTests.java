@@ -1,6 +1,6 @@
 package com.melkamar.deadlines;
 
-import com.melkamar.deadlines.services.constructors.UserConstructor;
+import com.melkamar.deadlines.services.helpers.UserHelper;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.DeadlineTask;
@@ -19,7 +19,7 @@ public class DeadlinesApplicationTests {
 
 
 	@Autowired
-	private UserConstructor userConstructor;
+	private UserHelper userHelper;
 
 	@Test
 	public void contextLoads() {
