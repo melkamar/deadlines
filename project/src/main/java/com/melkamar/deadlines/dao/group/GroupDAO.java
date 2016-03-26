@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.dao;
+package com.melkamar.deadlines.dao.group;
 
 import com.melkamar.deadlines.model.Group;
 
@@ -9,4 +9,5 @@ import com.melkamar.deadlines.model.Group;
 public interface GroupDAO {
     public long count();
     public Group save(Group group);
+    public Group getGroupByName(String name);
 }

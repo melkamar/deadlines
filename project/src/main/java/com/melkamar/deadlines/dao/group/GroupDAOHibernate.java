@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.dao;
+package com.melkamar.deadlines.dao.group;
 
 import com.melkamar.deadlines.model.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +25,10 @@ public class GroupDAOHibernate implements GroupDAO {
     public Group save(Group group) {
         groupRepository.save(group);
         return group;
+    }
+
+    @Override
+    public Group getGroupByName(String name) {
+        return groupRepository.findByName(name);
     }
 }
