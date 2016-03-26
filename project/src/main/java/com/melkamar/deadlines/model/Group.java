@@ -11,17 +11,31 @@ import java.util.Set;
  * 25.03.2016 17:38
  */
 @Entity
-@Table(name = "GROUP")
+@Table(name = "GROUP_TABLE")
 public class Group {
     @Id
     @Column(name = "GROUP_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Column(name = "DESCRIPTION")
     String description;
-    String name;
+
+    @Column(name = "NAME", unique = true, nullable = false)
+    final String name;
 
     @ManyToMany(mappedBy = "groups")
     private Set<TaskParticipant> participants = new HashSet<>();
+
+    public Group(){
+        this.name = null;
+    }
+
+    public Group(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
+
 
     public int removeMember(User user){
         return 0;
