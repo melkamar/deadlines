@@ -2,15 +2,13 @@ package com.melkamar.deadlines.model;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.GroupDAO;
-import org.hamcrest.Matchers;
-import org.hibernate.Session;
+import com.melkamar.deadlines.dao.GroupRepository;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
