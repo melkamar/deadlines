@@ -10,7 +10,9 @@ import java.util.Date;
 @Entity
 @DiscriminatorValue("Deadline")
 public class DeadlineTask extends Task{
-    @Column(name = "DATE_DEADLINE", nullable = false)
+    public static final String COL_DATE_DEADLINE = "DATE_DEADLINE";
+
+    @Column(name = COL_DATE_DEADLINE, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
 }

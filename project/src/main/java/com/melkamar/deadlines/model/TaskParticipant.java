@@ -14,29 +14,35 @@ import java.util.Set;
 @Entity
 @Table(name = "TASK_PARTICIPANT")
 public class TaskParticipant {
+    public static final String COL_TASKPARTICIPANT_ID = "TASKPARTICIPANT_ID";
+    public static final String COL_SOLO = "SOLO";
+    public static final String COL_ROLE = "ROLE";
+    public static final String COL_JTABLE_TASKPARTICIPANT_GROUP = "TASK_PARTICIPANT_GROUP";
+
     @Id
-    @Column(name = "TASKPARTICIPANT_ID")
+    @Column(name = COL_TASKPARTICIPANT_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "SOLO")
+    @Column(name = COL_SOLO)
     private Boolean solo;
 
+    @Column(name = COL_ROLE)
     @Enumerated(EnumType.STRING)
     private TaskRole role;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = User.COL_USER_ID)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "TASK_ID")
+    @JoinColumn(name = Task.COL_TASK_ID)
     private Task task;
 
     @ManyToMany
-    @JoinTable(name = "taskparticipant_group",
-            joinColumns = {@JoinColumn(name = "TASKPARTICIPANT_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "GROUP_ID")})
+    @JoinTable(name = COL_JTABLE_TASKPARTICIPANT_GROUP,
+            joinColumns = {@JoinColumn(name = COL_TASKPARTICIPANT_ID)},
+            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})
     private Set<Group> groups = new HashSet<>();
 
     public TaskParticipant(){

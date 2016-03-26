@@ -9,16 +9,20 @@ import java.util.Date;
  */
 @Entity
 public class Urgency {
+    public static final String COL_URGENCY_ID = "URGENCY_ID";
+    public static final String COL_LAST_UPDATE = "LAST_UPDATE";
+    public static final String COL_VALUE = "VALUE";
+
     @Id
-    @Column(name = "URGENCY_ID", nullable = false)
+    @Column(name = COL_URGENCY_ID, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "LAST_UPDATE", nullable = false)
+    @Column(name = COL_LAST_UPDATE, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
 
-    @Column(name = "VALUE", nullable = false)
+    @Column(name = COL_VALUE, nullable = false)
     private Integer value;
 
     public boolean needsUpdate(){

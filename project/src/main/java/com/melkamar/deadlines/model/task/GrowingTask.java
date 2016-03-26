@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 @Entity
 @DiscriminatorValue("Growing")
 public class GrowingTask extends Task {
-    @Column(name = "GROW_SPEED", nullable = false)
+    public static final String COL_GROW_SPEED = "GROW_SPEED";
+
+    @Column(name = COL_GROW_SPEED, nullable = false)
     private Double growspeed;
 }

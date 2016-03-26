@@ -18,6 +18,15 @@ import java.util.Set;
 @Entity
 @Table(name = "USER")
 public class User {
+    public final static String COL_USER_ID = "USER_ID";
+    public final static String COL_USERNAME = "USERNAME";
+    public final static String COL_EMAIL = "EMAIL";
+    public final static String COL_PASSWORD_HASH = "PWDHASH";
+    public final static String COL_PASSWORD_SALT = "PWDSALT";
+    public final static String COL_NAME = "NAME";
+    public final static String COL_JTABLE_MEMBEROF_GROUP = "MEMBEROF_GROUP";
+    public final static String COL_JTABLE_MANAGEROF_GROUP = "MANAGEROF_GROUP";
+
     @Id
     @Column(name = COL_USER_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,16 +63,16 @@ public class User {
     private Set<TaskParticipant> participants = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "MEMBEROF_GROUP",
-            joinColumns = {@JoinColumn(name = "USER_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "GROUP_ID")}
+    @JoinTable(name = COL_JTABLE_MEMBEROF_GROUP,
+            joinColumns = {@JoinColumn(name = COL_USER_ID)},
+            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID )}
     )
     private Set<Group> memberOf = new HashSet<>();
 
     @ManyToMany()
-    @JoinTable(name = "MANAGEROF_GROUP",
-            joinColumns = {@JoinColumn(name = "USER_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "GROUP_ID")}
+    @JoinTable(name = COL_JTABLE_MANAGEROF_GROUP,
+            joinColumns = {@JoinColumn(name = COL_USER_ID)},
+            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
     )
     private Set<Group> managerOf = new HashSet<>();
 
@@ -83,13 +92,6 @@ public class User {
         participants.add(participant);
         return true;
     }
-
-    public final static String COL_USER_ID = "USER_ID";
-    public final static String COL_USERNAME = "USERNAME";
-    public final static String COL_EMAIL = "EMAIL";
-    public final static String COL_PASSWORD_HASH = "PWDHASH";
-    public final static String COL_PASSWORD_SALT = "PWDSALT";
-    public final static String COL_NAME = "NAME";
 
 
     public Long getId() {

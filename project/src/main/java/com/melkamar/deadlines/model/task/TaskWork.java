@@ -12,15 +12,18 @@ import java.util.Set;
  */
 @Entity
 public class TaskWork {
+    public static final String COL_TASKWORK_ID = "TASKWORK_ID";
+    public static final String COL_MANHOURS = "MANHOURS";
+
     @Id
-    @Column(name = "TASKWORK_ID", nullable = false)
+    @Column(name = COL_TASKWORK_ID, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "MANHOURS", nullable = false)
+    @Column(name = COL_MANHOURS, nullable = false)
     private Double manhours;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = User.COL_USER_ID)
     private User workedBy;
 }

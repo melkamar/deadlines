@@ -50,11 +50,11 @@ public abstract class Task {
     private TaskStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "URGENCY_ID")
+    @JoinColumn(name = Urgency.COL_URGENCY_ID)
     private Urgency urgency;
 
     @OneToMany
-    @JoinColumn(name = "TASKWORK_ID")
+    @JoinColumn(name = TaskWork.COL_TASKWORK_ID)
     private Set<TaskWork> workReports = new HashSet<>();
 
     @OneToMany(mappedBy = "task")
