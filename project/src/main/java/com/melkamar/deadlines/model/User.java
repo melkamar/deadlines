@@ -32,7 +32,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = COL_USERNAME, nullable = false)
+    @Column(name = COL_USERNAME, nullable = false, unique = true)
     private final String username;
 
     @Column(name = COL_EMAIL)
@@ -93,6 +93,10 @@ public class User {
 
         participants.add(participant);
         return true;
+    }
+
+    public boolean addAdminOf(Group group){
+        return adminOf.add(group);
     }
 
 
