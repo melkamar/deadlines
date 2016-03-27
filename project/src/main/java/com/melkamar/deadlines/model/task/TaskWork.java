@@ -14,6 +14,7 @@ import java.util.Set;
 public class TaskWork {
     public static final String COL_TASKWORK_ID = "TASKWORK_ID";
     public static final String COL_MANHOURS = "MANHOURS";
+    public static final String COL_OWNING_TASK_ID = "OWNING_TASK_ID";
 
     @Id
     @Column(name = COL_TASKWORK_ID, nullable = false)
@@ -21,9 +22,34 @@ public class TaskWork {
     Long id;
 
     @Column(name = COL_MANHOURS, nullable = false)
-    private Double manhours;
+    private final Double manhours;
 
     @ManyToOne
     @JoinColumn(name = User.COL_USER_ID)
-    private User workedBy;
+    private final User workedBy;
+
+    @Column(name = COL_OWNING_TASK_ID)
+    private Long ownerTaskId;
+
+    public TaskWork(Double manhours, User workedBy) {
+        this.manhours = manhours;
+        this.workedBy = workedBy;
+    }
+
+    public TaskWork() {
+        this.manhours = 0d;
+        this.workedBy = null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Double getManhours() {
+        return manhours;
+    }
+
+    public User getWorkedBy() {
+        return workedBy;
+    }
 }

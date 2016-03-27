@@ -101,8 +101,8 @@ public class TaskParticipant {
         return 0;
     }
 
-    public int setRole(TaskRole newRole) {
-        return 0;
+    public void setRole(TaskRole newRole) {
+        this.role = newRole;
     }
 
     public Task getTask() {

@@ -56,7 +56,7 @@ public abstract class Task {
     protected Urgency urgency;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = TaskWork.COL_TASKWORK_ID)
+    @JoinColumn(name = TaskWork.COL_OWNING_TASK_ID, referencedColumnName = COL_TASK_ID)
     protected Set<TaskWork> workReports = new HashSet<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
@@ -78,6 +78,22 @@ public abstract class Task {
 
         participants.add(participant);
         return true;
+    }
+
+    public void addWorkReport(TaskWork taskWork){
+        this.workReports.add(taskWork);
+    }
+
+    /**
+     * Calculates the total amount of work done on this task in manhours.
+     * @return The number of manhours worked.
+     */
+    public double manhoursWorked(){
+        double total = 0;
+        for (TaskWork work: workReports){
+            total += work.getManhours();
+        }
+        return total;
     }
 
     /**
@@ -150,6 +166,10 @@ public abstract class Task {
 
     public void setUrgency(Urgency urgency) {
         this.urgency = urgency;
+    }
+
+    public Set<TaskWork> getWorkReports() {
+        return workReports;
     }
 
     @Override

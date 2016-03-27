@@ -2,8 +2,10 @@ package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.task.TaskDAO;
-import com.melkamar.deadlines.dao.user.UserDAOHibernate;
+import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.WrongRoleException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -11,6 +13,7 @@ import com.melkamar.deadlines.model.task.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -28,6 +31,8 @@ public class TaskHelper {
     private TaskDAO taskDAO;
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
+    @Autowired
+    private TaskParticipantDAO taskparticipantDAO;
 
 
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
@@ -54,9 +59,25 @@ public class TaskHelper {
         return task;
     }
 
-    public boolean reportWork() {
-        // TODO: 27.03.2016
-        return false;
+    public TaskWork reportWork(User user, Task task, double manhours) throws WrongParameterException, NotMemberOfException, WrongRoleException {
+        if (manhours<0){
+            throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_MANHOURS_INVALID);
+        }
+        if (!task.usersOnTask().contains(user)){
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user.getUsername(), task.getName(), task.getId()));
+        }
+
+        TaskParticipant participant = taskparticipantDAO.findByUserAndTask(user, task);
+        if (participant == null){
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT_IS_NULL, user.getUsername(), task.getName(), task.getId()));
+        } else if (participant.getRole() != TaskRole.WORKER){
+            throw new WrongRoleException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user.getUsername(), task.getName(), task.getId()));
+        }
+
+        TaskWork taskWork = new TaskWork(manhours, user);
+        task.addWorkReport(taskWork);
+
+        return taskWork;
     }
 
     /**

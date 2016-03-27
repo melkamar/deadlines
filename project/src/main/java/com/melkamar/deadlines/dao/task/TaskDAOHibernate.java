@@ -25,4 +25,9 @@ public class TaskDAOHibernate implements TaskDAO {
         taskRepository.save(task);
         return task;
     }
+
+    @Override
+    public Task findById(Long id) {
+        return taskRepository.findById(id);
+    }
 }
