@@ -4,15 +4,13 @@ import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.NullParameterException;
 import com.melkamar.deadlines.model.User;
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +47,7 @@ public class UserHelperTest {
         Assert.assertNotNull(userDAO.findByUsername("User1"));
     }
 
-    @Test(expected = JpaSystemException.class)
+    @Test(expected = DataIntegrityViolationException.class)
     @Transactional
     public void uniqueUsername() throws NullParameterException {
         User user = userHelper.createUser("uniq1", "password", null, null);
@@ -58,14 +56,15 @@ public class UserHelperTest {
     }
 
     @Test
-    @Transactional
+//    @Transactional
     public void fieldsPersistence() throws NullParameterException {
         User user = userHelper.createUser("User2", "password", "somename", "someemail");
-
         User retrieved = userDAO.findByUsername("User2");
+
+        System.out.println(user);
+        System.out.println(retrieved);
+
         Assert.assertNotNull(retrieved);
-        Assert.assertEquals("User2", retrieved.getUsername());
-        Assert.assertEquals("somename", retrieved.getName());
-        Assert.assertEquals("someemail", retrieved.getEmail());
+        Assert.assertEquals(user, retrieved);
     }
 }

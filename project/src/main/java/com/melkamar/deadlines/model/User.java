@@ -96,9 +96,17 @@ public class User {
     }
 
     public boolean addAdminOf(Group group){
+        System.out.println("User#addAdminOf: "+group);
         return adminOf.add(group);
     }
 
+    public boolean isAdminOf(Group group){
+        System.out.println("CURRENT admin groups -----");
+        for (Group iter: adminOf) System.out.println("    " + iter + " ||| "+iter.getId());
+
+        System.out.println("Comparing with: "+group+" (id = "+group.getId());
+        return adminOf.contains(group);
+    }
 
     public Long getId() {
         return id;
@@ -148,4 +156,28 @@ public class User {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        if (!username.equals(user.username)) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (!passwordHash.equals(user.passwordHash)) return false;
+        if (!passwordSalt.equals(user.passwordSalt)) return false;
+        return name != null ? name.equals(user.name) : user.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username.hashCode();
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + passwordHash.hashCode();
+        result = 31 * result + passwordSalt.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }

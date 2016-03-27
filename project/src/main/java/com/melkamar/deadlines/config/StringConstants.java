@@ -10,4 +10,6 @@ import org.springframework.stereotype.Service;
 public class StringConstants {
     public final String EXC_PARAM_USERNAME_EMPTY = "Username cannot be empty.";
     public final String EXC_PARAM_PASSWORD_EMPTY = "Password cannot be empty.";
+    public final String EXC_PARAM_NAME_EMPTY = "Name cannot be empty.";
+    public final String EXC_PARAM_FOUNDER_NULL = "Founder cannot be null.";
 }

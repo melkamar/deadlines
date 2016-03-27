@@ -39,7 +39,7 @@ public class GroupTest {
     public void testPersistence() {
         Assert.assertEquals(0, groupDAO.count());
 
-        Group group = new Group("PersistName", "Description");
+        Group group = new Group("PersistName");
         groupDAO.save(group);
 
         Assert.assertEquals(1, groupDAO.count());
@@ -47,13 +47,13 @@ public class GroupTest {
 
     @Test
     public void testUniqueName() {
-        Group group1 = new Group("GroupName", "Description lorem ipsum");
+        Group group1 = new Group("GroupName");
         groupDAO.save(group1);
 
-        Group group2 = new Group("GroupNameDifferent", "Description lorem ipsum");
+        Group group2 = new Group("GroupNameDifferent");
         groupDAO.save(group2);
 
-        Group group3 = new Group("GroupName", "Description lorem ipsum");
+        Group group3 = new Group("GroupName");
         thrown.expect(DataIntegrityViolationException.class);
         groupDAO.save(group3);
     }
@@ -61,7 +61,7 @@ public class GroupTest {
     @Test
     @Transactional
     public void testMemberRoles() {
-        Group group = new Group("RoleGroup", null);
+        Group group = new Group("RoleGroup");
 
         User user1 = new User("Member1", "abcd", "abcd");
         User user2 = new User("Member2", "abcd", "abcd");
@@ -92,7 +92,7 @@ public class GroupTest {
         userDAO.save(user6);
 
 
-        Group groupLoaded = groupDAO.getGroupByName("RoleGroup");
+        Group groupLoaded = groupDAO.findByName("RoleGroup");
 
         System.out.println("Members -----");
         for (User member : groupLoaded.getMembers()) System.out.println(member.getUsername());

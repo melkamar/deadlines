@@ -26,14 +26,4 @@ public class DeadlinesApplicationTests {
 
 	}
 
-	@Test
-	public void createParticipant(){
-		User user = new User();
-		user.setName("User1");
-
-		Task task = new DeadlineTask();
-
-		TaskParticipant participant = TaskParticipant.createTaskParticipant(user, task);
-	}
-
 }

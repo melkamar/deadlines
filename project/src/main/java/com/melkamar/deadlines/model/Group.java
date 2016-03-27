@@ -17,6 +17,7 @@ public class Group {
     public final static String COL_GROUP_ID = "GROUP_ID";
     public final static String COL_GROUP_NAME = "DESCRIPTION";
     public final static String COL_GROUP_DESCRIPTION = "NAME";
+    public final static String COL_GROUP_JCOL_ADMIN = "ADMIN_USER_ID";
 
     @Id
     @Column(name = COL_GROUP_ID)
@@ -39,7 +40,7 @@ public class Group {
     private Set<User> managers = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = User.COL_USER_ID)
+    @JoinColumn(name = COL_GROUP_JCOL_ADMIN, referencedColumnName = User.COL_USER_ID)
     private User admin;
 
     @OneToMany(mappedBy = "offeredTo")
@@ -49,9 +50,8 @@ public class Group {
         this.name = null;
     }
 
-    public Group(String name, String description){
+    public Group(String name){
         this.name = name;
-        this.description = description;
     }
 
 
@@ -121,5 +121,47 @@ public class Group {
 
     public User getAdmin() {
         return admin;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                '}' + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Group)) return false;
+
+        Group group = (Group) o;
+
+        if (description != null ? !description.equals(group.description) : group.description != null) return false;
+        if (name != null ? !name.equals(group.name) : group.name != null) return false;
+        if (participants != null ? !participants.equals(group.participants) : group.participants != null) return false;
+        if (members != null ? !members.equals(group.members) : group.members != null) return false;
+        if (managers != null ? !managers.equals(group.managers) : group.managers != null) return false;
+        if (admin != null ? !admin.equals(group.admin) : group.admin != null) return false;
+        return taskOffers != null ? taskOffers.equals(group.taskOffers) : group.taskOffers == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = description != null ? description.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (participants != null ? participants.hashCode() : 0);
+        result = 31 * result + (members != null ? members.hashCode() : 0);
+        result = 31 * result + (managers != null ? managers.hashCode() : 0);
+        result = 31 * result + (admin != null ? admin.hashCode() : 0);
+        result = 31 * result + (taskOffers != null ? taskOffers.hashCode() : 0);
+        return result;
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service("groupDAO")
-@Transactional
 public class GroupDAOHibernate implements GroupDAO {
     @Autowired
     private GroupRepository groupRepository;
@@ -28,7 +27,7 @@ public class GroupDAOHibernate implements GroupDAO {
     }
 
     @Override
-    public Group getGroupByName(String name) {
+    public Group findByName(String name) {
         return groupRepository.findByName(name);
     }
 }

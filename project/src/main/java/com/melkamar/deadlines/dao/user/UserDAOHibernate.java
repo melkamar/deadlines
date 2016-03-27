@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Service("userDAO")
-@Transactional
 public class UserDAOHibernate implements UserDAO {
     @Autowired
     private UserRepository userRepository;

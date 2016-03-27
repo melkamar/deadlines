@@ -6,13 +6,14 @@ import com.melkamar.deadlines.exceptions.NullParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 26.03.2016 14:49
  */
-@Component
+@Service
 public class UserHelper {
     @Autowired
     private StringConstants stringConstants;
@@ -21,7 +22,7 @@ public class UserHelper {
     @Autowired
     private UserDAO userDAO;
 
-
+//    @Transactional
     public User createUser(String username, String password, String name, String email) throws NullParameterException {
         if (username == null || username.isEmpty()) {
             throw new NullParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
