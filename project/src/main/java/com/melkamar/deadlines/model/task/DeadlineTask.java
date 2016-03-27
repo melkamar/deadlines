@@ -12,7 +12,7 @@ import java.util.Date;
 public class DeadlineTask extends Task {
     public static final String COL_DATE_DEADLINE = "DATE_DEADLINE";
 
-    @Column(name = COL_DATE_DEADLINE, nullable = false)
+    @Column(name = COL_DATE_DEADLINE)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date deadline;
 

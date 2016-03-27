@@ -1,13 +1,16 @@
 package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.config.StringConstants;
-import com.melkamar.deadlines.exceptions.NullParameterException;
+import com.melkamar.deadlines.dao.task.TaskDAO;
+import com.melkamar.deadlines.dao.user.UserDAOHibernate;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -20,22 +23,29 @@ public class TaskHelper {
     private StringConstants stringConstants;
     @Autowired
     private UrgencyHelper urgencyHelper;
+    @Autowired
+    private TaskDAO taskDAO;
 
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Date deadline) throws NullParameterException {
+
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
         validateGenericCreateTaskParams(creator, name);
-        if (deadline == null) throw new NullParameterException(stringConstants.EXC_PARAM_TASK_DEADLINE_NULL);
+        if (deadline == null) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_DEADLINE_NULL);
 
-        DeadlineTask task = new DeadlineTask();
+        DeadlineTask task = new DeadlineTask(new Date());
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
+
+        taskDAO.save(task);
         return task;
     }
 
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, double growSpeed) throws NullParameterException {
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, double growSpeed) throws WrongParameterException {
         validateGenericCreateTaskParams(creator, name);
-        if (growSpeed < 0) throw new NullParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
+        if (growSpeed < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
 
-        GrowingTask task = new GrowingTask();
+        GrowingTask task = new GrowingTask(new Date());
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
+
+        taskDAO.save(task);
         return task;
     }
 
@@ -56,12 +66,12 @@ public class TaskHelper {
     }
 
 
-    private void validateGenericCreateTaskParams(User creator, String name) throws NullParameterException {
+    private void validateGenericCreateTaskParams(User creator, String name) throws WrongParameterException {
         if (creator == null) {
-            throw new NullParameterException(stringConstants.EXC_PARAM_TASK_CREATOR_NULL);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_CREATOR_NULL);
         }
         if (name == null || name.isEmpty()) {
-            throw new NullParameterException(stringConstants.EXC_PARAM_NAME_EMPTY);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_NAME_EMPTY);
         }
     }
 

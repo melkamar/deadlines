@@ -14,7 +14,7 @@ import java.util.Date;
 public class GrowingTask extends Task {
     public static final String COL_GROW_SPEED = "GROW_SPEED";
 
-    @Column(name = COL_GROW_SPEED, nullable = false)
+    @Column(name = COL_GROW_SPEED)
     protected Double growspeed;
 
     public GrowingTask(){

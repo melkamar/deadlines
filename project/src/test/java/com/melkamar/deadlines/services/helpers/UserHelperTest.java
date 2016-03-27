@@ -2,7 +2,7 @@ package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.exceptions.NullParameterException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,21 +26,21 @@ public class UserHelperTest {
     private UserDAO userDAO;
 
 
-    @Test(expected = NullParameterException.class)
+    @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullParameters() throws NullParameterException {
+    public void nullParameters() throws WrongParameterException {
         userHelper.createUser(null, null, null, null);
     }
 
-    @Test(expected = NullParameterException.class)
+    @Test(expected = WrongParameterException.class)
     @Transactional
-    public void emptyParameters() throws NullParameterException {
+    public void emptyParameters() throws WrongParameterException {
         userHelper.createUser("", "", "", "");
     }
 
     @Test
     @Transactional
-    public void plainPersistence() throws NullParameterException {
+    public void plainPersistence() throws WrongParameterException {
         User user = userHelper.createUser("User1", "password", null, null);
 
         Assert.assertNotNull(userDAO.findByUsername("User1"));
@@ -48,7 +48,7 @@ public class UserHelperTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     @Transactional
-    public void uniqueUsername() throws NullParameterException {
+    public void uniqueUsername() throws WrongParameterException {
         User user = userHelper.createUser("uniq1", "password", null, null);
         User user2 = userHelper.createUser("uniq2", "password", null, null);
         User user3 = userHelper.createUser("uniq2", "password", null, null);
@@ -56,7 +56,7 @@ public class UserHelperTest {
 
     @Test
 //    @Transactional
-    public void fieldsPersistence() throws NullParameterException {
+    public void fieldsPersistence() throws WrongParameterException {
         User user = userHelper.createUser("User2", "password", "somename", "someemail");
         User retrieved = userDAO.findByUsername("User2");
 

@@ -2,12 +2,11 @@ package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.exceptions.NullParameterException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -22,9 +21,9 @@ public class UserHelper {
     @Autowired
     private UserDAO userDAO;
 
-    public User createUser(String username, String password, String name, String email) throws NullParameterException {
+    public User createUser(String username, String password, String name, String email) throws WrongParameterException {
         if (username == null || username.isEmpty()) {
-            throw new NullParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
         }
 
         if (password == null || password.isEmpty()){

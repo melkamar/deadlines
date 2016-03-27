@@ -1,8 +1,7 @@
 package com.melkamar.deadlines;
 
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.dao.user.UserDAOHibernate;
-import com.melkamar.deadlines.exceptions.NullParameterException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.services.helpers.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -32,7 +31,7 @@ public class DeadlinesApplication {
 
 
     @PostConstruct
-    public void somemethod() throws NullParameterException {
+    public void somemethod() throws WrongParameterException {
         userHelper.createUser("AHOJ", "psss", "name","mail");
     }
 }

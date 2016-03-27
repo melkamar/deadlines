@@ -3,6 +3,7 @@ package com.melkamar.deadlines.model;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
+import com.melkamar.deadlines.model.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
@@ -87,6 +88,7 @@ public class User {
     @OneToMany(mappedBy = "offeredTo")
     private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
 
+    /*************************************************************/
     public boolean addParticipant(TaskParticipant participant) {
         if (participants.contains(participant))
             return false;
@@ -107,6 +109,19 @@ public class User {
         System.out.println("Comparing with: "+group+" (id = "+group.getId());
         return adminOf.contains(group);
     }
+
+    /**
+     * Lists all Tasks the User participates in.
+     * Serves as a shortcut so that it is not necessary
+     * to navigate through the TaskParticipant.
+     * @return Set of Tasks
+     */
+    public Set<Task> tasksOfUser(){
+        // TODO: 27.03.2016 Implement
+        return new HashSet<Task>();
+    }
+
+    /*************************************************************/
 
     public Long getId() {
         return id;

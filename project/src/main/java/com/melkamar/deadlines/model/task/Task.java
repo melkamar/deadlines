@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
 import com.melkamar.deadlines.model.TaskParticipant;
+import com.melkamar.deadlines.model.User;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -78,6 +79,19 @@ public abstract class Task {
         participants.add(participant);
         return true;
     }
+
+    /**
+     * Lists all users that are associated with the Task.
+     * This serves as a shortcut, so that it is not necessary to
+     * get all task participants and then create a Set of users from them.
+     * @return Set of Users.
+     */
+    public Set<User> usersOnTask(){
+        // TODO: 27.03.2016 Implement
+        return new HashSet<User>();
+    }
+
+    /*************************************************************/
 
     public Long getId() {
         return id;

@@ -2,23 +2,17 @@ package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.group.GroupDAO;
-import com.melkamar.deadlines.dao.group.GroupDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.exceptions.NullParameterException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
-import com.sun.media.sound.SoftTuning;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -37,21 +31,21 @@ public class GroupHelperTest {
     @Autowired
     private UserHelper userHelper;
 
-    @Test(expected = NullParameterException.class)
+    @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullParameters() throws NullParameterException {
+    public void nullParameters() throws WrongParameterException {
         groupHelper.createGroup(null, null, null);
     }
 
-    @Test(expected = NullParameterException.class)
+    @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullFounder() throws NullParameterException {
+    public void nullFounder() throws WrongParameterException {
         groupHelper.createGroup("SomeName", null, null);
     }
 
     @Test
     @Transactional
-    public void founderAdmin() throws NullParameterException {
+    public void founderAdmin() throws WrongParameterException {
         User user = userHelper.createUser("GroupAdmin", "pwd", null, null);
         Group group = groupHelper.createGroup("AGroup", user, null);
 
