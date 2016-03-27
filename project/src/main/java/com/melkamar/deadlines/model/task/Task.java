@@ -60,13 +60,10 @@ public abstract class Task {
     @OneToMany(mappedBy = "task")
     private Set<TaskParticipant> participants = new HashSet<>();
 
-
-    int reportWork(double workDone) {
-        // TODO
-        return 0;
-    }
+    /*************************************************************/
 
     public boolean addParticipant(TaskParticipant participant) {
+        // TODO: 27.03.2016 Check if correct
         if (participants.contains(participant))
             return false;
 
@@ -74,5 +71,80 @@ public abstract class Task {
         return true;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getWorkEstimate() {
+        return workEstimate;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public Urgency getUrgency() {
+        return urgency;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setWorkEstimate(Double workEstimate) {
+        this.workEstimate = workEstimate;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public void setUrgency(Urgency urgency) {
+        this.urgency = urgency;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Task task = (Task) o;
+
+        return id != null ? id.equals(task.id) : task.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }
 

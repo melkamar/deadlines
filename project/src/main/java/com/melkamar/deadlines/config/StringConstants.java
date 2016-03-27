@@ -12,4 +12,7 @@ public class StringConstants {
     public final String EXC_PARAM_PASSWORD_EMPTY = "Password cannot be empty.";
     public final String EXC_PARAM_NAME_EMPTY = "Name cannot be empty.";
     public final String EXC_PARAM_FOUNDER_NULL = "Founder cannot be null.";
+    public final String EXC_PARAM_TASK_CREATOR_NULL = "Task creator cannot be null.";
+    public final String EXC_PARAM_TASK_DEADLINE_NULL = "Task deadline cannot be null.";
+    public final String EXC_PARAM_TASK_GROWSPEED_INVALID = "Task grow speed must be >=0.";
 }

@@ -1,2 +1,3 @@
 LazyInitializationException - mark method @Transactional
 Cannot use identity column key generation with <union-subclass> ( TABLE_PER_CLASS ) -- change ID generatedvalue to .TABLE
+@Test will automatically rollback. To overwrite, do @Rollback(value = false) on the test class

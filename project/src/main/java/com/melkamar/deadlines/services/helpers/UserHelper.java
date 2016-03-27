@@ -22,7 +22,6 @@ public class UserHelper {
     @Autowired
     private UserDAO userDAO;
 
-//    @Transactional
     public User createUser(String username, String password, String name, String email) throws NullParameterException {
         if (username == null || username.isEmpty()) {
             throw new NullParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
