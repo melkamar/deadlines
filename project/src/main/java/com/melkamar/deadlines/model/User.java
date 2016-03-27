@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -68,7 +69,7 @@ public class User {
     @ManyToMany
     @JoinTable(name = COL_JTABLE_MEMBEROF_GROUP,
             joinColumns = {@JoinColumn(name = COL_USER_ID)},
-            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID )}
+            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
     )
     private Set<Group> memberOf = new HashSet<>();
 
@@ -97,16 +98,16 @@ public class User {
         return true;
     }
 
-    public boolean addAdminOf(Group group){
-        System.out.println("User#addAdminOf: "+group);
+    public boolean addAdminOf(Group group) {
+        System.out.println("User#addAdminOf: " + group);
         return adminOf.add(group);
     }
 
-    public boolean isAdminOf(Group group){
+    public boolean isAdminOf(Group group) {
         System.out.println("CURRENT admin groups -----");
-        for (Group iter: adminOf) System.out.println("    " + iter + " ||| "+iter.getId());
+        for (Group iter : adminOf) System.out.println("    " + iter + " ||| " + iter.getId());
 
-        System.out.println("Comparing with: "+group+" (id = "+group.getId());
+        System.out.println("Comparing with: " + group + " (id = " + group.getId());
         return adminOf.contains(group);
     }
 
@@ -114,11 +115,14 @@ public class User {
      * Lists all Tasks the User participates in.
      * Serves as a shortcut so that it is not necessary
      * to navigate through the TaskParticipant.
+     *
      * @return Set of Tasks
      */
-    public Set<Task> tasksOfUser(){
-        // TODO: 27.03.2016 Implement
-        return new HashSet<Task>();
+    public Set<Task> tasksOfUser() {
+        Set<Task> tasks = new HashSet<Task>(participants.size());
+        tasks.addAll(participants.stream().map(TaskParticipant::getTask).collect(Collectors.toList()));
+
+        return tasks;
     }
 
     /*************************************************************/

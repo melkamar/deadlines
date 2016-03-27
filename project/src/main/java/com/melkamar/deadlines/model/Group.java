@@ -70,6 +70,14 @@ public class Group {
         return 0;
     }
 
+    public boolean addParticipant(TaskParticipant participant) {
+        if (participants.contains(participant))
+            return false;
+
+        participants.add(participant);
+        return true;
+    }
+
     /**
      * Removes the current Admin's role and sets it to the given User.
      */

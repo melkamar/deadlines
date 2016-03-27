@@ -5,6 +5,7 @@ import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.user.UserDAOHibernate;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class TaskHelper {
     private UrgencyHelper urgencyHelper;
     @Autowired
     private TaskDAO taskDAO;
+    @Autowired
+    private TaskParticipantHelper taskParticipantHelper;
 
 
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
@@ -61,8 +64,8 @@ public class TaskHelper {
      * @param task  Task to add the user to.
      * @param group If set, the user is added as a member of the group. May be null.
      */
-    public void addUserToTask(User user, Task task, Group group) {
-        // TODO: 27.03.2016 Look for Participant, if exists edit it, if not create it.
+    public void addUserToTask(User user, Task task, TaskRole role, Group group) {
+        TaskParticipant taskParticipant = taskParticipantHelper.addTaskParticipantEntry(user, task, role, group);
     }
 
 
@@ -79,11 +82,11 @@ public class TaskHelper {
         task.setName(name);
         task.setDescription(description);
         task.setWorkEstimate(workEstimate);
-        task.setPriority(priority);
+        task.setPriority(priority==null?Priority.NORMAL:priority);
         urgencyHelper.computeUrgency(task);
         task.setStatus(TaskStatus.OPEN);
 
-        this.addUserToTask(creator, task, null);
+        this.addUserToTask(creator, task, TaskRole.WATCHER, null);
 
         return task;
     }

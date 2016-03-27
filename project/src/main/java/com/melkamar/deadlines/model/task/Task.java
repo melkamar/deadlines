@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -61,7 +62,7 @@ public abstract class Task {
     @OneToMany(mappedBy = "task")
     protected Set<TaskParticipant> participants = new HashSet<>();
 
-    public Task(){
+    public Task() {
         this.dateCreated = null;
     }
 
@@ -72,7 +73,6 @@ public abstract class Task {
     /*************************************************************/
 
     public boolean addParticipant(TaskParticipant participant) {
-        // TODO: 27.03.2016 Check if correct
         if (participants.contains(participant))
             return false;
 
@@ -84,11 +84,14 @@ public abstract class Task {
      * Lists all users that are associated with the Task.
      * This serves as a shortcut, so that it is not necessary to
      * get all task participants and then create a Set of users from them.
+     *
      * @return Set of Users.
      */
-    public Set<User> usersOnTask(){
-        // TODO: 27.03.2016 Implement
-        return new HashSet<User>();
+    public Set<User> usersOnTask() {
+        Set<User> users = new HashSet<User>(participants.size());
+        users.addAll(participants.stream().map(TaskParticipant::getUser).collect(Collectors.toList()));
+
+        return users;
     }
 
     /*************************************************************/

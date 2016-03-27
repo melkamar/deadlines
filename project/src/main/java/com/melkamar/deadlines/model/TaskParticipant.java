@@ -25,7 +25,7 @@ public class TaskParticipant {
     private Long id;
 
     @Column(name = COL_SOLO)
-    private Boolean solo;
+    private Boolean solo = false;
 
     @Column(name = COL_ROLE)
     @Enumerated(EnumType.STRING)
@@ -33,11 +33,11 @@ public class TaskParticipant {
 
     @ManyToOne
     @JoinColumn(name = User.COL_USER_ID)
-    private User user;
+    private final User user;
 
     @ManyToOne
     @JoinColumn(name = Task.COL_TASK_ID)
-    private Task task;
+    private final Task task;
 
     @ManyToMany
     @JoinTable(name = COL_JTABLE_TASKPARTICIPANT_GROUP,
@@ -45,23 +45,35 @@ public class TaskParticipant {
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})
     private Set<Group> groups = new HashSet<>();
 
+    /*************************************************************/
+
+    /**
+     * Returns true if the group was not already present.
+     * False if the group was already in the set.
+     */
+    public boolean addGroup(Group group){
+        return groups.add(group);
+    }
+
+    /**
+     * Returns true if an existing group was removed from the set.
+     * False if the group was not in the set.
+     */
+    public boolean removeGroup(Group group){
+        return groups.remove(group);
+    }
+
+    /*************************************************************/
+
+
     public TaskParticipant(){
         this.user = null;
         this.task = null;
     }
 
-    private TaskParticipant(User user, Task task){
+    public TaskParticipant(User user, Task task){
         this.user = user;
         this.task = task;
-        this.role = TaskRole.WATCHER;
-    }
-
-    public static TaskParticipant createTaskParticipant(User user, Task task){
-        TaskParticipant participant = new TaskParticipant(user, task);
-        task.addParticipant(participant);
-        user.addParticipant(participant);
-
-        return participant;
     }
 
 
@@ -91,5 +103,13 @@ public class TaskParticipant {
 
     public int setRole(TaskRole newRole) {
         return 0;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setSolo(Boolean solo) {
+        this.solo = solo;
     }
 }
