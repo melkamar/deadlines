@@ -8,6 +8,6 @@ import com.melkamar.deadlines.model.task.Task;
  */
 public interface TaskDAO {
     public long count();
-    public Task save(Task user);
+    public Task save(Task task);
 //    public User findByUsername(String username);
 }
