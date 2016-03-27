@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model.offer;
 
 import com.melkamar.deadlines.model.Group;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,12 +22,12 @@ public class GroupTaskSharingOffer extends TaskSharingOffer {
     @Override
     public int accept() {
         // TODO: 26.03.2016
-        return 0;
+        throw new NotImplementedException();
     }
 
     @Override
     public int decline() {
         // TODO: 26.03.2016
-        return 0;
+        throw new NotImplementedException();
     }
 }

@@ -1,3 +1,5 @@
 LazyInitializationException - mark method @Transactional
 Cannot use identity column key generation with <union-subclass> ( TABLE_PER_CLASS ) -- change ID generatedvalue to .TABLE
 @Test will automatically rollback. To overwrite, do @Rollback(value = false) on the test class
+
+With @OneToMany unidirectional association you need to manually define the column with FK on the target entity. See example: https://en.wikibooks.org/wiki/Java_Persistence/OneToMany#Unidirectional_OneToMany.2C_No_Inverse_ManyToOne.2C_No_Join_Table_.28JPA_2.x_ONLY.29

@@ -2,6 +2,7 @@ package com.melkamar.deadlines.model.offer;
 
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -26,12 +27,12 @@ public class MembershipOffer extends Offer {
     @Override
     public int accept() {
         // TODO: 26.03.2016  
-        return 0;
+        throw new NotImplementedException();
     }
 
     @Override
     public int decline() {
         // TODO: 26.03.2016
-        return 0;
+        throw new NotImplementedException();
     }
 }
