@@ -26,39 +26,47 @@ public abstract class Task {
     @Id
     @Column(name = COL_TASK_ID, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Column(name = COL_TASK_DATE_CREATED, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreated;
+    protected final Date dateCreated;
 
     @Column(name = COL_TASK_NAME, nullable = false)
-    private String name;
+    protected String name;
 
     @Column(name = COL_TASK_DESCRIPTION)
-    private String description;
+    protected String description;
 
     @Column(name = COL_TASK_WORK_ESTIMATE)
-    private Double workEstimate; // In manhours
+    protected Double workEstimate; // In manhours
 
     @Column(name = COL_TASK_PRIORITY)
     @Enumerated(EnumType.STRING)
-    private Priority priority;
+    protected Priority priority;
 
     @Column(name = COL_TASK_STATUS)
     @Enumerated(EnumType.STRING)
-    private TaskStatus status;
+    protected TaskStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = Urgency.COL_URGENCY_ID)
-    private Urgency urgency;
+    protected Urgency urgency;
 
     @OneToMany
     @JoinColumn(name = TaskWork.COL_TASKWORK_ID)
-    private Set<TaskWork> workReports = new HashSet<>();
+    protected Set<TaskWork> workReports = new HashSet<>();
 
     @OneToMany(mappedBy = "task")
-    private Set<TaskParticipant> participants = new HashSet<>();
+    protected Set<TaskParticipant> participants = new HashSet<>();
+
+    public Task(){
+        this.dateCreated = null;
+    }
+
+    public Task(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
     /*************************************************************/
 
@@ -101,10 +109,6 @@ public abstract class Task {
 
     public Urgency getUrgency() {
         return urgency;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 
     public void setName(String name) {
