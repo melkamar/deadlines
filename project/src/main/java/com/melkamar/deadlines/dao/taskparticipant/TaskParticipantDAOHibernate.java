@@ -29,7 +29,6 @@ public class TaskParticipantDAOHibernate implements TaskParticipantDAO {
 
     @Override
     public TaskParticipant findByUserAndTask(User user, Task task) {
-        // TODO: 27.03.2016 Implement
-        return null;
+        return taskParticipantRepository.findByUserAndTask(user, task);
     }
 }

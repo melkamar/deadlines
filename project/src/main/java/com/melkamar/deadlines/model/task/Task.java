@@ -55,11 +55,11 @@ public abstract class Task {
     @JoinColumn(name = Urgency.COL_URGENCY_ID)
     protected Urgency urgency;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = TaskWork.COL_TASKWORK_ID)
     protected Set<TaskWork> workReports = new HashSet<>();
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     protected Set<TaskParticipant> participants = new HashSet<>();
 
     public Task() {

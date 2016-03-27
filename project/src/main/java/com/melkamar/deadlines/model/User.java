@@ -63,30 +63,30 @@ public class User {
     }
 
     /* RELATIONS */
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<TaskParticipant> participants = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = COL_JTABLE_MEMBEROF_GROUP,
             joinColumns = {@JoinColumn(name = COL_USER_ID)},
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
     )
     private Set<Group> memberOf = new HashSet<>();
 
-    @ManyToMany()
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = COL_JTABLE_MANAGEROF_GROUP,
             joinColumns = {@JoinColumn(name = COL_USER_ID)},
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
     )
     private Set<Group> managerOf = new HashSet<>();
 
-    @OneToMany(mappedBy = "admin", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private Set<Group> adminOf = new HashSet<>();
 
-    @OneToMany(mappedBy = "offeredTo")
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.ALL)
     private Set<MembershipOffer> membershipOffers = new HashSet<>();
 
-    @OneToMany(mappedBy = "offeredTo")
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.ALL)
     private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
 
     /*************************************************************/

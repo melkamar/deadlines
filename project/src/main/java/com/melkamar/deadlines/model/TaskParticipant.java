@@ -31,15 +31,15 @@ public class TaskParticipant {
     @Enumerated(EnumType.STRING)
     private TaskRole role;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = User.COL_USER_ID)
     private final User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = Task.COL_TASK_ID)
     private final Task task;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = COL_JTABLE_TASKPARTICIPANT_GROUP,
             joinColumns = {@JoinColumn(name = COL_TASKPARTICIPANT_ID)},
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})

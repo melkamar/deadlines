@@ -38,6 +38,7 @@ public class TaskHelper {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
+        this.addUserToTask(creator, task, TaskRole.WATCHER, null);
         return task;
     }
 
@@ -49,6 +50,7 @@ public class TaskHelper {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
+        this.addUserToTask(creator, task, TaskRole.WATCHER, null);
         return task;
     }
 
@@ -85,8 +87,6 @@ public class TaskHelper {
         task.setPriority(priority==null?Priority.NORMAL:priority);
         urgencyHelper.computeUrgency(task);
         task.setStatus(TaskStatus.OPEN);
-
-        this.addUserToTask(creator, task, TaskRole.WATCHER, null);
 
         return task;
     }

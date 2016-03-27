@@ -1,6 +1,10 @@
 package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
+import com.melkamar.deadlines.dao.task.TaskDAO;
+import com.melkamar.deadlines.dao.task.TaskDAOHibernate;
+import com.melkamar.deadlines.dao.user.UserDAO;
+import com.melkamar.deadlines.dao.user.UserDAOHibernate;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
@@ -10,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +32,10 @@ public class TaskHelperTest {
     private TaskHelper taskHelper;
     @Autowired
     private UserHelper userHelper;
+    @Autowired
+    private UserDAO userDAO;
+    @Autowired
+    private TaskDAO taskDAO;
 
 
     @Test(expected = WrongParameterException.class)
@@ -72,4 +81,22 @@ public class TaskHelperTest {
         Assert.assertTrue(task.usersOnTask().contains(user));
         Assert.assertTrue(user.tasksOfUser().contains(task));
     }
+
+    @Test
+    @Transactional
+    public void userTaskRelationPersistence() throws WrongParameterException {
+        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+
+        User retrievedUser = userDAO.findByUsername("TestUser");
+        Assert.assertTrue(retrievedUser.tasksOfUser().size() == 1);
+
+        Task retrievedTask = retrievedUser.tasksOfUser().iterator().next();
+        Assert.assertTrue(retrievedTask.getName().equals("TestTask"));
+
+        System.out.println("Original:  "+task);
+        System.out.println("Retrieved: "+retrievedTask);
+    }
+
+
 }
