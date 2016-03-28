@@ -60,7 +60,7 @@ public class User {
     }
 
     /* RELATIONS */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     private Set<TaskParticipant> participants = new HashSet<>();
 
 //    @ManyToMany(cascade = CascadeType.ALL)
@@ -83,10 +83,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<GroupMember> memberAs = new HashSet<>();
 
-    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
     private Set<MembershipOffer> membershipOffers = new HashSet<>();
 
-    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
     private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
 
     /*************************************************************/

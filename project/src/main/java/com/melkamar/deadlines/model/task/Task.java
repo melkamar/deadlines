@@ -51,15 +51,15 @@ public abstract class Task {
     @Enumerated(EnumType.STRING)
     protected TaskStatus status;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = Urgency.COL_URGENCY_ID)
     protected Urgency urgency;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name = TaskWork.COL_OWNING_TASK_ID, referencedColumnName = COL_TASK_ID)
     protected Set<TaskWork> workReports = new HashSet<>();
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.MERGE)
     protected Set<TaskParticipant> participants = new HashSet<>();
 
     public Task() {
