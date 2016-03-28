@@ -3,10 +3,7 @@ package com.melkamar.deadlines.services.helpers;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.MemberRole;
@@ -25,7 +22,7 @@ import java.text.MessageFormat;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 26.03.2016 15:52
  */
-@Service
+@Service("groupHelper")
 public class GroupHelper {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -71,7 +68,7 @@ public class GroupHelper {
         throw new NotImplementedException();
     }
 
-    public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException {
+    public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException, NotAllowedException {
         if (executor == null || group == null || member == null){
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NULL);
         }
@@ -83,6 +80,9 @@ public class GroupHelper {
         GroupMember promotedGroupMember = groupMemberHelper.getGroupMember(member, group);
         if (promotedGroupMember == null) {
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_CANT_PROMOTE, member, group));
+        }
+        if (promotedGroupMember.getRole() == MemberRole.ADMIN){
+            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_PROMOTE_ADMIN);
         }
 
         if (newValue){

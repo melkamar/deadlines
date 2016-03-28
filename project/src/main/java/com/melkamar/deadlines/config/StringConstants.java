@@ -32,4 +32,6 @@ public class StringConstants {
     public final String EXC_USER_NOT_MEMBER_CANT_PROMOTE = "User [{0}] is not a member of group [{1}]. He cannot be promoted.";
 
     public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
+
+    public final String EXC_NOT_ALLOWED_PROMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";
 }

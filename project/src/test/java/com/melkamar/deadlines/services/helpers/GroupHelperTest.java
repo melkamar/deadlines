@@ -3,10 +3,7 @@ package com.melkamar.deadlines.services.helpers;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
@@ -67,7 +64,7 @@ public class GroupHelperTest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void setManagerWrongParam1() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void setManagerWrongParam1() throws WrongParameterException, GroupPermissionException, NotMemberOfException, NotAllowedException {
         User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -80,7 +77,7 @@ public class GroupHelperTest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void setManagerWrongParam2() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void setManagerWrongParam2() throws WrongParameterException, GroupPermissionException, NotMemberOfException, NotAllowedException {
         User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.cb");
@@ -93,7 +90,7 @@ public class GroupHelperTest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void setManagerWrongParam3() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void setManagerWrongParam3() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -106,7 +103,7 @@ public class GroupHelperTest {
 
     @Test(expected = GroupPermissionException.class)
     @Transactional
-    public void setManagerNoPermission() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void setManagerNoPermission() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -121,7 +118,7 @@ public class GroupHelperTest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void setManagerTargetNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void setManagerTargetNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -134,7 +131,7 @@ public class GroupHelperTest {
 
     @Test
     @Transactional
-    public void setManagerOkPermission() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void setManagerOk() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -151,5 +148,20 @@ public class GroupHelperTest {
         Assert.assertTrue(groupMemberHelper.getGroupMember(userManager, group).getRole() == MemberRole.MANAGER);
         groupHelper.setManager(userAdmin, group, userManager, false);
         Assert.assertTrue(groupMemberHelper.getGroupMember(userManager, group).getRole() == MemberRole.MEMBER);
+    }
+
+    @Test(expected = NotAllowedException.class)
+    @Transactional
+    public void setManagerOnAdmin() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.cab");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.ca");
+
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
+        groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
+
+        groupHelper.setManager(userAdmin, group, userAdmin, true);
     }
 }
