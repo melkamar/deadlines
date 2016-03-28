@@ -5,12 +5,14 @@ import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import com.melkamar.deadlines.exceptions.GroupPermissionException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.services.PermissionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class GroupHelper {
     private GroupDAO groupDAO;
     @Autowired
     private GroupMemberHelper groupMemberHelper;
+    @Autowired
+    private PermissionHandler permissionHandler;
+
 
     public Group createGroup(String name, User founder, String description) throws WrongParameterException {
         if (name == null || name.isEmpty()) throw new WrongParameterException(stringConstants.EXC_PARAM_NAME_EMPTY);
@@ -46,7 +51,7 @@ public class GroupHelper {
         groupDAO.save(group);
 
         try {
-            groupMemberHelper.addOrEditGroupMember(founder, group, MemberRole.ADMIN);
+            groupMemberHelper.createGroupMember(founder, group, MemberRole.ADMIN);
         } catch (AlreadyExistsException e) {
             org.apache.log4j.Logger.getLogger(this.getClass()).error("User is already a member of newly created group! This should not happen.");
             e.printStackTrace();
@@ -66,31 +71,31 @@ public class GroupHelper {
         throw new NotImplementedException();
     }
 
-    public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException {
-        throw new NotImplementedException();
+    public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException {
+        if (executor == null || group == null || member == null){
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NULL);
+        }
 
-//        if (!hasPermission(executor, group, Group.PermissionLevel.ADMIN))
-//            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, executor, executor));
+        GroupMember executorGroupMember = groupMemberHelper.getGroupMember(executor, group);
+        if (!permissionHandler.hasGroupPermission(executorGroupMember, MemberRole.ADMIN))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.ADMIN, executor, group));
+
+        GroupMember promotedGroupMember = groupMemberHelper.getGroupMember(member, group);
+        if (promotedGroupMember == null) {
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_CANT_PROMOTE, member, group));
+        }
+
+        if (newValue){
+            promotedGroupMember.setRole(MemberRole.MANAGER);
+        } else {
+            promotedGroupMember.setRole(MemberRole.MEMBER);
+        }
+
+        return true;
     }
+
 
     public boolean changeAdmin(User executor, Group group, User newAdmin) {
         throw new NotImplementedException();
-    }
-
-    private boolean hasPermission(User executor, Group group, MemberRole requiredPermission) {
-        throw new NotImplementedException();
-//        switch (requiredPermission) {
-//            case MEMBER:
-//                return group.getMembers().contains(executor) || group.getManagers().contains(executor) || group.getAdmin().equals(executor);
-//
-//            case MANAGER:
-//                return group.getManagers().contains(executor) || group.getAdmin().equals(executor);
-//
-//            case ADMIN:
-//                return group.getAdmin().equals(executor);
-//
-//            default:
-//                return false;
-//        }
     }
 }

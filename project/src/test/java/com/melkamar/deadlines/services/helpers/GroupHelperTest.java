@@ -3,12 +3,17 @@ package com.melkamar.deadlines.services.helpers;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
+import com.melkamar.deadlines.exceptions.AlreadyExistsException;
+import com.melkamar.deadlines.exceptions.GroupPermissionException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -58,9 +63,93 @@ public class GroupHelperTest {
 
         Assert.assertEquals(retrievedUser, retrievedGroup.getGroupMembers(MemberRole.ADMIN).iterator().next().getUser());
         Assert.assertTrue(groupMemberHelper.getGroupMember(retrievedUser, retrievedGroup).getRole() == MemberRole.ADMIN);
-
     }
 
+    @Test(expected = WrongParameterException.class)
+    @Transactional
+    public void setManagerWrongParam1() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
 
+        groupHelper.setManager(null, group, userMember, true);
+    }
+
+    @Test(expected = WrongParameterException.class)
+    @Transactional
+    public void setManagerWrongParam2() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.cb");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.c");
+
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+
+        groupHelper.setManager(userAdmin, null, userMember, true);
+    }
+
+    @Test(expected = WrongParameterException.class)
+    @Transactional
+    public void setManagerWrongParam3() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.c");
+
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+
+        groupHelper.setManager(userAdmin, group, null, true);
+    }
+
+    @Test(expected = GroupPermissionException.class)
+    @Transactional
+    public void setManagerNoPermission() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.ca");
+
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
+        groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
+
+        groupHelper.setManager(userManager, group, userMember, true);
+    }
+
+    @Test(expected = NotMemberOfException.class)
+    @Transactional
+    public void setManagerTargetNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.ca");
+
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+
+        groupHelper.setManager(userAdmin, group, userMember, true);
+    }
+
+    @Test
+    @Transactional
+    public void setManagerOkPermission() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.ca");
+        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.ca");
+
+        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
+        groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
+
+        Assert.assertTrue(groupMemberHelper.getGroupMember(userMember, group).getRole() == MemberRole.MEMBER);
+        groupHelper.setManager(userAdmin, group, userMember, true);
+        Assert.assertTrue(groupMemberHelper.getGroupMember(userMember, group).getRole() == MemberRole.MANAGER);
+
+        Assert.assertTrue(groupMemberHelper.getGroupMember(userManager, group).getRole() == MemberRole.MANAGER);
+        groupHelper.setManager(userAdmin, group, userManager, false);
+        Assert.assertTrue(groupMemberHelper.getGroupMember(userManager, group).getRole() == MemberRole.MEMBER);
+    }
 }

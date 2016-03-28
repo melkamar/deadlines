@@ -67,19 +67,25 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void addOrEditGroupMemberCreates() {
-        throw new NotImplementedException();
-    }
+    public void getGroupMember() throws WrongParameterException, AlreadyExistsException {
+        User user = userHelper.createUser("Username", "password", "John Doe", "a@b.c");
+        User user2 = userHelper.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
+        User user3 = userHelper.createUser("NewlyAddedUser2", "password", "Alice Doe", "ab@b.c");
 
-    @Transactional
-    @Test
-    public void addOrEditGroupMemberEdits() {
-        throw new NotImplementedException();
-    }
+        Group group = groupHelper.createGroup("Groupname", user, "Random description");
 
-    @Transactional
-    @Test
-    public void getGroupMember() {
-        throw new NotImplementedException();
+        Assert.assertTrue(groupMemberHelper.getGroupMember(user, group).getUser().equals(user));
+        Assert.assertNull(groupMemberHelper.getGroupMember(user2, group));
+        Assert.assertNull(groupMemberHelper.getGroupMember(user3, group));
+
+        groupMemberHelper.createGroupMember(user2, group, MemberRole.MEMBER);
+        Assert.assertTrue(groupMemberHelper.getGroupMember(user, group).getUser().equals(user));
+        Assert.assertTrue(groupMemberHelper.getGroupMember(user2, group).getUser().equals(user2));
+        Assert.assertNull(groupMemberHelper.getGroupMember(user3, group));
+
+        groupMemberHelper.createGroupMember(user3, group, MemberRole.MANAGER);
+        Assert.assertTrue(groupMemberHelper.getGroupMember(user, group).getUser().equals(user));
+        Assert.assertTrue(groupMemberHelper.getGroupMember(user2, group).getUser().equals(user2));
+        Assert.assertTrue(groupMemberHelper.getGroupMember(user3, group).getUser().equals(user3));
     }
 }

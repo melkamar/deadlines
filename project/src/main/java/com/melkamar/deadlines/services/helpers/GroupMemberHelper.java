@@ -40,18 +40,18 @@ public class GroupMemberHelper {
         return groupMember;
     }
 
-    public GroupMember addOrEditGroupMember(User user, Group group, MemberRole role) throws AlreadyExistsException, WrongParameterException {
-        validateGroupMemberParams(user, group, role);
-
-        GroupMember member = groupMemberDAO.findByUserAndGroup(user, group);
-        if (member == null) {
-            member = createGroupMember(user, group, role);
-        } else {
-            member.setRole(role);
-        }
-
-        return member;
-    }
+//    public GroupMember addOrEditGroupMember(User user, Group group, MemberRole role) throws AlreadyExistsException, WrongParameterException {
+//        validateGroupMemberParams(user, group, role);
+//
+//        GroupMember member = groupMemberDAO.findByUserAndGroup(user, group);
+//        if (member == null) {
+//            member = createGroupMember(user, group, role);
+//        } else {
+//            member.setRole(role);
+//        }
+//
+//        return member;
+//    }
 
     public GroupMember getGroupMember(User user, Group group){
         return groupMemberDAO.findByUserAndGroup(user, group);

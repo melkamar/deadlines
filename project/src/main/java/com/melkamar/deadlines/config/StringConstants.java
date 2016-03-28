@@ -20,6 +20,8 @@ public class StringConstants {
     public final String EXC_PARAM_TASK_GROWSPEED_INVALID = "Task grow speed must be >=0.";
     public final String EXC_PARAM_TASK_MANHOURS_INVALID = "Manhours done must be >=0.";
 
+    public final String EXC_PARAM_ALL_NEED_NULL = "All parameters need to be not null.";
+
     public final String EXC_ALREADY_EXISTS_TASK_PARTICIPANT = "Task participant already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_GROUP_MEMBER = "Group member already exists! {0} -- {1}";
 
@@ -27,6 +29,7 @@ public class StringConstants {
     public final String EXC_USER_NOT_PARTICIPANT_IS_NULL = "TaskParticipant of User [{0}] and task [{1}] with ID {2} is NULL. This should not happen.";
 
     public final String EXC_USER_NOT_WORKER = "User [{0}] is not a worker on task [{1}] with ID {2}. Therefore he/she cannot report work done on it.";
+    public final String EXC_USER_NOT_MEMBER_CANT_PROMOTE = "User [{0}] is not a member of group [{1}]. He cannot be promoted.";
 
-    public final String EXC_GROUP_PERMISSION = "Permission denied. User [{0}] is only {1} in group {2}. Operation requires {3}.";
+    public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
 }
