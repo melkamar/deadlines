@@ -33,15 +33,8 @@ public class Group {
     @ManyToMany(mappedBy = "groups")
     private Set<TaskParticipant> participants = new HashSet<>();
 
-    @ManyToMany(mappedBy = "memberOf")
-    private Set<User> members = new HashSet<>();
-
-    @ManyToMany(mappedBy = "managerOf")
-    private Set<User> managers = new HashSet<>();
-
-    @ManyToOne
-    @JoinColumn(name = COL_GROUP_JCOL_ADMIN, referencedColumnName = User.COL_USER_ID)
-    private User admin;
+    @OneToMany(mappedBy = "group")
+    private Set<GroupMember> members = new HashSet<>();
 
     @OneToMany(mappedBy = "offeredTo")
     private Set<GroupTaskSharingOffer> taskOffers = new HashSet<>();
@@ -63,44 +56,13 @@ public class Group {
         return 0;
     }
 
-    @Deprecated
-    public int addMember(User user){
-        this.members.add(user);
-        user.getMemberOf().add(this);
-        return 0;
-    }
 
     public boolean addParticipant(TaskParticipant participant) {
-        if (participants.contains(participant))
-            return false;
-
-        participants.add(participant);
-        return true;
+        return participants.add(participant);
     }
 
-    /**
-     * Removes the current Admin's role and sets it to the given User.
-     */
-    public int setAdmin(User user){
-        // TODO
-        members.remove(user);
-        managers.remove(user);
-        admin = user;
-
-        user.getMemberOf().remove(this);
-        user.getManagerOf().remove(this);
-        user.getAdminOf().add(this);
-        return 0;
-    }
-
-    public int setManager(User user, boolean manager){
-        // TODO
-        members.remove(user);
-        managers.add(user);
-
-        user.getMemberOf().remove(this);
-        user.getManagerOf().add(this);
-        return 0;
+    public boolean addGroupMember(GroupMember groupMember){
+        return members.add(groupMember);
     }
 
     public Long getId() {
@@ -119,16 +81,18 @@ public class Group {
         return participants;
     }
 
-    public Set<User> getMembers() {
+    public Set<GroupMember> getGroupMembers() {
         return members;
     }
 
-    public Set<User> getManagers() {
-        return managers;
-    }
+    /**
+     * Returns a set of GroupMembers with the given role.
+     */
+    public Set<GroupMember> getGroupMembers(MemberRole role){
+        Set<GroupMember> membersOfRole = new HashSet<>();
+        for (GroupMember groupMember: members) if (groupMember.getRole() == role) membersOfRole.add(groupMember);
 
-    public User getAdmin() {
-        return admin;
+        return membersOfRole;
     }
 
     public void setDescription(String description) {
@@ -151,25 +115,12 @@ public class Group {
 
         Group group = (Group) o;
 
-        if (description != null ? !description.equals(group.description) : group.description != null) return false;
-        if (name != null ? !name.equals(group.name) : group.name != null) return false;
-        if (participants != null ? !participants.equals(group.participants) : group.participants != null) return false;
-        if (members != null ? !members.equals(group.members) : group.members != null) return false;
-        if (managers != null ? !managers.equals(group.managers) : group.managers != null) return false;
-        if (admin != null ? !admin.equals(group.admin) : group.admin != null) return false;
-        return taskOffers != null ? taskOffers.equals(group.taskOffers) : group.taskOffers == null;
+        return name.equals(group.name);
 
     }
 
     @Override
     public int hashCode() {
-        int result = description != null ? description.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (participants != null ? participants.hashCode() : 0);
-        result = 31 * result + (members != null ? members.hashCode() : 0);
-        result = 31 * result + (managers != null ? managers.hashCode() : 0);
-        result = 31 * result + (admin != null ? admin.hashCode() : 0);
-        result = 31 * result + (taskOffers != null ? taskOffers.hashCode() : 0);
-        return result;
+        return name.hashCode();
     }
 }

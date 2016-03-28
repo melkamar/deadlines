@@ -5,6 +5,7 @@ import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,10 +27,13 @@ public class GroupHelperTest {
     @Autowired
     private GroupHelper groupHelper;
 
+
     @Autowired
     private UserDAO userDAO;
     @Autowired
     private UserHelper userHelper;
+    @Autowired
+    private GroupMemberHelper groupMemberHelper;
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -52,8 +56,8 @@ public class GroupHelperTest {
         User retrievedUser = userDAO.findByUsername("GroupAdmin");
         Group retrievedGroup = groupDAO.findByName("AGroup");
 
-        Assert.assertEquals(retrievedUser, retrievedGroup.getAdmin());
-        Assert.assertTrue(retrievedUser.isAdminOf(retrievedGroup));
+        Assert.assertEquals(retrievedUser, retrievedGroup.getGroupMembers(MemberRole.ADMIN).iterator().next().getUser());
+        Assert.assertTrue(groupMemberHelper.getGroupMember(retrievedUser, retrievedGroup).getRole() == MemberRole.ADMIN);
 
     }
 

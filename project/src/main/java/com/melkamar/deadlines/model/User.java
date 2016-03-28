@@ -1,11 +1,8 @@
 package com.melkamar.deadlines.model;
 
 import com.melkamar.deadlines.model.offer.MembershipOffer;
-import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -66,22 +63,25 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<TaskParticipant> participants = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = COL_JTABLE_MEMBEROF_GROUP,
-            joinColumns = {@JoinColumn(name = COL_USER_ID)},
-            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
-    )
-    private Set<Group> memberOf = new HashSet<>();
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = COL_JTABLE_MEMBEROF_GROUP,
+//            joinColumns = {@JoinColumn(name = COL_USER_ID)},
+//            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
+//    )
+//    private Set<Group> memberAs = new HashSet<>();
+//
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = COL_JTABLE_MANAGEROF_GROUP,
+//            joinColumns = {@JoinColumn(name = COL_USER_ID)},
+//            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
+//    )
+//    private Set<Group> managerOf = new HashSet<>();
+//
+//    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+//    private Set<Group> adminOf = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = COL_JTABLE_MANAGEROF_GROUP,
-            joinColumns = {@JoinColumn(name = COL_USER_ID)},
-            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
-    )
-    private Set<Group> managerOf = new HashSet<>();
-
-    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
-    private Set<Group> adminOf = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<GroupMember> memberAs = new HashSet<>();
 
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.ALL)
     private Set<MembershipOffer> membershipOffers = new HashSet<>();
@@ -91,25 +91,25 @@ public class User {
 
     /*************************************************************/
     public boolean addParticipant(TaskParticipant participant) {
-        if (participants.contains(participant))
-            return false;
-
-        participants.add(participant);
-        return true;
+        return participants.add(participant);
     }
 
-    public boolean addAdminOf(Group group) {
-        System.out.println("User#addAdminOf: " + group);
-        return adminOf.add(group);
+    public boolean addGroupMember(GroupMember groupMember){
+        return memberAs.add(groupMember);
     }
 
-    public boolean isAdminOf(Group group) {
-        System.out.println("CURRENT admin groups -----");
-        for (Group iter : adminOf) System.out.println("    " + iter + " ||| " + iter.getId());
-
-        System.out.println("Comparing with: " + group + " (id = " + group.getId());
-        return adminOf.contains(group);
-    }
+//    public boolean addAdminOf(Group group) {
+//        System.out.println("User#addAdminOf: " + group);
+//        return adminOf.add(group);
+//    }
+//
+//    public boolean isAdminOf(Group group) {
+//        System.out.println("CURRENT admin groups -----");
+//        for (Group iter : adminOf) System.out.println("    " + iter + " ||| " + iter.getId());
+//
+//        System.out.println("Comparing with: " + group + " (id = " + group.getId());
+//        return adminOf.contains(group);
+//    }
 
     /**
      * Lists all Tasks the User participates in.
@@ -153,18 +153,6 @@ public class User {
 
     public Set<TaskParticipant> getParticipants() {
         return participants;
-    }
-
-    public Set<Group> getMemberOf() {
-        return memberOf;
-    }
-
-    public Set<Group> getManagerOf() {
-        return managerOf;
-    }
-
-    public Set<Group> getAdminOf() {
-        return adminOf;
     }
 
     public void setEmail(String email) {
