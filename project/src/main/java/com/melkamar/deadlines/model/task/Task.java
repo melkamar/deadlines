@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model.task;
 
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 
@@ -24,6 +25,7 @@ public abstract class Task {
     public final static String COL_TASK_WORK_ESTIMATE = "WORK_ESTIMATE";
     public final static String COL_TASK_PRIORITY = "PRIORITY";
     public final static String COL_TASK_STATUS = "STATUS";
+    public final static String COL_JTABLE_TASK_GROUP = "TASK_GROUP";
 
     @Id
     @Column(name = COL_TASK_ID, nullable = false)
@@ -61,6 +63,12 @@ public abstract class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.MERGE)
     protected Set<TaskParticipant> participants = new HashSet<>();
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = COL_JTABLE_TASK_GROUP,
+            joinColumns = {@JoinColumn(name = COL_TASK_ID)},
+            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})
+    private Set<Group> sharedGroups = new HashSet<>();
 
     public Task() {
         this.dateCreated = null;

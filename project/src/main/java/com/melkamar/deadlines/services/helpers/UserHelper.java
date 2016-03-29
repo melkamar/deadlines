@@ -3,10 +3,13 @@ package com.melkamar.deadlines.services.helpers;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -39,5 +42,10 @@ public class UserHelper {
         userDAO.save(newUser);
 
         return newUser;
+    }
+
+    public boolean leaveTask(User user, Task task, Group group){
+        // TODO: 29.03.2016
+        throw new NotImplementedException();
     }
 }

@@ -36,6 +36,8 @@ public class GroupMemberHelper {
         user.addGroupMember(groupMember);
         group.addGroupMember(groupMember);
 
+        // TODO: 29.03.2016 Share any tasks the group has with the user joining the group
+
         groupMemberDAO.save(groupMember);
         return groupMember;
     }

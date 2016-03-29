@@ -33,6 +33,9 @@ public class Group {
     @ManyToMany(mappedBy = "groups")
     private Set<TaskParticipant> participants = new HashSet<>();
 
+    @ManyToMany(mappedBy = "sharedGroups")
+    private Set<Task> sharedTasks = new HashSet<>();
+
     @OneToMany(mappedBy = "group")
     private Set<GroupMember> members = new HashSet<>();
 

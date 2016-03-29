@@ -57,14 +57,17 @@ public class GroupHelper {
     }
 
     public boolean deleteGroup(User executor, Group group) {
+        // TODO: 29.03.2016 Implement
         throw new NotImplementedException();
     }
 
     public boolean removeMember(User executor, Group group, User member) {
+        // TODO: 29.03.2016 Implement
         throw new NotImplementedException();
     }
 
     public boolean removeTask(User executor, Group group, Task task) {
+        // TODO: 29.03.2016 Implement
         throw new NotImplementedException();
     }
 
@@ -96,6 +99,7 @@ public class GroupHelper {
 
 
     public boolean changeAdmin(User executor, Group group, User newAdmin) {
+        // TODO: 29.03.2016 Implement
         throw new NotImplementedException();
     }
 }

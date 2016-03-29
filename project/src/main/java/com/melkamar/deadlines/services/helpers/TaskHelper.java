@@ -43,7 +43,7 @@ public class TaskHelper {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
-        this.addUserToTask(creator, task, TaskRole.WATCHER, null);
+        taskParticipantHelper.addTaskParticipantEntry(creator, task, TaskRole.WATCHER, null);
         return task;
     }
 
@@ -55,7 +55,7 @@ public class TaskHelper {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
-        this.addUserToTask(creator, task, TaskRole.WATCHER, null);
+        taskParticipantHelper.addTaskParticipantEntry(creator, task, TaskRole.WATCHER, null);
         return task;
     }
 
@@ -79,18 +79,6 @@ public class TaskHelper {
 
         return taskWork;
     }
-
-    /**
-     * Adds a user to a task as a TaskParticipant.
-     *
-     * @param user  User to add.
-     * @param task  Task to add the user to.
-     * @param group If set, the user is added as a member of the group. May be null.
-     */
-    public void addUserToTask(User user, Task task, TaskRole role, Group group) {
-        TaskParticipant taskParticipant = taskParticipantHelper.addTaskParticipantEntry(user, task, role, group);
-    }
-
 
     private void validateGenericCreateTaskParams(User creator, String name) throws WrongParameterException {
         if (creator == null) {
