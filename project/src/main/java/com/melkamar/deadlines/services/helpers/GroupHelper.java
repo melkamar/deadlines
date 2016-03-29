@@ -66,7 +66,7 @@ public class GroupHelper {
         throw new NotImplementedException();
     }
 
-    public boolean removeTask(User executor, Group group, Task task) {
+    public boolean leaveTask(User executor, Group group, Task task) {
         // TODO: 29.03.2016 Implement
         throw new NotImplementedException();
     }

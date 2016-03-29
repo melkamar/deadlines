@@ -53,7 +53,7 @@ public class TaskParticipantHelper {
      * be created.
      * @return The edited or new TaskParticipant object.
      */
-    public TaskParticipant addTaskParticipantEntry(User user, Task task, TaskRole role, Group group) {
+    public TaskParticipant editOrCreateTaskParticipant(User user, Task task, TaskRole role, Group group) {
         TaskParticipant taskParticipant = taskparticipantDAO.findByUserAndTask(user, task);
         if (taskParticipant == null){
             try {

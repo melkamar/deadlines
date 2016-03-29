@@ -6,7 +6,6 @@ import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.exceptions.WrongRoleException;
-import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
@@ -43,7 +42,7 @@ public class TaskHelper {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
-        taskParticipantHelper.addTaskParticipantEntry(creator, task, TaskRole.WATCHER, null);
+        taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null);
         return task;
     }
 
@@ -55,7 +54,7 @@ public class TaskHelper {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
-        taskParticipantHelper.addTaskParticipantEntry(creator, task, TaskRole.WATCHER, null);
+        taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null);
         return task;
     }
 
