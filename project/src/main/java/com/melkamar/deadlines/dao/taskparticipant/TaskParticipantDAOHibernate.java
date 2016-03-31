@@ -43,4 +43,9 @@ public class TaskParticipantDAOHibernate implements TaskParticipantDAO {
     public Set<TaskParticipant> findByUserAndGroups(User user, Group group) {
         return taskParticipantRepository.findByUserAndGroups(user, group);
     }
+
+    @Override
+    public Set<TaskParticipant> findByTaskAndGroups(Task task, Group group) {
+        return taskParticipantRepository.findByTaskAndGroups(task, group);
+    }
 }

@@ -17,4 +17,5 @@ public interface TaskParticipantDAO {
     void delete(TaskParticipant taskParticipant);
     TaskParticipant findByUserAndTask(User user, Task task);
     Set<TaskParticipant> findByUserAndGroups(User user, Group group);
+    Set<TaskParticipant> findByTaskAndGroups(Task task, Group group);
 }

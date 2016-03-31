@@ -17,4 +17,5 @@ import java.util.Set;
 public interface TaskParticipantRepository extends CrudRepository<TaskParticipant, Long> {
     TaskParticipant findByUserAndTask(User user, Task task);
     Set<TaskParticipant> findByUserAndGroups(User user, Group group);
+    Set<TaskParticipant> findByTaskAndGroups(Task task, Group group);
 }

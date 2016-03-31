@@ -20,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -162,6 +161,8 @@ public class GroupAPI {
             group.removeTaskParticipant(taskParticipant);
             taskParticipantHelper.removeFromGroup(taskParticipant, group);
         }
+
+        group.removeMember(toRemoveGroupMember);
     }
 
     /**
@@ -189,9 +190,27 @@ public class GroupAPI {
 
     }
 
-    public void leaveTask(User manager, Group group, Task task) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    @Transactional
+    public void leaveTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
+        if (manager == null || group == null || task == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        // For all members of group remove this task/group connection to it
+        Set<TaskParticipant> taskParticipants = taskparticipantDAO.findByTaskAndGroups(task, group);
+        Set<TaskParticipant> participantsCopy = new HashSet<>(taskParticipants);
+
+        for (TaskParticipant taskParticipant : participantsCopy) {
+            taskParticipantHelper.removeFromGroup(taskParticipant, group);
+        }
+
+        group.removeTask(task);
+
+        // TODO: 31.03.2016 REMOVE ASSERTION FOR PRODUCTION
+        // After removing the task from a group there should be NO TaskParticipant connected to the Task and Group
+        assert taskparticipantDAO.findByTaskAndGroups(task, group).size() == 0;
     }
 
     public Group editDetails(User manager, Group group, String newDescription) {

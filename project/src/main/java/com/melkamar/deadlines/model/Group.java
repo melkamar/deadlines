@@ -52,14 +52,12 @@ public class Group {
     }
 
 
-    public int removeMember(User user){
-        // TODO: 31.03.2016
-        throw new NotImplementedException();
+    public boolean removeMember(GroupMember groupMember){
+        return members.remove(groupMember);
     }
 
-    public int removeTask(Task task){
-        // TODO: 31.03.2016
-        throw new NotImplementedException();
+    public boolean removeTask(Task task){
+        return sharedTasks.remove(task);
     }
 
     public boolean removeTaskParticipant(TaskParticipant taskParticipant){
