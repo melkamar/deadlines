@@ -13,6 +13,8 @@ import com.melkamar.deadlines.model.task.TaskRole;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import sun.plugin2.message.OverlayWindowMoveMessage;
 
 import java.text.MessageFormat;
 
@@ -51,11 +53,13 @@ public class TaskParticipantHelper {
      * Creates a new task participation entry.
      * If a TaskParticipant identified by User-Task already exists, it is edited. If it does not exist, it will
      * be created.
+     *
+     * @param overwriteRole If true, any pre-existing role will be overwritten with the provided role. If false, a role is not set if one already exists.
      * @return The edited or new TaskParticipant object.
      */
-    public TaskParticipant editOrCreateTaskParticipant(User user, Task task, TaskRole role, Group group) {
+    public TaskParticipant editOrCreateTaskParticipant(User user, Task task, TaskRole role, Group group, boolean overwriteRole) {
         TaskParticipant taskParticipant = taskparticipantDAO.findByUserAndTask(user, task);
-        if (taskParticipant == null){
+        if (taskParticipant == null) {
             try {
                 taskParticipant = createTaskParticipant(user, task, role, group);
             } catch (AlreadyExistsException e) {
@@ -63,17 +67,58 @@ public class TaskParticipantHelper {
             }
         } else {
             setSoloOrGroupConnection(taskParticipant, group);
+            if (overwriteRole) taskParticipant.setRole(role);
         }
 
         return taskParticipant;
     }
 
     /**
+     * Removes a group connection from TaskParticipant.
+     * After removal checks if the TaskParticipant should still be associated with the Task or destroyed. (When
+     * no other groups are connected and solo is false)
+     *
+     * @param taskParticipant
+     * @param group
+     */
+    @Transactional
+    public void removeFromGroup(TaskParticipant taskParticipant, Group group) {
+        taskParticipant.removeGroup(group);
+        group.removeTaskParticipant(taskParticipant);
+
+        destroyIfNotRelevant(taskParticipant);
+    }
+
+    /**
+     * If the TaskParticipant is not relevant (not solo or connected by a group), method will destroy it.
+     *
+     * @param taskParticipant
+     * @return
+     */
+    private void destroyIfNotRelevant(TaskParticipant taskParticipant) {
+        if (!shouldBeDestroyed(taskParticipant)) return;
+
+        taskParticipant.getTask().removeParticipant(taskParticipant);
+        taskParticipant.getUser().removeParticipant(taskParticipant);
+        // Because it should be destroyed, it already contains no references in Group
+        taskparticipantDAO.delete(taskParticipant);
+    }
+
+    /**
+     * Checks if the TaskParticipant is still relevant (via solo or group connection to a Task).
+     *
+     * @return True if the TaskParticipant should be removed.
+     */
+    private boolean shouldBeDestroyed(TaskParticipant taskParticipant) {
+        return !taskParticipant.getSolo() && taskParticipant.getGroups().size() == 0;
+    }
+
+    /**
      * If group is null, sets solo flag to true.
      * If group is not null, adds the group to the TaskParticipant groups.
      */
-    private TaskParticipant setSoloOrGroupConnection(TaskParticipant taskParticipant, Group group){
-        if (group == null){
+    private TaskParticipant setSoloOrGroupConnection(TaskParticipant taskParticipant, Group group) {
+        if (group == null) {
             taskParticipant.setSolo(true);
         } else {
             taskParticipant.addGroup(group);

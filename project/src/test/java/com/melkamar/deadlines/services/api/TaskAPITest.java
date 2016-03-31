@@ -6,6 +6,7 @@ import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.exceptions.WrongRoleException;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
@@ -18,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -33,10 +37,13 @@ public class TaskAPITest {
     private TaskAPI taskAPI;
     @Autowired
     private UserAPI userAPI;
+
     @Autowired
     private UserDAO userDAO;
     @Autowired
     private TaskDAO taskDAO;
+    @Autowired
+    private GroupAPI groupAPI;
 
 
     @Test(expected = WrongParameterException.class)
@@ -97,6 +104,41 @@ public class TaskAPITest {
 
         System.out.println("Original:  " + task);
         System.out.println("Retrieved: " + retrievedTask);
+    }
+
+    @Test
+    @Transactional
+    public void createGroupTasks() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
+        Group group = groupAPI.createGroup("TestGroup", user, null);
+
+        Set<Group> groupSet = new HashSet<>();
+        groupSet.add(group);
+
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(user, "TestTask2", null, null, 0, groupSet, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(user, "TestTask3", null, null, 0, groupSet, LocalDateTime.now().plusDays(102));
+        Task task4 = taskAPI.createTask(user, "TestTask4", null, null, 0, null, LocalDateTime.now().plusDays(102));
+
+        Assert.assertEquals(user.tasksOfUser().size(), 4);
+        Assert.assertEquals(userNonMember.tasksOfUser().size(), 0);
+        Assert.assertEquals(group.getSharedTasks().size(), 3);
+    }
+
+    @Test
+    @Transactional
+    public void createGrupTaskByNonMember() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
+        Group group = groupAPI.createGroup("TestGroup", user, null);
+
+        Set<Group> groupSet = new HashSet<>();
+        groupSet.add(group);
+
+        Task task = taskAPI.createTask(userNonMember, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
+        //"Expect this to fail with some exception."
+        throw new NotImplementedException();
     }
 
     // WORK REPORTS TESTS

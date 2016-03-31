@@ -3,9 +3,13 @@ package com.melkamar.deadlines.services.api;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
+import com.melkamar.deadlines.exceptions.GroupPermissionException;
+import com.melkamar.deadlines.exceptions.NotAllowedException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
+import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +37,8 @@ public class UserAPI {
     private UserDAO userDAO;
     @Autowired
     private GroupMemberDAO groupMemberDAO;
+    @Autowired
+    private GroupAPI groupAPI;
 
 
     @Transactional
@@ -40,7 +47,7 @@ public class UserAPI {
             throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
         }
 
-        if (password == null || password.isEmpty()){
+        if (password == null || password.isEmpty()) {
             throw new NullPointerException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
         }
 
@@ -56,16 +63,20 @@ public class UserAPI {
     }
 
     @Transactional
-    public User editUserDetails(User user, String name, String email, String password){
-        if (name != null && !name.isEmpty()){
+    public User editUserDetails(User user, String name, String email, String password) {
+        if (user == null) {
+            return null;
+        }
+
+        if (name != null && !name.isEmpty()) {
             user.setName(name);
         }
 
-        if (email != null && !email.isEmpty()){
+        if (email != null && !email.isEmpty()) {
             user.setEmail(email);
         }
 
-        if (password != null && !password.isEmpty()){
+        if (password != null && !password.isEmpty()) {
             PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
             user.setNewPassword(hashAndSalt);
         }
@@ -75,19 +86,19 @@ public class UserAPI {
 
     /**
      * Lists all users in the system.
+     *
      * @return
      */
-    public List<User> listUsers(){
+    public List<User> listUsers() {
         return userDAO.findAll();
     }
 
-    public void leaveGroup(User executor, Group group){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public void leaveGroup(User user, Group group) throws NotMemberOfException, NotAllowedException, GroupPermissionException, WrongParameterException {
+        groupAPI.removeMember(user, group, user);
     }
 
     @Transactional
-    public Set<Group> getGroupsOfUser(User executor){
+    public Set<Group> getGroupsOfUser(User executor) {
         Set<Group> groups = groupMemberDAO.findByUser(executor).stream().map(GroupMember::getGroup).collect(Collectors.toSet());
         return groups;
     }

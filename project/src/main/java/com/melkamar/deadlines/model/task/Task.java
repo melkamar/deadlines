@@ -81,11 +81,11 @@ public abstract class Task {
     /*************************************************************/
 
     public boolean addParticipant(TaskParticipant participant) {
-        if (participants.contains(participant))
-            return false;
+        return participants.add(participant);
+    }
 
-        participants.add(participant);
-        return true;
+    public boolean removeParticipant(TaskParticipant participant){
+        return participants.remove(participant);
     }
 
     public void addWorkReport(TaskWork taskWork){

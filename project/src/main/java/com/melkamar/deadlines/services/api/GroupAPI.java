@@ -2,15 +2,16 @@ package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.group.GroupDAO;
+import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
+import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
-import com.melkamar.deadlines.model.Group;
-import com.melkamar.deadlines.model.GroupMember;
-import com.melkamar.deadlines.model.MemberRole;
-import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.model.task.TaskRole;
 import com.melkamar.deadlines.services.PermissionHandler;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
+import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,19 @@ public class GroupAPI {
     private UserDAO userDAO;
     @Autowired
     private GroupDAO groupDAO;
+
     @Autowired
     private GroupMemberHelper groupMemberHelper;
+
     @Autowired
     private PermissionHandler permissionHandler;
+    @Autowired
+    private GroupMemberDAO groupMemberDAO;
+    @Autowired
+    private TaskParticipantDAOHibernate taskparticipantDAO;
+    @Autowired
+    private TaskParticipantHelper taskParticipantHelper;
+
 
     @Transactional
     public Group createGroup(String name, User founder, String description) throws WrongParameterException {
@@ -70,7 +80,7 @@ public class GroupAPI {
 
         GroupMember promotedGroupMember = groupMemberHelper.getGroupMember(member, group);
         if (promotedGroupMember == null) {
-            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_CANT_PROMOTE, member, group));
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, member, group));
         }
         if (promotedGroupMember.getRole() == MemberRole.ADMIN) {
             throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_PROMOTE_ADMIN);
@@ -95,9 +105,81 @@ public class GroupAPI {
         throw new NotImplementedException();
     }
 
-    public void removeMember(User manager, Group group, User toRemove) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    /**
+     * Adds a new member to the group. All tasks shared with the group will be shared with the new member as well.
+     *
+     * @param manager User "approving" the addition, needs to be at least a Manager of the group
+     * @param group   Group to add the user to
+     * @param newUser A user that should be added to the group
+     */
+    public void addMember(User manager, Group group, User newUser) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
+        if (manager == null || group == null || newUser == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+
+        GroupMember managerGroupMember = groupMemberDAO.findByUserAndGroup(manager, group);
+        if (managerGroupMember == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, manager, group));
+
+        if (!permissionHandler.hasGroupPermission(managerGroupMember, MemberRole.MANAGER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        // If the newUser is already in the group
+        if (group.getGroupMembers().contains(newUser))
+            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_GROUP_MEMBER, newUser, group));
+
+        // Everything correct, start creating associations
+        GroupMember newGroupMember = groupMemberHelper.createGroupMember(newUser, group, MemberRole.MEMBER);
+        group.addGroupMember(newGroupMember);
+
+        for (Task groupTask : group.getSharedTasks()) {
+            taskParticipantHelper.editOrCreateTaskParticipant(newUser, groupTask, TaskRole.WATCHER, group, false);
+        }
+    }
+
+    /**
+     * Removes a user from a group. Manager either needs to be a Manager of the Group, or be equal to the user
+     * to be removed (indicating he himself requested the removal).
+     *
+     * @throws NotAllowedException      Admin cannot be removed from a group.
+     * @throws NotMemberOfException     Manager or User are not members of the group.
+     * @throws GroupPermissionException Manager does not have sufficient permissions.
+     * @throws WrongParameterException  One of parameters is null.
+     */
+    public void removeMember(User manager, Group group, User toRemove) throws NotAllowedException, NotMemberOfException, GroupPermissionException, WrongParameterException {
+        if (manager == null || group == null || toRemove == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+
+        GroupMember toRemoveGroupMember = groupMemberDAO.findByUserAndGroup(toRemove, group);
+        if (toRemoveGroupMember == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, toRemove, group));
+
+        GroupMember managerGroupMember = groupMemberDAO.findByUserAndGroup(manager, group);
+        if (managerGroupMember == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, manager, group));
+
+        // If the "manager" user is not a manager of group AND he also isn't the user requesting removal, deny it
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER) && !manager.equals(toRemove))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(toRemoveGroupMember))
+            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_ADMIN_LEAVE);
+
+        // Remove each TaskParticipant entry of the removed user from the group
+        for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(toRemove, group)) {
+            group.removeTaskParticipant(taskParticipant);
+            taskParticipantHelper.removeFromGroup(taskParticipant, group);
+        }
+    }
+
+    /**
+     * Adds a task as shared with the group.
+     *
+     * @param manager User approving the action. Must be at least a Manager.
+     * @param group   Group to share the task with.
+     * @param task    Task to share.
+     */
+    public void addTask(User manager, Group group, Task task) {
+
     }
 
     public void leaveTask(User manager, Group group, Task task) {

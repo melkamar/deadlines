@@ -19,12 +19,12 @@ import java.util.Set;
  */
 @Service
 public class SharingAPI {
-    public Task shareTask(User sharer, Task task, User shareWithUser){
+    public Task offerTaskSharing(User sharer, Task task, User shareWithUser){
         // TODO: 31.03.2016 Implement
         throw new NotImplementedException();
     }
 
-    public Task shareTask(User sharer, Task task, Group shareWithGroup){
+    public Task offerTaskSharing(User sharer, Task task, Group shareWithGroup){
         // TODO: 31.03.2016 Implement
         throw new NotImplementedException();
     }

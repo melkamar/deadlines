@@ -2,11 +2,15 @@ package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.group.GroupDAO;
+import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
+import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
+import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
@@ -15,8 +19,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -35,8 +45,13 @@ public class GroupAPITest {
     private UserDAO userDAO;
     @Autowired
     private UserAPI userAPI;
+
     @Autowired
     private GroupMemberHelper groupMemberHelper;
+    @Autowired
+    private TaskParticipantDAO taskParticipantDAO;
+    @Autowired
+    private TaskAPI taskAPI;
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -165,4 +180,44 @@ public class GroupAPITest {
 
         groupAPI.setManager(userAdmin, group, userAdmin, true);
     }
+
+    @Test
+    @Transactional
+    public void addMember() throws WrongParameterException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Set<Group> groupSet = new HashSet<>();
+        groupSet.add(group);
+
+        Task task = taskAPI.createTask(userAdmin, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userAdmin, "TestTask2", null, null, 0, groupSet, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, groupSet, LocalDateTime.now().plusDays(102));
+
+        throw new NotImplementedException();
+    }
+
+    @Test
+    @Transactional
+    public void removeMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userMember, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
+
+        TaskParticipant taskParticipant = taskParticipantDAO.findByUserAndTask(userMember, task);
+        TaskParticipant taskParticipant2 = taskParticipantDAO.findByUserAndTask(userMember, task2);
+        TaskParticipant taskParticipant3 = taskParticipantDAO.findByUserAndTask(userAdmin, task3);
+
+        groupAPI.addMember(userAdmin, group, userMember);
+        throw new NotImplementedException();
+    }
+
+
 }
+
+

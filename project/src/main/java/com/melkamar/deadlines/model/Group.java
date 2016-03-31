@@ -2,6 +2,7 @@ package com.melkamar.deadlines.model;
 
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -52,11 +53,17 @@ public class Group {
 
 
     public int removeMember(User user){
-        return 0;
+        // TODO: 31.03.2016
+        throw new NotImplementedException();
     }
 
     public int removeTask(Task task){
-        return 0;
+        // TODO: 31.03.2016
+        throw new NotImplementedException();
+    }
+
+    public boolean removeTaskParticipant(TaskParticipant taskParticipant){
+        return participants.remove(taskParticipant);
     }
 
 
@@ -100,6 +107,11 @@ public class Group {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public Set<Task> getSharedTasks() {
+        return sharedTasks;
     }
 
     @Override

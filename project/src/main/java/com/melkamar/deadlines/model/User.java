@@ -95,6 +95,10 @@ public class User {
         return participants.add(participant);
     }
 
+    public boolean removeParticipant(TaskParticipant participant){
+        return participants.remove(participant);
+    }
+
     public boolean addGroupMember(GroupMember groupMember){
         return memberAs.add(groupMember);
     }

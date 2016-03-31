@@ -48,7 +48,7 @@ public class TaskAPI {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
-        taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null);
+        taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null, true);
         return task;
     }
 
@@ -60,7 +60,7 @@ public class TaskAPI {
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
-        taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null);
+        taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null, true);
         return task;
     }
 
@@ -81,6 +81,10 @@ public class TaskAPI {
      */
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double growSpeed) throws WrongParameterException {
         Task newTask = createTask(creator, name, description, priority, workEstimate, growSpeed);
+
+        for (Group group: groups){
+
+        }
 
         // TODO: 31.03.2016 Implement auto-sharing with group if exists
         throw new NotImplementedException();
