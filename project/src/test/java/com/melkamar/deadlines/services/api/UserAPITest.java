@@ -99,4 +99,22 @@ public class UserAPITest {
         Assert.assertNotNull(authenticator.authenticate(user, "newpassword"));
         Assert.assertNull(authenticator.authenticate(user, "password"));
     }
+
+    @Test
+    @Transactional
+    public void listUsers() throws WrongParameterException {
+        int size = userAPI.listUsers().size();
+
+        Assert.assertEquals(userAPI.listUsers().size(), size);
+        userAPI.createUser("someuser"+size, "password", "somename", "someemail"+size);
+        size++;
+
+        Assert.assertEquals(userAPI.listUsers().size(), size);
+        userAPI.createUser("someuser"+size, "password", "somename", "someemail"+size);
+        size++;
+
+        Assert.assertEquals(userAPI.listUsers().size(), size);
+        userAPI.createUser("someuser"+size, "password", "somename", "someemail"+size);
+        size++;
+    }
 }

@@ -67,12 +67,10 @@ public class UserAPI {
 
     /**
      * Lists all users in the system.
-     * @param executor
      * @return
      */
-    public List<User> listUsers(User executor){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public List<User> listUsers(){
+        return userDAO.findAll();
     }
 
     public void leaveGroup(User executor, Group group){
