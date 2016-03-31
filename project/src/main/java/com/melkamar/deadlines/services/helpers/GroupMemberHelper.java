@@ -55,6 +55,17 @@ public class GroupMemberHelper {
 //        return member;
 //    }
 
+    /**
+     * Deletes this GroupMember object including references to it from associated
+     * User and Group objects.
+     * @param groupMember
+     */
+    public void deleteGroupMember(GroupMember groupMember){
+        groupMember.getUser().removeGroupMember(groupMember);
+        groupMember.getGroup().removeMember(groupMember);
+        groupMemberDAO.delete(groupMember);
+    }
+
     public GroupMember getGroupMember(User user, Group group){
         return groupMemberDAO.findByUserAndGroup(user, group);
     }

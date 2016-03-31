@@ -27,6 +27,11 @@ public class GroupDAOHibernate implements GroupDAO {
     }
 
     @Override
+    public void delete(Group group) {
+        groupRepository.delete(group);
+    }
+
+    @Override
     public Group findByName(String name) {
         return groupRepository.findByName(name);
     }

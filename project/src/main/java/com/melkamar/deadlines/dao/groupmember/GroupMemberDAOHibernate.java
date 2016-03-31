@@ -29,6 +29,11 @@ public class GroupMemberDAOHibernate implements GroupMemberDAO {
     }
 
     @Override
+    public void delete(GroupMember groupMember) {
+        groupMemberRepository.delete(groupMember);
+    }
+
+    @Override
     public GroupMember findByUserAndGroup(User user, Group group) {
         return groupMemberRepository.findByUserAndGroup(user, group);
     }

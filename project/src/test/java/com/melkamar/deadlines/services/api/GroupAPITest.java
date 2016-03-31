@@ -21,7 +21,9 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.jdbc.support.incrementer.AbstractDataFieldMaxValueIncrementer;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -34,6 +36,7 @@ import java.util.Set;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 26.03.2016 16:07
  */
+//@Rollback(value = false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 public class GroupAPITest {
@@ -268,6 +271,9 @@ public class GroupAPITest {
 
         Assert.assertEquals(group.getGroupMembers().size(), 1);
 
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember.getMemberAs().size(), 0);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 0);
 
         //
         groupAPI.addMember(userAdmin, group, userMember);
@@ -300,6 +306,10 @@ public class GroupAPITest {
         Assert.assertTrue(task2.usersOnTask().size() == 2);
 
         Assert.assertEquals(group.getGroupMembers().size(), 2);
+
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 0);
 
 
         groupAPI.addMember(userAdmin, group, userMember2);
@@ -337,6 +347,9 @@ public class GroupAPITest {
 
         Assert.assertEquals(group.getGroupMembers().size(), 3);
 
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 1);
 
         //
         groupAPI.removeMember(userAdmin, group, userMember);
@@ -371,6 +384,10 @@ public class GroupAPITest {
         Assert.assertTrue(task2.usersOnTask().size() == 3);
         Assert.assertEquals(group.getGroupMembers().size(), 2);
 
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember.getMemberAs().size(), 0);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 1);
+
         //
         groupAPI.removeMember(userAdmin, group, userMember2);
         /**
@@ -400,6 +417,10 @@ public class GroupAPITest {
 
         Assert.assertTrue(task2.usersOnTask().size() == 2);
         Assert.assertEquals(group.getGroupMembers().size(), 1);
+
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember.getMemberAs().size(), 0);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 0);
     }
 
     @Test
@@ -510,6 +531,54 @@ public class GroupAPITest {
 
         expectedException.expect(GroupPermissionException.class);
         groupAPI.editDetails(userAdmin, group, "New thing");
+    }
+
+    @Test
+    @Transactional
+    public void deleteGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userMember2 = userAPI.createUser("Member2", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group toDeleteGroup = groupAPI.createGroup("GroupnameToDelete", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userMember, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
+
+        groupAPI.addTask(userAdmin, toDeleteGroup, task);
+
+        groupAPI.addMember(userAdmin, group, userMember);
+        groupAPI.addMember(userAdmin, toDeleteGroup, userMember2);
+
+        /**
+         * group: admin, usermember |
+         * todelgroup: admin, usermember2 | task
+         *
+         * task: usermember, admin(g), usermember2(g)
+         */
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 2);
+        Assert.assertEquals(userMember.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 1);
+
+        Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);
+        Assert.assertEquals(userMember.tasksOfUser().size(), 2);
+        Assert.assertEquals(userMember2.tasksOfUser().size(), 1);
+
+        Assert.assertNotNull(groupDAO.findByName("GroupnameToDelete"));
+
+        groupAPI.deleteGroup(userAdmin, toDeleteGroup);
+
+
+        Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember.getMemberAs().size(), 1);
+        Assert.assertEquals(userMember2.getMemberAs().size(), 0);
+
+        Assert.assertEquals(userAdmin.tasksOfUser().size(), 1);
+        Assert.assertEquals(userMember.tasksOfUser().size(), 2);
+        Assert.assertEquals(userMember2.tasksOfUser().size(), 0);
+
+        Assert.assertNull(groupDAO.findByName("GroupnameToDelete"));
     }
 }
 

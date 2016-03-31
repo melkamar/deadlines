@@ -9,6 +9,7 @@ import com.melkamar.deadlines.model.Group;
 public interface GroupDAO {
     long count();
     Group save(Group group);
+    void delete(Group group);
     Group findByName(String name);
     Group findById(Long id);
 }

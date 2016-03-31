@@ -13,6 +13,7 @@ import java.util.Set;
 public interface GroupMemberDAO {
     long count();
     GroupMember save(GroupMember groupMember);
+    void delete(GroupMember groupMember);
     GroupMember findByUserAndGroup(User user, Group group);
     Set<GroupMember> findByUser(User user);
     Set<GroupMember> findByGroup(Group group);

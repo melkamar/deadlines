@@ -24,8 +24,6 @@ public class User {
     public final static String COL_PASSWORD_HASH = "PWDHASH";
     public final static String COL_PASSWORD_SALT = "PWDSALT";
     public final static String COL_NAME = "NAME";
-    public final static String COL_JTABLE_MEMBEROF_GROUP = "MEMBEROF_GROUP";
-    public final static String COL_JTABLE_MANAGEROF_GROUP = "MANAGEROF_GROUP";
 
     @Id
     @Column(name = COL_USER_ID)
@@ -64,23 +62,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     private Set<TaskParticipant> participants = new HashSet<>();
 
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = COL_JTABLE_MEMBEROF_GROUP,
-//            joinColumns = {@JoinColumn(name = COL_USER_ID)},
-//            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
-//    )
-//    private Set<Group> memberAs = new HashSet<>();
-//
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = COL_JTABLE_MANAGEROF_GROUP,
-//            joinColumns = {@JoinColumn(name = COL_USER_ID)},
-//            inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)}
-//    )
-//    private Set<Group> managerOf = new HashSet<>();
-//
-//    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
-//    private Set<Group> adminOf = new HashSet<>();
-
     @OneToMany(mappedBy = "user")
     private Set<GroupMember> memberAs = new HashSet<>();
 
@@ -103,18 +84,9 @@ public class User {
         return memberAs.add(groupMember);
     }
 
-//    public boolean addAdminOf(Group group) {
-//        System.out.println("User#addAdminOf: " + group);
-//        return adminOf.add(group);
-//    }
-//
-//    public boolean isAdminOf(Group group) {
-//        System.out.println("CURRENT admin groups -----");
-//        for (Group iter : adminOf) System.out.println("    " + iter + " ||| " + iter.getId());
-//
-//        System.out.println("Comparing with: " + group + " (id = " + group.getId());
-//        return adminOf.contains(group);
-//    }
+    public boolean removeGroupMember(GroupMember groupMember){
+        return memberAs.remove(groupMember);
+    }
 
     /**
      * Lists all Tasks the User participates in.
@@ -171,6 +143,11 @@ public class User {
     public void setNewPassword(PasswordHashGenerator.HashAndSalt hashAndSalt){
         this.passwordHash = hashAndSalt.hash;
         this.passwordSalt = hashAndSalt.salt;
+    }
+
+
+    public Set<GroupMember> getMemberAs() {
+        return memberAs;
     }
 
     @Override

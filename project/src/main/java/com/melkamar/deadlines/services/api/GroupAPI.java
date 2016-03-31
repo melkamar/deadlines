@@ -148,20 +148,27 @@ public class GroupAPI {
         if (toRemoveGroupMember == null)
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, toRemove, group));
 
+        removeMember(manager, group, toRemoveGroupMember);
+    }
+
+    public void removeMember(User manager, Group group, GroupMember groupMemberToRemove) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException {
+        if (manager == null || group == null || groupMemberToRemove == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
+
         // If the "manager" user is not a manager of group AND he also isn't the user requesting removal, deny it
-        if (!manager.equals(toRemove) && !permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
+        if (!manager.equals(groupMemberToRemove.getUser()) && !permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
 
-        if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(toRemoveGroupMember))
+        if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(groupMemberToRemove.getUser()))
             throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_ADMIN_LEAVE);
 
         // Remove each TaskParticipant entry of the removed user from the group
-        for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(toRemove, group)) {
+        for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(groupMemberToRemove.getUser(), group)) {
             group.removeTaskParticipant(taskParticipant);
             taskParticipantHelper.removeFromGroup(taskParticipant, group);
         }
 
-        group.removeMember(toRemoveGroupMember);
+        groupMemberHelper.deleteGroupMember(groupMemberToRemove);
     }
 
     /**
@@ -206,6 +213,7 @@ public class GroupAPI {
         }
 
         group.removeTask(task);
+        task.removeSharedGroup(group);
 
         // TODO: 31.03.2016 REMOVE ASSERTION FOR PRODUCTION
         // After removing the task from a group there should be NO TaskParticipant connected to the Task and Group
@@ -231,15 +239,43 @@ public class GroupAPI {
 
         GroupMember adminMember = groupMemberHelper.getGroupMember(admin, group);
         GroupMember newAdminMember = groupMemberHelper.getGroupMember(newAdmin, group);
-        if (newAdminMember == null) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, newAdmin, group));
+        if (newAdminMember == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, newAdmin, group));
 
         newAdminMember.setRole(MemberRole.ADMIN);
         adminMember.setRole(MemberRole.MANAGER);
     }
 
-    public void deleteGroup(User executor, Group group) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public void deleteGroup(User admin, Group group) throws NotMemberOfException, GroupPermissionException, WrongParameterException, NotAllowedException {
+        if (!permissionHandler.hasGroupPermission(admin, group, MemberRole.ADMIN))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.ADMIN, admin, group));
+
+        // Remove all members from group - that automatically deletes all needed connections
+        GroupMember adminGroupMember = null;
+        Set<GroupMember> groupMembersCopy = new HashSet<>(group.getGroupMembers());
+        for (GroupMember groupMember : groupMembersCopy) {
+            if (groupMember.getRole() == MemberRole.ADMIN){
+                adminGroupMember = groupMember;
+                continue; // Skip deleting the admin
+            }
+            removeMember(admin, group, groupMember);
+        }
+
+        // Leave all tasks associated with group
+        Set<Task> sharedTasksCopy = new HashSet<>(group.getSharedTasks());
+        for (Task task: sharedTasksCopy){
+            leaveTask(admin, group, task);
+        }
+
+        // Remove admin
+        for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(admin, group)) {
+            group.removeTaskParticipant(taskParticipant);
+            taskParticipantHelper.removeFromGroup(taskParticipant, group);
+        }
+
+        groupMemberHelper.deleteGroupMember(adminGroupMember);
+        // TODO: 31.03.2016 Also delete all sharing offers! (they were not implemented yet when writing this)
+        groupDAO.delete(group);
     }
 
     public Set<User> getUsersOfGroup(Group group) {
@@ -252,4 +288,6 @@ public class GroupAPI {
             throw new NotImplementedException();
         }
     }
+
+
 }
