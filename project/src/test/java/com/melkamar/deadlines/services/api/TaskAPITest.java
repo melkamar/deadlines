@@ -1,6 +1,4 @@
-package com.melkamar.deadlines.services.helpers;
-
-import com.melkamar.deadlines.services.api.UserAPI;
+package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.task.TaskDAO;
@@ -30,9 +28,9 @@ import java.time.LocalDateTime;
 //@Rollback(value = false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
-public class TaskHelperTest {
+public class TaskAPITest {
     @Autowired
-    private TaskHelper taskHelper;
+    private TaskAPI taskAPI;
     @Autowired
     private UserAPI userAPI;
     @Autowired
@@ -44,42 +42,42 @@ public class TaskHelperTest {
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void nullParameters() throws WrongParameterException {
-        taskHelper.createTask(null, null, null, null, 0, null);
+        taskAPI.createTask(null, null, null, null, 0, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void nullDeadline() throws WrongParameterException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        taskHelper.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, null);
+        taskAPI.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void negativeGrowspeed() throws WrongParameterException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        taskHelper.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, -10);
+        taskAPI.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, -10);
     }
 
     @Test
     @Transactional
     public void minimumInfoDeadline() throws WrongParameterException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
     }
 
     @Test
     @Transactional
     public void minimumInfoGrowing() throws WrongParameterException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        taskHelper.createTask(user, "TestTask", null, null, 0, 10);
+        taskAPI.createTask(user, "TestTask", null, null, 0, 10);
     }
 
     @Test
     @Transactional
     public void creatorMemberOfTask() throws WrongParameterException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         Assert.assertTrue(task.usersOnTask().contains(user));
         Assert.assertTrue(user.tasksOfUser().contains(task));
@@ -89,7 +87,7 @@ public class TaskHelperTest {
     @Transactional
     public void userTaskRelationPersistence() throws WrongParameterException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         User retrievedUser = userDAO.findByUsername("TestUser");
         Assert.assertTrue(retrievedUser.tasksOfUser().size() == 1);
@@ -106,12 +104,12 @@ public class TaskHelperTest {
     @Transactional
     public void reportWorkInvalidManhours() throws WrongParameterException, NotMemberOfException, WrongRoleException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         TaskParticipant participant = user.getParticipants().iterator().next();
         participant.setRole(TaskRole.WORKER);
 
-        taskHelper.reportWork(user, task, -1);
+        taskAPI.reportWork(user, task, -1);
     }
 
     @Test(expected = NotMemberOfException.class)
@@ -119,23 +117,23 @@ public class TaskHelperTest {
     public void reportWorkUserNotParticipant() throws WrongParameterException, NotMemberOfException, WrongRoleException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
-        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         TaskParticipant participant = user.getParticipants().iterator().next();
         participant.setRole(TaskRole.WORKER);
 
-        taskHelper.reportWork(nonParticipant, task, 10);
+        taskAPI.reportWork(nonParticipant, task, 10);
     }
 
     @Test(expected = WrongRoleException.class)
     @Transactional
     public void reportWorkUserNotWorker() throws WrongParameterException, NotMemberOfException, WrongRoleException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         TaskParticipant participant = user.getParticipants().iterator().next();
 
-        taskHelper.reportWork(user, task, 10);
+        taskAPI.reportWork(user, task, 10);
     }
 
     @Test
@@ -143,19 +141,19 @@ public class TaskHelperTest {
     public void reportWorkPersistence() throws WrongParameterException, NotMemberOfException, WrongRoleException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
-        Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
         Long taskId = task.getId();
 
         TaskParticipant participant = user.getParticipants().iterator().next();
         participant.setRole(TaskRole.WORKER);
 
-        taskHelper.reportWork(user, task, 10);
+        taskAPI.reportWork(user, task, 10);
         Assert.assertTrue(task.getWorkReports().size() == 1);
 
-        taskHelper.reportWork(user, task, 5);
+        taskAPI.reportWork(user, task, 5);
         Assert.assertTrue(task.getWorkReports().size() == 2);
 
-        taskHelper.reportWork(user, task, 12);
+        taskAPI.reportWork(user, task, 12);
         Assert.assertTrue(task.getWorkReports().size() == 3);
 
         Task retrievedTask = taskDAO.findById(taskId);
