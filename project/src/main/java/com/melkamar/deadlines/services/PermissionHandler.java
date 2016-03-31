@@ -30,13 +30,13 @@ public class PermissionHandler {
 
     public boolean hasGroupPermission(User user, Group group, MemberRole requiredPermission) throws NotMemberOfException {
         GroupMember groupMember = groupMemberDAO.findByUserAndGroup(user, group);
+        if (groupMember == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, user, group));
+
         return hasGroupPermission(groupMember, requiredPermission);
     }
 
-    public boolean hasGroupPermission(GroupMember executorGroupMember, MemberRole requiredPermission) throws NotMemberOfException {
-        if (executorGroupMember == null)
-            throw new NotMemberOfException(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP);
-
+    private boolean hasGroupPermission(GroupMember executorGroupMember, MemberRole requiredPermission) throws NotMemberOfException {
         switch (requiredPermission) {
             case MEMBER:
                 return true; // executor is at least a member of the group if this code is executing -> he has permission
