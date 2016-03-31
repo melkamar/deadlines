@@ -6,7 +6,7 @@ import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.helpers.GroupHelper;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
-import com.melkamar.deadlines.services.helpers.UserHelper;
+import com.melkamar.deadlines.services.api.UserAPI;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -27,7 +25,7 @@ public class PermissionHandlerTest {
 
 
     @Autowired
-    private UserHelper userHelper;
+    private UserAPI userAPI;
     @Autowired
     private GroupHelper groupHelper;
     @Autowired
@@ -39,10 +37,10 @@ public class PermissionHandlerTest {
     @Transactional
     @Test
     public void hasGroupPermission() throws Exception {
-        User userMember = userHelper.createUser("Member", "password", "John Doe", "a@b.c");
-        User userManager = userHelper.createUser("Manager", "password", "John Doe", "b@b.c");
-        User userAdmin = userHelper.createUser("Admin", "password", "John Doe", "c@b.c");
-        User userNonmember = userHelper.createUser("Nonmember", "password", "John Doe", "d@b.c");
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
         Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);

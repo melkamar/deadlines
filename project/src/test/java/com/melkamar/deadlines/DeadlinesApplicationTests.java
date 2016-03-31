@@ -1,10 +1,6 @@
 package com.melkamar.deadlines;
 
-import com.melkamar.deadlines.services.helpers.UserHelper;
-import com.melkamar.deadlines.model.TaskParticipant;
-import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.model.task.DeadlineTask;
-import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.services.api.UserAPI;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,7 @@ public class DeadlinesApplicationTests {
 
 
 	@Autowired
-	private UserHelper userHelper;
+	private UserAPI userAPI;
 
 	@Test
 	public void contextLoads() {

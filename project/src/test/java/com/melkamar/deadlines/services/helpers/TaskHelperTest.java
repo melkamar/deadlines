@@ -1,10 +1,10 @@
 package com.melkamar.deadlines.services.helpers;
 
+import com.melkamar.deadlines.services.api.UserAPI;
+
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.task.TaskDAO;
-import com.melkamar.deadlines.dao.task.TaskDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.dao.user.UserDAOHibernate;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.exceptions.WrongRoleException;
@@ -18,12 +18,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -36,7 +34,7 @@ public class TaskHelperTest {
     @Autowired
     private TaskHelper taskHelper;
     @Autowired
-    private UserHelper userHelper;
+    private UserAPI userAPI;
     @Autowired
     private UserDAO userDAO;
     @Autowired
@@ -52,35 +50,35 @@ public class TaskHelperTest {
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void nullDeadline() throws WrongParameterException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskHelper.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void negativeGrowspeed() throws WrongParameterException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskHelper.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, -10);
     }
 
     @Test
     @Transactional
     public void minimumInfoDeadline() throws WrongParameterException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
     }
 
     @Test
     @Transactional
     public void minimumInfoGrowing() throws WrongParameterException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskHelper.createTask(user, "TestTask", null, null, 0, 10);
     }
 
     @Test
     @Transactional
     public void creatorMemberOfTask() throws WrongParameterException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         Assert.assertTrue(task.usersOnTask().contains(user));
@@ -90,7 +88,7 @@ public class TaskHelperTest {
     @Test
     @Transactional
     public void userTaskRelationPersistence() throws WrongParameterException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         User retrievedUser = userDAO.findByUsername("TestUser");
@@ -107,7 +105,7 @@ public class TaskHelperTest {
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void reportWorkInvalidManhours() throws WrongParameterException, NotMemberOfException, WrongRoleException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         TaskParticipant participant = user.getParticipants().iterator().next();
@@ -119,8 +117,8 @@ public class TaskHelperTest {
     @Test(expected = NotMemberOfException.class)
     @Transactional
     public void reportWorkUserNotParticipant() throws WrongParameterException, NotMemberOfException, WrongRoleException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        User nonParticipant = userHelper.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
         Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         TaskParticipant participant = user.getParticipants().iterator().next();
@@ -132,7 +130,7 @@ public class TaskHelperTest {
     @Test(expected = WrongRoleException.class)
     @Transactional
     public void reportWorkUserNotWorker() throws WrongParameterException, NotMemberOfException, WrongRoleException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         TaskParticipant participant = user.getParticipants().iterator().next();
@@ -143,8 +141,8 @@ public class TaskHelperTest {
     @Test
     @Transactional
     public void reportWorkPersistence() throws WrongParameterException, NotMemberOfException, WrongRoleException {
-        User user = userHelper.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        User nonParticipant = userHelper.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
         Task task = taskHelper.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
         Long taskId = task.getId();
 

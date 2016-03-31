@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services.helpers;
+package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.user.UserDAO;
@@ -19,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
-public class UserHelperTest {
+public class UserAPITest {
     @Autowired
-    private UserHelper userHelper;
+    private UserAPI userAPI;
     @Autowired
     private UserDAO userDAO;
 
@@ -29,19 +29,19 @@ public class UserHelperTest {
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void nullParameters() throws WrongParameterException {
-        userHelper.createUser(null, null, null, null);
+        userAPI.createUser(null, null, null, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void emptyParameters() throws WrongParameterException {
-        userHelper.createUser("", "", "", "");
+        userAPI.createUser("", "", "", "");
     }
 
     @Test
     @Transactional
     public void plainPersistence() throws WrongParameterException {
-        User user = userHelper.createUser("User1", "password", null, null);
+        User user = userAPI.createUser("User1", "password", null, null);
 
         Assert.assertNotNull(userDAO.findByUsername("User1"));
     }
@@ -49,15 +49,15 @@ public class UserHelperTest {
     @Test(expected = DataIntegrityViolationException.class)
     @Transactional
     public void uniqueUsername() throws WrongParameterException {
-        User user = userHelper.createUser("uniq1", "password", null, null);
-        User user2 = userHelper.createUser("uniq2", "password", null, null);
-        User user3 = userHelper.createUser("uniq2", "password", null, null);
+        User user = userAPI.createUser("uniq1", "password", null, null);
+        User user2 = userAPI.createUser("uniq2", "password", null, null);
+        User user3 = userAPI.createUser("uniq2", "password", null, null);
     }
 
     @Test
 //    @Transactional
     public void fieldsPersistence() throws WrongParameterException {
-        User user = userHelper.createUser("User2", "password", "somename", "someemail");
+        User user = userAPI.createUser("User2", "password", "somename", "someemail");
         User retrieved = userDAO.findByUsername("User2");
 
         System.out.println(user);
