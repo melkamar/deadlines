@@ -7,7 +7,7 @@ import com.melkamar.deadlines.model.Group;
  * 26.03.2016 12:10
  */
 public interface GroupDAO {
-    public long count();
-    public Group save(Group group);
-    public Group findByName(String name);
+    long count();
+    Group save(Group group);
+    Group findByName(String name);
 }

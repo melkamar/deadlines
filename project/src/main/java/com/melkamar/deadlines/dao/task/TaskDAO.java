@@ -7,7 +7,7 @@ import com.melkamar.deadlines.model.task.Task;
  * 27.03.2016 15:14
  */
 public interface TaskDAO {
-    public long count();
-    public Task save(Task task);
-    public Task findById(Long id);
+    long count();
+    Task save(Task task);
+    Task findById(Long id);
 }

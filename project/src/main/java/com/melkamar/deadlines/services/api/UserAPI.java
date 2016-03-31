@@ -1,9 +1,11 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.config.StringConstants;
+import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -25,6 +30,9 @@ public class UserAPI {
     private PasswordHashGenerator passwordHashGenerator;
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private GroupMemberDAO groupMemberDAO;
+
 
     @Transactional
     public User createUser(String username, String password, String name, String email) throws WrongParameterException {
@@ -78,8 +86,9 @@ public class UserAPI {
         throw new NotImplementedException();
     }
 
-    public List<Group> listGroups(User executor){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    @Transactional
+    public Set<Group> getGroupsOfUser(User executor){
+        Set<Group> groups = groupMemberDAO.findByUser(executor).stream().map(GroupMember::getGroup).collect(Collectors.toSet());
+        return groups;
     }
 }

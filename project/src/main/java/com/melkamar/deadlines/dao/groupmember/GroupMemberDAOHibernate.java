@@ -7,6 +7,8 @@ import com.melkamar.deadlines.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 28.03.2016 11:33
@@ -30,4 +32,10 @@ public class GroupMemberDAOHibernate implements GroupMemberDAO {
     public GroupMember findByUserAndGroup(User user, Group group) {
         return groupMemberRepository.findByUserAndGroup(user, group);
     }
+
+    @Override
+    public Set<GroupMember> findByUser(User user) {
+        return groupMemberRepository.findByUser(user);
+    }
+
 }

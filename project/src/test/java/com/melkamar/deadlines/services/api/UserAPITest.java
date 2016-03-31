@@ -3,6 +3,7 @@ package com.melkamar.deadlines.services.api;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.security.Authenticator;
 import org.junit.Assert;
@@ -27,6 +28,8 @@ public class UserAPITest {
     private UserDAO userDAO;
     @Autowired
     private Authenticator authenticator;
+    @Autowired
+    private GroupAPI groupAPI;
 
 
     @Test(expected = WrongParameterException.class)
@@ -106,15 +109,49 @@ public class UserAPITest {
         int size = userAPI.listUsers().size();
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
-        userAPI.createUser("someuser"+size, "password", "somename", "someemail"+size);
+        userAPI.createUser("someuser" + size, "password", "somename", "someemail" + size);
         size++;
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
-        userAPI.createUser("someuser"+size, "password", "somename", "someemail"+size);
+        userAPI.createUser("someuser" + size, "password", "somename", "someemail" + size);
         size++;
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
-        userAPI.createUser("someuser"+size, "password", "somename", "someemail"+size);
+        userAPI.createUser("someuser" + size, "password", "somename", "someemail" + size);
         size++;
+    }
+
+    @Test
+    @Transactional
+    public void getGroupsOfUser() throws WrongParameterException {
+        int groupsSize = 0;
+
+        User user = userAPI.createUser("someuser", "password", "somename", "someemail");
+        User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2");
+        Assert.assertEquals(userAPI.getGroupsOfUser(user).size(), groupsSize);
+
+        Group groupA = groupAPI.createGroup("group" + groupsSize, user, "desc");
+        groupsSize++;
+        Assert.assertEquals(userAPI.getGroupsOfUser(user).size(), groupsSize);
+        Assert.assertEquals(userAPI.getGroupsOfUser(anotherUser).size(), 0);
+
+
+        Group groupB = groupAPI.createGroup("group" + groupsSize, user, "desc");
+        groupsSize++;
+        Assert.assertEquals(userAPI.getGroupsOfUser(user).size(), groupsSize);
+        Assert.assertEquals(userAPI.getGroupsOfUser(anotherUser).size(), 0);
+
+        Group groupC = groupAPI.createGroup("group" + groupsSize, anotherUser, "desc");
+        Assert.assertEquals(userAPI.getGroupsOfUser(user).size(), groupsSize);
+        Assert.assertEquals(userAPI.getGroupsOfUser(anotherUser).size(), 1);
+
+
+        Assert.assertTrue(userAPI.getGroupsOfUser(user).contains(groupA));
+        Assert.assertTrue(userAPI.getGroupsOfUser(user).contains(groupB));
+        Assert.assertFalse(userAPI.getGroupsOfUser(user).contains(groupC));
+
+        Assert.assertFalse(userAPI.getGroupsOfUser(anotherUser).contains(groupA));
+        Assert.assertFalse(userAPI.getGroupsOfUser(anotherUser).contains(groupB));
+        Assert.assertTrue(userAPI.getGroupsOfUser(anotherUser).contains(groupC));
     }
 }

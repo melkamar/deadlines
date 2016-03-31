@@ -7,6 +7,6 @@ import com.melkamar.deadlines.model.task.TaskWork;
  * 27.03.2016 19:14
  */
 public interface TaskWorkDAO {
-    public long count();
-    public TaskWork save(TaskWork taskWork);
+    long count();
+    TaskWork save(TaskWork taskWork);
 }
