@@ -15,7 +15,9 @@ import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -52,6 +54,9 @@ public class GroupAPITest {
     private TaskParticipantDAO taskParticipantDAO;
     @Autowired
     private TaskAPI taskAPI;
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -473,6 +478,38 @@ public class GroupAPITest {
         Assert.assertEquals(group.getDescription(), "Random description");
         groupAPI.editDetails(userAdmin, group, "New thing");
         Assert.assertEquals(group.getDescription(), "New thing");
+    }
+
+    @Test
+    @Transactional
+    public void changeAdminUserNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.ca");
+        User newAdmin = userAPI.createUser("NewAdmin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        groupAPI.editDetails(userAdmin, group, "New thing"); // Check if it passes just in case
+
+        expectedException.expect(NotMemberOfException.class);
+        groupAPI.changeAdmin(userAdmin, group, newAdmin);
+    }
+
+    @Test
+    @Transactional
+    public void changeAdminOkFormerAdminFails() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.ca");
+        User newAdmin = userAPI.createUser("NewAdmin", "password", "John Doe", "c@b.ca");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        groupAPI.addMember(userAdmin, group, newAdmin);
+        groupAPI.editDetails(userAdmin, group, "New thing"); // Check if it passes just in case
+
+        groupAPI.changeAdmin(userAdmin, group, newAdmin);
+
+        groupAPI.editDetails(newAdmin, group, "Yet another");
+        Assert.assertEquals(group.getDescription(), "Yet another");
+
+        expectedException.expect(GroupPermissionException.class);
+        groupAPI.editDetails(userAdmin, group, "New thing");
     }
 }
 

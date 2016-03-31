@@ -72,7 +72,7 @@ public class GroupAPI {
 
     public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException, NotAllowedException {
         if (executor == null || group == null || member == null) {
-            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NULL);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
         }
 
         if (!permissionHandler.hasGroupPermission(executor, group, MemberRole.ADMIN))
@@ -100,9 +100,8 @@ public class GroupAPI {
         throw new NotImplementedException();
     }
 
-    public Group getGroup(User executor, Long groupId) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public Group getGroup(Long groupId) {
+        return groupDAO.findById(groupId);
     }
 
     /**
@@ -114,7 +113,7 @@ public class GroupAPI {
      */
     public void addMember(User manager, Group group, User newUser) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
         if (manager == null || group == null || newUser == null)
-            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
@@ -143,7 +142,7 @@ public class GroupAPI {
      */
     public void removeMember(User manager, Group group, User toRemove) throws NotAllowedException, NotMemberOfException, GroupPermissionException, WrongParameterException {
         if (manager == null || group == null || toRemove == null)
-            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
         GroupMember toRemoveGroupMember = groupMemberDAO.findByUserAndGroup(toRemove, group);
         if (toRemoveGroupMember == null)
@@ -174,7 +173,7 @@ public class GroupAPI {
      */
     public void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
         if (manager == null || group == null || task == null)
-            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
@@ -193,7 +192,7 @@ public class GroupAPI {
     @Transactional
     public void leaveTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
         if (manager == null || group == null || task == null)
-            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
@@ -221,9 +220,21 @@ public class GroupAPI {
         group.setDescription(newDescription);
     }
 
-    public Group changeAdmin(User executor, Group group, User newAdmin) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public void changeAdmin(User admin, Group group, User newAdmin) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
+        if (admin == null || group == null || newAdmin == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
+
+        if (!permissionHandler.hasGroupPermission(admin, group, MemberRole.ADMIN))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.ADMIN, admin, group));
+
+        if (admin.equals(newAdmin)) return;
+
+        GroupMember adminMember = groupMemberHelper.getGroupMember(admin, group);
+        GroupMember newAdminMember = groupMemberHelper.getGroupMember(newAdmin, group);
+        if (newAdminMember == null) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, newAdmin, group));
+
+        newAdminMember.setRole(MemberRole.ADMIN);
+        adminMember.setRole(MemberRole.MANAGER);
     }
 
     public void deleteGroup(User executor, Group group) {

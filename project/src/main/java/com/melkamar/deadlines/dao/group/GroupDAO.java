@@ -10,4 +10,5 @@ public interface GroupDAO {
     long count();
     Group save(Group group);
     Group findByName(String name);
+    Group findById(Long id);
 }

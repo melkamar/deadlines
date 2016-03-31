@@ -19,9 +19,9 @@ public class StringConstants {
     public final String EXC_PARAM_MEMBER_ROLE_NULL = "Member role cannot be null.";
     public final String EXC_PARAM_TASK_GROWSPEED_INVALID = "Task grow speed must be >=0.";
     public final String EXC_PARAM_TASK_MANHOURS_INVALID = "Manhours done must be >=0.";
-    public final String EXC_PARAM_NOT_NULL = "All parameters need to be non-null";
+//    public final String EXC_PARAM_NOT_NULL = "All parameters need to be non-null";
 
-    public final String EXC_PARAM_ALL_NEED_NULL = "All parameters need to be not null.";
+    public final String EXC_PARAM_ALL_NEED_NOT_NULL = "All parameters need to be not null.";
 
     public final String EXC_ALREADY_EXISTS_TASK_PARTICIPANT = "Task participant already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_GROUP_MEMBER = "Group member already exists! {0} -- {1}";

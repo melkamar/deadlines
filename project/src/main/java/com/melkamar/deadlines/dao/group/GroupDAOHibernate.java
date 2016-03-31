@@ -30,4 +30,9 @@ public class GroupDAOHibernate implements GroupDAO {
     public Group findByName(String name) {
         return groupRepository.findByName(name);
     }
+
+    @Override
+    public Group findById(Long id) {
+        return groupRepository.findById(id);
+    }
 }
