@@ -4,7 +4,7 @@ import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.services.helpers.GroupHelper;
+import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.junit.Assert;
@@ -27,7 +27,7 @@ public class PermissionHandlerTest {
     @Autowired
     private UserAPI userAPI;
     @Autowired
-    private GroupHelper groupHelper;
+    private GroupAPI groupAPI;
     @Autowired
     private PermissionHandler permissionHandler;
     @Autowired
@@ -42,7 +42,7 @@ public class PermissionHandlerTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 

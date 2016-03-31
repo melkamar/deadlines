@@ -6,6 +6,7 @@ import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,13 +30,13 @@ public class GroupMemberHelperTest {
     @Autowired
     private UserAPI userAPI;
     @Autowired
-    private GroupHelper groupHelper;
+    private GroupAPI groupAPI;
 
     @Transactional
     @Test
     public void createGroupMemberGroupCreation() throws WrongParameterException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        Group group = groupHelper.createGroup("Groupname", user, "Random description");
+        Group group = groupAPI.createGroup("Groupname", user, "Random description");
     }
 
     @Transactional
@@ -43,7 +44,7 @@ public class GroupMemberHelperTest {
     public void createGroupMember() throws WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
-        Group group = groupHelper.createGroup("Groupname", user, "Random description");
+        Group group = groupAPI.createGroup("Groupname", user, "Random description");
 
         Assert.assertNull(groupMemberHelper.getGroupMember(user2, group));
         groupMemberHelper.createGroupMember(user2, group, MemberRole.MEMBER);
@@ -56,7 +57,7 @@ public class GroupMemberHelperTest {
     @Test(expected = AlreadyExistsException.class)
     public void createDuplicateGroupMember() throws Exception {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        Group group = groupHelper.createGroup("Groupname", user, "Random description");
+        Group group = groupAPI.createGroup("Groupname", user, "Random description");
 
         groupMemberHelper.createGroupMember(user, group, MemberRole.MEMBER);
     }
@@ -68,7 +69,7 @@ public class GroupMemberHelperTest {
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         User user3 = userAPI.createUser("NewlyAddedUser2", "password", "Alice Doe", "ab@b.c");
 
-        Group group = groupHelper.createGroup("Groupname", user, "Random description");
+        Group group = groupAPI.createGroup("Groupname", user, "Random description");
 
         Assert.assertTrue(groupMemberHelper.getGroupMember(user, group).getUser().equals(user));
         Assert.assertNull(groupMemberHelper.getGroupMember(user2, group));

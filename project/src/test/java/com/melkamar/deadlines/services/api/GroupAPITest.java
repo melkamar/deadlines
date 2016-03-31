@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services.helpers;
+package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.group.GroupDAO;
@@ -7,7 +7,9 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
-public class GroupHelperTest {
+public class GroupAPITest {
     @Autowired
     private GroupDAO groupDAO;
     @Autowired
-    private GroupHelper groupHelper;
+    private GroupAPI groupAPI;
 
 
     @Autowired
@@ -39,20 +41,20 @@ public class GroupHelperTest {
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void nullParameters() throws WrongParameterException {
-        groupHelper.createGroup(null, null, null);
+        groupAPI.createGroup(null, null, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
     public void nullFounder() throws WrongParameterException {
-        groupHelper.createGroup("SomeName", null, null);
+        groupAPI.createGroup("SomeName", null, null);
     }
 
     @Test
     @Transactional
     public void founderAdmin() throws WrongParameterException {
         User user = userAPI.createUser("GroupAdmin", "pwd", null, null);
-        Group group = groupHelper.createGroup("AGroup", user, null);
+        Group group = groupAPI.createGroup("AGroup", user, null);
 
         User retrievedUser = userDAO.findByUsername("GroupAdmin");
         Group retrievedGroup = groupDAO.findByName("AGroup");
@@ -69,9 +71,9 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
-        groupHelper.setManager(null, group, userMember, true);
+        groupAPI.setManager(null, group, userMember, true);
     }
 
     @Test(expected = WrongParameterException.class)
@@ -82,9 +84,9 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.cb");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
-        groupHelper.setManager(userAdmin, null, userMember, true);
+        groupAPI.setManager(userAdmin, null, userMember, true);
     }
 
     @Test(expected = WrongParameterException.class)
@@ -95,9 +97,9 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
-        groupHelper.setManager(userAdmin, group, null, true);
+        groupAPI.setManager(userAdmin, group, null, true);
     }
 
     @Test(expected = GroupPermissionException.class)
@@ -108,11 +110,11 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.ca");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 
-        groupHelper.setManager(userManager, group, userMember, true);
+        groupAPI.setManager(userManager, group, userMember, true);
     }
 
     @Test(expected = NotMemberOfException.class)
@@ -123,9 +125,9 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.ca");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
-        groupHelper.setManager(userAdmin, group, userMember, true);
+        groupAPI.setManager(userAdmin, group, userMember, true);
     }
 
     @Test
@@ -136,16 +138,16 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.ca");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 
         Assert.assertTrue(groupMemberHelper.getGroupMember(userMember, group).getRole() == MemberRole.MEMBER);
-        groupHelper.setManager(userAdmin, group, userMember, true);
+        groupAPI.setManager(userAdmin, group, userMember, true);
         Assert.assertTrue(groupMemberHelper.getGroupMember(userMember, group).getRole() == MemberRole.MANAGER);
 
         Assert.assertTrue(groupMemberHelper.getGroupMember(userManager, group).getRole() == MemberRole.MANAGER);
-        groupHelper.setManager(userAdmin, group, userManager, false);
+        groupAPI.setManager(userAdmin, group, userManager, false);
         Assert.assertTrue(groupMemberHelper.getGroupMember(userManager, group).getRole() == MemberRole.MEMBER);
     }
 
@@ -157,10 +159,10 @@ public class GroupHelperTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.ca");
 
-        Group group = groupHelper.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 
-        groupHelper.setManager(userAdmin, group, userAdmin, true);
+        groupAPI.setManager(userAdmin, group, userAdmin, true);
     }
 }
