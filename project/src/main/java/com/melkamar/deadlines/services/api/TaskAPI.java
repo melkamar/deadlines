@@ -3,6 +3,7 @@ package com.melkamar.deadlines.services.api;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
+import com.melkamar.deadlines.exceptions.GroupPermissionException;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.exceptions.WrongRoleException;
@@ -14,6 +15,7 @@ import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
@@ -38,6 +40,8 @@ public class TaskAPI {
     private TaskParticipantHelper taskParticipantHelper;
     @Autowired
     private TaskParticipantDAO taskparticipantDAO;
+    @Autowired
+    private GroupAPI groupAPI;
 
 
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
@@ -68,26 +72,32 @@ public class TaskAPI {
      * Creates a DeadlineTask. If groups is not null, then it will be immediately shared with the given groups.
      * Creator must be manager of all of them.
      */
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, LocalDateTime deadline) throws WrongParameterException {
+    @Transactional
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, LocalDateTime deadline) throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        if (groups == null) return createTask(creator, name, description, priority, workEstimate, deadline);
         Task newTask = createTask(creator, name, description, priority, workEstimate, deadline);
 
-        // TODO: 31.03.2016 Implement auto-sharing with group if exists
-        throw new NotImplementedException();
+        for (Group group : groups) {
+            groupAPI.addTask(creator, group, newTask);
+        }
+
+        return newTask;
     }
 
     /**
      * Creates a GrowingTask. If groups is not null, then it will be immediately shared with the given groups.
      * Creator must be manager of all of them.
      */
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double growSpeed) throws WrongParameterException {
+    @Transactional
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double growSpeed) throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        if (groups == null) return createTask(creator, name, description, priority, workEstimate, growSpeed);
         Task newTask = createTask(creator, name, description, priority, workEstimate, growSpeed);
 
-        for (Group group: groups){
-
+        for (Group group : groups) {
+            groupAPI.addTask(creator, group, newTask);
         }
 
-        // TODO: 31.03.2016 Implement auto-sharing with group if exists
-        throw new NotImplementedException();
+        return newTask;
     }
 
 
