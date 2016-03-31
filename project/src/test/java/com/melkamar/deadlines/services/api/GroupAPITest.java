@@ -464,7 +464,16 @@ public class GroupAPITest {
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
     }
 
+    @Test
+    @Transactional
+    public void editDetails() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
+        Assert.assertEquals(group.getDescription(), "Random description");
+        groupAPI.editDetails(userAdmin, group, "New thing");
+        Assert.assertEquals(group.getDescription(), "New thing");
+    }
 }
 
 

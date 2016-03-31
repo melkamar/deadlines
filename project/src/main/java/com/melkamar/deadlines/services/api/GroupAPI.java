@@ -213,9 +213,12 @@ public class GroupAPI {
         assert taskparticipantDAO.findByTaskAndGroups(task, group).size() == 0;
     }
 
-    public Group editDetails(User manager, Group group, String newDescription) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    @Transactional
+    public void editDetails(User admin, Group group, String newDescription) throws NotMemberOfException, GroupPermissionException {
+        if (!permissionHandler.hasGroupPermission(admin, group, MemberRole.ADMIN))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.ADMIN, admin, group));
+
+        group.setDescription(newDescription);
     }
 
     public Group changeAdmin(User executor, Group group, User newAdmin) {
