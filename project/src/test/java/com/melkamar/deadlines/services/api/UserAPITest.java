@@ -4,6 +4,7 @@ import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.services.security.Authenticator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ public class UserAPITest {
     private UserAPI userAPI;
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private Authenticator authenticator;
 
 
     @Test(expected = WrongParameterException.class)
@@ -55,7 +58,7 @@ public class UserAPITest {
     }
 
     @Test
-//    @Transactional
+    @Transactional
     public void fieldsPersistence() throws WrongParameterException {
         User user = userAPI.createUser("User2", "password", "somename", "someemail");
         User retrieved = userDAO.findByUsername("User2");
@@ -65,5 +68,35 @@ public class UserAPITest {
 
         Assert.assertNotNull(retrieved);
         Assert.assertEquals(user, retrieved);
+    }
+
+    @Test
+    @Transactional
+    public void editUserDetails() throws WrongParameterException {
+        User user = userAPI.createUser("UserDetails", "password", "somename", "someemailDetails");
+
+        Assert.assertTrue(user.getUsername().equals("UserDetails"));
+        Assert.assertTrue(user.getName().equals("somename"));
+        Assert.assertTrue(user.getEmail().equals("someemailDetails"));
+        Assert.assertNotNull(authenticator.authenticate(user, "password"));
+
+        userAPI.editUserDetails(user, "NewName", null, null);
+        Assert.assertTrue(user.getUsername().equals("UserDetails"));
+        Assert.assertTrue(user.getName().equals("NewName"));
+        Assert.assertTrue(user.getEmail().equals("someemailDetails"));
+        Assert.assertNotNull(authenticator.authenticate(user, "password"));
+
+        userAPI.editUserDetails(user, null, "newemail", null);
+        Assert.assertTrue(user.getUsername().equals("UserDetails"));
+        Assert.assertTrue(user.getName().equals("NewName"));
+        Assert.assertTrue(user.getEmail().equals("newemail"));
+        Assert.assertNotNull(authenticator.authenticate(user, "password"));
+
+        userAPI.editUserDetails(user, null, null, "newpassword");
+        Assert.assertTrue(user.getUsername().equals("UserDetails"));
+        Assert.assertTrue(user.getName().equals("NewName"));
+        Assert.assertTrue(user.getEmail().equals("newemail"));
+        Assert.assertNotNull(authenticator.authenticate(user, "newpassword"));
+        Assert.assertNull(authenticator.authenticate(user, "password"));
     }
 }

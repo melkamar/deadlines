@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
@@ -39,7 +40,7 @@ public class GroupAPI {
     @Autowired
     private PermissionHandler permissionHandler;
 
-
+    @Transactional
     public Group createGroup(String name, User founder, String description) throws WrongParameterException {
         if (name == null || name.isEmpty()) throw new WrongParameterException(stringConstants.EXC_PARAM_NAME_EMPTY);
         if (founder == null) throw new WrongParameterException(stringConstants.EXC_PARAM_FOUNDER_NULL);

@@ -20,12 +20,22 @@ public class PasswordHashGenerator {
      * Generates a secure password by hashing the salted plaintext.
      *
      * @param plaintextPassword Original password in plaintext.
-     * @return First index is the hash, second index the used salt.
+     * @return HashAndSalt class with filled fields.
      */
-    public String[] generatePasswordHash(String plaintextPassword) {
+    public HashAndSalt generatePasswordHash(String plaintextPassword) {
         String salt = randomStringGenerator.generateKey();
         String hash = passwordEncoder.encodePassword(plaintextPassword, salt);
 
-        return new String[]{hash, salt};
+        return new HashAndSalt(hash, salt);
+    }
+
+    public class HashAndSalt{
+        final public String hash;
+        final public String salt;
+
+        public HashAndSalt(String hash, String salt) {
+            this.hash = hash;
+            this.salt = salt;
+        }
     }
 }

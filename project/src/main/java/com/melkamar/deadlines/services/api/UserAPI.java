@@ -8,6 +8,7 @@ import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class UserAPI {
     @Autowired
     private UserDAO userDAO;
 
+    @Transactional
     public User createUser(String username, String password, String name, String email) throws WrongParameterException {
         if (username == null || username.isEmpty()) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
@@ -34,9 +36,9 @@ public class UserAPI {
             throw new NullPointerException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
         }
 
-        String[] hashsalt = passwordHashGenerator.generatePasswordHash(password);
+        PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
 
-        User newUser = new User(username, hashsalt[0], hashsalt[1]);
+        User newUser = new User(username, hashAndSalt);
         newUser.setName(name);
         newUser.setEmail(email);
 
@@ -45,9 +47,22 @@ public class UserAPI {
         return newUser;
     }
 
-    public User editUserDetails(User user, String name, String email){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    @Transactional
+    public User editUserDetails(User user, String name, String email, String password){
+        if (name != null && !name.isEmpty()){
+            user.setName(name);
+        }
+
+        if (email != null && !email.isEmpty()){
+            user.setEmail(email);
+        }
+
+        if (password != null && !password.isEmpty()){
+            PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
+            user.setNewPassword(hashAndSalt);
+        }
+
+        return user;
     }
 
     /**

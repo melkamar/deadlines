@@ -3,6 +3,7 @@ package com.melkamar.deadlines.model;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.services.PasswordHashGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -38,10 +39,10 @@ public class User {
     private String email;
 
     @Column(name = COL_PASSWORD_HASH, nullable = false)
-    private final String passwordHash;
+    private String passwordHash;
 
     @Column(name = COL_PASSWORD_SALT, nullable = false)
-    private final String passwordSalt;
+    private String passwordSalt;
 
     @Column(name = COL_NAME)
     private String name;
@@ -53,10 +54,10 @@ public class User {
         this.passwordSalt = null;
     }
 
-    public User(String username, String passwordHash, String passwordSalt) {
+    public User(String username, PasswordHashGenerator.HashAndSalt hashAndSalt) {
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
+        this.passwordHash = hashAndSalt.hash;
+        this.passwordSalt = hashAndSalt.salt;
     }
 
     /* RELATIONS */
@@ -161,6 +162,11 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setNewPassword(PasswordHashGenerator.HashAndSalt hashAndSalt){
+        this.passwordHash = hashAndSalt.hash;
+        this.passwordSalt = hashAndSalt.salt;
     }
 
     @Override
