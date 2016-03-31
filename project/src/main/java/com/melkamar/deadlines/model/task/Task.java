@@ -118,6 +118,14 @@ public abstract class Task {
         return users;
     }
 
+    public boolean addSharedGroup(Group group){
+        return sharedGroups.add(group);
+    }
+
+    public boolean removeSharedGroup(Group group){
+        return sharedGroups.remove(group);
+    }
+
     /*************************************************************/
 
     public Long getId() {

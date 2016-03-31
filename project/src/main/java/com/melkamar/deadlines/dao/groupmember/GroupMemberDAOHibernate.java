@@ -38,4 +38,9 @@ public class GroupMemberDAOHibernate implements GroupMemberDAO {
         return groupMemberRepository.findByUser(user);
     }
 
+    @Override
+    public Set<GroupMember> findByGroup(Group group) {
+        return groupMemberRepository.findByGroup(group);
+    }
+
 }

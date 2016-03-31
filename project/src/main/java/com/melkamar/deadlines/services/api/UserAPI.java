@@ -99,7 +99,6 @@ public class UserAPI {
 
     @Transactional
     public Set<Group> getGroupsOfUser(User executor) {
-        Set<Group> groups = groupMemberDAO.findByUser(executor).stream().map(GroupMember::getGroup).collect(Collectors.toSet());
-        return groups;
+        return groupMemberDAO.findByUser(executor).stream().map(GroupMember::getGroup).collect(Collectors.toSet());
     }
 }

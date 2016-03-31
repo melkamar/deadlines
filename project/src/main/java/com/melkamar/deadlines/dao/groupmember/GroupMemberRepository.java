@@ -14,4 +14,5 @@ import java.util.Set;
 public interface GroupMemberRepository extends CrudRepository<GroupMember, Long> {
     GroupMember findByUserAndGroup(User user, Group group);
     Set<GroupMember> findByUser(User user);
+    Set<GroupMember> findByGroup(Group group);
 }

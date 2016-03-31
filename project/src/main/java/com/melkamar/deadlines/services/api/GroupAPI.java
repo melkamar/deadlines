@@ -21,6 +21,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -175,6 +177,16 @@ public class GroupAPI {
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        // Security checks passed, create associations
+        group.addSharedTask(task);
+        task.addSharedGroup(group);
+
+        // For all members update/create TaskParticipant entries
+        for (User user : getUsersOfGroup(group)) {
+            taskParticipantHelper.editOrCreateTaskParticipant(user, task, TaskRole.WATCHER, group, false);
+        }
+
     }
 
     public void leaveTask(User manager, Group group, Task task) {
@@ -197,6 +209,9 @@ public class GroupAPI {
         throw new NotImplementedException();
     }
 
+    public Set<User> getUsersOfGroup(Group group) {
+        return groupMemberDAO.findByGroup(group).stream().map(GroupMember::getUser).collect(Collectors.toSet());
+    }
 
     public class GroupFilter {
         public List<Group> filter(List<Group> groups) {

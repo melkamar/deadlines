@@ -114,6 +114,14 @@ public class Group {
         return sharedTasks;
     }
 
+    public boolean addSharedTask(Task task){
+        return sharedTasks.add(task);
+    }
+
+    public boolean removeSharedTask(Task task){
+        return sharedTasks.remove(task);
+    }
+
     @Override
     public String toString() {
         return "Group{" +

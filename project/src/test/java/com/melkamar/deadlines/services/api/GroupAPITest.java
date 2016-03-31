@@ -183,7 +183,7 @@ public class GroupAPITest {
 
     @Test
     @Transactional
-    public void addMember() throws WrongParameterException {
+    public void addMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -193,8 +193,11 @@ public class GroupAPITest {
 
         Task task = taskAPI.createTask(userAdmin, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
         Task task2 = taskAPI.createTask(userAdmin, "TestTask2", null, null, 0, groupSet, LocalDateTime.now().plusDays(101));
-        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, groupSet, LocalDateTime.now().plusDays(102));
+        Task task3 = taskAPI.createTask(userMember, "TestTask3", null, null, 0, groupSet, LocalDateTime.now().plusDays(102));
 
+        groupAPI.addTask(userAdmin, group, task);
+
+        // need to add tasks to groups first
         throw new NotImplementedException();
     }
 
@@ -215,6 +218,37 @@ public class GroupAPITest {
 
         groupAPI.addMember(userAdmin, group, userMember);
         throw new NotImplementedException();
+    }
+
+    @Test
+    @Transactional
+    public void addTask() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User userNonMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userNonMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userNonMember, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
+
+        Assert.assertEquals(group.getSharedTasks().size(), 0);
+        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.tasksOfUser().size(), 1);
+
+        groupAPI.addTask(userAdmin, group, task);
+        Assert.assertEquals(group.getSharedTasks().size(), 1);
+        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);
+
+        groupAPI.addTask(userAdmin, group, task2);
+        Assert.assertEquals(group.getSharedTasks().size(), 2);
+        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.tasksOfUser().size(), 3);
+
+        groupAPI.addTask(userAdmin, group, task3);
+        Assert.assertEquals(group.getSharedTasks().size(), 3);
+        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.tasksOfUser().size(), 3);
     }
 
 

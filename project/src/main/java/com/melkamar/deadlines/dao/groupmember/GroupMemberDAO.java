@@ -15,4 +15,5 @@ public interface GroupMemberDAO {
     GroupMember save(GroupMember groupMember);
     GroupMember findByUserAndGroup(User user, Group group);
     Set<GroupMember> findByUser(User user);
+    Set<GroupMember> findByGroup(Group group);
 }
