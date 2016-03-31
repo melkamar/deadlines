@@ -74,8 +74,7 @@ public class GroupAPI {
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NULL);
         }
 
-        GroupMember executorGroupMember = groupMemberHelper.getGroupMember(executor, group);
-        if (!permissionHandler.hasGroupPermission(executorGroupMember, MemberRole.ADMIN))
+        if (!permissionHandler.hasGroupPermission(executor, group, MemberRole.ADMIN))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.ADMIN, executor, group));
 
         GroupMember promotedGroupMember = groupMemberHelper.getGroupMember(member, group);
@@ -116,11 +115,7 @@ public class GroupAPI {
         if (manager == null || group == null || newUser == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
 
-        GroupMember managerGroupMember = groupMemberDAO.findByUserAndGroup(manager, group);
-        if (managerGroupMember == null)
-            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, manager, group));
-
-        if (!permissionHandler.hasGroupPermission(managerGroupMember, MemberRole.MANAGER))
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
 
         // If the newUser is already in the group
@@ -153,12 +148,8 @@ public class GroupAPI {
         if (toRemoveGroupMember == null)
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, toRemove, group));
 
-        GroupMember managerGroupMember = groupMemberDAO.findByUserAndGroup(manager, group);
-        if (managerGroupMember == null)
-            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, manager, group));
-
         // If the "manager" user is not a manager of group AND he also isn't the user requesting removal, deny it
-        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER) && !manager.equals(toRemove))
+        if (!manager.equals(toRemove) && !permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
 
         if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(toRemoveGroupMember))
@@ -178,8 +169,12 @@ public class GroupAPI {
      * @param group   Group to share the task with.
      * @param task    Task to share.
      */
-    public void addTask(User manager, Group group, Task task) {
+    public void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
+        if (manager == null || group == null || task == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_NOT_NULL);
 
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
     }
 
     public void leaveTask(User manager, Group group, Task task) {
