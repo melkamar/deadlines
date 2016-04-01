@@ -107,7 +107,7 @@ public class TaskAPI {
     }
 
 
-    public TaskWork reportWork(User user, Task task, double workDone) throws WrongParameterException, NotMemberOfException, WrongRoleException {
+    public TaskWork reportWork(User user, Task task, double workDone) throws WrongParameterException, NotMemberOfException, TaskPermissionException {
         if (workDone < 0) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_MANHOURS_INVALID);
         }
@@ -119,7 +119,7 @@ public class TaskAPI {
         if (participant == null) {
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT_IS_NULL, user.getUsername(), task.getName(), task.getId()));
         } else if (participant.getRole() != TaskRole.WORKER) {
-            throw new WrongRoleException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
+            throw new TaskPermissionException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
         }
 
         TaskWork taskWork = new TaskWork(workDone, user);
@@ -221,11 +221,30 @@ public class TaskAPI {
         task.setStatus(newStatus);
     }
 
-    public Task editTask(User user, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) {
+    @Transactional
+    public void editTask(User user, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) throws NotMemberOfException, TaskPermissionException, NotAllowedException {
+        if (!permissionHandler.hasTaskPermission(user, task, TaskRole.WORKER))
+            throw new TaskPermissionException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
 
+        if (newDescription != null && !newDescription.isEmpty()){
+            task.setDescription(newDescription);
+        }
 
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+        if (newDeadline!=null){
+            if (task instanceof DeadlineTask){
+                ((DeadlineTask)task).setDeadline(DateConvertor.localDateTimeToDate(newDeadline));
+            } else {
+                throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_SETING_DEADLINE_ON_GROWING);
+            }
+        }
+
+        if (newWorkEstimate!=null && newWorkEstimate>=0){
+            task.setWorkEstimate(newWorkEstimate);
+        }
+
+        if (newPriority!=null){
+            task.setPriority(newPriority);
+        }
     }
 
     /**

@@ -5,10 +5,10 @@ import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAOHibernate;
 import com.melkamar.deadlines.exceptions.GroupPermissionException;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.model.Group;
-import com.melkamar.deadlines.model.GroupMember;
-import com.melkamar.deadlines.model.MemberRole;
-import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.*;
+import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.model.task.TaskRole;
+import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,8 @@ import static com.melkamar.deadlines.model.MemberRole.ADMIN;
 public class PermissionHandler {
     @Autowired
     private GroupMemberDAO groupMemberDAO;
+    @Autowired
+    private TaskParticipantHelper taskParticipantHelper;
     @Autowired
     private StringConstants stringConstants;
 
@@ -69,6 +71,30 @@ public class PermissionHandler {
 
             default:
                 return false;
+        }
+    }
+
+    /**
+     * Checks whether a user has enough privileges on a task.
+     *
+     * @param user
+     * @param task
+     * @param taskRole
+     * @return
+     */
+    public boolean hasTaskPermission(User user, Task task, TaskRole taskRole) throws NotMemberOfException {
+        TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
+        if (taskParticipant == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
+
+        switch (taskRole) {
+            case WATCHER:
+                return true;
+
+            case WORKER:
+                return taskParticipant.getRole() == TaskRole.WORKER;
+
+            default: return false;
         }
     }
 }

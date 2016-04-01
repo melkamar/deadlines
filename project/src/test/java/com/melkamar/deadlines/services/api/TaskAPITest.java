@@ -9,6 +9,7 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
+import com.melkamar.deadlines.services.DateConvertor;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -166,7 +167,7 @@ public class TaskAPITest {
     // WORK REPORTS TESTS
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void reportWorkInvalidManhours() throws WrongParameterException, NotMemberOfException, WrongRoleException {
+    public void reportWorkInvalidManhours() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -178,7 +179,7 @@ public class TaskAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void reportWorkUserNotParticipant() throws WrongParameterException, NotMemberOfException, WrongRoleException {
+    public void reportWorkUserNotParticipant() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -189,9 +190,9 @@ public class TaskAPITest {
         taskAPI.reportWork(nonParticipant, task, 10);
     }
 
-    @Test(expected = WrongRoleException.class)
+    @Test(expected = TaskPermissionException.class)
     @Transactional
-    public void reportWorkUserNotWorker() throws WrongParameterException, NotMemberOfException, WrongRoleException {
+    public void reportWorkUserNotWorker() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -202,7 +203,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void reportWorkPersistence() throws WrongParameterException, NotMemberOfException, WrongRoleException {
+    public void reportWorkPersistence() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -595,6 +596,39 @@ public class TaskAPITest {
         Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task2).getRole() == TaskRole.WATCHER);
 
         taskAPI.setTaskRole(userMember, task3, TaskRole.WORKER, userAdmin, group);
+    }
+
+    @Test
+    @Transactional
+    public void editTask() throws WrongParameterException, TaskPermissionException, NotMemberOfException, NotAllowedException {
+        User userWorker = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+
+        LocalDateTime deadlineDateTime = LocalDateTime.of(1999, 6, 2, 12, 45, 50);
+        LocalDateTime newDeadlineDateTime = LocalDateTime.of(2001, 7, 3, 22, 45, 50);
+
+        Task task1 = taskAPI.createTask(userWorker, "TestTask", "Desc1", Priority.LOWEST, 0, deadlineDateTime);
+
+        taskAPI.setTaskRole(userWorker, task1, TaskRole.WORKER);
+
+        Assert.assertEquals(Priority.LOWEST, task1.getPriority());
+        taskAPI.editTask(userWorker, task1, null, null, null, Priority.HIGHEST);
+        Assert.assertEquals(Priority.HIGHEST, task1.getPriority());
+
+        Assert.assertEquals("Desc1", task1.getDescription());
+        taskAPI.editTask(userWorker, task1, "NewDesc", null, null, null);
+        Assert.assertEquals("NewDesc", task1.getDescription());
+
+        Assert.assertEquals(DateConvertor.dateToLocalDateTime(((DeadlineTask) task1).getDeadline()), deadlineDateTime);
+        taskAPI.editTask(userWorker, task1, null, newDeadlineDateTime, null, null);
+        Assert.assertEquals(DateConvertor.dateToLocalDateTime(((DeadlineTask) task1).getDeadline()), newDeadlineDateTime);
+
+        Assert.assertTrue(task1.getWorkEstimate() == 0);
+        taskAPI.editTask(userWorker, task1, null, null, 10.5, null);
+        Assert.assertTrue(task1.getWorkEstimate() == 10.5);
+
+        taskAPI.setTaskRole(userWorker, task1, TaskRole.WATCHER);
+        expectedException.expect(TaskPermissionException.class);
+        taskAPI.editTask(userWorker, task1, null, null, 11d, null);
     }
 
 
