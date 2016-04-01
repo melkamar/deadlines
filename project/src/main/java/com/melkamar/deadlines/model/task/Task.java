@@ -46,7 +46,7 @@ public abstract class Task {
     protected Double workEstimate; // In manhours
 
     @Column(name = COL_TASK_PRIORITY)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     protected Priority priority;
 
     @Column(name = COL_TASK_STATUS)
@@ -84,21 +84,22 @@ public abstract class Task {
         return participants.add(participant);
     }
 
-    public boolean removeParticipant(TaskParticipant participant){
+    public boolean removeParticipant(TaskParticipant participant) {
         return participants.remove(participant);
     }
 
-    public void addWorkReport(TaskWork taskWork){
+    public void addWorkReport(TaskWork taskWork) {
         this.workReports.add(taskWork);
     }
 
     /**
      * Calculates the total amount of work done on this task in manhours.
+     *
      * @return The number of manhours worked.
      */
-    public double manhoursWorked(){
+    public double manhoursWorked() {
         double total = 0;
-        for (TaskWork work: workReports){
+        for (TaskWork work : workReports) {
             total += work.getManhours();
         }
         return total;
@@ -118,11 +119,11 @@ public abstract class Task {
         return users;
     }
 
-    public boolean addSharedGroup(Group group){
+    public boolean addSharedGroup(Group group) {
         return sharedGroups.add(group);
     }
 
-    public boolean removeSharedGroup(Group group){
+    public boolean removeSharedGroup(Group group) {
         return sharedGroups.remove(group);
     }
 
@@ -202,6 +203,35 @@ public abstract class Task {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", dateCreated=" + dateCreated +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", workEstimate=" + workEstimate +
+                ", priority=" + priority +
+                ", status=" + status +
+                ", urgency=" + urgency +
+                '}';
+    }
+
+    /**
+     * Calculates the percentage worked on this task. If there is no estimate set, then value -1 is returned.
+     *
+     * @return Real number between 0 and 1 indicating the percentage worked, or -1 indicating no estimate was set.
+     */
+    public double getWorkedPercentage() {
+        if (workEstimate == 0) return -1;
+
+        double hoursWorked = 0;
+        for (TaskWork taskWork : getWorkReports()) {
+            hoursWorked += taskWork.getManhours();
+        }
+        return hoursWorked / workEstimate;
     }
 }
 

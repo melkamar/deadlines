@@ -94,6 +94,7 @@ public class UserAPI {
 
     /**
      * Removes the user from a group, including all his group-related tasks.
+     *
      * @param user
      * @param group
      * @throws NotAllowedException
@@ -102,7 +103,7 @@ public class UserAPI {
      * @throws NotMemberOfException
      */
     public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException {
-        groupAPI.removeMember(user ,group, user);
+        groupAPI.removeMember(user, group, user);
     }
 
     public void leaveTask(User user, Task task) throws NotMemberOfException {

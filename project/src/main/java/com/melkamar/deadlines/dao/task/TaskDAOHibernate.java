@@ -1,10 +1,17 @@
 package com.melkamar.deadlines.dao.task;
 
+import com.melkamar.deadlines.config.StringConstants;
+import com.melkamar.deadlines.exceptions.SortingException;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
+import com.sun.javafx.tk.Toolkit;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -14,6 +21,9 @@ import org.springframework.stereotype.Service;
 public class TaskDAOHibernate implements TaskDAO {
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private StringConstants stringConstants;
+
 
     @Override
     public long count() {
@@ -29,5 +39,118 @@ public class TaskDAOHibernate implements TaskDAO {
     @Override
     public Task findById(Long id) {
         return taskRepository.findById(id);
+    }
+
+    @Override
+    public List<Task> findByUser(User user) {
+        return taskRepository.findByParticipants_User(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByNameAsc(User user) {
+        return taskRepository.findByParticipants_UserOrderByNameAsc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByNameDesc(User user) {
+        return taskRepository.findByParticipants_UserOrderByNameDesc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByDateCreatedAsc(User user) {
+        return taskRepository.findByParticipants_UserOrderByDateCreatedAsc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByDateCreatedDesc(User user) {
+        return taskRepository.findByParticipants_UserOrderByDateCreatedDesc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByPriorityAsc(User user) {
+        return taskRepository.findByParticipants_UserOrderByPriorityAsc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByPriorityDesc(User user) {
+        return taskRepository.findByParticipants_UserOrderByPriorityDesc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByUrgency_ValueAsc(User user) {
+        return taskRepository.findByParticipants_UserOrderByUrgency_ValueAsc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByUrgency_ValueDesc(User user) {
+        return taskRepository.findByParticipants_UserOrderByUrgency_ValueDesc(user);
+    }
+
+    @Override
+    public List<Task> findByUserOrderByDeadlineAsc(User user) {
+        List<Task> tasks = taskRepository.findByParticipants_User(user);
+        tasks.sort(new DeadlineTaskComparator(true));
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findByUserOrderByDeadlineDesc(User user) {
+        List<Task> tasks = taskRepository.findByParticipants_User(user);
+        tasks.sort(new DeadlineTaskComparator(false));
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findByUserOrderByWorkedAsc(User user) {
+        List<Task> tasks = taskRepository.findByParticipants_User(user);
+        tasks.sort(new WorkedPercentComparator(true));
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findByUserOrderByWorkedDesc(User user) {
+        List<Task> tasks = taskRepository.findByParticipants_User(user);
+        tasks.sort(new WorkedPercentComparator(false));
+        return tasks;
+    }
+
+
+    private class DeadlineTaskComparator implements Comparator<Task> {
+        private final int ascending;
+
+        public DeadlineTaskComparator(boolean ascending) {
+            this.ascending = (ascending ? 1 : -1);
+        }
+
+        @Override
+        public int compare(Task o1, Task o2) {
+            boolean o1deadlineTask = o1 instanceof DeadlineTask;
+            boolean o2deadlineTask = o2 instanceof DeadlineTask;
+            if (o1deadlineTask && !o2deadlineTask) return -1 * ascending;
+            if (!o1deadlineTask && o2deadlineTask) return 1 * ascending;
+            if (!o1deadlineTask && !o2deadlineTask) return 0;
+
+            DeadlineTask d1 = (DeadlineTask) o1;
+            DeadlineTask d2 = (DeadlineTask) o2;
+
+            return d1.getDeadline().compareTo(d2.getDeadline()) * ascending;
+        }
+    }
+
+    private class WorkedPercentComparator implements Comparator<Task> {
+        private final boolean ascending;
+
+        public WorkedPercentComparator(boolean ascending) {
+            this.ascending = ascending;
+        }
+
+        @Override
+        public int compare(Task o1, Task o2) {
+            Double percentage1 = o1.getWorkedPercentage();
+            Double percentage2 = o2.getWorkedPercentage();
+
+            if (ascending) return percentage1.compareTo(percentage2) * -1;
+            else return percentage1.compareTo(percentage2);
+        }
     }
 }

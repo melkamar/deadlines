@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.dao.filters;
+package com.melkamar.deadlines.dao.processing;
 
 import com.melkamar.deadlines.model.Group;
 

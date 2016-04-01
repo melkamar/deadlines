@@ -36,4 +36,6 @@ public class StringConstants {
 
     public final String EXC_NOT_ALLOWED_PROMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";
     public final String EXC_NOT_ALLOWED_ADMIN_LEAVE = "Admin cannot leave the group. Either give the Admin rights to another user, or delete the group.";
+
+    public final String EXC_SORTING_ALLOWED_ONLY_DEADLINE = "When ordering tasks based on their Deadline, a DeadlineTask-only filter must be applied!";
 }

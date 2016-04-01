@@ -16,13 +16,25 @@ public class DeadlineTask extends Task {
     @Temporal(TemporalType.TIMESTAMP)
     protected Date deadline;
 
-    public DeadlineTask(){
+    public DeadlineTask() {
         super();
     }
 
-    public DeadlineTask(Date dateCreated) {
+    public DeadlineTask(Date dateCreated, Date deadline) {
         super(dateCreated);
+        this.deadline = deadline;
     }
 
     /***************************************************************/
+
+    @Override
+    public String toString() {
+        return super.toString() + "DeadlineTask{" +
+                "deadline=" + deadline +
+                '}';
+    }
+
+    public Date getDeadline() {
+        return deadline;
+    }
 }

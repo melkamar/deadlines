@@ -1,12 +1,14 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
+import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
@@ -17,12 +19,15 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.SystemProfileValueSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -221,5 +226,188 @@ public class TaskAPITest {
         Assert.assertTrue(retrievedTask.manhoursWorked() == 10 + 5 + 12);
     }
 
+    @Test
+    @Transactional
+    public void listTasksSortByName() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+
+
+        List<Task> resultList;
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NAME_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NAME_DESC);
+        Assert.assertTrue(resultList.get(2).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(0).equals(task1));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByDateCreated() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(10));
+        sleepALittle();
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(11));
+        sleepALittle();
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(12));
+        sleepALittle();
+
+
+        List<Task> resultList;
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.DATE_START_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task1));
+        Assert.assertTrue(resultList.get(1).equals(task2));
+        Assert.assertTrue(resultList.get(2).equals(task3));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.DATE_START_DESC);
+        Assert.assertTrue(resultList.get(2).equals(task1));
+        Assert.assertTrue(resultList.get(1).equals(task2));
+        Assert.assertTrue(resultList.get(0).equals(task3));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByDeadline() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+
+        Assert.assertNotNull(((DeadlineTask) task1).getDeadline());
+        Assert.assertNotNull(((DeadlineTask) task2).getDeadline());
+        Assert.assertNotNull(((DeadlineTask) task3).getDeadline());
+
+        List<Task> resultList;
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.DATE_DEADLINE_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.DATE_DEADLINE_DESC);
+        Assert.assertTrue(resultList.get(2).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(0).equals(task1));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByDeadlineMixedWithGrowing() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
+        Task task5 = taskAPI.createTask(user, "BBB", null, null, 0, 20);
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task4 = taskAPI.createTask(user, "BBB", null, null, 0, 10);
+
+        Assert.assertNotNull(((DeadlineTask) task1).getDeadline());
+        Assert.assertNotNull(((DeadlineTask) task2).getDeadline());
+        Assert.assertNotNull(((DeadlineTask) task3).getDeadline());
+
+        List<Task> resultList;
+        List<Task> nonSorted = new ArrayList<>();
+
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.DATE_DEADLINE_ASC);
+        nonSorted.clear();
+        nonSorted.add(task4);
+        nonSorted.add(task5);
+
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+        Assert.assertTrue(nonSorted.contains(resultList.get(3)));
+        Assert.assertTrue(nonSorted.contains(resultList.get(4)));
+
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.DATE_DEADLINE_DESC);
+        nonSorted.clear();
+        nonSorted.add(task4);
+        nonSorted.add(task5);
+
+        Assert.assertTrue(resultList.get(4).equals(task2));
+        Assert.assertTrue(resultList.get(3).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+        Assert.assertTrue(nonSorted.contains(resultList.get(1)));
+        Assert.assertTrue(nonSorted.contains(resultList.get(0)));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByWorkedPercent() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+
+        List<Task> resultList;
+
+        throw new NotImplementedException();
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByPriority() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.ca");
+        Task task1 = taskAPI.createTask(user, "CCC", null, Priority.NORMAL, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, Priority.HIGH, 0, LocalDateTime.now().plusDays(10));
+        Task task3 = taskAPI.createTask(user, "BBB", null, Priority.LOW, 0, LocalDateTime.now().plusDays(11));
+        Task task4 = taskAPI.createTask(user, "BBBC", null, Priority.LOWEST, 0, LocalDateTime.now().plusDays(11));
+        Task task5 = taskAPI.createTask(user, "BBBD", null, Priority.HIGHEST, 0, LocalDateTime.now().plusDays(11));
+
+
+        List<Task> resultList;
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.PRIORITY_ASC);
+        for (Task task: resultList){
+            System.out.println("TASK: "+task);
+        }
+        Assert.assertTrue(resultList.get(0).equals(task4));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+        Assert.assertTrue(resultList.get(3).equals(task2));
+        Assert.assertTrue(resultList.get(4).equals(task5));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.PRIORITY_DESC);
+        Assert.assertTrue(resultList.get(4).equals(task4));
+        Assert.assertTrue(resultList.get(3).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+        Assert.assertTrue(resultList.get(1).equals(task2));
+        Assert.assertTrue(resultList.get(0).equals(task5));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByUrgency() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+
+
+        List<Task> resultList;
+
+        throw new NotImplementedException();
+    }
+
+
+
+
+
+    private void sleepALittle() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

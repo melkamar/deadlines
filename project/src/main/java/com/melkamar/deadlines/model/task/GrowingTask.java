@@ -17,11 +17,18 @@ public class GrowingTask extends Task {
     @Column(name = COL_GROW_SPEED)
     protected Double growspeed;
 
-    public GrowingTask(){
+    public GrowingTask() {
         super();
     }
 
     public GrowingTask(Date dateCreated) {
         super(dateCreated);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "GrowingTask{" +
+                "growspeed=" + growspeed +
+                '}';
     }
 }

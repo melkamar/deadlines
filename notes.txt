@@ -5,3 +5,5 @@ Cannot use identity column key generation with <union-subclass> ( TABLE_PER_CLAS
 With @OneToMany unidirectional association you need to manually define the column with FK on the target entity. See example: https://en.wikibooks.org/wiki/Java_Persistence/OneToMany#Unidirectional_OneToMany.2C_No_Inverse_ManyToOne.2C_No_Join_Table_.28JPA_2.x_ONLY.29
 
 @Transactional is by default "PROPAGATION_REQUIRED", which means that it will "latch" onto an existing (parent) transaction if there is one, or create its own, if there is no existing.
+
+mvn clean, mvn install for hquery java generation

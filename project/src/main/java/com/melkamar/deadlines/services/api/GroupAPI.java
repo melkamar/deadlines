@@ -1,7 +1,7 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.config.StringConstants;
-import com.melkamar.deadlines.dao.filters.GroupFilter;
+import com.melkamar.deadlines.dao.processing.GroupFilter;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;

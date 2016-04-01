@@ -1,7 +1,6 @@
-package com.melkamar.deadlines.dao.filters;
+package com.melkamar.deadlines.dao.processing;
 
 import com.melkamar.deadlines.dao.group.GroupDAO;
-import com.melkamar.deadlines.dao.group.GroupDAOHibernate;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import java.util.List;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 01.04.2016 9:23
  */
-@Component
+@Component(value = "groupFilterGroupsOfUser")
 public class GroupFilterGroupsOfUser implements GroupFilter {
 
     @Autowired

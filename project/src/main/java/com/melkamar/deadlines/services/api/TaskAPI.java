@@ -1,6 +1,8 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.config.StringConstants;
+import com.melkamar.deadlines.dao.processing.TaskFilter;
+import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.exceptions.GroupPermissionException;
@@ -11,6 +13,7 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
+import com.melkamar.deadlines.services.DateConvertor;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +51,7 @@ public class TaskAPI {
         validateGenericCreateTaskParams(creator, name);
         if (deadline == null) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_DEADLINE_NULL);
 
-        DeadlineTask task = new DeadlineTask(new Date());
+        DeadlineTask task = new DeadlineTask(new Date(), DateConvertor.localDateTimeToDate(deadline));
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
@@ -122,9 +125,53 @@ public class TaskAPI {
         return taskWork;
     }
 
-    public List<Task> listTasks(User tasksOfUser, TaskFilter filter, SortCriteria sortCriteria) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    /**
+     * Lists tasks of the user, optionally applying filters and ordering to it.
+     *
+     * @param tasksOfUser
+     * @return
+     */
+    public List<Task> listTasks(User tasksOfUser, TaskOrdering ordering, TaskFilter... filters) {
+        List<Task> tasks = getOrderedTasksOfUser(tasksOfUser, ordering);
+
+        for (TaskFilter filter : filters) {
+            tasks = filter.filter(tasks);
+        }
+
+        return tasks;
+    }
+
+    private List<Task> getOrderedTasksOfUser(User user, TaskOrdering ordering) {
+        switch (ordering) {
+            case NONE:
+                return taskDAO.findByUser(user);
+            case NAME_ASC:
+                return taskDAO.findByUserOrderByNameAsc(user);
+            case NAME_DESC:
+                return taskDAO.findByUserOrderByNameDesc(user);
+            case DATE_START_ASC:
+                return taskDAO.findByUserOrderByDateCreatedAsc(user);
+            case DATE_START_DESC:
+                return taskDAO.findByUserOrderByDateCreatedDesc(user);
+            case DATE_DEADLINE_ASC:
+                return taskDAO.findByUserOrderByDeadlineAsc(user);
+            case DATE_DEADLINE_DESC:
+                return taskDAO.findByUserOrderByDeadlineDesc(user);
+            case WORKED_PERCENT_ASC:
+                return taskDAO.findByUserOrderByWorkedAsc(user);
+            case WORKED_PERCENT_DESC:
+                return taskDAO.findByUserOrderByWorkedDesc(user);
+            case PRIORITY_ASC:
+                return taskDAO.findByUserOrderByPriorityAsc(user);
+            case PRIORITY_DESC:
+                return taskDAO.findByUserOrderByPriorityDesc(user);
+            case URGENCY_ASC:
+                return taskDAO.findByUserOrderByUrgency_ValueAsc(user);
+            case URGENCY_DESC:
+                return taskDAO.findByUserOrderByUrgency_ValueDesc(user);
+            default:
+                return taskDAO.findByUser(user);
+        }
     }
 
     public Task getTask(User executor, Long taskId) {
@@ -165,22 +212,11 @@ public class TaskAPI {
         throw new NotImplementedException();
     }
 
-    public List<Task> listTasks(Group tasksOfGroup, TaskFilter filter, SortCriteria sortCriteria) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
-    }
+//    public List<Task> listTasks(Group tasksOfGroup, TaskFilter filter, SortCriteria sortCriteria) {
+//         TODO: 31.03.2016 Implement
+//        throw new NotImplementedException();
+//    }
 
-
-    public class TaskFilter {
-        public List<Task> filter(List<Task> tasks) {
-            // TODO: 31.03.2016 Implement
-            throw new NotImplementedException();
-        }
-    }
-
-    public enum SortCriteria {
-        NONE, NAME, DATE_START, DATE_DEADLINE, WORKED_PERCENT, PRIORITY, URGENCY
-    }
 
     private void validateGenericCreateTaskParams(User creator, String name) throws WrongParameterException {
         if (creator == null) {
