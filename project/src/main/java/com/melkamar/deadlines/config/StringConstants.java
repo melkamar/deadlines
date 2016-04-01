@@ -31,6 +31,7 @@ public class StringConstants {
 
     public final String EXC_USER_NOT_WORKER = "User [{0}] is not a worker on task [{1}].";
     public final String EXC_USER_NOT_MEMBER_OF_GROUP = "User [{0}] is not a member of group [{1}].";
+    public final String EXC_GROUP_NOT_IN_TASK = "Group [{0}] is not participating on a task [{1}].";
 
     public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
 

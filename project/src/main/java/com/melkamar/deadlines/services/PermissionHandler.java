@@ -36,6 +36,25 @@ public class PermissionHandler {
         return hasGroupPermission(groupMember, requiredPermission);
     }
 
+    /**
+     * Checks whether an executor has a sufficient permission in a group over its member.
+     *
+     * @param executor           The user performing an action.
+     * @param group              Affected group.
+     * @param targetUser         A member of the group.
+     * @param requiredPermission Required minimal permission.
+     * @return
+     */
+    public boolean hasGroupPermissionOver(User executor, Group group, User targetUser, MemberRole requiredPermission) throws NotMemberOfException {
+        boolean executorHasPermission = hasGroupPermission(executor, group, requiredPermission);
+        if (!executorHasPermission) return false;
+
+        // Executor has enough permission in group. Now check if the target user is a member of it.
+        GroupMember targetGroupMember = groupMemberDAO.findByUserAndGroup(targetUser, group);
+        if (targetGroupMember == null) return false;
+        else return true;
+    }
+
     private boolean hasGroupPermission(GroupMember executorGroupMember, MemberRole requiredPermission) throws NotMemberOfException {
         switch (requiredPermission) {
             case MEMBER:

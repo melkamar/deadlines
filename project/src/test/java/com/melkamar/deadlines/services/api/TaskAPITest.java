@@ -9,6 +9,7 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
+import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,8 +48,11 @@ public class TaskAPITest {
     @Autowired
     private GroupAPI groupAPI;
 
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    @Autowired
+    private TaskParticipantHelper taskParticipantHelper;
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -540,6 +544,57 @@ public class TaskAPITest {
         Assert.assertTrue(resultList.contains(task4));
         Assert.assertTrue(resultList.contains(task5));
         Assert.assertTrue(resultList.contains(task6));
+    }
+
+    @Test
+    @Transactional
+    public void setTaskRoleByGroupManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userMember2 = userAPI.createUser("Member2", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userMember, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
+
+        groupAPI.addTask(userAdmin, group, task);
+        groupAPI.addTask(userAdmin, group, task2);
+        groupAPI.addTask(userAdmin, group, task3);
+
+        groupAPI.addMember(userAdmin, group, userMember);
+
+        Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task).getRole() == TaskRole.WATCHER);
+        Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task2).getRole() == TaskRole.WATCHER);
+
+        taskAPI.setTaskRole(userMember, task, TaskRole.WORKER, userAdmin, group);
+
+        Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task).getRole() == TaskRole.WORKER);
+        Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task2).getRole() == TaskRole.WATCHER);
+    }
+
+    @Test(expected = NotAllowedException.class)
+    @Transactional
+    public void setTaskRoleByGroupManagerFail() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userMember, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
+
+        groupAPI.addTask(userAdmin, group, task);
+        groupAPI.addTask(userAdmin, group, task2);
+
+        taskParticipantHelper.editOrCreateTaskParticipant(userMember, task3, TaskRole.WATCHER, null, false);
+
+        groupAPI.addMember(userAdmin, group, userMember);
+
+        Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task).getRole() == TaskRole.WATCHER);
+        Assert.assertTrue(taskAPI.getTaskParticipant(userMember, task2).getRole() == TaskRole.WATCHER);
+
+        taskAPI.setTaskRole(userMember, task3, TaskRole.WORKER, userAdmin, group);
     }
 
 

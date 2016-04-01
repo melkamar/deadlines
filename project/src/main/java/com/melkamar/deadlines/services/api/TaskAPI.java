@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.services.api;
 
+import antlr.debug.MessageAdapter;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.processing.TaskFilter;
 import com.melkamar.deadlines.dao.processing.TaskOrdering;
@@ -7,6 +8,7 @@ import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
@@ -187,25 +189,41 @@ public class TaskAPI {
     @Transactional
     public void setTaskRole(User user, Task task, TaskRole newRole) throws NotMemberOfException {
         TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
-        if (taskParticipant == null) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
+        if (taskParticipant == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
 
         taskParticipant.setRole(newRole);
     }
 
-    public Task setTaskRole(User user, Task task, TaskRole newRole, User manager, Group group){
-        // TODO: 01.04.2016
-        throw new NotImplementedException();
+    public void setTaskRole(User user, Task task, TaskRole newRole, User manager, Group group) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException {
+        if (user == null || task == null || manager == null || group == null)
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
+
+        if (!group.getSharedTasks().contains(task)){
+            throw new NotAllowedException(MessageFormat.format(stringConstants.EXC_GROUP_NOT_IN_TASK, group, task));
+        }
+
+        // If the "manager" user is not a manager of group AND he also isn't the user requesting removal, deny it
+        if (!permissionHandler.hasGroupPermissionOver(manager, group, user, MemberRole.MANAGER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        // Sufficient permissions, allow changing role
+        setTaskRole(user, task, newRole);
     }
 
     public void setTaskStatus(User user, Task task, TaskStatus newStatus) throws NotMemberOfException, NotAllowedException {
         TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
-        if (taskParticipant == null) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
-        if (taskParticipant.getRole() != TaskRole.WORKER) throw new NotAllowedException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
+        if (taskParticipant == null)
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
+        if (taskParticipant.getRole() != TaskRole.WORKER)
+            throw new NotAllowedException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
 
         task.setStatus(newStatus);
     }
 
-    public Task editTask(User executor, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) {
+    public Task editTask(User user, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) {
+
+
         // TODO: 31.03.2016 Implement
         throw new NotImplementedException();
     }
@@ -227,6 +245,9 @@ public class TaskAPI {
 //        throw new NotImplementedException();
 //    }
 
+    public TaskParticipant getTaskParticipant(User user, Task task) {
+        return taskParticipantHelper.getTaskParticipant(user, task);
+    }
 
     private void validateGenericCreateTaskParams(User creator, String name) throws WrongParameterException {
         if (creator == null) {
