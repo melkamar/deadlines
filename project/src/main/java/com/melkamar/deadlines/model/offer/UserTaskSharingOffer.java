@@ -28,6 +28,10 @@ public class UserTaskSharingOffer extends TaskSharingOffer {
         this.offeredTo = offeredTo;
     }
 
+    public UserTaskSharingOffer() {
+        this.offeredTo = null;
+    }
+
     @Override
     public int accept() {
         throw new NotImplementedException();

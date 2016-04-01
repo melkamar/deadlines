@@ -18,11 +18,22 @@ import javax.persistence.Table;
 public class MembershipOffer extends Offer {
     @ManyToOne
     @JoinColumn(name = User.COL_USER_ID)
-    private User offeredTo;
+    private final User offeredTo;
 
     @ManyToOne
     @JoinColumn(name = Group.COL_GROUP_ID)
-    private Group group;
+    private final Group group;
+
+    public MembershipOffer(User offerer, Group group, User offeredTo) {
+        super(offerer);
+        this.offeredTo = offeredTo;
+        this.group = group;
+    }
+
+    public MembershipOffer() {
+        this.offeredTo = null;
+        this.group = null;
+    }
 
     @Override
     public int accept() {

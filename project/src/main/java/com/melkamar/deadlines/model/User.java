@@ -97,6 +97,14 @@ public class User {
         return taskOffers.remove(offer);
     }
 
+
+    public boolean addMembershipOffer(MembershipOffer offer){
+        return membershipOffers.add(offer);
+    }
+
+    public boolean removeMembershipOffer(MembershipOffer offer){
+        return membershipOffers.remove(offer);
+    }
     /**
      * Lists all Tasks the User participates in.
      * Serves as a shortcut so that it is not necessary
