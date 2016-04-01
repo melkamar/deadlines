@@ -16,13 +16,20 @@ public abstract class Offer {
     @Id
     @Column(name = "OFFER_ID")
     @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long id;
+    protected Long id;
 
     @ManyToOne
     @JoinColumn(name = COL_OFFERER_ID, referencedColumnName = User.COL_USER_ID)
-    User offerer;
+    final protected User offerer;
+
+    public Offer(User offerer) {
+        this.offerer = offerer;
+    }
+
+    public Offer() {
+        this.offerer = null;
+    }
 
     public abstract int accept();
-
     public abstract int decline();
 }

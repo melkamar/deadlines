@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model.offer;
 
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Task;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.Entity;
@@ -20,7 +21,12 @@ public class UserTaskSharingOffer extends TaskSharingOffer {
 
     @ManyToOne
     @JoinColumn(name = COL_OFFERED_TO_ID, referencedColumnName = User.COL_USER_ID)
-    private User offeredTo;
+    private final User offeredTo;
+
+    public UserTaskSharingOffer(User offerer, Task task, User offeredTo) {
+        super(offerer, task);
+        this.offeredTo = offeredTo;
+    }
 
     @Override
     public int accept() {

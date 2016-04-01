@@ -89,6 +89,14 @@ public class User {
         return memberAs.remove(groupMember);
     }
 
+    public boolean addUserTaskSharingOffer(UserTaskSharingOffer offer) {
+        return taskOffers.add(offer);
+    }
+
+    public boolean removeUserTaskSharingOffer(UserTaskSharingOffer offer){
+        return taskOffers.remove(offer);
+    }
+
     /**
      * Lists all Tasks the User participates in.
      * Serves as a shortcut so that it is not necessary
@@ -154,6 +162,13 @@ public class User {
         this.passwordSalt = hashAndSalt.salt;
     }
 
+    public Set<MembershipOffer> getMembershipOffers() {
+        return membershipOffers;
+    }
+
+    public Set<UserTaskSharingOffer> getTaskOffers() {
+        return taskOffers;
+    }
 
     public Set<GroupMember> getMemberAs() {
         return memberAs;
