@@ -2,6 +2,7 @@ package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.processing.TaskFilterRole;
+import com.melkamar.deadlines.dao.processing.TaskFilterType;
 import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
@@ -9,10 +10,7 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.model.task.DeadlineTask;
-import com.melkamar.deadlines.model.task.Priority;
-import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.model.task.TaskRole;
+import com.melkamar.deadlines.model.task.*;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -423,6 +421,29 @@ public class TaskAPITest {
         Assert.assertEquals(2, resultList.size());
         Assert.assertTrue(resultList.contains(task2));
         Assert.assertTrue(resultList.contains(task4));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksFilterByType() throws WrongParameterException, NotMemberOfException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, 1);
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task4 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task5 = taskAPI.createTask(user, "BBB", null, null, 0, 2);
+
+        List<Task> resultList;
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterType(DeadlineTask.class));
+        Assert.assertEquals(3, resultList.size());
+        Assert.assertTrue(resultList.contains(task1));
+        Assert.assertTrue(resultList.contains(task3));
+        Assert.assertTrue(resultList.contains(task4));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterType(GrowingTask.class));
+        Assert.assertEquals(2, resultList.size());
+        Assert.assertTrue(resultList.contains(task2));
+        Assert.assertTrue(resultList.contains(task5));
     }
 
 
