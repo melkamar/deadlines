@@ -2,6 +2,7 @@ package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.processing.TaskFilterRole;
+import com.melkamar.deadlines.dao.processing.TaskFilterStatus;
 import com.melkamar.deadlines.dao.processing.TaskFilterType;
 import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
@@ -444,6 +445,56 @@ public class TaskAPITest {
         Assert.assertEquals(2, resultList.size());
         Assert.assertTrue(resultList.contains(task2));
         Assert.assertTrue(resultList.contains(task5));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksFilterByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, 1);
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task4 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task5 = taskAPI.createTask(user, "BBB", null, null, 0, 2);
+        Task task6 = taskAPI.createTask(user, "BBB", null, null, 0, 2);
+        Task task7 = taskAPI.createTask(user, "BBB", null, null, 0, 2);
+
+        taskAPI.setTaskRole(user, task1, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task2, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task3, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task4, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task5, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task6, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task7, TaskRole.WORKER);
+
+        taskAPI.setTaskStatus(user, task1, TaskStatus.IN_PROGRESS);
+        taskAPI.setTaskStatus(user, task2, TaskStatus.CANCELLED);
+        taskAPI.setTaskStatus(user, task3, TaskStatus.IN_PROGRESS);
+        taskAPI.setTaskStatus(user, task4, TaskStatus.COMPLETED);
+//        taskAPI.setTaskStatus(user, task5, TaskStatus.OPEN);
+//        taskAPI.setTaskStatus(user, task6, TaskStatus.OPEN);
+        taskAPI.setTaskStatus(user, task7, TaskStatus.COMPLETED);
+
+
+        List<Task> resultList;
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterStatus(TaskStatus.OPEN));
+        Assert.assertEquals(2, resultList.size());
+        Assert.assertTrue(resultList.contains(task5));
+        Assert.assertTrue(resultList.contains(task6));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterStatus(TaskStatus.IN_PROGRESS));
+        Assert.assertEquals(2, resultList.size());
+        Assert.assertTrue(resultList.contains(task1));
+        Assert.assertTrue(resultList.contains(task3));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterStatus(TaskStatus.CANCELLED));
+        Assert.assertEquals(1, resultList.size());
+        Assert.assertTrue(resultList.contains(task2));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterStatus(TaskStatus.COMPLETED));
+        Assert.assertEquals(2, resultList.size());
+        Assert.assertTrue(resultList.contains(task4));
+        Assert.assertTrue(resultList.contains(task7));
     }
 
 

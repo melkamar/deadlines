@@ -29,13 +29,11 @@ public class StringConstants {
     public final String EXC_USER_NOT_PARTICIPANT = "User [{0}] is not a participant in a task [{1}].";
     public final String EXC_USER_NOT_PARTICIPANT_IS_NULL = "TaskParticipant of User [{0}] and task [{1}] with ID {2} is NULL. This should not happen.";
 
-    public final String EXC_USER_NOT_WORKER = "User [{0}] is not a worker on task [{1}] with ID {2}. Therefore he/she cannot report work done on it.";
+    public final String EXC_USER_NOT_WORKER = "User [{0}] is not a worker on task [{1}].";
     public final String EXC_USER_NOT_MEMBER_OF_GROUP = "User [{0}] is not a member of group [{1}].";
 
     public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
 
     public final String EXC_NOT_ALLOWED_PROMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";
     public final String EXC_NOT_ALLOWED_ADMIN_LEAVE = "Admin cannot leave the group. Either give the Admin rights to another user, or delete the group.";
-
-    public final String EXC_SORTING_ALLOWED_ONLY_DEADLINE = "When ordering tasks based on their Deadline, a DeadlineTask-only filter must be applied!";
 }

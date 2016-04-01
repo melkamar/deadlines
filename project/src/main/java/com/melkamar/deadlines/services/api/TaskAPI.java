@@ -5,10 +5,7 @@ import com.melkamar.deadlines.dao.processing.TaskFilter;
 import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
-import com.melkamar.deadlines.exceptions.WrongRoleException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -120,7 +117,7 @@ public class TaskAPI {
         if (participant == null) {
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT_IS_NULL, user.getUsername(), task.getName(), task.getId()));
         } else if (participant.getRole() != TaskRole.WORKER) {
-            throw new WrongRoleException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user.getUsername(), task.getName(), task.getId()));
+            throw new WrongRoleException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
         }
 
         TaskWork taskWork = new TaskWork(workDone, user);
@@ -200,9 +197,12 @@ public class TaskAPI {
         throw new NotImplementedException();
     }
 
-    public Task setTaskStatus(User executor, Task task, TaskStatus newStatus) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public void setTaskStatus(User user, Task task, TaskStatus newStatus) throws NotMemberOfException, NotAllowedException {
+        TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
+        if (taskParticipant == null) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
+        if (taskParticipant.getRole() != TaskRole.WORKER) throw new NotAllowedException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
+
+        task.setStatus(newStatus);
     }
 
     public Task editTask(User executor, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) {
