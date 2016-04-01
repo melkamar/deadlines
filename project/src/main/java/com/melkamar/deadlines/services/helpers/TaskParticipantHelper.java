@@ -105,6 +105,11 @@ public class TaskParticipantHelper {
         destroyIfNotRelevant(taskParticipant);
     }
 
+    @Transactional
+    public TaskParticipant getTaskParticipant(User user, Task task){
+        return taskparticipantDAO.findByUserAndTask(user, task);
+    }
+
     /**
      * If the TaskParticipant is not relevant (not solo or connected by a group), method will destroy it.
      *

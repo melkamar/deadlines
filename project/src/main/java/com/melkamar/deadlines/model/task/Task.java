@@ -127,7 +127,13 @@ public abstract class Task {
         return sharedGroups.remove(group);
     }
 
+    public Set<TaskParticipant> getParticipants() {
+        return participants;
+    }
+
     /*************************************************************/
+
+
 
     public Long getId() {
         return id;

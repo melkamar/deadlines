@@ -14,6 +14,7 @@ import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
 import com.melkamar.deadlines.services.DateConvertor;
+import com.melkamar.deadlines.services.PermissionHandler;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.security.Permission;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -45,6 +47,8 @@ public class TaskAPI {
     private TaskParticipantDAO taskparticipantDAO;
     @Autowired
     private GroupAPI groupAPI;
+    @Autowired
+    private PermissionHandler permissionHandler;
 
 
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
@@ -182,11 +186,17 @@ public class TaskAPI {
     /**
      * Changes a toChangeUser's role on a task. Will succeed if executor is toChangeUser, or if executor is a manager
      * of a group the toChangeUser belongs to and which is participating on the task.
-     *
-     * @return
      */
-    public Task setTaskRole(User executor, Task task, User toChangeUser, TaskRole newRole) {
-        // TODO: 31.03.2016 Implement
+    @Transactional
+    public void setTaskRole(User user, Task task, TaskRole newRole) throws NotMemberOfException {
+        TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
+        if (taskParticipant == null) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
+
+        taskParticipant.setRole(newRole);
+    }
+
+    public Task setTaskRole(User user, Task task, TaskRole newRole, User manager, Group group){
+        // TODO: 01.04.2016
         throw new NotImplementedException();
     }
 
