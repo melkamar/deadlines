@@ -26,6 +26,11 @@ public class OfferDAOHibernate implements OfferDAO {
     }
 
     @Override
+    public void delete(Offer offer) {
+        offerRepository.delete(offer);
+    }
+
+    @Override
     public Set<Offer> findAll() {
         return Sets.newHashSet(offerRepository.findAll());
     }

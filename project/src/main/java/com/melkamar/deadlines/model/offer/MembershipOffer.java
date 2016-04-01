@@ -24,6 +24,14 @@ public class MembershipOffer extends Offer {
     @JoinColumn(name = Group.COL_GROUP_ID)
     private final Group group;
 
+    public User getOfferedTo() {
+        return offeredTo;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
     public MembershipOffer(User offerer, Group group, User offeredTo) {
         super(offerer);
         this.offeredTo = offeredTo;

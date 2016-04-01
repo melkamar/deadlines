@@ -28,4 +28,8 @@ public abstract class TaskSharingOffer extends Offer {
     public TaskSharingOffer() {
         taskOffered = null;
     }
+
+    public Task getTaskOffered() {
+        return taskOffered;
+    }
 }

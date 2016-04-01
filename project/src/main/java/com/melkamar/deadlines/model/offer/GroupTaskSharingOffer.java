@@ -30,6 +30,10 @@ public class GroupTaskSharingOffer extends TaskSharingOffer {
         this.offeredTo = null;
     }
 
+    public Group getOfferedTo() {
+        return offeredTo;
+    }
+
     @Override
     public int accept() {
         // TODO: 26.03.2016

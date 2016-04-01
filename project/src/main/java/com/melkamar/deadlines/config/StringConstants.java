@@ -36,6 +36,9 @@ public class StringConstants {
     public final String EXC_USER_NOT_MEMBER_OF_GROUP = "User [{0}] is not a member of group [{1}].";
     public final String EXC_GROUP_NOT_IN_TASK = "Group [{0}] is not participating on a task [{1}].";
 
+    public final String EXC_OFFER_NOT_FOR_USER = "Offer [{0}] is not for user [{1}].";
+    public final String EXC_OFFER_NOT_FOR_GROUP = "Offer [{0}] is not for group [{1}].";
+
     public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
 
     public final String EXC_NOT_ALLOWED_PROMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";

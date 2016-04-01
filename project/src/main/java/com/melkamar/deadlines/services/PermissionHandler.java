@@ -5,7 +5,11 @@ import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAOHibernate;
 import com.melkamar.deadlines.exceptions.GroupPermissionException;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.*;
+import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
+import com.melkamar.deadlines.model.offer.MembershipOffer;
+import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
@@ -94,7 +98,37 @@ public class PermissionHandler {
             case WORKER:
                 return taskParticipant.getRole() == TaskRole.WORKER;
 
-            default: return false;
+            default:
+                return false;
+        }
+    }
+
+    public void checkOfferOwnership(User user, UserTaskSharingOffer offer) throws NotMemberOfException, WrongParameterException {
+        if (user == null || offer == null) {
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
+        }
+
+        if (!offer.getOfferedTo().equals(user)) {
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_OFFER_NOT_FOR_USER, offer, user));
+        }
+    }
+
+    public void checkOfferOwnership(Group group, GroupTaskSharingOffer offer) throws NotMemberOfException, WrongParameterException {
+        if (group == null || offer == null) {
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
+        }
+        if (!offer.getOfferedTo().equals(group)) {
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_OFFER_NOT_FOR_GROUP, offer, group));
+        }
+    }
+
+    public void checkOfferOwnership(User user, MembershipOffer offer) throws NotMemberOfException, WrongParameterException {
+        if (user == null || offer == null) {
+            throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
+        }
+
+        if (!offer.getOfferedTo().equals(user)) {
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_OFFER_NOT_FOR_USER, offer, user));
         }
     }
 }

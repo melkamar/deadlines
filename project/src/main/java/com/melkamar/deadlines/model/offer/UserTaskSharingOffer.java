@@ -23,6 +23,10 @@ public class UserTaskSharingOffer extends TaskSharingOffer {
     @JoinColumn(name = COL_OFFERED_TO_ID, referencedColumnName = User.COL_USER_ID)
     protected final User offeredTo;
 
+    public User getOfferedTo() {
+        return offeredTo;
+    }
+
     public UserTaskSharingOffer(User offerer, Task task, User offeredTo) {
         super(offerer, task);
         this.offeredTo = offeredTo;

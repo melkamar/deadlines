@@ -12,5 +12,6 @@ import java.util.Set;
  */
 public interface OfferDAO {
     public Offer save(Offer offer);
+    public void delete(Offer offer);
     public Set<Offer> findAll();
 }

@@ -7,6 +7,7 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.offer.Offer;
+import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
@@ -334,4 +335,75 @@ public class SharingAPITest {
 
         sharingAPI.listTaskOffersOfGroup(user3, group1).size();
     }
+
+    @Test
+    @Transactional
+    public void resolveTaskSharingOffer() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task2 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task3 = taskAPI.createTask(user2, "task1", null, Priority.NORMAL, 10, 10);
+        Task task4 = taskAPI.createTask(user3, "task1", null, Priority.NORMAL, 10, 10);
+
+
+        UserTaskSharingOffer offer1 = sharingAPI.offerTaskSharing(user1, task1, user3);
+        UserTaskSharingOffer offer2 = sharingAPI.offerTaskSharing(user1, task2, user3);
+        UserTaskSharingOffer offer3 = sharingAPI.offerTaskSharing(user2, task3, user1);
+        UserTaskSharingOffer offer4 = sharingAPI.offerTaskSharing(user2, task3, user3);
+        UserTaskSharingOffer offer5 = sharingAPI.offerTaskSharing(user3, task4, user1);
+        UserTaskSharingOffer offer6 = sharingAPI.offerTaskSharing(user3, task4, user2);
+
+        Assert.assertEquals(1, task1.getParticipants().size());
+        Assert.assertEquals(1, task2.getParticipants().size());
+        Assert.assertEquals(1, task3.getParticipants().size());
+        Assert.assertEquals(1, task4.getParticipants().size());
+
+        Assert.assertEquals(2, user1.getParticipants().size());
+        Assert.assertEquals(1, user2.getParticipants().size());
+        Assert.assertEquals(1, user3.getParticipants().size());
+
+        Assert.assertNotNull(userTaskSharingDao.findByOfferedToAndTaskOffered(user3, task1));
+        sharingAPI.resolveTaskSharingOffer(user3, offer1, true);
+        Assert.assertNull(userTaskSharingDao.findByOfferedToAndTaskOffered(user3, task1));
+
+        Assert.assertEquals(2, task1.getParticipants().size());
+        Assert.assertEquals(1, task2.getParticipants().size());
+        Assert.assertEquals(1, task3.getParticipants().size());
+        Assert.assertEquals(1, task4.getParticipants().size());
+
+        Assert.assertEquals(2, user1.getParticipants().size());
+        Assert.assertEquals(1, user2.getParticipants().size());
+        Assert.assertEquals(2, user3.getParticipants().size());
+
+        Assert.assertNotNull(userTaskSharingDao.findByOfferedToAndTaskOffered(user3, task3));
+        sharingAPI.resolveTaskSharingOffer(user3, offer4, true);
+        Assert.assertNull(userTaskSharingDao.findByOfferedToAndTaskOffered(user3, task3));
+
+        Assert.assertEquals(2, task1.getParticipants().size());
+        Assert.assertEquals(1, task2.getParticipants().size());
+        Assert.assertEquals(2, task3.getParticipants().size());
+        Assert.assertEquals(1, task4.getParticipants().size());
+
+        Assert.assertEquals(2, user1.getParticipants().size());
+        Assert.assertEquals(1, user2.getParticipants().size());
+        Assert.assertEquals(3, user3.getParticipants().size());
+
+
+        Assert.assertNotNull(userTaskSharingDao.findByOfferedToAndTaskOffered(user1, task3));
+        sharingAPI.resolveTaskSharingOffer(user1, offer3, false);
+        Assert.assertNull(userTaskSharingDao.findByOfferedToAndTaskOffered(user1, task3));
+
+        Assert.assertEquals(2, task1.getParticipants().size());
+        Assert.assertEquals(1, task2.getParticipants().size());
+        Assert.assertEquals(2, task3.getParticipants().size());
+        Assert.assertEquals(1, task4.getParticipants().size());
+
+        Assert.assertEquals(2, user1.getParticipants().size());
+        Assert.assertEquals(1, user2.getParticipants().size());
+        Assert.assertEquals(3, user3.getParticipants().size());
+    }
+
 }
