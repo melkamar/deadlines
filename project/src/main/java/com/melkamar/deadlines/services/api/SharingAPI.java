@@ -51,6 +51,8 @@ public class SharingAPI {
     private UserTaskSharingDAOHibernate userTaskSharingDao;
     @Autowired
     private MembershipSharingDAOHibernate membershipSharingDao;
+    @Autowired
+    private GroupAPI groupAPI;
 
     @Transactional
     public UserTaskSharingOffer offerTaskSharing(User offerer, Task task, User offeredTo) throws NotMemberOfException, AlreadyExistsException {
@@ -176,19 +178,49 @@ public class SharingAPI {
         }
     }
 
-    private void deleteOffer(UserTaskSharingOffer offer){
-        offer.getOfferedTo().removeTaskSharingOffer(offer);
-        offerDao.delete(offer);
-    }
 
-    public Task resolveTaskSharingOffer(Group group, User manager, GroupTaskSharingOffer offer, boolean accept) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+
+    public void resolveTaskSharingOffer(Group group, User manager, GroupTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
+        permissionHandler.checkOfferOwnership(group, offer);
+
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER)){
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+        }
+        // Passed - permission to do this ok
+
+        if (!accept) {
+            // If declined, delete
+            deleteOffer(offer);
+            return;
+        }
+
+        if (isAlreadyOnTask(group, offer.getTaskOffered())){
+            deleteOffer(offer);
+            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_OF_GROUP, offer.getTaskOffered(), group));
+        } else {
+            groupAPI.addTask(manager, group, offer.getTaskOffered());
+            deleteOffer(offer);
+        }
     }
 
     public Task resolveMembershipOffer(User user, MembershipOffer offer, boolean accept) {
         // TODO: 31.03.2016 Implement
         throw new NotImplementedException();
+    }
+
+    private void deleteOffer(UserTaskSharingOffer offer){
+        offer.getOfferedTo().removeTaskSharingOffer(offer);
+        offerDao.delete(offer);
+    }
+
+    private void deleteOffer(GroupTaskSharingOffer offer){
+        offer.getOfferedTo().removeTaskSharingOffer(offer);
+        offerDao.delete(offer);
+    }
+
+    private void deleteOffer(MembershipOffer offer){
+        offer.getOfferedTo().removeMembershipOffer(offer);
+        offerDao.delete(offer);
     }
 
 }

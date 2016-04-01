@@ -6,6 +6,7 @@ import com.melkamar.deadlines.dao.offer.usertask.UserTaskSharingDAOHibernate;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Priority;
@@ -338,7 +339,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void resolveTaskSharingOffer() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
+    public void resolveTaskSharingOfferUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -404,6 +405,42 @@ public class SharingAPITest {
         Assert.assertEquals(2, user1.getParticipants().size());
         Assert.assertEquals(1, user2.getParticipants().size());
         Assert.assertEquals(3, user3.getParticipants().size());
+    }
+
+    @Test
+    @Transactional
+    public void resolveTaskSharingOfferGroup() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
+        User user4 = userAPI.createUser("User4", "pwd", "Some name", "a@b.c");
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task2 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task3 = taskAPI.createTask(user2, "task1", null, Priority.NORMAL, 10, 10);
+        Task task4 = taskAPI.createTask(user3, "task1", null, Priority.NORMAL, 10, 10);
+
+        Group group1 = groupAPI.createGroup("Group1", user1, null);
+        groupAPI.addMember(user1, group1, user4);
+
+        GroupTaskSharingOffer offer1 = sharingAPI.offerTaskSharing(user2, task3, group1);
+        GroupTaskSharingOffer offer2 = sharingAPI.offerTaskSharing(user3, task4, group1);
+        GroupTaskSharingOffer offer3 = sharingAPI.offerTaskSharing(user1, task1, group1);
+
+        Assert.assertEquals(2, user1.getParticipants().size());
+        Assert.assertEquals(0, user4.getParticipants().size());
+
+        sharingAPI.resolveTaskSharingOffer(group1, user1, offer1, true);
+        Assert.assertEquals(3, user1.getParticipants().size());
+        Assert.assertEquals(1, user4.getParticipants().size());
+
+        sharingAPI.resolveTaskSharingOffer(group1, user1, offer2, false);
+        Assert.assertEquals(3, user1.getParticipants().size());
+        Assert.assertEquals(1, user4.getParticipants().size());
+
+        sharingAPI.resolveTaskSharingOffer(group1, user1, offer3, true);
+        Assert.assertEquals(3, user1.getParticipants().size());
+        Assert.assertEquals(2, user4.getParticipants().size());
     }
 
 }
