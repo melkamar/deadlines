@@ -92,9 +92,17 @@ public class UserAPI {
         return userDAO.findAll();
     }
 
-    public void leaveGroup(User user, Group group) throws NotMemberOfException, NotAllowedException, GroupPermissionException, WrongParameterException {
-        // TODO: 31.03.2016
-        throw new NotImplementedException();
+    /**
+     * Removes the user from a group, including all his group-related tasks.
+     * @param user
+     * @param group
+     * @throws NotAllowedException
+     * @throws WrongParameterException
+     * @throws GroupPermissionException
+     * @throws NotMemberOfException
+     */
+    public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException {
+        groupAPI.removeMember(user ,group, user);
     }
 
     public void leaveTask(User user, Task task) throws NotMemberOfException {
