@@ -5,6 +5,7 @@ import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.exceptions.AlreadyExistsException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -82,9 +83,27 @@ public class TaskParticipantHelper {
      * @param group
      */
     @Transactional
-    public void removeFromGroup(TaskParticipant taskParticipant, Group group) {
+    public void removeGroupConnection(TaskParticipant taskParticipant, Group group) {
         taskParticipant.removeGroup(group);
         group.removeTaskParticipant(taskParticipant);
+
+        destroyIfNotRelevant(taskParticipant);
+    }
+
+    /**
+     * Removes a solo connection from {@link TaskParticipant}.
+     * After removal checks if the TaskParticipant should still be associated with the Task or destroyed. (When
+     * no other groups are connected and solo is false)
+     */
+    @Transactional
+    public void removeSoloConnection(User user, Task task) throws NotMemberOfException {
+        TaskParticipant taskParticipant = taskparticipantDAO.findByUserAndTask(user, task);
+
+        if (taskParticipant == null){
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
+        }
+
+        taskParticipant.setSolo(false);
 
         destroyIfNotRelevant(taskParticipant);
     }

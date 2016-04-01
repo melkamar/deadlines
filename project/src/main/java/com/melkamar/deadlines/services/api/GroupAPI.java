@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -171,7 +170,7 @@ public class GroupAPI {
         // Remove each TaskParticipant entry of the removed user from the group
         for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(groupMemberToRemove.getUser(), group)) {
             group.removeTaskParticipant(taskParticipant);
-            taskParticipantHelper.removeFromGroup(taskParticipant, group);
+            taskParticipantHelper.removeGroupConnection(taskParticipant, group);
         }
 
         groupMemberHelper.deleteGroupMember(groupMemberToRemove);
@@ -215,7 +214,7 @@ public class GroupAPI {
         Set<TaskParticipant> participantsCopy = new HashSet<>(taskParticipants);
 
         for (TaskParticipant taskParticipant : participantsCopy) {
-            taskParticipantHelper.removeFromGroup(taskParticipant, group);
+            taskParticipantHelper.removeGroupConnection(taskParticipant, group);
         }
 
         group.removeTask(task);
@@ -276,7 +275,7 @@ public class GroupAPI {
         // Remove admin
         for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(admin, group)) {
             group.removeTaskParticipant(taskParticipant);
-            taskParticipantHelper.removeFromGroup(taskParticipant, group);
+            taskParticipantHelper.removeGroupConnection(taskParticipant, group);
         }
 
         groupMemberHelper.deleteGroupMember(adminGroupMember);

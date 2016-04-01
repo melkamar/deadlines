@@ -7,19 +7,15 @@ import com.melkamar.deadlines.exceptions.GroupPermissionException;
 import com.melkamar.deadlines.exceptions.NotAllowedException;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
-import com.melkamar.deadlines.model.Group;
-import com.melkamar.deadlines.model.GroupMember;
-import com.melkamar.deadlines.model.MemberRole;
-import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
+import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.text.MessageFormat;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,6 +36,8 @@ public class UserAPI {
     private GroupMemberDAO groupMemberDAO;
     @Autowired
     private GroupAPI groupAPI;
+    @Autowired
+    private TaskParticipantHelper taskParticipantHelper;
 
 
     @Transactional
@@ -99,9 +97,8 @@ public class UserAPI {
         throw new NotImplementedException();
     }
 
-    public void leaveTask(User user, Task task) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public void leaveTask(User user, Task task) throws NotMemberOfException {
+        taskParticipantHelper.removeSoloConnection(user, task);
     }
 
     @Transactional

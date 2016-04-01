@@ -18,4 +18,5 @@ public interface TaskParticipantDAO {
     TaskParticipant findByUserAndTask(User user, Task task);
     Set<TaskParticipant> findByUserAndGroups(User user, Group group);
     Set<TaskParticipant> findByTaskAndGroups(Task task, Group group);
+    Set<TaskParticipant> findByUser(User user);
 }

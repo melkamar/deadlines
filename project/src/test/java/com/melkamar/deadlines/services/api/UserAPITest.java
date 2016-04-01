@@ -1,10 +1,15 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
+import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
+import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Priority;
+import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.security.Authenticator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,6 +19,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -30,6 +37,10 @@ public class UserAPITest {
     private Authenticator authenticator;
     @Autowired
     private GroupAPI groupAPI;
+    @Autowired
+    private TaskAPI taskAPI;
+    @Autowired
+    private TaskParticipantDAOHibernate taskparticipantDAO;
 
 
     @Test(expected = WrongParameterException.class)
@@ -153,5 +164,34 @@ public class UserAPITest {
         Assert.assertFalse(userAPI.getGroupsOfUser(anotherUser).contains(groupA));
         Assert.assertFalse(userAPI.getGroupsOfUser(anotherUser).contains(groupB));
         Assert.assertTrue(userAPI.getGroupsOfUser(anotherUser).contains(groupC));
+    }
+
+    @Test
+    @Transactional
+    public void leaveTask() throws WrongParameterException, NotMemberOfException {
+        User user = userAPI.createUser("someuser", "password", "somename", "someemail");
+        User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2");
+
+        Assert.assertEquals(0, user.tasksOfUser().size());
+        Assert.assertEquals(0, anotherUser.tasksOfUser().size());
+
+        Task task1 = taskAPI.createTask(user, "Task1", null, Priority.NORMAL, 10, LocalDateTime.now().plusDays(5));
+        Task task2 = taskAPI.createTask(user, "Task2", null, Priority.NORMAL, 10, LocalDateTime.now().plusDays(5));
+
+        Assert.assertEquals(2, user.tasksOfUser().size());
+        Assert.assertEquals(0, anotherUser.tasksOfUser().size());
+        Assert.assertNotNull(taskparticipantDAO.findByUserAndTask(user, task1));
+        Assert.assertNotNull(taskparticipantDAO.findByUserAndTask(user, task2));
+        Assert.assertEquals(2, taskparticipantDAO.findByUser(user).size());
+        Assert.assertEquals(0, taskparticipantDAO.findByUser(anotherUser).size());
+
+        userAPI.leaveTask(user ,task2);
+
+        Assert.assertEquals(1, user.tasksOfUser().size());
+        Assert.assertEquals(0, anotherUser.tasksOfUser().size());
+        Assert.assertNotNull(taskparticipantDAO.findByUserAndTask(user, task1));
+        Assert.assertNull(taskparticipantDAO.findByUserAndTask(user, task2));
+        Assert.assertEquals(1, taskparticipantDAO.findByUser(user).size());
+        Assert.assertEquals(0, taskparticipantDAO.findByUser(anotherUser).size());
     }
 }

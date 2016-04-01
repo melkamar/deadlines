@@ -106,7 +106,7 @@ public class TaskAPI {
             throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_MANHOURS_INVALID);
         }
         if (!task.usersOnTask().contains(user)) {
-            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user.getUsername(), task.getName(), task.getId()));
+            throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
         }
 
         TaskParticipant participant = taskparticipantDAO.findByUserAndTask(user, task);
