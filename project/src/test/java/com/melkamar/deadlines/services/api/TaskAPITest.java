@@ -1,10 +1,7 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.dao.processing.TaskFilterRole;
-import com.melkamar.deadlines.dao.processing.TaskFilterStatus;
-import com.melkamar.deadlines.dao.processing.TaskFilterType;
-import com.melkamar.deadlines.dao.processing.TaskOrdering;
+import com.melkamar.deadlines.dao.processing.*;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
@@ -367,8 +364,8 @@ public class TaskAPITest {
         List<Task> resultList;
 
         resultList = taskAPI.listTasks(user, TaskOrdering.PRIORITY_ASC);
-        for (Task task: resultList){
-            System.out.println("TASK: "+task);
+        for (Task task : resultList) {
+            System.out.println("TASK: " + task);
         }
         Assert.assertTrue(resultList.get(0).equals(task4));
         Assert.assertTrue(resultList.get(1).equals(task3));
@@ -497,8 +494,53 @@ public class TaskAPITest {
         Assert.assertTrue(resultList.contains(task7));
     }
 
+    @Test
+    @Transactional
+    public void listTasksFilterByPriority() throws WrongParameterException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.ca");
+        Task task1 = taskAPI.createTask(user, "CCC", null, Priority.NORMAL, 0, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, Priority.HIGH, 0, LocalDateTime.now().plusDays(10));
+        Task task3 = taskAPI.createTask(user, "BBB", null, Priority.LOW, 0, LocalDateTime.now().plusDays(11));
+        Task task4 = taskAPI.createTask(user, "BBBC", null, Priority.LOWEST, 0, LocalDateTime.now().plusDays(11));
+        Task task5 = taskAPI.createTask(user, "BBBD", null, Priority.HIGHEST, 0, LocalDateTime.now().plusDays(11));
+        Task task6 = taskAPI.createTask(user, "BBBD", null, Priority.HIGHEST, 0, LocalDateTime.now().plusDays(11));
 
+        List<Task> resultList;
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.LOWEST));
+        Assert.assertTrue(resultList.size() == 1);
+        Assert.assertTrue(resultList.contains(task4));
 
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.LOW));
+        Assert.assertTrue(resultList.size() == 1);
+        Assert.assertTrue(resultList.contains(task3));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.NORMAL));
+        Assert.assertTrue(resultList.size() == 1);
+        Assert.assertTrue(resultList.contains(task1));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.HIGH));
+        Assert.assertTrue(resultList.size() == 1);
+        Assert.assertTrue(resultList.contains(task2));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.HIGHEST));
+        Assert.assertTrue(resultList.size() == 2);
+        Assert.assertTrue(resultList.contains(task5));
+        Assert.assertTrue(resultList.contains(task6));
+
+        // Multiple priorities
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.LOWEST, Priority.LOW));
+        Assert.assertTrue(resultList.size() == 2);
+        Assert.assertTrue(resultList.contains(task3));
+        Assert.assertTrue(resultList.contains(task4));
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.NONE, new TaskFilterPriority(Priority.LOWEST,
+                Priority.LOW, Priority.HIGHEST));
+        Assert.assertTrue(resultList.size() == 4);
+        Assert.assertTrue(resultList.contains(task3));
+        Assert.assertTrue(resultList.contains(task4));
+        Assert.assertTrue(resultList.contains(task5));
+        Assert.assertTrue(resultList.contains(task6));
+    }
 
 
     private void sleepALittle() {
