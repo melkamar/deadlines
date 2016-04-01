@@ -32,4 +32,8 @@ public abstract class Offer {
 
     public abstract int accept();
     public abstract int decline();
+
+    public User getOfferer() {
+        return offerer;
+    }
 }

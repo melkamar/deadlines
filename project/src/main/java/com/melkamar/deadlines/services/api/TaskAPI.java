@@ -79,7 +79,7 @@ public class TaskAPI {
      * Creator must be manager of all of them.
      */
     @Transactional
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, LocalDateTime deadline) throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, LocalDateTime deadline) throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         if (groups == null) return createTask(creator, name, description, priority, workEstimate, deadline);
         Task newTask = createTask(creator, name, description, priority, workEstimate, deadline);
 
@@ -95,7 +95,7 @@ public class TaskAPI {
      * Creator must be manager of all of them.
      */
     @Transactional
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double growSpeed) throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double growSpeed) throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         if (groups == null) return createTask(creator, name, description, priority, workEstimate, growSpeed);
         Task newTask = createTask(creator, name, description, priority, workEstimate, growSpeed);
 

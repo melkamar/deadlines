@@ -420,7 +420,7 @@ public class GroupAPITest {
 
     @Test
     @Transactional
-    public void addTask() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void addTask() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userNonMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -447,6 +447,17 @@ public class GroupAPITest {
         Assert.assertEquals(group.getSharedTasks().size(), 3);
         Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
         Assert.assertEquals(userAdmin.tasksOfUser().size(), 3);
+    }
+
+    @Test(expected = AlreadyExistsException.class)
+    @Transactional
+    public void addTask_Twice() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userAdmin, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        groupAPI.addTask(userAdmin, group, task);
+        groupAPI.addTask(userAdmin, group, task);
     }
 
     @Test

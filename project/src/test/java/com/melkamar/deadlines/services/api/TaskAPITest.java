@@ -118,7 +118,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void createGroupTasks() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void createGroupTasks() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", user, null);
@@ -138,7 +138,7 @@ public class TaskAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void createGroupTaskByNonMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void createGroupTaskByNonMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", user, null);
@@ -661,7 +661,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listGroupTasksSortByName() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void listGroupTasksSortByName() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Group group1 = groupAPI.createGroup("Group1", user, null);
         Group group2 = groupAPI.createGroup("Group2", user, null);
@@ -695,7 +695,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listGroupTasksSortByDateCreated() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+    public void listGroupTasksSortByDateCreated() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Group group1 = groupAPI.createGroup("Group1", user, null);
         Group group2 = groupAPI.createGroup("Group2", user, null);

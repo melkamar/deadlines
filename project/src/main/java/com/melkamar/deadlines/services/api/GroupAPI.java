@@ -184,12 +184,16 @@ public class GroupAPI {
      * @param group   Group to share the task with.
      * @param task    Task to share.
      */
-    public void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
+    public void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
         if (manager == null || group == null || task == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        // If the Task is already shared with the group
+        if (group.getSharedTasks().contains(task))
+            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_OF_GROUP, task, group));
 
         // Security checks passed, create associations
         group.addSharedTask(task);

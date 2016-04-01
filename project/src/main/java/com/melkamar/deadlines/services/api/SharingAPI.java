@@ -9,10 +9,7 @@ import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import com.melkamar.deadlines.exceptions.GroupPermissionException;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
-import com.melkamar.deadlines.model.Group;
-import com.melkamar.deadlines.model.MemberRole;
-import com.melkamar.deadlines.model.TaskParticipant;
-import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
@@ -24,7 +21,6 @@ import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
 import java.util.Set;
@@ -62,7 +58,7 @@ public class SharingAPI {
             return null;
         }
 
-        if (isAlreadyOnTask(offeredTo, task)){
+        if (isAlreadyOnTask(offeredTo, task)) {
             throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_PARTICIPANT, offeredTo, task));
         }
 
@@ -77,24 +73,6 @@ public class SharingAPI {
         return offer;
     }
 
-    private boolean isAlreadyOnTask(User offeredTo, Task task) {
-        TaskParticipant offeredToParticipant = taskParticipantHelper.getTaskParticipant(offeredTo, task);
-        if (offeredToParticipant != null && offeredToParticipant.getSolo()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isAlreadyOnTask(Group offeredTo, Task task) throws AlreadyExistsException {
-        // Check if the group is already on the task. If yes, exception.
-        if (offeredTo.getSharedTasks().contains(task)) {
-            return true;
-        }
-
-        return false;
-    }
-
 
     @Transactional
     public GroupTaskSharingOffer offerTaskSharing(User offerer, Task task, Group offeredTo) throws NotMemberOfException, AlreadyExistsException {
@@ -104,7 +82,7 @@ public class SharingAPI {
             return null;
         }
 
-        if (isAlreadyOnTask(offeredTo, task)){
+        if (isAlreadyOnTask(offeredTo, task)) {
             throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_OF_GROUP, task, offeredTo));
         }
 
@@ -159,7 +137,7 @@ public class SharingAPI {
         return membershipSharingDao.findByOfferedTo(user);
     }
 
-    public void resolveTaskSharingOffer(User user, UserTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException {
+    public void resolveTaskSharingOffer(User user, UserTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException {
         permissionHandler.checkOfferOwnership(user, offer);
         // Passed - permission to do this ok
 
@@ -169,21 +147,23 @@ public class SharingAPI {
             return;
         }
 
-        if (isAlreadyOnTask(user, offer.getTaskOffered())){
-            deleteOffer(offer);
-            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_PARTICIPANT, user, offer.getTaskOffered()));
-        } else {
-            taskParticipantHelper.editOrCreateTaskParticipant(user, offer.getTaskOffered(), TaskRole.WATCHER, null, false);
-            deleteOffer(offer);
-        }
-    }
+        // TODO: 01.04.2016 See if it works with this commented out. It should not matter if the user is already on task, as nothing will get rewritten
+//        if (isAlreadyOnTask(user, offer.getTaskOffered())) {
+//            deleteOffer(offer);
+//            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_PARTICIPANT, user, offer.getTaskOffered()));
+//        } else {
+        taskParticipantHelper.editOrCreateTaskParticipant(user, offer.getTaskOffered(), TaskRole.WATCHER, null, false);
 
+        deleteOffer(offer);
+
+//        }
+    }
 
 
     public void resolveTaskSharingOffer(Group group, User manager, GroupTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
         permissionHandler.checkOfferOwnership(group, offer);
 
-        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER)){
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER)) {
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
         }
         // Passed - permission to do this ok
@@ -194,33 +174,74 @@ public class SharingAPI {
             return;
         }
 
-        if (isAlreadyOnTask(group, offer.getTaskOffered())){
-            deleteOffer(offer);
-            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_OF_GROUP, offer.getTaskOffered(), group));
-        } else {
+        try {
             groupAPI.addTask(manager, group, offer.getTaskOffered());
+        } catch (NotMemberOfException | GroupPermissionException | WrongParameterException | AlreadyExistsException e) {
             deleteOffer(offer);
+            throw e;
         }
     }
 
-    public Task resolveMembershipOffer(User user, MembershipOffer offer, boolean accept) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public void resolveMembershipOffer(User user, MembershipOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
+        permissionHandler.checkOfferOwnership(user, offer);
+        // Passed - permission to do this ok
+
+        if (!accept) {
+            // If declined, delete
+            deleteOffer(offer);
+            return;
+        }
+
+        try {
+            groupAPI.addMember(offer.getOfferer(), offer.getGroup(), user);
+        } catch (GroupPermissionException | AlreadyExistsException | NotMemberOfException e) {
+            deleteOffer(offer);
+            throw e;
+        }
+
     }
 
-    private void deleteOffer(UserTaskSharingOffer offer){
+    private void deleteOffer(UserTaskSharingOffer offer) {
         offer.getOfferedTo().removeTaskSharingOffer(offer);
         offerDao.delete(offer);
     }
 
-    private void deleteOffer(GroupTaskSharingOffer offer){
+    private void deleteOffer(GroupTaskSharingOffer offer) {
         offer.getOfferedTo().removeTaskSharingOffer(offer);
         offerDao.delete(offer);
     }
 
-    private void deleteOffer(MembershipOffer offer){
+    private void deleteOffer(MembershipOffer offer) {
         offer.getOfferedTo().removeMembershipOffer(offer);
         offerDao.delete(offer);
+    }
+
+    private boolean isAlreadyOnTask(User offeredTo, Task task) {
+        TaskParticipant offeredToParticipant = taskParticipantHelper.getTaskParticipant(offeredTo, task);
+        if (offeredToParticipant != null && offeredToParticipant.getSolo()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isAlreadyOnTask(Group offeredTo, Task task) throws AlreadyExistsException {
+        // Check if the group is already on the task. If yes, exception.
+        if (offeredTo.getSharedTasks().contains(task)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isAlreadyOnGroup(User offeredTo, Group group) throws AlreadyExistsException {
+        GroupMember groupMember = groupMemberHelper.getGroupMember(offeredTo, group);
+        // Check if the group is already on the task. If yes, exception.
+        if (groupMember != null) {
+            return true;
+        }
+
+        return false;
     }
 
 }

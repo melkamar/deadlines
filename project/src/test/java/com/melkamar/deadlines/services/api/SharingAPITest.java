@@ -7,6 +7,7 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
+import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Priority;
@@ -441,6 +442,58 @@ public class SharingAPITest {
         sharingAPI.resolveTaskSharingOffer(group1, user1, offer3, true);
         Assert.assertEquals(3, user1.getParticipants().size());
         Assert.assertEquals(2, user4.getParticipants().size());
+    }
+
+    @Test
+    @Transactional
+    public void resolveMembershipOffer() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task2 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task3 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+
+        Group group1 = groupAPI.createGroup("Group1", user1, null);
+        groupAPI.addTask(user1, group1, task1);
+        groupAPI.addTask(user1, group1, task2);
+
+        MembershipOffer offer1 = sharingAPI.offerMembership(user1, group1, user2);
+        MembershipOffer offer2 = sharingAPI.offerMembership(user1, group1, user3);
+
+        Assert.assertEquals(3, user1.tasksOfUser().size());
+        Assert.assertEquals(0, user2.tasksOfUser().size());
+        Assert.assertEquals(0, user3.tasksOfUser().size());
+        Assert.assertEquals(1, group1.getMembers().size());
+
+        sharingAPI.resolveMembershipOffer(user2, offer1, true);
+        Assert.assertEquals(3, user1.tasksOfUser().size());
+        Assert.assertEquals(2, user2.tasksOfUser().size());
+        Assert.assertEquals(0, user3.tasksOfUser().size());
+        Assert.assertEquals(2, group1.getMembers().size());
+
+        sharingAPI.resolveMembershipOffer(user3, offer2, false);
+        Assert.assertEquals(3, user1.tasksOfUser().size());
+        Assert.assertEquals(2, user2.tasksOfUser().size());
+        Assert.assertEquals(0, user3.tasksOfUser().size());
+        Assert.assertEquals(2, group1.getMembers().size());
+    }
+
+    @Test(expected = GroupPermissionException.class)
+    @Transactional
+    public void resolveMembershipOffer_OffererNoLongerManager() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException, NotAllowedException {
+        User userAdmin = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User userManager = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User userNewMember = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
+
+        Group group1 = groupAPI.createGroup("Group1", userAdmin, null);
+        groupAPI.addMember(userAdmin, group1, userManager);
+        groupAPI.setManager(userAdmin, group1, userManager, true);
+
+        MembershipOffer offer1 = sharingAPI.offerMembership(userManager, group1, userNewMember);
+        groupAPI.setManager(userAdmin, group1, userManager, false);
+        sharingAPI.resolveMembershipOffer(userNewMember, offer1, true);
     }
 
 }
