@@ -4,7 +4,6 @@ import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.offer.OfferDAOHibernate;
 import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.TaskPermissionException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -17,6 +16,7 @@ import com.melkamar.deadlines.services.PermissionHandler;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
@@ -38,6 +38,7 @@ public class SharingAPI {
     @Autowired
     private OfferDAOHibernate offerDao;
 
+    @Transactional
     public void offerTaskSharing(User offerer, Task task, User offeredTo) throws NotMemberOfException, AlreadyExistsException {
         // Check if offerer participates on task
         if (!permissionHandler.hasTaskPermission(offerer, task, TaskRole.WATCHER)){
@@ -52,13 +53,26 @@ public class SharingAPI {
         }
 
         UserTaskSharingOffer offer = new UserTaskSharingOffer(offerer, task, offeredTo);
-        offeredTo.addUserTaskSharingOffer(offer);
+        offeredTo.addTaskSharingOffer(offer);
         offerDao.save(offer);
     }
 
-    public Task offerTaskSharing(User sharer, Task task, Group shareWithGroup){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    @Transactional
+    public void offerTaskSharing(User offerer, Task task, Group offeredTo) throws NotMemberOfException, AlreadyExistsException {
+        // Check if offerer participates on task
+        if (!permissionHandler.hasTaskPermission(offerer, task, TaskRole.WATCHER)){
+            // This should never happen as we are requesting the lowest permission
+            return;
+        }
+
+        // Check if the group is already on the task. If yes, exception.
+        if (offeredTo.getSharedTasks().contains(task)){
+            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_OF_GROUP, task, offeredTo));
+        }
+
+        GroupTaskSharingOffer offer = new GroupTaskSharingOffer(offerer, task, offeredTo);
+        offeredTo.addTaskSharingOffer(offer);
+        offerDao.save(offer);
     }
 
     public Task resolveTaskSharingOffer(User sharedWith, UserTaskSharingOffer offer, boolean accept){

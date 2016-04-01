@@ -64,6 +64,21 @@ public class Group {
         return participants.remove(taskParticipant);
     }
 
+    public boolean addTaskSharingOffer(GroupTaskSharingOffer offer){
+        return taskOffers.add(offer);
+    }
+
+    public boolean removeTaskSharingOffer(GroupTaskSharingOffer offer){
+        return taskOffers.remove(offer);
+    }
+
+    public Set<GroupMember> getMembers() {
+        return members;
+    }
+
+    public Set<GroupTaskSharingOffer> getTaskOffers() {
+        return taskOffers;
+    }
 
     public boolean addParticipant(TaskParticipant participant) {
         return participants.add(participant);

@@ -21,7 +21,7 @@ public class UserTaskSharingOffer extends TaskSharingOffer {
 
     @ManyToOne
     @JoinColumn(name = COL_OFFERED_TO_ID, referencedColumnName = User.COL_USER_ID)
-    private final User offeredTo;
+    protected final User offeredTo;
 
     public UserTaskSharingOffer(User offerer, Task task, User offeredTo) {
         super(offerer, task);

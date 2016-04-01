@@ -1,6 +1,8 @@
 package com.melkamar.deadlines.model.offer;
 
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Task;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.Entity;
@@ -17,7 +19,16 @@ import javax.persistence.Table;
 public class GroupTaskSharingOffer extends TaskSharingOffer {
     @ManyToOne
     @JoinColumn(name = Group.COL_GROUP_ID)
-    private Group offeredTo;
+    protected final Group offeredTo;
+
+    public GroupTaskSharingOffer(User offerer, Task taskOffered, Group offeredTo) {
+        super(offerer, taskOffered);
+        this.offeredTo = offeredTo;
+    }
+
+    public GroupTaskSharingOffer() {
+        this.offeredTo = null;
+    }
 
     @Override
     public int accept() {

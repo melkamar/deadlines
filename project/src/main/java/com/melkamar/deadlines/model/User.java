@@ -89,11 +89,11 @@ public class User {
         return memberAs.remove(groupMember);
     }
 
-    public boolean addUserTaskSharingOffer(UserTaskSharingOffer offer) {
+    public boolean addTaskSharingOffer(UserTaskSharingOffer offer) {
         return taskOffers.add(offer);
     }
 
-    public boolean removeUserTaskSharingOffer(UserTaskSharingOffer offer){
+    public boolean removeTaskSharingOffer(UserTaskSharingOffer offer){
         return taskOffers.remove(offer);
     }
 

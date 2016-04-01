@@ -1,10 +1,8 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.TaskPermissionException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
@@ -35,6 +33,8 @@ public class SharingAPITest {
     private SharingAPI sharingAPI;
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
+    @Autowired
+    private GroupAPI groupAPI;
 
     @Test
     @Transactional
@@ -80,5 +80,47 @@ public class SharingAPITest {
         taskParticipantHelper.editOrCreateTaskParticipant(user2, task1, TaskRole.WATCHER, null, true);
 
         sharingAPI.offerTaskSharing(user2, task1, user1);
+    }
+
+    @Test
+    @Transactional
+    public void offerTaskSharingGroup() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+        User user1 = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Group group = groupAPI.createGroup("Group", user1, null);
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task2 = taskAPI.createTask(user1, "task2", null, Priority.NORMAL, 10, 10);
+
+        Assert.assertEquals(0, group.getTaskOffers().size());
+
+        sharingAPI.offerTaskSharing(user1, task1, group);
+        Assert.assertEquals(1, group.getTaskOffers().size());
+
+        sharingAPI.offerTaskSharing(user1, task2, group);
+        Assert.assertEquals(2, group.getTaskOffers().size());
+    }
+
+    @Test(expected = NotMemberOfException.class)
+    @Transactional
+    public void offerTaskSharingGroup_OffererNotParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        Group group = groupAPI.createGroup("Group", user1, null);
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+
+        sharingAPI.offerTaskSharing(user2, task1, group);
+    }
+
+    @Test(expected = AlreadyExistsException.class)
+    @Transactional
+    public void offerTaskSharingGroup_UserAlreadyParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, GroupPermissionException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        Group group = groupAPI.createGroup("Group", user1, null);
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        groupAPI.addTask(user1, group, task1);
+
+        sharingAPI.offerTaskSharing(user1, task1, group);
     }
 }

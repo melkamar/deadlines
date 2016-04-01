@@ -25,6 +25,7 @@ public class StringConstants {
 
     public final String EXC_ALREADY_EXISTS_TASK_PARTICIPANT = "Task participant already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_GROUP_MEMBER = "Group member already exists! {0} -- {1}";
+    public final String EXC_ALREADY_EXISTS_TASK_OF_GROUP = "Task [{0}] is already shared with group [{1}].";
 
     public final String EXC_USER_NOT_PARTICIPANT = "User [{0}] is not a participant in a task [{1}].";
     public final String EXC_USER_NOT_PARTICIPANT_IS_NULL = "TaskParticipant of User [{0}] and task [{1}] with ID {2} is NULL. This should not happen.";
