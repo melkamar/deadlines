@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 01.04.2016 20:37
@@ -22,5 +24,10 @@ public class MembershipSharingDAOHibernate implements MembershipSharingDAO {
     @Override
     public MembershipOffer findByOfferedToAndGroup(User user, Group group) {
         return membershipSharingRepository.findByOfferedToAndGroup(user, group);
+    }
+
+    @Override
+    public Set<MembershipOffer> findByOfferedTo(User user) {
+        return membershipSharingRepository.findByOfferedTo(user);
     }
 }

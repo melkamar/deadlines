@@ -218,23 +218,120 @@ public class SharingAPITest {
         sharingAPI.offerMembership(user1, group, user2);
     }
 
+    @Test
+    @Transactional
+    public void listTaskOffersOfUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
+
+        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task2 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
+        Task task3 = taskAPI.createTask(user2, "task1", null, Priority.NORMAL, 10, 10);
+        Task task4 = taskAPI.createTask(user3, "task1", null, Priority.NORMAL, 10, 10);
+
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user1).size());
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user2).size());
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user3).size());
+
+        sharingAPI.offerTaskSharing(user1, task1, user3);
+
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user1).size());
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user2).size());
+        Assert.assertEquals(1, sharingAPI.listTaskOffersOfUser(user3).size());
+
+        sharingAPI.offerTaskSharing(user1, task2, user3);
+
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user1).size());
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user2).size());
+        Assert.assertEquals(2, sharingAPI.listTaskOffersOfUser(user3).size());
+
+        sharingAPI.offerTaskSharing(user2, task3, user1);
+        sharingAPI.offerTaskSharing(user2, task3, user3);
+
+        Assert.assertEquals(1, sharingAPI.listTaskOffersOfUser(user1).size());
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfUser(user2).size());
+        Assert.assertEquals(3, sharingAPI.listTaskOffersOfUser(user3).size());
+
+        sharingAPI.offerTaskSharing(user3, task4, user1);
+        sharingAPI.offerTaskSharing(user3, task4, user2);
+
+        Assert.assertEquals(2, sharingAPI.listTaskOffersOfUser(user1).size());
+        Assert.assertEquals(1, sharingAPI.listTaskOffersOfUser(user2).size());
+        Assert.assertEquals(3, sharingAPI.listTaskOffersOfUser(user3).size());
+    }
 
     @Test
     @Transactional
-    public void temp() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
-        User user1 = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        User user2 = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
+    public void listMembershipOffersOfUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
 
-        Task task1 = taskAPI.createTask(user1, "task1", null, Priority.NORMAL, 10, 10);
-        Task task2 = taskAPI.createTask(user1, "task2", null, Priority.NORMAL, 10, 10);
-        Task task3 = taskAPI.createTask(user2, "task2", null, Priority.NORMAL, 10, 10);
+        Group group1 = groupAPI.createGroup("group1", user1, null);
+        Group group2 = groupAPI.createGroup("group2", user1, null);
 
-        sharingAPI.offerTaskSharing(user1, task1, user2);
-        sharingAPI.offerTaskSharing(user1, task2, user2);
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user1).size());
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user2).size());
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user3).size());
 
-        System.out.println(userTaskSharingDao.findByOfferedToAndTaskOffered(user2, task1));
-        System.out.println(userTaskSharingDao.findByOfferedToAndTaskOffered(user2, task2));
-        System.out.println(userTaskSharingDao.findByOfferedToAndTaskOffered(user2, task3));
+        sharingAPI.offerMembership(user1, group1, user2);
 
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user1).size());
+        Assert.assertEquals(1, sharingAPI.listMembershipOffersOfUser(user2).size());
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user3).size());
+
+        sharingAPI.offerMembership(user1, group1, user3);
+
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user1).size());
+        Assert.assertEquals(1, sharingAPI.listMembershipOffersOfUser(user2).size());
+        Assert.assertEquals(1, sharingAPI.listMembershipOffersOfUser(user3).size());
+
+        sharingAPI.offerMembership(user1, group2, user2);
+        sharingAPI.offerMembership(user1, group2, user3);
+
+        Assert.assertEquals(0, sharingAPI.listMembershipOffersOfUser(user1).size());
+        Assert.assertEquals(2, sharingAPI.listMembershipOffersOfUser(user2).size());
+        Assert.assertEquals(2, sharingAPI.listMembershipOffersOfUser(user3).size());
+    }
+
+    @Test
+    @Transactional
+    public void listTaskOffersOfGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        Group group1 = groupAPI.createGroup("Group1", user1, null);
+
+        Task task1 = taskAPI.createTask(user2, "task1", null, Priority.NORMAL, 10, 10);
+        Task task2 = taskAPI.createTask(user2, "task1", null, Priority.NORMAL, 10, 10);
+
+        Assert.assertEquals(0, sharingAPI.listTaskOffersOfGroup(user1, group1).size());
+        sharingAPI.offerTaskSharing(user2, task1, group1);
+        Assert.assertEquals(1, sharingAPI.listTaskOffersOfGroup(user1, group1).size());
+        sharingAPI.offerTaskSharing(user2, task2, group1);
+        Assert.assertEquals(2, sharingAPI.listTaskOffersOfGroup(user1, group1).size());
+    }
+
+    @Test(expected = NotMemberOfException.class)
+    @Transactional
+    public void listTaskOffersOfGroup_UserNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        Group group1 = groupAPI.createGroup("Group1", user1, null);
+
+        sharingAPI.listTaskOffersOfGroup(user2, group1).size();
+    }
+
+    @Test(expected = GroupPermissionException.class)
+    @Transactional
+    public void listTaskOffersOfGroup_UserNotManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
+        User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
+        User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
+        Group group1 = groupAPI.createGroup("Group1", user1, null);
+
+        groupAPI.addMember(user1, group1, user3);
+
+        sharingAPI.listTaskOffersOfGroup(user3, group1).size();
     }
 }

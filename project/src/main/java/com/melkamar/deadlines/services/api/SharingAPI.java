@@ -125,9 +125,8 @@ public class SharingAPI {
         throw new NotImplementedException();
     }
 
-    public Set<UserTaskSharingOffer> listTaskOffersOfUser(User sharedWith){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public Set<UserTaskSharingOffer> listTaskOffersOfUser(User user){
+        return userTaskSharingDao.findByOfferedTo(user);
     }
 
     public Task resolveMembershipOffer(User sharedWith, MembershipOffer offer, boolean accept){
@@ -135,14 +134,16 @@ public class SharingAPI {
         throw new NotImplementedException();
     }
 
-    public Set<MembershipOffer> listMembershipOffersOfUser(User sharedWith){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public Set<MembershipOffer> listMembershipOffersOfUser(User user){
+        return membershipSharingDao.findByOfferedTo(user);
     }
 
-    public List<GroupTaskSharingOffer> listTaskOffersOfGroup(User manager, Group group){
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    public Set<GroupTaskSharingOffer> listTaskOffersOfGroup(User manager, Group group) throws NotMemberOfException, GroupPermissionException {
+        // Check if user has enough permissions
+        if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        return groupTaskSharingDao.findByOfferedTo(group);
     }
 
     public Task resolveTaskSharingOffer(Group sharedWith, User manager, GroupTaskSharingOffer offer, boolean accept){
