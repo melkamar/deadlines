@@ -11,6 +11,7 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,7 +95,13 @@ public class UserAPI {
     }
 
     public void leaveGroup(User user, Group group) throws NotMemberOfException, NotAllowedException, GroupPermissionException, WrongParameterException {
-        groupAPI.removeMember(user, group, user);
+        // TODO: 31.03.2016
+        throw new NotImplementedException();
+    }
+
+    public void leaveTask(User user, Task task) {
+        // TODO: 31.03.2016 Implement
+        throw new NotImplementedException();
     }
 
     @Transactional

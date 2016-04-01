@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
+import com.melkamar.deadlines.dao.filters.GroupFilterGroupsOfUser;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
@@ -60,6 +61,8 @@ public class GroupAPITest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    @Autowired
+    private GroupFilterGroupsOfUser filterGroupsOfUser;
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -579,6 +582,48 @@ public class GroupAPITest {
         Assert.assertEquals(userMember2.tasksOfUser().size(), 0);
 
         Assert.assertNull(groupDAO.findByName("GroupnameToDelete"));
+    }
+
+    @Test
+    @Transactional
+    public void listGroups() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userMember2 = userAPI.createUser("Member2", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+
+        Assert.assertEquals(groupAPI.listGroups(null).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember2).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userAdmin).size(), 0);
+
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group group2 = groupAPI.createGroup("GroupnameToDelete", userAdmin, "Random description");
+
+        Assert.assertEquals(groupAPI.listGroups(null).size(), 2);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember2).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userAdmin).size(), 2);
+
+        groupAPI.addMember(userAdmin, group, userMember);
+
+        Assert.assertEquals(groupAPI.listGroups(null).size(), 2);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember).size(), 1);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember2).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userAdmin).size(), 2);
+
+        groupAPI.addMember(userAdmin, group2, userMember);
+
+        Assert.assertEquals(groupAPI.listGroups(null).size(), 2);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember).size(), 2);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember2).size(), 0);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userAdmin).size(), 2);
+
+        groupAPI.addMember(userAdmin, group, userMember2);
+
+        Assert.assertEquals(groupAPI.listGroups(null).size(), 2);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember).size(), 2);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userMember2).size(), 1);
+        Assert.assertEquals(groupAPI.listGroups(filterGroupsOfUser, userAdmin).size(), 2);
     }
 }
 

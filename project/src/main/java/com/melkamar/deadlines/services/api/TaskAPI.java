@@ -165,11 +165,6 @@ public class TaskAPI {
         throw new NotImplementedException();
     }
 
-    public void leaveTask(User user, Task task) {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
-    }
-
     public List<Task> listTasks(Group tasksOfGroup, TaskFilter filter, SortCriteria sortCriteria) {
         // TODO: 31.03.2016 Implement
         throw new NotImplementedException();

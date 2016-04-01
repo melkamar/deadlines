@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.config.StringConstants;
+import com.melkamar.deadlines.dao.filters.GroupFilter;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
@@ -95,9 +96,14 @@ public class GroupAPI {
         return true;
     }
 
-    public List<Group> listGroups() {
-        // TODO: 31.03.2016 Implement
-        throw new NotImplementedException();
+    /**
+     * Lists all existing groups.
+     * @param filter Filter of groups to apply. If null, all groups are listed.
+     * @return List of {@link Group}
+     */
+    public List<Group> listGroups(GroupFilter filter, Object... params) {
+        if (filter == null) return groupDAO.findAll();
+        return filter.getGroups(params);
     }
 
     public Group getGroup(Long groupId) {
@@ -280,13 +286,6 @@ public class GroupAPI {
 
     public Set<User> getUsersOfGroup(Group group) {
         return groupMemberDAO.findByGroup(group).stream().map(GroupMember::getUser).collect(Collectors.toSet());
-    }
-
-    public class GroupFilter {
-        public List<Group> filter(List<Group> groups) {
-            // TODO: 31.03.2016 Implement
-            throw new NotImplementedException();
-        }
     }
 
 

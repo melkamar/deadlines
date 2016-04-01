@@ -7,6 +7,7 @@ import com.melkamar.deadlines.services.PasswordHashGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,15 +77,15 @@ public class User {
         return participants.add(participant);
     }
 
-    public boolean removeParticipant(TaskParticipant participant){
+    public boolean removeParticipant(TaskParticipant participant) {
         return participants.remove(participant);
     }
 
-    public boolean addGroupMember(GroupMember groupMember){
+    public boolean addGroupMember(GroupMember groupMember) {
         return memberAs.add(groupMember);
     }
 
-    public boolean removeGroupMember(GroupMember groupMember){
+    public boolean removeGroupMember(GroupMember groupMember) {
         return memberAs.remove(groupMember);
     }
 
@@ -96,10 +97,18 @@ public class User {
      * @return Set of Tasks
      */
     public Set<Task> tasksOfUser() {
-        Set<Task> tasks = new HashSet<Task>(participants.size());
-        tasks.addAll(participants.stream().map(TaskParticipant::getTask).collect(Collectors.toList()));
+        return participants.stream().map(TaskParticipant::getTask).collect(Collectors.toSet());
+    }
 
-        return tasks;
+    /**
+     * Lists all Grups the User belongs to.
+     * Serves as a shortcut so that it is not necessary
+     * to navigate through the GroupMember.
+     *
+     * @return List of Grups
+     */
+    public List<Group> groupsOfUserAsList() {
+        return memberAs.stream().map(GroupMember::getGroup).collect(Collectors.toList());
     }
 
     /*************************************************************/
@@ -140,7 +149,7 @@ public class User {
         this.name = name;
     }
 
-    public void setNewPassword(PasswordHashGenerator.HashAndSalt hashAndSalt){
+    public void setNewPassword(PasswordHashGenerator.HashAndSalt hashAndSalt) {
         this.passwordHash = hashAndSalt.hash;
         this.passwordSalt = hashAndSalt.salt;
     }
