@@ -20,6 +20,8 @@ import java.util.Set;
 @Service
 public class SharingAPI {
     public Task offerTaskSharing(User sharer, Task task, User shareWithUser){
+
+
         // TODO: 31.03.2016 Implement
         throw new NotImplementedException();
     }

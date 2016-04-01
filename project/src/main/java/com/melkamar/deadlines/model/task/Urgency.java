@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -26,6 +28,7 @@ public class Urgency {
     private Integer value;
 
     public boolean needsUpdate(){
-        return false;
+        // TODO: 01.04.2016 Implement
+        throw new NotImplementedException();
     }
 }

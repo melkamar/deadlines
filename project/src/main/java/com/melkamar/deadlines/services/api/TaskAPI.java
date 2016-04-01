@@ -177,8 +177,51 @@ public class TaskAPI {
         }
     }
 
+    public List<Task> listTasks(Group tasksOfGroup, TaskOrdering ordering, TaskFilter... filters) {
+        List<Task> tasks = getOrderedTasksOfGroup(tasksOfGroup, ordering);
+
+        for (TaskFilter filter : filters) {
+            tasks = filter.filter(tasks);
+        }
+
+        return tasks;
+    }
+
+    private List<Task> getOrderedTasksOfGroup(Group group, TaskOrdering ordering) {
+        switch (ordering) {
+            case NONE:
+                return taskDAO.findByGroup(group);
+            case NAME_ASC:
+                return taskDAO.findByGroupOrderByNameAsc(group);
+            case NAME_DESC:
+                return taskDAO.findByGroupOrderByNameDesc(group);
+            case DATE_START_ASC:
+                return taskDAO.findByGroupOrderByDateCreatedAsc(group);
+            case DATE_START_DESC:
+                return taskDAO.findByGroupOrderByDateCreatedDesc(group);
+            case DATE_DEADLINE_ASC:
+                return taskDAO.findByGroupOrderByDeadlineAsc(group);
+            case DATE_DEADLINE_DESC:
+                return taskDAO.findByGroupOrderByDeadlineDesc(group);
+            case WORKED_PERCENT_ASC:
+                return taskDAO.findByGroupOrderByWorkedAsc(group);
+            case WORKED_PERCENT_DESC:
+                return taskDAO.findByGroupOrderByWorkedDesc(group);
+            case PRIORITY_ASC:
+                return taskDAO.findByGroupOrderByPriorityAsc(group);
+            case PRIORITY_DESC:
+                return taskDAO.findByGroupOrderByPriorityDesc(group);
+            case URGENCY_ASC:
+                return taskDAO.findByGroupOrderByUrgency_ValueAsc(group);
+            case URGENCY_DESC:
+                return taskDAO.findByGroupOrderByUrgency_ValueDesc(group);
+            default:
+                return taskDAO.findByGroup(group);
+        }
+    }
+
     public Task getTask(User executor, Long taskId) {
-        // TODO: 31.03.2016 Implement
+        // TODO: 31.03.2016 Implement -- will I need it though?
         throw new NotImplementedException();
     }
 
@@ -250,19 +293,18 @@ public class TaskAPI {
     /**
      * Resets urgency of a GrowingTask. Does not affect DeadlineTasks.
      *
-     * @param executor
+     * @param worker
      * @param task
      * @return
      */
-    public Task resetUrgency(User executor, Task task) {
-        // TODO: 31.03.2016 Implement
+    public Task resetUrgency(User worker, Task task) throws NotAllowedException {
+        if (!(task instanceof GrowingTask)){
+            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE);
+        }
+
+        // TODO: 31.03.2016 Implement when Urgency is implemented
         throw new NotImplementedException();
     }
-
-//    public List<Task> listTasks(Group tasksOfGroup, TaskFilter filter, SortCriteria sortCriteria) {
-//         TODO: 31.03.2016 Implement
-//        throw new NotImplementedException();
-//    }
 
     public TaskParticipant getTaskParticipant(User user, Task task) {
         return taskParticipantHelper.getTaskParticipant(user, task);

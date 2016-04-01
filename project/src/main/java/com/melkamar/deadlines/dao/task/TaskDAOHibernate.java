@@ -2,6 +2,7 @@ package com.melkamar.deadlines.dao.task;
 
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.exceptions.SortingException;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
@@ -138,10 +139,10 @@ public class TaskDAOHibernate implements TaskDAO {
     }
 
     private class WorkedPercentComparator implements Comparator<Task> {
-        private final boolean ascending;
+        private final int ascending;
 
         public WorkedPercentComparator(boolean ascending) {
-            this.ascending = ascending;
+            this.ascending = (ascending ? 1 : -1);
         }
 
         @Override
@@ -149,8 +150,83 @@ public class TaskDAOHibernate implements TaskDAO {
             Double percentage1 = o1.getWorkedPercentage();
             Double percentage2 = o2.getWorkedPercentage();
 
-            if (ascending) return percentage1.compareTo(percentage2) * -1;
-            else return percentage1.compareTo(percentage2);
+            return percentage1.compareTo(percentage2) * ascending;
         }
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public List<Task> findByGroup(Group group) {
+        return taskRepository.findBySharedGroups(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByNameAsc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByNameAsc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByNameDesc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByNameDesc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByDateCreatedAsc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByDateCreatedAsc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByDateCreatedDesc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByDateCreatedDesc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByPriorityAsc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByPriorityAsc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByPriorityDesc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByPriorityDesc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByUrgency_ValueAsc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByUrgency_ValueAsc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByUrgency_ValueDesc(Group group) {
+        return taskRepository.findBySharedGroupsOrderByUrgency_ValueDesc(group);
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByDeadlineAsc(Group group) {
+        List<Task> tasks = taskRepository.findBySharedGroups(group);
+        tasks.sort(new DeadlineTaskComparator(true));
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByDeadlineDesc(Group group) {
+        List<Task> tasks = taskRepository.findBySharedGroups(group);
+        tasks.sort(new DeadlineTaskComparator(false));
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByWorkedAsc(Group group) {
+        List<Task> tasks = taskRepository.findBySharedGroups(group);
+        tasks.sort(new WorkedPercentComparator(true));
+        return tasks;
+    }
+
+    @Override
+    public List<Task> findByGroupOrderByWorkedDesc(Group group) {
+        List<Task> tasks = taskRepository.findBySharedGroups(group);
+        tasks.sort(new WorkedPercentComparator(false));
+        return tasks;
+    }
+
 }

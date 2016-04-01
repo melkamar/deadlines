@@ -228,4 +228,28 @@ public class UserAPITest {
         Assert.assertEquals(1, group.getGroupMembers().size());
         Assert.assertEquals(2, group2.getGroupMembers().size());
     }
+
+    @Test
+    @Transactional
+    public void leaveGroupAsAdmin() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group group2 = groupAPI.createGroup("Groupname2", userAdmin, "Random description");
+
+        Assert.assertEquals(0, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(1, group.getGroupMembers().size());
+        Assert.assertEquals(1, group2.getGroupMembers().size());
+
+        groupAPI.addMember(userAdmin, group, userMember);
+        groupAPI.addMember(userAdmin, group2, userMember);
+
+        Assert.assertEquals(2, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(2, group.getGroupMembers().size());
+        Assert.assertEquals(2, group2.getGroupMembers().size());
+
+        expectedException.expect(NotAllowedException.class);
+        userAPI.leaveGroup(userAdmin, group);
+    }
 }

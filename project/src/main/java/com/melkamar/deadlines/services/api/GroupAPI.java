@@ -164,7 +164,8 @@ public class GroupAPI {
         if (!manager.equals(groupMemberToRemove.getUser()) && !permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
 
-        if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(groupMemberToRemove.getUser()))
+
+        if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(groupMemberToRemove))
             throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_ADMIN_LEAVE);
 
         // Remove each TaskParticipant entry of the removed user from the group

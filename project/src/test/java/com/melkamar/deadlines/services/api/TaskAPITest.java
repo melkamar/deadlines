@@ -344,15 +344,41 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByWorkedPercent() throws WrongParameterException {
+    public void listTasksSortByWorkedPercent() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
-        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
-        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
-        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 10, LocalDateTime.now().plusDays(12));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 20, LocalDateTime.now().plusDays(10));
+
+        taskAPI.setTaskRole(user, task1, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task2, TaskRole.WORKER);
 
         List<Task> resultList;
 
-        throw new NotImplementedException();
+        taskAPI.reportWork(user, task1, 8); // 80%
+        taskAPI.reportWork(user, task2, 10); // 50%
+        taskAPI.reportWork(user, task2, 2); // 60%
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.WORKED_PERCENT_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task1));
+
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.WORKED_PERCENT_DESC);
+        Assert.assertTrue(resultList.get(1).equals(task2));
+        Assert.assertTrue(resultList.get(0).equals(task1));
+
+
+        taskAPI.reportWork(user, task2, 6); // 90%
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.WORKED_PERCENT_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task1));
+        Assert.assertTrue(resultList.get(1).equals(task2));
+
+
+        resultList = taskAPI.listTasks(user, TaskOrdering.WORKED_PERCENT_DESC);
+        Assert.assertTrue(resultList.get(1).equals(task1));
+        Assert.assertTrue(resultList.get(0).equals(task2));
+
     }
 
     @Test
@@ -629,6 +655,77 @@ public class TaskAPITest {
         taskAPI.setTaskRole(userWorker, task1, TaskRole.WATCHER);
         expectedException.expect(TaskPermissionException.class);
         taskAPI.editTask(userWorker, task1, null, null, 11d, null);
+    }
+
+
+    @Test
+    @Transactional
+    public void listGroupTasksSortByName() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Group group1 = groupAPI.createGroup("Group1", user, null);
+        Group group2 = groupAPI.createGroup("Group2", user, null);
+
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(11));
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
+
+        groupAPI.addTask(user, group1, task1);
+        groupAPI.addTask(user, group1, task2);
+        groupAPI.addTask(user, group2, task3);
+
+
+        List<Task> resultList;
+
+        resultList = taskAPI.listTasks(group1, TaskOrdering.NAME_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task1));
+
+        resultList = taskAPI.listTasks(group2, TaskOrdering.NAME_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task3));
+
+
+        resultList = taskAPI.listTasks(group1, TaskOrdering.NAME_DESC);
+        Assert.assertTrue(resultList.get(1).equals(task2));
+        Assert.assertTrue(resultList.get(0).equals(task1));
+
+        resultList = taskAPI.listTasks(group2, TaskOrdering.NAME_DESC);
+        Assert.assertTrue(resultList.get(0).equals(task3));
+    }
+
+    @Test
+    @Transactional
+    public void listGroupTasksSortByDateCreated() throws WrongParameterException, GroupPermissionException, NotMemberOfException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+        Group group1 = groupAPI.createGroup("Group1", user, null);
+        Group group2 = groupAPI.createGroup("Group2", user, null);
+
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(10));
+        sleepALittle();
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(11));
+        sleepALittle();
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(1));
+
+        groupAPI.addTask(user, group1, task1);
+        groupAPI.addTask(user, group2, task2);
+        groupAPI.addTask(user, group2, task3);
+
+
+        List<Task> resultList;
+
+        resultList = taskAPI.listTasks(group1, TaskOrdering.DATE_START_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task1));
+
+        resultList = taskAPI.listTasks(group2, TaskOrdering.DATE_START_ASC);
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+
+
+        resultList = taskAPI.listTasks(group1, TaskOrdering.DATE_START_DESC);
+        Assert.assertTrue(resultList.get(0).equals(task1));
+
+        resultList = taskAPI.listTasks(group2, TaskOrdering.DATE_START_DESC);
+        Assert.assertTrue(resultList.get(1).equals(task2));
+        Assert.assertTrue(resultList.get(0).equals(task3));
     }
 
 
