@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model;
 
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
+import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.task.Task;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -40,8 +41,13 @@ public class Group {
     @OneToMany(mappedBy = "group")
     private Set<GroupMember> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "offeredTo")
+    // TODO: 02.04.2016 Added cascade-remove - if working, ok
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.REMOVE)
     private Set<GroupTaskSharingOffer> taskOffers = new HashSet<>();
+
+    // TODO: 02.04.2016 Added cascade-remove - if working, ok
+    @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE)
+    private Set<MembershipOffer> membershipOffers = new HashSet<>();
 
     public Group(){
         this.name = null;
@@ -79,6 +85,20 @@ public class Group {
     public Set<GroupTaskSharingOffer> getTaskOffers() {
         return taskOffers;
     }
+
+    public Set<MembershipOffer> getMembershipOffers() {
+        return membershipOffers;
+    }
+
+    public boolean addMembershipOffer(MembershipOffer offer) {
+        return membershipOffers.add(offer);
+    }
+
+    public boolean removeMembershipOffer(MembershipOffer offer) {
+        return membershipOffers.remove(offer);
+    }
+
+
 
     public boolean addParticipant(TaskParticipant participant) {
         return participants.add(participant);

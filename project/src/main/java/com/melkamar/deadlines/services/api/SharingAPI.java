@@ -117,6 +117,7 @@ public class SharingAPI {
         MembershipOffer offer = new MembershipOffer(offerer, group, offeredTo);
         offerDao.save(offer);
         offeredTo.addMembershipOffer(offer);
+        group.addMembershipOffer(offer);
         return offer;
     }
 
