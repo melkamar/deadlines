@@ -1,6 +1,8 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
+import com.melkamar.deadlines.dao.offer.grouptask.GroupTaskSharingDAOHibernate;
+import com.melkamar.deadlines.dao.offer.membership.MembershipSharingDAOHibernate;
 import com.melkamar.deadlines.dao.processing.GroupFilterGroupsOfUser;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
@@ -55,6 +57,13 @@ public class GroupAPITest {
     public ExpectedException expectedException = ExpectedException.none();
     @Autowired
     private GroupFilterGroupsOfUser filterGroupsOfUser;
+    @Autowired
+    private SharingAPI sharingAPI;
+    @Autowired
+    private GroupTaskSharingDAOHibernate groupTaskSharingDao;
+    @Autowired
+    private MembershipSharingDAOHibernate membershipSharingDao;
+
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -585,6 +594,32 @@ public class GroupAPITest {
         Assert.assertEquals(userMember2.tasksOfUser().size(), 0);
 
         Assert.assertNull(groupDAO.findByName("GroupnameToDelete"));
+    }
+
+    @Test
+    @Transactional
+    public void deleteGroup_OffersDeleted() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+
+        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+
+        Assert.assertEquals(0, groupTaskSharingDao.findByOfferedTo(group).size());
+        Assert.assertEquals(0, membershipSharingDao.findByOfferedTo(userMember).size());
+
+        sharingAPI.offerMembership(userAdmin, group, userMember);
+        sharingAPI.offerTaskSharing(userMember, task, group);
+
+        Assert.assertEquals(1, groupTaskSharingDao.findByOfferedTo(group).size());
+        Assert.assertEquals(1, membershipSharingDao.findByOfferedTo(userMember).size());
+
+        groupAPI.deleteGroup(userAdmin, group);
+
+        Assert.assertEquals(0, groupTaskSharingDao.findAll().size());
+        Assert.assertEquals(0, membershipSharingDao.findAll().size());
+
+        Assert.assertNull(groupDAO.findByName("Groupname"));
     }
 
     @Test

@@ -1,6 +1,9 @@
 package com.melkamar.deadlines.dao.taskparticipant;
 
 import com.melkamar.deadlines.DeadlinesApplication;
+import com.melkamar.deadlines.exceptions.AlreadyExistsException;
+import com.melkamar.deadlines.exceptions.GroupPermissionException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
@@ -50,7 +53,7 @@ public class TaskParticipantDAOHibernateTest {
 
     @Test
     @Transactional
-    public void findByUserAndGroup() throws WrongParameterException {
+    public void findByUserAndGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
         Task task2 = taskAPI.createTask(user, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
@@ -61,12 +64,8 @@ public class TaskParticipantDAOHibernateTest {
         TaskParticipant taskParticipant2 = taskParticipantDAO.findByUserAndTask(user, task2);
         TaskParticipant taskParticipant3 = taskParticipantDAO.findByUserAndTask(user, task3);
 
-        // TODO: 31.03.2016 Make this via API call, not in-code like this. Just for testing before such method implemented.
-        taskParticipant.addGroup(group);
-        group.addParticipant(taskParticipant);
-
-        taskParticipant2.addGroup(group);
-        group.addParticipant(taskParticipant2);
+        groupAPI.addTask(user, group, task);
+        groupAPI.addTask(user, group, task2);
 
         Assert.assertTrue(taskParticipantDAO.findByUserAndGroups(user, group).size() == 2);
     }

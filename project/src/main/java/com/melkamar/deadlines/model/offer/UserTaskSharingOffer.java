@@ -35,14 +35,4 @@ public class UserTaskSharingOffer extends TaskSharingOffer {
     public UserTaskSharingOffer() {
         this.offeredTo = null;
     }
-
-    @Override
-    public int accept() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public int decline() {
-        throw new NotImplementedException();
-    }
 }

@@ -13,6 +13,7 @@ import java.util.Set;
  * 01.04.2016 20:14
  */
 public interface GroupTaskSharingDAO {
+    public Set<GroupTaskSharingOffer> findAll();
     public GroupTaskSharingOffer findByOfferedToAndTaskOffered(Group group, Task task);
     public Set<GroupTaskSharingOffer> findByOfferedTo(Group group);
 }

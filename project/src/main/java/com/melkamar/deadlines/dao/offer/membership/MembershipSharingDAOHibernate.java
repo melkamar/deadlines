@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.dao.offer.membership;
 
+import com.google.common.collect.Sets;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
@@ -20,6 +21,11 @@ public class MembershipSharingDAOHibernate implements MembershipSharingDAO {
     @Qualifier("membershipSharingRepository")
     @Autowired
     private MembershipSharingRepository membershipSharingRepository;
+
+    @Override
+    public Set<MembershipOffer> findAll() {
+        return Sets.newHashSet(membershipSharingRepository.findAll());
+    }
 
     @Override
     public MembershipOffer findByOfferedToAndGroup(User user, Group group) {

@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.dao.offer.grouptask;
 
+import com.google.common.collect.Sets;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -17,6 +18,11 @@ public class GroupTaskSharingDAOHibernate implements GroupTaskSharingDAO {
 
     @Autowired
     private GroupTaskSharingRepository groupTaskSharingRepository;
+
+    @Override
+    public Set<GroupTaskSharingOffer> findAll() {
+        return Sets.newHashSet(groupTaskSharingRepository.findAll());
+    }
 
     @Override
     public GroupTaskSharingOffer findByOfferedToAndTaskOffered(Group group, Task task) {

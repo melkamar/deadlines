@@ -11,6 +11,7 @@ import java.util.Set;
  * 01.04.2016 20:37
  */
 public interface MembershipSharingDAO {
+    public Set<MembershipOffer> findAll();
     public MembershipOffer findByOfferedToAndGroup(User user, Group group);
     public Set<MembershipOffer> findByOfferedTo(User user);
 }

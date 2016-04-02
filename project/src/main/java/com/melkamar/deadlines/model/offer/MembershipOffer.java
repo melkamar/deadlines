@@ -42,16 +42,4 @@ public class MembershipOffer extends Offer {
         this.offeredTo = null;
         this.group = null;
     }
-
-    @Override
-    public int accept() {
-        // TODO: 26.03.2016  
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public int decline() {
-        // TODO: 26.03.2016
-        throw new NotImplementedException();
-    }
 }

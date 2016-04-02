@@ -25,6 +25,17 @@ public class GroupMemberHelper {
     private StringConstants stringConstants;
 
 
+    /**
+     * Creates a new GroupMember object for given {@link User} and {@link Group}, with a given {@link MemberRole}.
+     * Handles only creation of the object and setting associations for User and Group, it does not handle any other
+     * logic (it will not add Group's tasks to the User etc., this has to be handled above).
+     * @param user
+     * @param group
+     * @param role
+     * @return Created {@link GroupMember} for the User and Group.
+     * @throws AlreadyExistsException Thrown if GroupMember already exists.
+     * @throws WrongParameterException Thrown if any of parameters are null.
+     */
     public GroupMember createGroupMember(User user, Group group, MemberRole role) throws AlreadyExistsException, WrongParameterException {
         validateGroupMemberParams(user, group, role);
 
@@ -35,8 +46,6 @@ public class GroupMemberHelper {
         GroupMember groupMember = new GroupMember(user, group, role);
         user.addGroupMember(groupMember);
         group.addGroupMember(groupMember);
-
-        // TODO: 29.03.2016 Share any tasks the group has with the user joining the group
 
         groupMemberDAO.save(groupMember);
         return groupMember;
