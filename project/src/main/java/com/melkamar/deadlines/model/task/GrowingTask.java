@@ -38,4 +38,8 @@ public class GrowingTask extends Task {
     public void updateUrgency(UrgencyComputer computer) {
         this.urgency.update(computer.computeGrowingTaskUrgency(this));
     }
+
+    public Double getGrowspeed() {
+        return growspeed;
+    }
 }

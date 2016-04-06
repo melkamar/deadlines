@@ -38,4 +38,8 @@ public class Urgency {
     public Date getLastUpdate() {
         return lastUpdate;
     }
+
+    public double getValue() {
+        return value;
+    }
 }
