@@ -1,7 +1,5 @@
 package com.melkamar.deadlines.model.task;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -25,10 +23,19 @@ public class Urgency {
     private Date lastUpdate;
 
     @Column(name = COL_VALUE, nullable = false)
-    private Integer value;
+    private double value;
 
-    public boolean needsUpdate(){
-        // TODO: 01.04.2016 Implement
-        throw new NotImplementedException();
+    public Urgency() {
+        this.value = 0;
+        lastUpdate = new Date();
+    }
+
+    public void update(double newValue) {
+        this.value = newValue;
+        lastUpdate = new Date();
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
     }
 }

@@ -18,8 +18,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.annotation.SystemProfileValueSource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -226,7 +224,7 @@ public class TaskAPITest {
         Assert.assertNotNull(retrievedTask);
 
         Assert.assertTrue(retrievedTask.getWorkReports().size() == 3);
-        Assert.assertTrue(retrievedTask.manhoursWorked() == 10 + 5 + 12);
+        Assert.assertTrue(retrievedTask.getManhoursWorked() == 10 + 5 + 12);
     }
 
     @Test

@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc} % LaTeX source encoded as UTF-8
 
 \usepackage{graphicx} %graphics files inclusion
-% \usepackage{amsmath} %advanced maths
+\usepackage{amsmath} %advanced maths
 % \usepackage{amssymb} %additional math symbols
 \usepackage[figuresleft]{rotating}
 \usepackage[flushleft]{threeparttable} % for footnote in tabular
@@ -858,13 +858,32 @@
 	
 	\section{Databázový model}
 	\section{Architektura aplikace}
+	\section{Urgentnost}
+		\begin{equation}
+			f(x)=\begin{cases}
+				a^{x}\cdot b + c,& \text{pro } x\leq 0\\
+				\lvert(a^{-x}-1)\rvert \cdot b +b+c,& \text{pro } x\geq 0
+			\end{cases}
+		\end{equation}
+		
+		Mathematica formula:
+		\begin{verbatim}
+			a = 1.1
+			b = 100
+			c = 0
+			Plot[{ConditionalExpression[a^x*b + c, x <= 0], 
+			ConditionalExpression[Abs[(a^(-x)*b) - b] + b + c, 
+			x >= 0]}, {x, -40, 40}]
+		\end{verbatim}
+		
+		Note - s úpravou C do záporných čísel může dojít k tomu, že hodnota y bude záporná, ale to nevadí.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Implementace}
 	\label{chapter:implementation}
-	http://stackoverflow.com/questions/25076718/spring-propagation-examples-in-laymans-terms/25083505#25083505
+	http://stackoverflow.com/questions/25076718/spring-propagation-examples-in-laymans-terms/25083505\#25083505
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

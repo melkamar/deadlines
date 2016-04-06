@@ -35,18 +35,20 @@ public class SharingAPI {
     private PermissionHandler permissionHandler;
     @Autowired
     private StringConstants stringConstants;
-    @Autowired
-    private TaskParticipantHelper taskParticipantHelper;
+
     @Autowired
     private OfferDAOHibernate offerDao;
-    @Autowired
-    private GroupMemberHelper groupMemberHelper;
     @Autowired
     private GroupTaskSharingDAOHibernate groupTaskSharingDao;
     @Autowired
     private UserTaskSharingDAOHibernate userTaskSharingDao;
     @Autowired
     private MembershipSharingDAOHibernate membershipSharingDao;
+
+    @Autowired
+    private TaskParticipantHelper taskParticipantHelper;
+    @Autowired
+    private GroupMemberHelper groupMemberHelper;
     @Autowired
     private GroupAPI groupAPI;
 

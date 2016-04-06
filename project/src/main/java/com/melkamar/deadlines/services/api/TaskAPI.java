@@ -1,11 +1,12 @@
 package com.melkamar.deadlines.services.api;
 
-import antlr.debug.MessageAdapter;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.processing.TaskFilter;
 import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
+import com.melkamar.deadlines.dao.urgency.UrgencyDAO;
+import com.melkamar.deadlines.dao.urgency.UrgencyDAOHibernate;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.security.Permission;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -48,13 +48,18 @@ public class TaskAPI {
     private GroupAPI groupAPI;
     @Autowired
     private PermissionHandler permissionHandler;
+    @Autowired
+    private UrgencyDAO urgencyDao;
 
 
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
         validateGenericCreateTaskParams(creator, name);
         if (deadline == null) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_DEADLINE_NULL);
 
-        DeadlineTask task = new DeadlineTask(new Date(), DateConvertor.localDateTimeToDate(deadline));
+        Urgency urgency = new Urgency();
+        urgencyDao.save(urgency);
+
+        DeadlineTask task = new DeadlineTask(new Date(), DateConvertor.localDateTimeToDate(deadline), urgency);
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
@@ -66,7 +71,10 @@ public class TaskAPI {
         validateGenericCreateTaskParams(creator, name);
         if (growSpeed < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
 
-        GrowingTask task = new GrowingTask(new Date());
+        Urgency urgency = new Urgency();
+        urgencyDao.save(urgency);
+
+        GrowingTask task = new GrowingTask(new Date(), urgency);
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
@@ -324,8 +332,9 @@ public class TaskAPI {
         task.setDescription(description);
         task.setWorkEstimate(workEstimate);
         task.setPriority(priority == null ? Priority.NORMAL : priority);
-        urgencyHelper.computeUrgency(task);
         task.setStatus(TaskStatus.OPEN);
+
+        urgencyHelper.computeUrgency(task, true);
 
         return task;
     }

@@ -3,6 +3,7 @@ package com.melkamar.deadlines.model.task;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -74,8 +75,9 @@ public abstract class Task {
         this.dateCreated = null;
     }
 
-    public Task(Date dateCreated) {
+    public Task(Date dateCreated, Urgency urgency) {
         this.dateCreated = dateCreated;
+        this.urgency = urgency;
     }
 
     /*************************************************************/
@@ -97,7 +99,7 @@ public abstract class Task {
      *
      * @return The number of manhours worked.
      */
-    public double manhoursWorked() {
+    public double getManhoursWorked() {
         double total = 0;
         for (TaskWork work : workReports) {
             total += work.getManhours();
@@ -239,5 +241,7 @@ public abstract class Task {
         }
         return hoursWorked / workEstimate;
     }
+
+    public abstract void updateUrgency(UrgencyComputer computer);
 }
 

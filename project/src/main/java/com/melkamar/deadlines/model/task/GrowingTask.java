@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
+import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -21,8 +23,8 @@ public class GrowingTask extends Task {
         super();
     }
 
-    public GrowingTask(Date dateCreated) {
-        super(dateCreated);
+    public GrowingTask(Date dateCreated, Urgency urgency) {
+        super(dateCreated, urgency);
     }
 
     @Override
@@ -30,5 +32,10 @@ public class GrowingTask extends Task {
         return super.toString() + "GrowingTask{" +
                 "growspeed=" + growspeed +
                 '}';
+    }
+
+    @Override
+    public void updateUrgency(UrgencyComputer computer) {
+        this.urgency.update(computer.computeGrowingTaskUrgency(this));
     }
 }

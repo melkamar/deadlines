@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
+import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -20,8 +22,8 @@ public class DeadlineTask extends Task {
         super();
     }
 
-    public DeadlineTask(Date dateCreated, Date deadline) {
-        super(dateCreated);
+    public DeadlineTask(Date dateCreated, Date deadline, Urgency urgency) {
+        super(dateCreated, urgency);
         this.deadline = deadline;
     }
 
@@ -34,11 +36,16 @@ public class DeadlineTask extends Task {
                 '}';
     }
 
+    @Override
+    public void updateUrgency(UrgencyComputer computer) {
+        this.urgency.update(computer.computeDeadlineTaskUrgency(this));
+    }
+
     public Date getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Date deadline){
+    public void setDeadline(Date deadline) {
         this.deadline = deadline;
         // TODO: 01.04.2016 Urgency needs to be updated now
     }
