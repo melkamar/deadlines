@@ -6,6 +6,7 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.model.task.TaskStatus;
 import com.sun.javafx.tk.Toolkit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,11 @@ public class TaskDAOHibernate implements TaskDAO {
     @Override
     public List<Task> findByUser(User user) {
         return taskRepository.findByParticipants_User(user);
+    }
+
+    @Override
+    public List<Task> findByStatus(TaskStatus status) {
+        return taskRepository.findByStatus(status);
     }
 
     @Override

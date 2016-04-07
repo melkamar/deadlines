@@ -23,8 +23,9 @@ public class GrowingTask extends Task {
         super();
     }
 
-    public GrowingTask(Date dateCreated, Urgency urgency) {
+    public GrowingTask(Date dateCreated, Double growspeed, Urgency urgency) {
         super(dateCreated, urgency);
+        this.growspeed = growspeed;
     }
 
     @Override

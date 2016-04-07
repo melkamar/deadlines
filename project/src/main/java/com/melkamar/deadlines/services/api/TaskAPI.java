@@ -6,7 +6,6 @@ import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.dao.urgency.UrgencyDAO;
-import com.melkamar.deadlines.dao.urgency.UrgencyDAOHibernate;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
@@ -74,7 +73,7 @@ public class TaskAPI {
         Urgency urgency = new Urgency();
         urgencyDao.save(urgency);
 
-        GrowingTask task = new GrowingTask(new Date(), urgency);
+        GrowingTask task = new GrowingTask(new Date(), growSpeed, urgency);
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
@@ -284,6 +283,7 @@ public class TaskAPI {
         if (newDeadline!=null){
             if (task instanceof DeadlineTask){
                 ((DeadlineTask)task).setDeadline(DateConvertor.localDateTimeToDate(newDeadline));
+                urgencyHelper.updateUrgency(task, true);
             } else {
                 throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_SETING_DEADLINE_ON_GROWING);
             }
@@ -334,7 +334,7 @@ public class TaskAPI {
         task.setPriority(priority == null ? Priority.NORMAL : priority);
         task.setStatus(TaskStatus.OPEN);
 
-        urgencyHelper.computeUrgency(task, true);
+        urgencyHelper.updateUrgency(task, true);
 
         return task;
     }

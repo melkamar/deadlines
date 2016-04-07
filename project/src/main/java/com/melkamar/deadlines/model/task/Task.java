@@ -8,6 +8,7 @@ import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public abstract class Task {
     public final static String COL_TASK_PRIORITY = "PRIORITY";
     public final static String COL_TASK_STATUS = "STATUS";
     public final static String COL_JTABLE_TASK_GROUP = "TASK_GROUP";
+    public final static TaskStatus[] activeStates = new TaskStatus[]{TaskStatus.OPEN, TaskStatus.IN_PROGRESS};
 
     @Id
     @Column(name = COL_TASK_ID, nullable = false)
@@ -136,7 +138,6 @@ public abstract class Task {
     /*************************************************************/
 
 
-
     public Long getId() {
         return id;
     }
@@ -169,8 +170,9 @@ public abstract class Task {
         return urgency;
     }
 
-    public void setName(String name) {
+    public Task setName(String name) {
         this.name = name;
+        return this;
     }
 
     public void setDescription(String description) {
@@ -185,8 +187,9 @@ public abstract class Task {
         this.priority = priority;
     }
 
-    public void setStatus(TaskStatus status) {
+    public Task setStatus(TaskStatus status) {
         this.status = status;
+        return this;
     }
 
     public void setUrgency(Urgency urgency) {
@@ -240,6 +243,10 @@ public abstract class Task {
             hoursWorked += taskWork.getManhours();
         }
         return hoursWorked / workEstimate;
+    }
+
+    public void setUrgencyValue(double newValue) {
+        this.urgency.update(newValue);
     }
 
     public abstract void updateUrgency(UrgencyComputer computer);

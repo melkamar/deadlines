@@ -47,6 +47,5 @@ public class DeadlineTask extends Task {
 
     public void setDeadline(Date deadline) {
         this.deadline = deadline;
-        // TODO: 01.04.2016 Urgency needs to be updated now
     }
 }

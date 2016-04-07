@@ -2,6 +2,7 @@ package com.melkamar.deadlines.services.helpers.urgency;
 
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
+import com.melkamar.deadlines.model.task.Urgency;
 import com.melkamar.deadlines.services.DateConvertor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -68,14 +69,14 @@ public class DefaultUrgencyComputerTest {
         Mockito.when(deadlineTask.getDeadline()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().plusHours(8)));
 
         Double[] estimates = new Double[]{6d, 7d, 8d, 9d, 10d, 20d, 40d};
-        for (int i=0; i<estimates.length-2; i++){
+        for (int i = 0; i < estimates.length - 2; i++) {
             Mockito.when(deadlineTask.getWorkEstimate()).thenReturn(estimates[i]);
             double urgency1 = urgencyComputer.computeDeadlineTaskUrgency(deadlineTask);
 
-            Mockito.when(deadlineTask.getWorkEstimate()).thenReturn(estimates[i+1]);
+            Mockito.when(deadlineTask.getWorkEstimate()).thenReturn(estimates[i + 1]);
             double urgency2 = urgencyComputer.computeDeadlineTaskUrgency(deadlineTask);
 
-            Assert.assertTrue(urgency1<urgency2);
+            Assert.assertTrue(urgency1 < urgency2);
         }
     }
 
@@ -124,15 +125,65 @@ public class DefaultUrgencyComputerTest {
         Assert.assertEquals(urgency8, urgency9, 0.001);
     }
 
+    @Mock
+    Urgency mockUrgency;
+
     @Test
     public void computeGrowingTaskUrgency() throws Exception {
         Mockito.when(growingTask.getGrowspeed()).thenReturn(10d);
-        Mockito.when(growingTask.getUrgency().getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        Mockito.when(growingTask.getUrgency()).thenReturn(mockUrgency);
 
-        double startUrgency = 20;
-        Mockito.when(growingTask.getUrgency().getValue()).thenReturn(20d);
-        double grownUrgency = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+        double startUrgency = 0;
+        Mockito.when(growingTask.getUrgency().getValue()).thenReturn(startUrgency);
 
-        Assert.assertTrue(grownUrgency > startUrgency);
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        double newUrgency1 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(11)));
+        double newUrgency2 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(12)));
+        double newUrgency3 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+
+        // Check that the longer it has been since the last update, the bigger the urgency is
+        Assert.assertTrue(newUrgency1 > startUrgency);
+        Assert.assertTrue(newUrgency2 > newUrgency1);
+        Assert.assertTrue(newUrgency3 > newUrgency2);
+    }
+
+    /**
+     * Check that there is a max value to the Urgency.
+     */
+    @Test
+    public void computeGrowingTaskUrgency_maxUrgency(){
+        Mockito.when(growingTask.getGrowspeed()).thenReturn(10000000d);
+        Mockito.when(growingTask.getUrgency()).thenReturn(mockUrgency);
+
+        double startUrgency = 0;
+        Mockito.when(growingTask.getUrgency().getValue()).thenReturn(startUrgency);
+
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(100000)));
+        double newUrgency1 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(100001)));
+        double newUrgency2 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+
+        Assert.assertEquals(newUrgency1, newUrgency2, 0.00001);
+    }
+
+    @Test
+    public void computeGrowingTaskUrgency_zeroGrow(){
+        Mockito.when(growingTask.getGrowspeed()).thenReturn(0d);
+        Mockito.when(growingTask.getUrgency()).thenReturn(mockUrgency);
+
+        double startUrgency = 0;
+        Mockito.when(growingTask.getUrgency().getValue()).thenReturn(startUrgency);
+
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        double newUrgency1 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+        Mockito.when(mockUrgency.getLastUpdate()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(11)));
+        double newUrgency2 = urgencyComputer.computeGrowingTaskUrgency(growingTask);
+
+        Assert.assertEquals(newUrgency1, newUrgency2, 0.00001);
+        Assert.assertEquals(newUrgency1, 0, 0.00001);
     }
 }

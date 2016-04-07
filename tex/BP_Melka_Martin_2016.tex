@@ -874,7 +874,14 @@
 			Plot[{ConditionalExpression[a^x*b + c, x <= 0], 
 			ConditionalExpression[Abs[(a^(-x)*b) - b] + b + c, 
 			x >= 0]}, {x, -40, 40}]
+			
+			Plot[{ConditionalExpression[a^(-x)*b + c, x >= 0], 
+			ConditionalExpression[Abs[(a^(x)*b) - b] + b + c, 
+			x <= 0]}, {x, -40,
+			40}]
 		\end{verbatim}
+		
+		Experimentálně zjištěno, že nejvyšší urgence se bude pohybovat kolem ~200 (s těmito parametry).
 		
 		Note - s úpravou C do záporných čísel může dojít k tomu, že hodnota y bude záporná, ale to nevadí.
 

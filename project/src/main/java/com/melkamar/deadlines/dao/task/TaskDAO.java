@@ -3,6 +3,7 @@ package com.melkamar.deadlines.dao.task;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.model.task.TaskStatus;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface TaskDAO {
     Task save(Task task);
     Task findById(Long id);
     List<Task> findByUser(User user);
+    List<Task> findByStatus(TaskStatus status);
 
     List<Task> findByUserOrderByNameAsc(User user);
     List<Task> findByUserOrderByNameDesc(User user);
