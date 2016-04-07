@@ -51,6 +51,7 @@ public class TaskAPI {
     private UrgencyDAO urgencyDao;
 
 
+    @Transactional
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
         validateGenericCreateTaskParams(creator, name);
         if (deadline == null) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_DEADLINE_NULL);
@@ -66,6 +67,7 @@ public class TaskAPI {
         return task;
     }
 
+    @Transactional
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, double growSpeed) throws WrongParameterException {
         validateGenericCreateTaskParams(creator, name);
         if (growSpeed < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);

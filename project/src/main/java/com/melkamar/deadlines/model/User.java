@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -37,9 +39,11 @@ public class User {
     @Column(name = COL_EMAIL)
     private String email;
 
+    @JsonIgnore
     @Column(name = COL_PASSWORD_HASH, nullable = false)
     private String passwordHash;
 
+    @JsonIgnore
     @Column(name = COL_PASSWORD_SALT, nullable = false)
     private String passwordSalt;
 
@@ -61,6 +65,7 @@ public class User {
 
     /* RELATIONS */
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
+    @JsonManagedReference
     private Set<TaskParticipant> participants = new HashSet<>();
 
     @OneToMany(mappedBy = "user")

@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
 
@@ -33,10 +34,12 @@ public class TaskParticipant {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = User.COL_USER_ID)
+    @JsonBackReference
     private final User user;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = Task.COL_TASK_ID)
+    @JsonBackReference
     private final Task task;
 
     @ManyToMany(cascade = CascadeType.MERGE)

@@ -8,10 +8,5 @@ import org.springframework.context.ApplicationContext;
 public class DeadlinesApplication {
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(DeadlinesApplication.class, args);
-
-        for (String beanname : ctx.getBeanDefinitionNames()) {
-            System.out.println("BEAN: " + beanname);
-
-        }
     }
 }

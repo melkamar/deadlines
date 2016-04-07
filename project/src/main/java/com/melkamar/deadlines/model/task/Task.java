@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model.task;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -65,6 +66,7 @@ public abstract class Task {
     protected Set<TaskWork> workReports = new HashSet<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.MERGE)
+    @JsonManagedReference
     protected Set<TaskParticipant> participants = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.MERGE)
