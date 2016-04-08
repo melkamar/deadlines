@@ -30,6 +30,11 @@ public class UserDAOHibernate implements UserDAO {
     }
 
     @Override
+    public User findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }

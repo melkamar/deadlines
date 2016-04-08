@@ -12,14 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 @WebAppConfiguration
 public class DeadlinesApplicationTests {
-
-
-	@Autowired
-	private UserAPI userAPI;
-
 	@Test
 	public void contextLoads() {
 
 	}
-
 }

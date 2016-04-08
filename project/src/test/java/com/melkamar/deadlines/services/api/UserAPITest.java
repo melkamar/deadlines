@@ -23,6 +23,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -253,5 +254,24 @@ public class UserAPITest {
 
         expectedException.expect(NotAllowedException.class);
         userAPI.leaveGroup(userAdmin, group);
+    }
+
+    @Test
+    @Transactional
+    public void findById() throws UserAlreadyExistsException, WrongParameterException {
+        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
+
+        ArrayList<Long> ids = new ArrayList<>(3);
+        ids.add(1l);
+        ids.add(2l);
+        ids.add(3l);
+
+        ids.remove(userMember.getId());
+        ids.remove(userAdmin.getId());
+
+        Assert.assertNotNull(userDAO.findById(userMember.getId()));
+        Assert.assertNotNull(userDAO.findById(userAdmin.getId()));
+        Assert.assertNull(userDAO.findById(ids.get(0)));
     }
 }

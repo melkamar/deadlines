@@ -22,7 +22,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         http.antMatcher("/**").csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers("/user").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
     }
 }

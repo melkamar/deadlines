@@ -46,4 +46,6 @@ public class StringConstants {
     public final String EXC_NOT_ALLOWED_ADMIN_LEAVE = "Admin cannot leave the group. Either give the Admin rights to another user, or delete the group.";
     public final String EXC_NOT_ALLOWED_SETING_DEADLINE_ON_GROWING = "Deadline cannot be set on a non-DeadlineTask.";
     public final String EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE = "Urgency cannot be reset on a DeadlineTask.";
+
+    public final String EXC_DOES_NOT_EXIST_USER = "User with id {0} does not exist.";
 }

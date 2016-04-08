@@ -118,4 +118,14 @@ public class UserAPI {
     public Set<Group> getGroupsOfUser(User executor) {
         return groupMemberDAO.findByUser(executor).stream().map(GroupMember::getGroup).collect(Collectors.toSet());
     }
+
+    @Transactional
+    public User getUser(Long id) throws DoesNotExistException {
+        User user = userDAO.findById(id);
+        if (user == null){
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_USER, id));
+        } else {
+            return user;
+        }
+    }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 public interface UserDAO {
     public long count();
     public User save(User user);
+    public User findById(Long id);
     public User findByUsername(String username);
     public List<User> findAll();
 }
