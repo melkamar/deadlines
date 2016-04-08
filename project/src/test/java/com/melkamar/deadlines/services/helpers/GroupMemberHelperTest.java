@@ -1,10 +1,7 @@
 package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
@@ -19,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -30,6 +28,7 @@ import java.util.Set;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
+@WebAppConfiguration
 public class GroupMemberHelperTest {
 
 
@@ -44,14 +43,14 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void createGroupMemberGroupCreation() throws WrongParameterException {
+    public void createGroupMemberGroupCreation() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
     }
 
     @Transactional
     @Test
-    public void createGroupMember() throws WrongParameterException, AlreadyExistsException {
+    public void createGroupMember() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
@@ -65,7 +64,7 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void createGroupMember_TasksShared() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException {
+    public void createGroupMember_TasksShared() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
@@ -93,7 +92,7 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void getGroupMember() throws WrongParameterException, AlreadyExistsException {
+    public void getGroupMember() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         User user3 = userAPI.createUser("NewlyAddedUser2", "password", "Alice Doe", "ab@b.c");

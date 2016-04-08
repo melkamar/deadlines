@@ -23,6 +23,7 @@ public class StringConstants {
 
     public final String EXC_PARAM_ALL_NEED_NOT_NULL = "All parameters need to be not null.";
 
+    public final String EXC_ALREADY_EXISTS_USER_NAME = "User with username [{0}] already exists.";
     public final String EXC_ALREADY_EXISTS_TASK_PARTICIPANT = "Task participant already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_GROUP_MEMBER = "Group member already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_TASK_OF_GROUP = "Task [{0}] is already shared with group [{1}].";

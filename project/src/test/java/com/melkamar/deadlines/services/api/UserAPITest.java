@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
+@WebAppConfiguration
 public class UserAPITest {
     @Autowired
     private UserAPI userAPI;
@@ -46,27 +48,27 @@ public class UserAPITest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullParameters() throws WrongParameterException {
+    public void nullParameters() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
         userAPI.createUser(null, null, null, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void emptyParameters() throws WrongParameterException {
+    public void emptyParameters() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
         userAPI.createUser("", "", "", "");
     }
 
     @Test
     @Transactional
-    public void plainPersistence() throws WrongParameterException {
+    public void plainPersistence() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
         User user = userAPI.createUser("User1", "password", null, null);
 
         Assert.assertNotNull(userDAO.findByUsername("User1"));
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = UserAlreadyExistsException.class)
     @Transactional
-    public void uniqueUsername() throws WrongParameterException {
+    public void uniqueUsername() throws WrongParameterException, UserAlreadyExistsException {
         User user = userAPI.createUser("uniq1", "password", null, null);
         User user2 = userAPI.createUser("uniq2", "password", null, null);
         User user3 = userAPI.createUser("uniq2", "password", null, null);
@@ -74,7 +76,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void fieldsPersistence() throws WrongParameterException {
+    public void fieldsPersistence() throws WrongParameterException, UserAlreadyExistsException {
         User user = userAPI.createUser("User2", "password", "somename", "someemail");
         User retrieved = userDAO.findByUsername("User2");
 
@@ -87,7 +89,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void editUserDetails() throws WrongParameterException {
+    public void editUserDetails() throws WrongParameterException, UserAlreadyExistsException {
         User user = userAPI.createUser("UserDetails", "password", "somename", "someemailDetails");
 
         Assert.assertTrue(user.getUsername().equals("UserDetails"));
@@ -117,7 +119,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void listUsers() throws WrongParameterException {
+    public void listUsers() throws WrongParameterException, UserAlreadyExistsException {
         int size = userAPI.listUsers().size();
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
@@ -135,7 +137,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void getGroupsOfUser() throws WrongParameterException {
+    public void getGroupsOfUser() throws WrongParameterException, UserAlreadyExistsException {
         int groupsSize = 0;
 
         User user = userAPI.createUser("someuser", "password", "somename", "someemail");
@@ -172,7 +174,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void leaveTask() throws WrongParameterException, NotMemberOfException {
+    public void leaveTask() throws WrongParameterException, NotMemberOfException, UserAlreadyExistsException {
         User user = userAPI.createUser("someuser", "password", "somename", "someemail");
         User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2");
 
@@ -204,7 +206,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void leaveGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void leaveGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException, UserAlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
 
@@ -231,7 +233,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void leaveGroupAsAdmin() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void leaveGroupAsAdmin() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException, UserAlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
 

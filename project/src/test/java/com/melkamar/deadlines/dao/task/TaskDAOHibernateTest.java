@@ -1,9 +1,7 @@
 package com.melkamar.deadlines.dao.task;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.NotAllowedException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
@@ -17,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
@@ -25,6 +24,7 @@ import static org.junit.Assert.*;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 07.04.2016 19:37
  */
+@WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 public class TaskDAOHibernateTest {
@@ -40,7 +40,7 @@ public class TaskDAOHibernateTest {
 
     @Transactional
     @Test
-    public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException {
+    public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException, UserAlreadyExistsException {
         User user = userAPI.createUser("User1", "pwd", "Name", "email");
         Task task1 = taskAPI.createTask(user, "Task1", "Description", Priority.NORMAL, 10, 1);
         Task task2 = taskAPI.createTask(user, "Task2", "Description", Priority.NORMAL, 10, 1);

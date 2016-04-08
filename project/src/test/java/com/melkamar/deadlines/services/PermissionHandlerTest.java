@@ -1,10 +1,7 @@
 package com.melkamar.deadlines.services;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
@@ -17,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
+@WebAppConfiguration
 public class PermissionHandlerTest {
 
 
@@ -40,7 +39,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test(expected = NotMemberOfException.class)
-    public void hasGroupPermissionNonMember() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException {
+    public void hasGroupPermissionNonMember() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -55,7 +54,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test(expected = NotMemberOfException.class)
-    public void hasGroupPermissionNonMember2() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException {
+    public void hasGroupPermissionNonMember2() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -70,7 +69,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test(expected = NotMemberOfException.class)
-    public void hasGroupPermissionNonMember3() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException {
+    public void hasGroupPermissionNonMember3() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -85,7 +84,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test
-    public void hasGroupPermission() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException {
+    public void hasGroupPermission() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");

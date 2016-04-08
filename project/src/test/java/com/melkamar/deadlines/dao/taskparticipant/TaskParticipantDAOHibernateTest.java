@@ -1,10 +1,7 @@
 package com.melkamar.deadlines.dao.taskparticipant;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -18,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -26,6 +24,7 @@ import java.time.LocalDateTime;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 27.03.2016 18:51
  */
+@WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 public class TaskParticipantDAOHibernateTest {
@@ -41,7 +40,7 @@ public class TaskParticipantDAOHibernateTest {
 
     @Test
     @Transactional
-    public void findByUserAndTask() throws WrongParameterException {
+    public void findByUserAndTask() throws WrongParameterException, UserAlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -53,7 +52,7 @@ public class TaskParticipantDAOHibernateTest {
 
     @Test
     @Transactional
-    public void findByUserAndGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void findByUserAndGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
         Task task2 = taskAPI.createTask(user, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));

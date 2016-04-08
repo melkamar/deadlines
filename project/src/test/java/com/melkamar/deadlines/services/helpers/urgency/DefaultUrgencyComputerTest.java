@@ -85,16 +85,16 @@ public class DefaultUrgencyComputerTest {
      */
     @Test
     public void computeDeadlineTaskUrgency4() throws Exception {
-        Mockito.when(deadlineTask.getDeadline()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().plusHours(10)));
+        Mockito.when(deadlineTask.getDeadline()).thenReturn(DateConvertor.localDateTimeToDate(LocalDateTime.now().plusHours(50)));
         Mockito.when(deadlineTask.getWorkEstimate()).thenReturn(15d);
 
         Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(0d);
         double urgency1 = urgencyComputer.computeDeadlineTaskUrgency(deadlineTask);
 
-        Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(1d);
+        Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(2d);
         double urgency2 = urgencyComputer.computeDeadlineTaskUrgency(deadlineTask);
 
-        Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(3d);
+        Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(4d);
         double urgency3 = urgencyComputer.computeDeadlineTaskUrgency(deadlineTask);
 
         Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(9d);
@@ -114,6 +114,16 @@ public class DefaultUrgencyComputerTest {
 
         Mockito.when(deadlineTask.getManhoursWorked()).thenReturn(20d);
         double urgency9 = urgencyComputer.computeDeadlineTaskUrgency(deadlineTask);
+
+        System.out.println("urgency1: "+urgency1);
+        System.out.println("urgency2: "+urgency2);
+        System.out.println("urgency3: "+urgency3);
+        System.out.println("urgency4: "+urgency4);
+        System.out.println("urgency5: "+urgency5);
+        System.out.println("urgency6: "+urgency6);
+        System.out.println("urgency7: "+urgency7);
+        System.out.println("urgency8: "+urgency8);
+        System.out.println("urgency9: "+urgency9);
 
         assertTrue(urgency1 > urgency2);
         assertTrue(urgency2 > urgency3);

@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -35,6 +36,7 @@ import java.util.Set;
 //@Rollback(value = false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
+@WebAppConfiguration
 public class TaskAPITest {
     @Autowired
     private TaskAPI taskAPI;
@@ -56,41 +58,41 @@ public class TaskAPITest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullParameters() throws WrongParameterException {
+    public void nullParameters() throws UserAlreadyExistsException, WrongParameterException {
         taskAPI.createTask(null, null, null, null, 0, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullDeadline() throws WrongParameterException {
+    public void nullDeadline() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskAPI.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void negativeGrowspeed() throws WrongParameterException {
+    public void negativeGrowspeed() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskAPI.createTask(user, "TestTask", "Task Description", Priority.NORMAL, 0, -10);
     }
 
     @Test
     @Transactional
-    public void minimumInfoDeadline() throws WrongParameterException {
+    public void minimumInfoDeadline() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
     }
 
     @Test
     @Transactional
-    public void minimumInfoGrowing() throws WrongParameterException {
+    public void minimumInfoGrowing() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         taskAPI.createTask(user, "TestTask", null, null, 0, 10);
     }
 
     @Test
     @Transactional
-    public void creatorMemberOfTask() throws WrongParameterException {
+    public void creatorMemberOfTask() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -100,7 +102,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void userTaskRelationPersistence() throws WrongParameterException {
+    public void userTaskRelationPersistence() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -116,7 +118,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void createGroupTasks() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void createGroupTasks() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", user, null);
@@ -136,7 +138,7 @@ public class TaskAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void createGroupTaskByNonMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void createGroupTaskByNonMember() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", user, null);
@@ -149,7 +151,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void createGroupTaskByMemberNotManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void createGroupTaskByMemberNotManager() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userAdmin = userAPI.createUser("TestUserd", "pwd", "Some name", "a@b.c");
         User userMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", userAdmin, null);
@@ -166,7 +168,7 @@ public class TaskAPITest {
     // WORK REPORTS TESTS
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void reportWorkInvalidManhours() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+    public void reportWorkInvalidManhours() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, TaskPermissionException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -178,7 +180,7 @@ public class TaskAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void reportWorkUserNotParticipant() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+    public void reportWorkUserNotParticipant() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, TaskPermissionException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -191,7 +193,7 @@ public class TaskAPITest {
 
     @Test(expected = TaskPermissionException.class)
     @Transactional
-    public void reportWorkUserNotWorker() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+    public void reportWorkUserNotWorker() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, TaskPermissionException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -202,7 +204,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void reportWorkPersistence() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+    public void reportWorkPersistence() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, TaskPermissionException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User nonParticipant = userAPI.createUser("NotAParticipant", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -229,7 +231,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByName() throws WrongParameterException {
+    public void listTasksSortByName() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(10));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(11));
@@ -251,7 +253,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByDateCreated() throws WrongParameterException {
+    public void listTasksSortByDateCreated() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(10));
         sleepALittle();
@@ -276,7 +278,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByDeadline() throws WrongParameterException {
+    public void listTasksSortByDeadline() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -301,7 +303,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByDeadlineMixedWithGrowing() throws WrongParameterException {
+    public void listTasksSortByDeadlineMixedWithGrowing() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task5 = taskAPI.createTask(user, "BBB", null, null, 0, 20);
@@ -343,7 +345,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByWorkedPercent() throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+    public void listTasksSortByWorkedPercent() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, TaskPermissionException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 10, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 20, LocalDateTime.now().plusDays(10));
@@ -382,7 +384,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByPriority() throws WrongParameterException {
+    public void listTasksSortByPriority() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.ca");
         Task task1 = taskAPI.createTask(user, "CCC", null, Priority.NORMAL, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, Priority.HIGH, 0, LocalDateTime.now().plusDays(10));
@@ -413,7 +415,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksSortByUrgency() throws WrongParameterException {
+    public void listTasksSortByUrgency() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -427,7 +429,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksFilterByRole() throws WrongParameterException, NotMemberOfException {
+    public void listTasksFilterByRole() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
@@ -453,7 +455,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksFilterByType() throws WrongParameterException, NotMemberOfException {
+    public void listTasksFilterByType() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, 1);
@@ -476,7 +478,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksFilterByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException {
+    public void listTasksFilterByStatus() throws UserAlreadyExistsException, WrongParameterException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
         Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, 1);
@@ -526,7 +528,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listTasksFilterByPriority() throws WrongParameterException {
+    public void listTasksFilterByPriority() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.ca");
         Task task1 = taskAPI.createTask(user, "CCC", null, Priority.NORMAL, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskAPI.createTask(user, "AAA", null, Priority.HIGH, 0, LocalDateTime.now().plusDays(10));
@@ -574,7 +576,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void setTaskRoleByGroupManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setTaskRoleByGroupManager() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userMember2 = userAPI.createUser("Member2", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -601,7 +603,7 @@ public class TaskAPITest {
 
     @Test(expected = NotAllowedException.class)
     @Transactional
-    public void setTaskRoleByGroupManagerFail() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setTaskRoleByGroupManagerFail() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -625,7 +627,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void editTask() throws WrongParameterException, TaskPermissionException, NotMemberOfException, NotAllowedException {
+    public void editTask() throws UserAlreadyExistsException, WrongParameterException, TaskPermissionException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
         User userWorker = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
 
         LocalDateTime deadlineDateTime = LocalDateTime.of(1999, 6, 2, 12, 45, 50);
@@ -659,7 +661,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listGroupTasksSortByName() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void listGroupTasksSortByName() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Group group1 = groupAPI.createGroup("Group1", user, null);
         Group group2 = groupAPI.createGroup("Group2", user, null);
@@ -693,7 +695,7 @@ public class TaskAPITest {
 
     @Test
     @Transactional
-    public void listGroupTasksSortByDateCreated() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void listGroupTasksSortByDateCreated() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Group group1 = groupAPI.createGroup("Group1", user, null);
         Group group2 = groupAPI.createGroup("Group2", user, null);

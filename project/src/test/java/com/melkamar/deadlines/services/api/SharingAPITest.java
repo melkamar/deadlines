@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
@@ -32,6 +33,7 @@ import static org.junit.Assert.*;
 //@Rollback(value = false)
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
+@WebAppConfiguration
 public class SharingAPITest {
     @Autowired
     private UserAPI userAPI;
@@ -50,7 +52,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void offerTaskSharingUser() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerTaskSharingUser() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
 
@@ -71,7 +73,7 @@ public class SharingAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void offerTaskSharingUser_OffererNotParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerTaskSharingUser_OffererNotParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -83,7 +85,7 @@ public class SharingAPITest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void offerTaskSharingUser_UserAlreadyParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerTaskSharingUser_UserAlreadyParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -96,7 +98,7 @@ public class SharingAPITest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void offerTaskSharingUser_OfferAlreadyExists() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerTaskSharingUser_OfferAlreadyExists() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
 
@@ -109,7 +111,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void offerTaskSharingGroup() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerTaskSharingGroup() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("TestUser2", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group2", user1, null);
 
@@ -127,7 +129,7 @@ public class SharingAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void offerTaskSharingGroup_OffererNotParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerTaskSharingGroup_OffererNotParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group", user1, null);
@@ -139,7 +141,7 @@ public class SharingAPITest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void offerTaskSharingGroup_UserAlreadyParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, GroupPermissionException {
+    public void offerTaskSharingGroup_UserAlreadyParticipant() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, GroupPermissionException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group", user1, null);
 
@@ -151,7 +153,7 @@ public class SharingAPITest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void offerTaskSharingGroup_OfferAlreadyExists() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, GroupPermissionException {
+    public void offerTaskSharingGroup_OfferAlreadyExists() throws WrongParameterException, TaskPermissionException, NotMemberOfException, AlreadyExistsException, GroupPermissionException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group", user1, null);
 
@@ -163,7 +165,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void offerMembership() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerMembership() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group", user1, null);
@@ -177,7 +179,7 @@ public class SharingAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void offerMembership_OffererNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerMembership_OffererNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -188,7 +190,7 @@ public class SharingAPITest {
 
     @Test(expected = GroupPermissionException.class)
     @Transactional
-    public void offerMembership_OffererNotManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerMembership_OffererNotManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -201,7 +203,7 @@ public class SharingAPITest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void offerMembership_OfferAlreadyExists() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerMembership_OfferAlreadyExists() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group", user1, null);
@@ -212,7 +214,7 @@ public class SharingAPITest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void offerMembership_UserAlreadyMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void offerMembership_UserAlreadyMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("Group", user1, null);
@@ -223,7 +225,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void listTaskOffersOfUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
+    public void listTaskOffersOfUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -266,7 +268,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void listMembershipOffersOfUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException {
+    public void listMembershipOffersOfUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -300,7 +302,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void listTaskOffersOfGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void listTaskOffersOfGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         Group group1 = groupAPI.createGroup("Group1", user1, null);
@@ -317,7 +319,7 @@ public class SharingAPITest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void listTaskOffersOfGroup_UserNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void listTaskOffersOfGroup_UserNotMember() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         Group group1 = groupAPI.createGroup("Group1", user1, null);
@@ -327,7 +329,7 @@ public class SharingAPITest {
 
     @Test(expected = GroupPermissionException.class)
     @Transactional
-    public void listTaskOffersOfGroup_UserNotManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void listTaskOffersOfGroup_UserNotManager() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -340,7 +342,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void resolveTaskSharingOfferUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException {
+    public void resolveTaskSharingOfferUser() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -410,7 +412,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void resolveTaskSharingOfferGroup() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException {
+    public void resolveTaskSharingOfferGroup() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -446,7 +448,7 @@ public class SharingAPITest {
 
     @Test
     @Transactional
-    public void resolveMembershipOffer() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException {
+    public void resolveMembershipOffer() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException, UserAlreadyExistsException {
         User user1 = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User user2 = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User user3 = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");
@@ -482,7 +484,7 @@ public class SharingAPITest {
 
     @Test(expected = GroupPermissionException.class)
     @Transactional
-    public void resolveMembershipOffer_OffererNoLongerManager() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException, NotAllowedException {
+    public void resolveMembershipOffer_OffererNoLongerManager() throws WrongParameterException, AlreadyExistsException, NotMemberOfException, GroupPermissionException, NotAllowedException, UserAlreadyExistsException {
         User userAdmin = userAPI.createUser("User1", "pwd", "Some name", "a@b.c");
         User userManager = userAPI.createUser("User2", "pwd", "Some name", "a@b.c");
         User userNewMember = userAPI.createUser("User3", "pwd", "Some name", "a@b.c");

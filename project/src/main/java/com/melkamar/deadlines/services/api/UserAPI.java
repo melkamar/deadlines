@@ -3,19 +3,18 @@ package com.melkamar.deadlines.services.api;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotAllowedException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,14 +39,14 @@ public class UserAPI {
     private TaskParticipantHelper taskParticipantHelper;
 
 
-    @Transactional
-    public User createUser(String username, String password, String name, String email) throws WrongParameterException {
+    @Transactional(rollbackFor = UserAlreadyExistsException.class)
+    public User createUser(String username, String password, String name, String email) throws WrongParameterException, UserAlreadyExistsException {
         if (username == null || username.isEmpty()) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
         }
 
         if (password == null || password.isEmpty()) {
-            throw new NullPointerException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
+            throw new WrongParameterException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
         }
 
         PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
@@ -56,7 +55,12 @@ public class UserAPI {
         newUser.setName(name);
         newUser.setEmail(email);
 
-        userDAO.save(newUser);
+        try {
+            userDAO.save(newUser);
+        } catch (DataIntegrityViolationException e){
+            throw new UserAlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_USER_NAME, username));
+//            throw new DataIntegrityViolationException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_USER_NAME, username));
+        }
 
         return newUser;
     }
