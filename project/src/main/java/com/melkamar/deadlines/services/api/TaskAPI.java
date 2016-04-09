@@ -120,7 +120,7 @@ public class TaskAPI {
         if (workDone < 0) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_MANHOURS_INVALID);
         }
-        if (!task.usersOnTask().contains(user)) {
+        if (!task.getUsersOnTask().contains(user)) {
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
         }
 
@@ -229,9 +229,12 @@ public class TaskAPI {
         }
     }
 
-    public Task getTask(User executor, Long taskId) {
-        // TODO: 31.03.2016 Implement -- will I need it though?
-        throw new NotImplementedException();
+    public Task getTask(User executor, Long taskId) throws DoesNotExistException, NotMemberOfException {
+        Task task = taskDAO.findById(taskId);
+        if (task==null) throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_TASK, taskId));
+        if (!task.getUsersOnTask().contains(executor)) throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, executor, task));
+
+        return task;
     }
 
     /**
@@ -274,7 +277,7 @@ public class TaskAPI {
     }
 
     @Transactional
-    public void editTask(User user, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) throws NotMemberOfException, TaskPermissionException, NotAllowedException {
+    public void editTask(User user, Task task, String newDescription, LocalDateTime newDeadline, Double newWorkEstimate, Priority newPriority) throws TaskPermissionException, NotAllowedException, NotMemberOfException {
         if (!permissionHandler.hasTaskPermission(user, task, TaskRole.WORKER))
             throw new TaskPermissionException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
 
@@ -299,6 +302,8 @@ public class TaskAPI {
             task.setPriority(newPriority);
         }
     }
+
+
 
     /**
      * Resets urgency of a GrowingTask. Does not affect DeadlineTasks.

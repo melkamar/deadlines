@@ -6,8 +6,11 @@ import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "USER")
-public class User {
+public class User implements UserDetails{
     public final static String COL_USER_ID = "USER_ID";
     public final static String COL_USERNAME = "USERNAME";
     public final static String COL_EMAIL = "EMAIL";
@@ -138,9 +141,43 @@ public class User {
         return id;
     }
 
+    /*************************************************************/
+    // SECURITY
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
     public String getUsername() {
         return username;
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    /*************************************************************/
 
     public String getEmail() {
         return email;

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -123,7 +122,17 @@ public class UserAPI {
     public User getUser(Long id) throws DoesNotExistException {
         User user = userDAO.findById(id);
         if (user == null){
-            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_USER, id));
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_USER_ID, id));
+        } else {
+            return user;
+        }
+    }
+
+    @Transactional
+    public User getUser(String username) throws DoesNotExistException {
+        User user = userDAO.findByUsername(username);
+        if (user == null){
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_USER_ID, username));
         } else {
             return user;
         }

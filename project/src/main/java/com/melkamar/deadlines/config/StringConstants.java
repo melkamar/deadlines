@@ -20,6 +20,8 @@ public class StringConstants {
     public final String EXC_PARAM_TASK_GROWSPEED_INVALID = "Task grow speed must be >=0.";
     public final String EXC_PARAM_TASK_MANHOURS_INVALID = "Manhours done must be >=0.";
 //    public final String EXC_PARAM_NOT_NULL = "All parameters need to be non-null";
+    public final String EXC_FILTER_WRONG_VALUE = "Wrong value for filter {0}.";
+    public final String EXC_SET_DEADLINE_OR_GROWSPEED = "Either growspeed or deadline must be set and not both.";
 
     public final String EXC_PARAM_ALL_NEED_NOT_NULL = "All parameters need to be not null.";
 
@@ -47,5 +49,22 @@ public class StringConstants {
     public final String EXC_NOT_ALLOWED_SETING_DEADLINE_ON_GROWING = "Deadline cannot be set on a non-DeadlineTask.";
     public final String EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE = "Urgency cannot be reset on a DeadlineTask.";
 
-    public final String EXC_DOES_NOT_EXIST_USER = "User with id {0} does not exist.";
+    public final String EXC_DOES_NOT_EXIST_USER_ID = "User with id {0} does not exist.";
+    public final String EXC_DOES_NOT_EXIST_USERNAME = "User with username {0} does not exist.";
+    public final String EXC_DOES_NOT_EXIST_TASK = "Task with id {0} does not exist.";
+
+    /******************************************************************************************************************/
+    public final static String FILTER_ROLE_WORKER = "worker";
+    public final static String FILTER_ROLE_WATCHER = "watcher";
+    public final static String FILTER_TYPE_DEADLINE = "deadline";
+    public final static String FILTER_TYPE_GROWING = "growing";
+    public final static String FILTER_STATUS_OPEN = "open";
+    public final static String FILTER_STATUS_IN_PROGRESS = "inprogress";
+    public final static String FILTER_STATUS_CANCELLED = "cancelled";
+    public final static String FILTER_STATUS_COMPLETED = "completed";
+    public final static String FILTER_PRIORITY_1 = "1";
+    public final static String FILTER_PRIORITY_2 = "2";
+    public final static String FILTER_PRIORITY_3 = "3";
+    public final static String FILTER_PRIORITY_4 = "4";
+    public final static String FILTER_PRIORITY_5 = "5";
 }

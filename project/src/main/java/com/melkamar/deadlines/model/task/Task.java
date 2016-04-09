@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
@@ -38,6 +39,7 @@ public abstract class Task {
 
     @Column(name = COL_TASK_DATE_CREATED, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     protected final Date dateCreated;
 
     @Column(name = COL_TASK_NAME, nullable = false)
@@ -118,7 +120,7 @@ public abstract class Task {
      *
      * @return Set of Users.
      */
-    public Set<User> usersOnTask() {
+    public Set<User> getUsersOnTask() {
         Set<User> users = new HashSet<User>(participants.size());
         users.addAll(participants.stream().map(TaskParticipant::getUser).collect(Collectors.toList()));
 

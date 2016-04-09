@@ -21,7 +21,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -96,7 +95,7 @@ public class TaskAPITest {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
-        Assert.assertTrue(task.usersOnTask().contains(user));
+        Assert.assertTrue(task.getUsersOnTask().contains(user));
         Assert.assertTrue(user.tasksOfUser().contains(task));
     }
 

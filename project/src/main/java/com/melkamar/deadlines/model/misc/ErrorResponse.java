@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.text.MessageFormat;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -27,5 +28,10 @@ public class ErrorResponse {
         this.id = 0;
         errorCode = -1;
         errorMessage = null;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("'{'\"errorCode\":{0}, \"errorMessage\":\"{1}\"'}'", errorCode+"", errorMessage);
     }
 }

@@ -5,13 +5,15 @@ import com.melkamar.deadlines.controllers.stubs.UserStub;
 import com.melkamar.deadlines.exceptions.DoesNotExistException;
 import com.melkamar.deadlines.exceptions.UserAlreadyExistsException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.misc.ErrorResponse;
-import com.melkamar.deadlines.services.api.TaskAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,13 +49,32 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/user/{id}")
-    public ResponseEntity userDetails(@PathVariable("id") long id){
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ResponseEntity userDetails(@PathVariable("id") long id) {
         try {
             User user = userAPI.getUser(id);
             return ResponseEntity.ok().body(user);
         } catch (DoesNotExistException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.PUT)
+    public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @RequestBody UserStub request) {
+        User user = null;
+        try {
+            user = userAPI.getUser(userId);
+        } catch (DoesNotExistException e) {
+            return ResponseEntity.notFound().build();
+        }
+
+        userAPI.editUserDetails(user, request.getName(), request.getEmail(), request.getPassword());
+
+        return ResponseEntity.ok().body(user);
+    }
+
+    @RequestMapping(value = "/test")
+    public ResponseEntity test(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
+        return ResponseEntity.ok().body(userId);
     }
 }

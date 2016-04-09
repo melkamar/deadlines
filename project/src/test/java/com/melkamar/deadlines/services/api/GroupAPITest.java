@@ -244,7 +244,7 @@ public class GroupAPITest {
         Task task5 = taskAPI.createTask(userAdmin, "TestTask5", null, null, 0, LocalDateTime.now().plusDays(102));
         Task task6 = taskAPI.createTask(userAdmin, "TestTask6", null, null, 0, LocalDateTime.now().plusDays(102));
 
-        Assert.assertTrue(task2.usersOnTask().size() == 1);
+        Assert.assertTrue(task2.getUsersOnTask().size() == 1);
 
         groupAPI.addTask(userAdmin, group, task2);
         groupAPI.addTask(userAdmin, group, task3);
@@ -273,7 +273,7 @@ public class GroupAPITest {
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
 
-        Assert.assertTrue(task2.usersOnTask().size() == 2);
+        Assert.assertTrue(task2.getUsersOnTask().size() == 2);
 
         Assert.assertEquals(group.getGroupMembers().size(), 1);
 
@@ -309,7 +309,7 @@ public class GroupAPITest {
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
 
-        Assert.assertTrue(task2.usersOnTask().size() == 2);
+        Assert.assertTrue(task2.getUsersOnTask().size() == 2);
 
         Assert.assertEquals(group.getGroupMembers().size(), 2);
 
@@ -349,7 +349,7 @@ public class GroupAPITest {
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
 
-        Assert.assertTrue(task2.usersOnTask().size() == 3);
+        Assert.assertTrue(task2.getUsersOnTask().size() == 3);
 
         Assert.assertEquals(group.getGroupMembers().size(), 3);
 
@@ -387,7 +387,7 @@ public class GroupAPITest {
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
 
-        Assert.assertTrue(task2.usersOnTask().size() == 3);
+        Assert.assertTrue(task2.getUsersOnTask().size() == 3);
         Assert.assertEquals(group.getGroupMembers().size(), 2);
 
         Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
@@ -421,7 +421,7 @@ public class GroupAPITest {
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
         Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
 
-        Assert.assertTrue(task2.usersOnTask().size() == 2);
+        Assert.assertTrue(task2.getUsersOnTask().size() == 2);
         Assert.assertEquals(group.getGroupMembers().size(), 1);
 
         Assert.assertEquals(userAdmin.getMemberAs().size(), 1);
@@ -484,7 +484,7 @@ public class GroupAPITest {
         groupAPI.addMember(userAdmin, group, userMember);
 
 
-        Assert.assertTrue(task.usersOnTask().size() == 1); // userMember
+        Assert.assertTrue(task.getUsersOnTask().size() == 1); // userMember
         Assert.assertTrue(group.getSharedTasks().size() == 0); // No shared task at start
         Assert.assertTrue(userMember.tasksOfUser().size() == 2);
         Assert.assertTrue(userAdmin.tasksOfUser().size() == 1);
@@ -492,7 +492,7 @@ public class GroupAPITest {
 
         groupAPI.addTask(userAdmin, group, task);
 
-        Assert.assertTrue(task.usersOnTask().size() == 2); // userMember, admin
+        Assert.assertTrue(task.getUsersOnTask().size() == 2); // userMember, admin
         Assert.assertTrue(group.getSharedTasks().size() == 1);
         Assert.assertTrue(userMember.tasksOfUser().size() == 2);
         Assert.assertTrue(userAdmin.tasksOfUser().size() == 2);
@@ -500,7 +500,7 @@ public class GroupAPITest {
 
         groupAPI.leaveTask(userAdmin, group, task);
 
-        Assert.assertTrue(task.usersOnTask().size() == 1); // userMember
+        Assert.assertTrue(task.getUsersOnTask().size() == 1); // userMember
         Assert.assertTrue(group.getSharedTasks().size() == 0);
         Assert.assertTrue(userMember.tasksOfUser().size() == 2);
         Assert.assertTrue(userAdmin.tasksOfUser().size() == 1);

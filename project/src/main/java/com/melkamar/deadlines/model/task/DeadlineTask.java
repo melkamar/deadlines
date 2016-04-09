@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class DeadlineTask extends Task {
 
     @Column(name = COL_DATE_DEADLINE)
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     protected Date deadline;
 
     public DeadlineTask() {
