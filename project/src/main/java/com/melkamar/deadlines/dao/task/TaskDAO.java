@@ -15,6 +15,7 @@ public interface TaskDAO {
     long count();
     Task save(Task task);
     Task findById(Long id);
+    List<Task> findAll();
     List<Task> findByUser(User user);
     List<Task> findByStatus(TaskStatus status);
 

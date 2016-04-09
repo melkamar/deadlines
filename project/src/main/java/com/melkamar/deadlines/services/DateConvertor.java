@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class DateConvertor {
     public static Date localDateTimeToDate(LocalDateTime localDateTime){
+        if (localDateTime == null) return null;
         Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
         Date date = Date.from(instant);
 
@@ -20,6 +21,7 @@ public class DateConvertor {
     }
 
     public static LocalDateTime dateToLocalDateTime(Date date){
+        if (date == null) return null;
         Instant instant = Instant.ofEpochMilli(date.getTime());
         LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
 

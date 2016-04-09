@@ -18,6 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,6 +40,7 @@ public class TaskDAOHibernateTest {
     private TaskDAOHibernate taskDAO;
 
 
+    @SuppressWarnings("Duplicates")
     @Transactional
     @Test
     public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException, UserAlreadyExistsException {
@@ -58,7 +61,32 @@ public class TaskDAOHibernateTest {
         taskAPI.setTaskRole(user, task6, TaskRole.WORKER);
         taskAPI.setTaskRole(user, task7, TaskRole.WORKER);
 
-        Assert.assertEquals(7, taskDAO.findByStatus(TaskStatus.OPEN).size());
+        List<Task> allTasks = taskDAO.findAll();
+        int open = 0;
+        int inprogress = 0;
+        int cancelled = 0;
+        int completed = 0;
+        for (Task task : allTasks) {
+            switch (task.getStatus()) {
+                case OPEN:
+                    open++;
+                    break;
+                case IN_PROGRESS:
+                    inprogress++;
+                    break;
+                case CANCELLED:
+                    cancelled++;
+                    break;
+                case COMPLETED:
+                    completed++;
+                    break;
+            }
+        }
+
+        Assert.assertEquals(open, taskDAO.findByStatus(TaskStatus.OPEN).size());
+        Assert.assertEquals(inprogress, taskDAO.findByStatus(TaskStatus.IN_PROGRESS).size());
+        Assert.assertEquals(cancelled, taskDAO.findByStatus(TaskStatus.CANCELLED).size());
+        Assert.assertEquals(completed, taskDAO.findByStatus(TaskStatus.COMPLETED).size());
 
         taskAPI.setTaskStatus(user, task1, TaskStatus.OPEN);
         taskAPI.setTaskStatus(user, task2, TaskStatus.CANCELLED);
@@ -68,10 +96,31 @@ public class TaskDAOHibernateTest {
         taskAPI.setTaskStatus(user, task6, TaskStatus.OPEN);
         taskAPI.setTaskStatus(user, task7, TaskStatus.CANCELLED);
 
-        Assert.assertEquals(2, taskDAO.findByStatus(TaskStatus.OPEN).size());
-        Assert.assertEquals(1, taskDAO.findByStatus(TaskStatus.IN_PROGRESS).size());
-        Assert.assertEquals(1, taskDAO.findByStatus(TaskStatus.COMPLETED).size());
-        Assert.assertEquals(3, taskDAO.findByStatus(TaskStatus.CANCELLED).size());
+        open = 0;
+        inprogress = 0;
+        cancelled = 0;
+        completed = 0;
+        for (Task task : allTasks) {
+            switch (task.getStatus()) {
+                case OPEN:
+                    open++;
+                    break;
+                case IN_PROGRESS:
+                    inprogress++;
+                    break;
+                case CANCELLED:
+                    cancelled++;
+                    break;
+                case COMPLETED:
+                    completed++;
+                    break;
+            }
+        }
+
+        Assert.assertEquals(open, taskDAO.findByStatus(TaskStatus.OPEN).size());
+        Assert.assertEquals(inprogress, taskDAO.findByStatus(TaskStatus.IN_PROGRESS).size());
+        Assert.assertEquals(cancelled, taskDAO.findByStatus(TaskStatus.CANCELLED).size());
+        Assert.assertEquals(completed, taskDAO.findByStatus(TaskStatus.COMPLETED).size());
 
     }
 }

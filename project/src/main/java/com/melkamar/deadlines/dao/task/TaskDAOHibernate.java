@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.dao.task;
 
+import com.google.common.collect.Lists;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.exceptions.SortingException;
 import com.melkamar.deadlines.model.Group;
@@ -41,6 +42,11 @@ public class TaskDAOHibernate implements TaskDAO {
     @Override
     public Task findById(Long id) {
         return taskRepository.findById(id);
+    }
+
+    @Override
+    public List<Task> findAll() {
+        return Lists.newArrayList(taskRepository.findAll());
     }
 
     @Override

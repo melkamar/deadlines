@@ -42,8 +42,6 @@ public class DeadlinesAuthenticationProvider implements AuthenticationProvider {
             throw new RESTAuthenticationException("Auth failed");
         }
 
-        System.out.println("OUT:" + user.getUsername());
-
         List<GrantedAuthority> authorityList = new ArrayList<>();
         authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(authenticatedUser.getId(), password, authorityList);

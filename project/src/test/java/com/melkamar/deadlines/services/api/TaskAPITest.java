@@ -174,7 +174,7 @@ public class TaskAPITest {
         TaskParticipant participant = user.getParticipants().iterator().next();
         participant.setRole(TaskRole.WORKER);
 
-        taskAPI.reportWork(user, task, -1);
+        taskAPI.reportWork(user, task, -1d);
     }
 
     @Test(expected = NotMemberOfException.class)
@@ -187,7 +187,7 @@ public class TaskAPITest {
         TaskParticipant participant = user.getParticipants().iterator().next();
         participant.setRole(TaskRole.WORKER);
 
-        taskAPI.reportWork(nonParticipant, task, 10);
+        taskAPI.reportWork(nonParticipant, task, 10d);
     }
 
     @Test(expected = TaskPermissionException.class)
@@ -198,7 +198,7 @@ public class TaskAPITest {
 
         TaskParticipant participant = user.getParticipants().iterator().next();
 
-        taskAPI.reportWork(user, task, 10);
+        taskAPI.reportWork(user, task, 10d);
     }
 
     @Test
@@ -212,13 +212,13 @@ public class TaskAPITest {
         TaskParticipant participant = user.getParticipants().iterator().next();
         participant.setRole(TaskRole.WORKER);
 
-        taskAPI.reportWork(user, task, 10);
+        taskAPI.reportWork(user, task, 10d);
         Assert.assertTrue(task.getWorkReports().size() == 1);
 
-        taskAPI.reportWork(user, task, 5);
+        taskAPI.reportWork(user, task, 5d);
         Assert.assertTrue(task.getWorkReports().size() == 2);
 
-        taskAPI.reportWork(user, task, 12);
+        taskAPI.reportWork(user, task, 12d);
         Assert.assertTrue(task.getWorkReports().size() == 3);
 
         Task retrievedTask = taskDAO.findById(taskId);
@@ -354,9 +354,9 @@ public class TaskAPITest {
 
         List<Task> resultList;
 
-        taskAPI.reportWork(user, task1, 8); // 80%
-        taskAPI.reportWork(user, task2, 10); // 50%
-        taskAPI.reportWork(user, task2, 2); // 60%
+        taskAPI.reportWork(user, task1, 8d); // 80%
+        taskAPI.reportWork(user, task2, 10d); // 50%
+        taskAPI.reportWork(user, task2, 2d); // 60%
 
         resultList = taskAPI.listTasks(user, TaskOrdering.WORKED_PERCENT_ASC);
         Assert.assertTrue(resultList.get(0).equals(task2));
@@ -368,7 +368,7 @@ public class TaskAPITest {
         Assert.assertTrue(resultList.get(0).equals(task1));
 
 
-        taskAPI.reportWork(user, task2, 6); // 90%
+        taskAPI.reportWork(user, task2, 6d); // 90%
 
         resultList = taskAPI.listTasks(user, TaskOrdering.WORKED_PERCENT_ASC);
         Assert.assertTrue(resultList.get(0).equals(task1));

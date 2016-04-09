@@ -5,6 +5,8 @@ import com.melkamar.deadlines.dao.processing.TaskFilter;
 import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
+import com.melkamar.deadlines.dao.taskwork.TaskWorkDAO;
+import com.melkamar.deadlines.dao.taskwork.TaskWorkDAOHibernate;
 import com.melkamar.deadlines.dao.urgency.UrgencyDAO;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
@@ -49,6 +51,8 @@ public class TaskAPI {
     private PermissionHandler permissionHandler;
     @Autowired
     private UrgencyDAO urgencyDao;
+    @Autowired
+    private TaskWorkDAO taskWorkDAO;
 
 
     @Transactional
@@ -115,8 +119,9 @@ public class TaskAPI {
         return newTask;
     }
 
-
-    public TaskWork reportWork(User user, Task task, double workDone) throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+    @Transactional
+    public TaskWork reportWork(User user, Task task, Double workDone) throws WrongParameterException, NotMemberOfException, TaskPermissionException {
+        if (workDone == null) throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
         if (workDone < 0) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_MANHOURS_INVALID);
         }
@@ -132,6 +137,7 @@ public class TaskAPI {
         }
 
         TaskWork taskWork = new TaskWork(workDone, user);
+        taskWorkDAO.save(taskWork);
         task.addWorkReport(taskWork);
 
         return taskWork;
@@ -143,6 +149,7 @@ public class TaskAPI {
      * @param tasksOfUser
      * @return
      */
+    @Transactional
     public List<Task> listTasks(User tasksOfUser, TaskOrdering ordering, TaskFilter... filters) {
         List<Task> tasks = getOrderedTasksOfUser(tasksOfUser, ordering);
 
@@ -153,6 +160,7 @@ public class TaskAPI {
         return tasks;
     }
 
+    @Transactional
     private List<Task> getOrderedTasksOfUser(User user, TaskOrdering ordering) {
         switch (ordering) {
             case NONE:
@@ -186,6 +194,7 @@ public class TaskAPI {
         }
     }
 
+    @Transactional
     public List<Task> listTasks(Group tasksOfGroup, TaskOrdering ordering, TaskFilter... filters) {
         List<Task> tasks = getOrderedTasksOfGroup(tasksOfGroup, ordering);
 
@@ -196,6 +205,7 @@ public class TaskAPI {
         return tasks;
     }
 
+    @Transactional
     private List<Task> getOrderedTasksOfGroup(Group group, TaskOrdering ordering) {
         switch (ordering) {
             case NONE:
@@ -229,6 +239,7 @@ public class TaskAPI {
         }
     }
 
+    @Transactional
     public Task getTask(User executor, Long taskId) throws DoesNotExistException, NotMemberOfException {
         Task task = taskDAO.findById(taskId);
         if (task==null) throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_TASK, taskId));
@@ -250,6 +261,7 @@ public class TaskAPI {
         taskParticipant.setRole(newRole);
     }
 
+    @Transactional
     public void setTaskRole(User user, Task task, TaskRole newRole, User manager, Group group) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException {
         if (user == null || task == null || manager == null || group == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
@@ -266,6 +278,7 @@ public class TaskAPI {
         setTaskRole(user, task, newRole);
     }
 
+    @Transactional
     public void setTaskStatus(User user, Task task, TaskStatus newStatus) throws NotMemberOfException, NotAllowedException {
         TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
         if (taskParticipant == null)
@@ -312,6 +325,7 @@ public class TaskAPI {
      * @param task
      * @return
      */
+    @Transactional
     public Task resetUrgency(User worker, Task task) throws NotAllowedException {
         if (!(task instanceof GrowingTask)){
             throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE);
@@ -321,6 +335,7 @@ public class TaskAPI {
         throw new NotImplementedException();
     }
 
+    @Transactional
     public TaskParticipant getTaskParticipant(User user, Task task) {
         return taskParticipantHelper.getTaskParticipant(user, task);
     }

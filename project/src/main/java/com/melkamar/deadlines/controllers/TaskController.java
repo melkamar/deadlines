@@ -2,13 +2,18 @@ package com.melkamar.deadlines.controllers;
 
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
+import com.melkamar.deadlines.controllers.stubs.TaskReportRequestBody;
+import com.melkamar.deadlines.controllers.stubs.TaskSharingRequestBody;
 import com.melkamar.deadlines.controllers.stubs.TaskStub;
 import com.melkamar.deadlines.dao.processing.*;
 import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.misc.ErrorResponse;
 import com.melkamar.deadlines.model.task.*;
 import com.melkamar.deadlines.services.DateConvertor;
+import com.melkamar.deadlines.services.api.GroupAPI;
+import com.melkamar.deadlines.services.api.SharingAPI;
 import com.melkamar.deadlines.services.api.TaskAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,8 +42,12 @@ public class TaskController {
     private UserAPI userAPI;
     @Autowired
     private StringConstants stringConstants;
+    @Autowired
+    private SharingAPI sharingAPI;
+    @Autowired
+    private GroupAPI groupAPI;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity listTasks(@AuthenticationPrincipal Long userId,
                                     @RequestParam(value = "order", required = false) String order,
                                     @RequestParam(value = "orderdirection", required = false) String orderDirection,
@@ -96,7 +103,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity editTaskDetails(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskStub taskStub) throws DoesNotExistException, WrongParameterException {
+    public ResponseEntity editTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskStub taskStub) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
 
         try {
@@ -108,18 +115,114 @@ public class TaskController {
 
             taskAPI.editTask(user, task, taskStub.getDescription(), DateConvertor.dateToLocalDateTime(taskStub.getDeadline()), taskStub.getWorkEstimate(), taskStub.getPriority());
 
+            if (taskStub.getStatus() != null) {
+                taskAPI.setTaskStatus(user, task, taskStub.getStatus());
+            }
+
             return ResponseEntity.ok(task);
 
         } catch (NotAllowedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.CANNOT_SET_DEADLINE_ON_NONDEADLINE_TASK, e.getMessage()));
         } catch (NotMemberOfException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
         } catch (TaskPermissionException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_WORKER, e.getMessage()));
         }
-
-        return null;
     }
+
+    @RequestMapping(value = "/share/{id}", method = RequestMethod.POST)
+    public ResponseEntity shareTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskSharingRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+        User user = userAPI.getUser(userId);
+
+        try {
+            Task task = taskAPI.getTask(user, id);
+
+            for (User offeredTo : requestBody.getUsers()) {
+                sharingAPI.offerTaskSharing(user, task, offeredTo);
+            }
+
+            for (Group offeredTo : requestBody.getGroups()) {
+                sharingAPI.offerTaskSharing(user, task, offeredTo);
+            }
+
+            return ResponseEntity.ok(task);
+
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_ALREADY_PARTICIPANT, e.getMessage()));
+        }
+    }
+
+    @RequestMapping(value = "/leave/{id}", method = RequestMethod.POST)
+    public ResponseEntity leaveTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
+        User user = userAPI.getUser(userId);
+
+        try {
+            Task task = taskAPI.getTask(user, id);
+
+            userAPI.leaveTask(user, task);
+
+            return ResponseEntity.ok(task);
+
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+        }
+    }
+
+    @RequestMapping(value = "/role/{id}", method = RequestMethod.POST)
+    public ResponseEntity changeTaskRole(@AuthenticationPrincipal Long userId,
+                                         @PathVariable("id") Long id,
+                                         @RequestParam(value = "targetUser", required = false) Long targetUserId,
+                                         @RequestParam(value = "targetGroup", required = false) Long targetGroupId,
+                                         @RequestParam(value = "newRole", required = true) String targetRole) throws DoesNotExistException, WrongParameterException {
+        User user = userAPI.getUser(userId);
+
+        try {
+            Task task = taskAPI.getTask(user, id);
+
+            if (targetUserId == null) { // No target user -> apply to caller
+                taskAPI.setTaskRole(user, task, TaskRole.valueOf(targetRole.toUpperCase()));
+            } else {
+                if (targetGroupId == null)
+                    throw new WrongParameterException(stringConstants.EXC_TASK_ROLE_TARGET_USER_NOT_GROUP);
+                User targetUser = userAPI.getUser(targetUserId);
+                Group targetGroup = groupAPI.getGroup(targetGroupId);
+                taskAPI.setTaskRole(targetUser, task, TaskRole.valueOf(targetRole.toUpperCase()), user, targetGroup);
+            }
+
+            return ResponseEntity.ok(task);
+
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+        } catch (NotAllowedException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+        } catch (GroupPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+        }
+    }
+
+    @RequestMapping(value = "/report/{id}", method = RequestMethod.POST)
+    public ResponseEntity reportWork(@AuthenticationPrincipal Long userId,
+                                     @PathVariable("id") Long id,
+                                     @RequestBody TaskReportRequestBody requestBody) throws DoesNotExistException {
+        User user = userAPI.getUser(userId);
+
+        try {
+            Task task = taskAPI.getTask(user, id);
+            taskAPI.reportWork(user, task, requestBody.getWorkDone());
+
+            return ResponseEntity.ok(task);
+
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+        } catch (TaskPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_WORKER, e.getMessage()));
+        } catch (WrongParameterException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, e.getMessage()));
+        }
+    }
+
 
     private void checkIfDeadlineXorGrowing(TaskStub taskStub) throws WrongParameterException {
         if ((taskStub.getDeadline() == null && taskStub.getGrowSpeed() == null)

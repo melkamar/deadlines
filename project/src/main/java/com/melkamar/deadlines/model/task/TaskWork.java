@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.melkamar.deadlines.model.User;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class TaskWork {
 
     @ManyToOne
     @JoinColumn(name = User.COL_USER_ID)
+    @JsonIgnore
     private final User workedBy;
 
     @Column(name = COL_OWNING_TASK_ID)
@@ -51,5 +53,20 @@ public class TaskWork {
 
     public User getWorkedBy() {
         return workedBy;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TaskWork)) return false;
+
+        TaskWork taskWork = (TaskWork) o;
+
+        return id != null ? id.equals(taskWork.id) : taskWork.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

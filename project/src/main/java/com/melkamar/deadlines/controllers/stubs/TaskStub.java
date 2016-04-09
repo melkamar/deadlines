@@ -2,6 +2,7 @@ package com.melkamar.deadlines.controllers.stubs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.melkamar.deadlines.model.task.Priority;
+import com.melkamar.deadlines.model.task.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class TaskStub {
     private String description;
     private Priority priority;
     private double workEstimate;
-
+    private TaskStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private Date deadline;
     private Double growSpeed;
@@ -42,5 +43,9 @@ public class TaskStub {
 
     public Double getGrowSpeed() {
         return growSpeed;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
     }
 }

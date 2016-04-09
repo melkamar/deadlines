@@ -9,10 +9,14 @@ import org.springframework.stereotype.Service;
 public class ErrorCodes {
     public static final int USER_ALREADY_EXISTS = 1;
     public static final int WRONG_PARAMETERS = 2;
-    public static final int WRONG_FILTER_VALUE = 3;
-    public static final int USER_NOT_WORKER = 4;
-    public static final int USER_NOT_PARTICIPANT = 5;
-    public static final int INVALID_CREDENTIALS = 6;
-    public static final int CANNOT_SET_DEADLINE_ON_NONDEADLINE_TASK = 7;
+    public static final int WRONG_FILTER_VALUE = 3; // Wrong value for a filter (e.g. rolefilter may only have watcher or worker as value)
+    public static final int USER_NOT_WORKER = 4; // Calling user is not a worker on a task.
+    public static final int USER_NOT_PARTICIPANT = 5; // Calling user is not a participant on a task.
+    public static final int INVALID_CREDENTIALS = 6; // Username:password combination invalid
+    public static final int CANNOT_SET_DEADLINE_ON_NONDEADLINE_TASK = 7; // Calling user tried to set deadline on a growing task
     public static final int CANNOT_EDIT_GROWSPEED = 8;
+    public static final int USER_ALREADY_PARTICIPANT = 9; // Calling user is already a participant on a task
+    public static final int USER_NOT_MEMBER_OF_GROUP = 10; // Calling user is not a member of affected group
+    public static final int USER_NOT_ENOUGH_GROUP_PERMISSION = 11; // Calling user does not have enough permissions in affected group
+
 }

@@ -53,6 +53,9 @@ public class StringConstants {
     public final String EXC_DOES_NOT_EXIST_USERNAME = "User with username {0} does not exist.";
     public final String EXC_DOES_NOT_EXIST_TASK = "Task with id {0} does not exist.";
 
+    public final String EXC_TASK_ROLE_TARGET_USER_NOT_GROUP = "targetGroup=[id] must be supplied with targetUser.";
+    public final String EXC_BODY_MUST_ = "targetGroup=[id] must be supplied with targetUser.";
+
     /******************************************************************************************************************/
     public final static String FILTER_ROLE_WORKER = "worker";
     public final static String FILTER_ROLE_WATCHER = "watcher";

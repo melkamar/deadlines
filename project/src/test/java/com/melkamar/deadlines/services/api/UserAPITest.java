@@ -263,9 +263,9 @@ public class UserAPITest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
 
         ArrayList<Long> ids = new ArrayList<>(3);
-        ids.add(1l);
-        ids.add(2l);
-        ids.add(3l);
+        ids.add(1657L);
+        ids.add(6873L);
+        ids.add(1656L);
 
         ids.remove(userMember.getId());
         ids.remove(userAdmin.getId());
