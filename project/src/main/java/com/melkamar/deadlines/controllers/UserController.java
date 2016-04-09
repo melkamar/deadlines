@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ReportAsSingleViolation;
 import java.util.List;
 
 /**
@@ -31,8 +32,8 @@ public class UserController {
 
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = CTYPE_JSON)
-    public List<User> listUsers() {
-        return userAPI.listUsers();
+    public ResponseEntity listUsers() {
+        return ResponseEntity.ok().body(userAPI.listUsers());
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = CTYPE_JSON)
@@ -59,8 +60,8 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/user", method = RequestMethod.PUT)
-    public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @RequestBody UserStub request) {
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.PUT, consumes = CTYPE_JSON)
+    public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody UserStub request) {
         User user = null;
         try {
             user = userAPI.getUser(userId);
@@ -68,13 +69,12 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
+        if (!user.getId().equals(id)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         userAPI.editUserDetails(user, request.getName(), request.getEmail(), request.getPassword());
 
         return ResponseEntity.ok().body(user);
-    }
-
-    @RequestMapping(value = "/test")
-    public ResponseEntity test(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
-        return ResponseEntity.ok().body(userId);
     }
 }

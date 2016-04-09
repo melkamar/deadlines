@@ -1,7 +1,9 @@
 package com.melkamar.deadlines.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "USER")
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class User implements UserDetails{
     public final static String COL_USER_ID = "USER_ID";
     public final static String COL_USERNAME = "USERNAME";
@@ -34,11 +37,14 @@ public class User implements UserDetails{
     @Id
     @Column(name = COL_USER_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
 
+    @JsonProperty
     @Column(name = COL_USERNAME, nullable = false, unique = true)
     private final String username;
 
+    @JsonProperty
     @Column(name = COL_EMAIL)
     private String email;
 
@@ -50,6 +56,7 @@ public class User implements UserDetails{
     @Column(name = COL_PASSWORD_SALT, nullable = false)
     private String passwordSalt;
 
+    @JsonProperty
     @Column(name = COL_NAME)
     private String name;
 
@@ -69,15 +76,19 @@ public class User implements UserDetails{
     /* RELATIONS */
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     @JsonManagedReference
+    @JsonProperty
     private Set<TaskParticipant> participants = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
+    @JsonProperty
     private Set<GroupMember> memberAs = new HashSet<>();
 
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
+    @JsonProperty
     private Set<MembershipOffer> membershipOffers = new HashSet<>();
 
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
+    @JsonProperty
     private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
 
     /*************************************************************/

@@ -3,6 +3,7 @@ package com.melkamar.deadlines.controllers;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.exceptions.UserAlreadyExistsException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.hamcrest.core.StringContains;
 import org.junit.Before;
@@ -15,9 +16,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +31,8 @@ public class UserControllerTest {
     private MockMvc mvc;
     @Mock
     UserAPI userAPI;
+    @Mock
+    User user;
 
     @InjectMocks
     UserController testedController;
@@ -37,11 +40,20 @@ public class UserControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        mvc = MockMvcBuilders.standaloneSetup(testedController).build();
+
+        mvc = MockMvcBuilders
+                .standaloneSetup(testedController)
+                .build();
     }
 
     @Test
-    @Transactional
+    public void testListUsers() throws Exception {
+        this.mvc.perform(MockMvcRequestBuilders
+                .get("/user")).andExpect(status().isOk());
+        Mockito.verify(userAPI, Mockito.times(1)).listUsers();
+    }
+
+    @Test
     public void testCreateUser() throws Exception {
         this.mvc.perform(MockMvcRequestBuilders
                 .post("/user").content("{ \"username\":\"NewgUasasdername\", \"password\":\"haha\"} ").contentType("application/json"))
@@ -49,7 +61,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @Transactional
     public void testCreateDuplicateUser() throws Exception {
         Mockito.when(userAPI.createUser(any(), any(), any(), any())).thenThrow(new UserAlreadyExistsException("Foo msg"));
         this.mvc.perform(MockMvcRequestBuilders
@@ -61,7 +72,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @Transactional
     public void testCreateUserMissingParams() throws Exception {
         Mockito.when(userAPI.createUser(any(), any(), any(), any())).thenThrow(new WrongParameterException("Foo msg"));
         this.mvc.perform(MockMvcRequestBuilders
@@ -71,4 +81,24 @@ public class UserControllerTest {
                         "\"errorCode\":" + ErrorCodes.WRONG_PARAMETERS)));
     }
 
+    @Test
+    public void editUser() throws Exception {
+        when(userAPI.getUser(any(Long.class))).thenReturn(user);
+        when(user.getId()).thenReturn(1L);
+
+        this.mvc.perform(MockMvcRequestBuilders
+                .put("/user/1").content("{\"password\":\"haha\"} ").contentType("application/json"))
+                .andExpect(status().isOk());
+        Mockito.verify(userAPI, Mockito.times(1)).editUserDetails(any(User.class), isNull(String.class), isNull(String.class), eq("haha"));
+    }
+
+    @Test
+    public void editUserBadId() throws Exception {
+        when(userAPI.getUser(any(Long.class))).thenReturn(user);
+        when(user.getId()).thenReturn(2L);
+
+        this.mvc.perform(MockMvcRequestBuilders
+                .put("/user/1").content("{\"password\":\"haha\"} ").contentType("application/json"))
+                .andExpect(status().isForbidden());
+    }
 }
