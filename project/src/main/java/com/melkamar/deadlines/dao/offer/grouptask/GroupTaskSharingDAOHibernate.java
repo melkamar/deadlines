@@ -33,4 +33,9 @@ public class GroupTaskSharingDAOHibernate implements GroupTaskSharingDAO {
     public Set<GroupTaskSharingOffer> findByOfferedTo(Group group) {
         return groupTaskSharingRepository.findByOfferedTo(group);
     }
+
+    @Override
+    public GroupTaskSharingOffer findById(Long id) {
+        return groupTaskSharingRepository.findById(id);
+    }
 }

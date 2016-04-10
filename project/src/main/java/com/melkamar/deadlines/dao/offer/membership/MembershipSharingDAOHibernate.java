@@ -36,4 +36,9 @@ public class MembershipSharingDAOHibernate implements MembershipSharingDAO {
     public Set<MembershipOffer> findByOfferedTo(User user) {
         return membershipSharingRepository.findByOfferedTo(user);
     }
+
+    @Override
+    public MembershipOffer findById(Long id) {
+        return membershipSharingRepository.findById(id);
+    }
 }

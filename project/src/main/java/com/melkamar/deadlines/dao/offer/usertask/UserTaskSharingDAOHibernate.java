@@ -28,4 +28,9 @@ public class UserTaskSharingDAOHibernate implements UserTaskSharingDAO {
     public Set<UserTaskSharingOffer> findByOfferedTo(User user) {
         return userTaskSharingRepository.findByOfferedTo(user);
     }
+
+    @Override
+    public UserTaskSharingOffer findById(Long id) {
+        return userTaskSharingRepository.findById(id);
+    }
 }

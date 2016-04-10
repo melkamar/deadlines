@@ -16,4 +16,5 @@ public interface GroupTaskSharingDAO {
     public Set<GroupTaskSharingOffer> findAll();
     public GroupTaskSharingOffer findByOfferedToAndTaskOffered(Group group, Task task);
     public Set<GroupTaskSharingOffer> findByOfferedTo(Group group);
+    public GroupTaskSharingOffer findById(Long id);
 }

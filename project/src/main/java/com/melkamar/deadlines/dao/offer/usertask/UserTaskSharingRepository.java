@@ -15,4 +15,5 @@ import java.util.Set;
 public interface UserTaskSharingRepository extends CrudRepository<UserTaskSharingOffer, Long> {
     public UserTaskSharingOffer findByOfferedToAndTaskOffered(User user, Task task);
     public Set<UserTaskSharingOffer> findByOfferedTo(User user);
+    public UserTaskSharingOffer findById(Long id);
 }

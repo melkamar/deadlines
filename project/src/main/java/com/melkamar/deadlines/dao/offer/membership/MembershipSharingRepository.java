@@ -16,4 +16,5 @@ import java.util.Set;
 public interface MembershipSharingRepository extends CrudRepository<MembershipOffer, Long> {
     public MembershipOffer findByOfferedToAndGroup(User user, Group group);
     public Set<MembershipOffer> findByOfferedTo(User user);
+    public MembershipOffer findById(Long id);
 }

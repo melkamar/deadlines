@@ -14,4 +14,5 @@ import java.util.Set;
 public interface UserTaskSharingDAO {
     public UserTaskSharingOffer findByOfferedToAndTaskOffered(User user, Task task);
     public Set<UserTaskSharingOffer> findByOfferedTo(User user);
+    public UserTaskSharingOffer findById(Long id);
 }
