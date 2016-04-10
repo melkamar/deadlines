@@ -22,6 +22,7 @@ public class StringConstants {
 //    public final String EXC_PARAM_NOT_NULL = "All parameters need to be non-null";
     public final String EXC_FILTER_WRONG_VALUE = "Wrong value for filter {0}.";
     public final String EXC_SET_DEADLINE_OR_GROWSPEED = "Either growspeed or deadline must be set and not both.";
+    public final String EXC_PARAM_MEMBER_ROLE_INVALID = "Member role can be one of member, manager, admin. Provided: [{0}].";
 
     public final String EXC_PARAM_ALL_NEED_NOT_NULL = "All parameters need to be not null.";
 
@@ -29,6 +30,7 @@ public class StringConstants {
 
     public final String EXC_ALREADY_EXISTS_USER_NAME = "User with username [{0}] already exists.";
     public final String EXC_ALREADY_EXISTS_TASK_PARTICIPANT = "Task participant already exists! {0} -- {1}";
+    public final String EXC_ALREADY_EXISTS_GROUP_NAME = "Group with a name [{0}] already exists.";
     public final String EXC_ALREADY_EXISTS_GROUP_MEMBER = "Group member already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_TASK_OF_GROUP = "Task [{0}] is already shared with group [{1}].";
     public final String EXC_ALREADY_EXISTS_TASK_OFFER = "Task offer of task [{0}] for [{1}] already exists.";
@@ -46,7 +48,7 @@ public class StringConstants {
 
     public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
 
-    public final String EXC_NOT_ALLOWED_PROMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";
+    public final String EXC_NOT_ALLOWED_DEMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";
     public final String EXC_NOT_ALLOWED_ADMIN_LEAVE = "Admin cannot leave the group. Either give the Admin rights to another user, or delete the group.";
     public final String EXC_NOT_ALLOWED_SETING_DEADLINE_ON_GROWING = "Deadline cannot be set on a non-DeadlineTask.";
     public final String EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE = "Urgency cannot be reset on a DeadlineTask.";
@@ -55,6 +57,7 @@ public class StringConstants {
     public final String EXC_DOES_NOT_EXIST_USERNAME = "User with username {0} does not exist.";
     public final String EXC_DOES_NOT_EXIST_TASK = "Task with id {0} does not exist.";
     public final String EXC_DOES_NOT_EXIST_OFFER = "Offer with id {0} does not exist.";
+    public final String EXC_DOES_NOT_EXIST_GROUP = "Group with id {0} does not exist.";
 
     public final String EXC_TASK_ROLE_TARGET_USER_NOT_GROUP = "targetGroup=[id] must be supplied with targetUser.";
     public final String EXC_BODY_MUST_ = "targetGroup=[id] must be supplied with targetUser.";

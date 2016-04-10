@@ -15,6 +15,7 @@ import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,24 +54,31 @@ public class GroupAPI {
 
 
     @Transactional
-    public Group createGroup(String name, User founder, String description) throws WrongParameterException {
+    public Group createGroup(String name, User founder, String description) throws WrongParameterException, AlreadyExistsException {
         if (name == null || name.isEmpty()) throw new WrongParameterException(stringConstants.EXC_PARAM_NAME_EMPTY);
         if (founder == null) throw new WrongParameterException(stringConstants.EXC_PARAM_FOUNDER_NULL);
 
         Group group = new Group(name);
         group.setDescription(description);
 
-        groupDAO.save(group);
+        try {
+            groupDAO.save(group);
+        } catch (DataIntegrityViolationException e){
+            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_GROUP_NAME, name));
+        }
+
 
         try {
             groupMemberHelper.createGroupMember(founder, group, MemberRole.ADMIN);
         } catch (AlreadyExistsException e) {
             org.apache.log4j.Logger.getLogger(this.getClass()).error("User is already a member of newly created group! This should not happen.");
             e.printStackTrace();
+            throw new RuntimeException("User is already a member of newly created group! This should not happen.");
         }
         return group;
     }
 
+    @Transactional
     public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException, NotAllowedException {
         if (executor == null || group == null || member == null) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
@@ -84,7 +92,7 @@ public class GroupAPI {
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_MEMBER_OF_GROUP, member, group));
         }
         if (promotedGroupMember.getRole() == MemberRole.ADMIN) {
-            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_PROMOTE_ADMIN);
+            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_DEMOTE_ADMIN);
         }
 
         if (newValue) {
@@ -127,9 +135,39 @@ public class GroupAPI {
     }
 
 
-    public Group getGroup(Long groupId) {
-        return groupDAO.findById(groupId);
+    @Transactional
+    public Group getGroup(Long groupId) throws DoesNotExistException {
+        Group group = groupDAO.findById(groupId);
+        if (group == null){
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_GROUP, groupId));
+        } else {
+            return group;
+        }
     }
+
+    /**
+     * Get group object only if user has permissions (only if he is a member of the group)
+     * @param groupId
+     * @param user
+     * @return
+     * @throws DoesNotExistException
+     * @throws NotMemberOfException
+     */
+    @Transactional
+    public Group getGroup(Long groupId, User user) throws DoesNotExistException, NotMemberOfException {
+        Group group = groupDAO.findById(groupId);
+
+        if (group == null){
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_GROUP, groupId));
+        }
+
+        // Just check if user a member of the group
+        permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER);
+
+        return group;
+    }
+
+
 
     /**
      * Adds a new member to the group. All tasks shared with the group will be shared with the new member as well.
@@ -278,7 +316,8 @@ public class GroupAPI {
         adminMember.setRole(MemberRole.MANAGER);
     }
 
-    public void deleteGroup(User admin, Group group) throws NotMemberOfException, GroupPermissionException, WrongParameterException, NotAllowedException {
+    @Transactional
+    public void deleteGroup(User admin, Group group) throws NotMemberOfException, GroupPermissionException, WrongParameterException {
         if (!permissionHandler.hasGroupPermission(admin, group, MemberRole.ADMIN))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.ADMIN, admin, group));
 
@@ -290,7 +329,15 @@ public class GroupAPI {
                 adminGroupMember = groupMember;
                 continue; // Skip deleting the admin
             }
-            removeMember(admin, group, groupMember);
+
+            try {
+                removeMember(admin, group, groupMember);
+            } catch (NotAllowedException e) {
+                // If this happens then the admin is not removed.
+                // That does not matter, he is removed futher down in the method
+                org.apache.log4j.Logger.getLogger(this.getClass()).error("deleteGroup tried to removeMember(admin). This should not happen.", e);
+            }
+
         }
 
         // Leave all tasks associated with group

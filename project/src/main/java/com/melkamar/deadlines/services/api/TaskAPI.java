@@ -266,7 +266,7 @@ public class TaskAPI {
         if (user == null || task == null || manager == null || group == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
-        if (!group.getSharedTasks().contains(task)){
+        if (!group.getSharedTasks().contains(task)){ // Task is not shared with the group
             throw new NotAllowedException(MessageFormat.format(stringConstants.EXC_GROUP_NOT_IN_TASK, group, task));
         }
 

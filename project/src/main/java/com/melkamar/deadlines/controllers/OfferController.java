@@ -111,6 +111,7 @@ public class OfferController {
                                               @PathVariable("id") Long id) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
         Group group = groupAPI.getGroup(id);
+
         try {
             Set<GroupTaskSharingOffer> offers = sharingAPI.listTaskOffersOfGroup(user, group);
             return ResponseEntity.ok().body(offers);
@@ -128,13 +129,14 @@ public class OfferController {
                                                 @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
         Group group = groupAPI.getGroup(groupId);
+
         GroupTaskSharingOffer offer = sharingAPI.getGroupTaskSharingOffer(offerId);
 
         try {
             checkResolutionRequestBody(requestBody.isAccept());
             Task task = sharingAPI.resolveTaskSharingOffer(group, user, offer, requestBody.isAccept());
 
-            return  ResponseEntity.ok().body(task);
+            return ResponseEntity.ok().body(task);
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
         } catch (AlreadyExistsException e) {

@@ -22,5 +22,9 @@ public class ErrorCodes {
     public static final int OFFER_OFFERER_NOT_PERMISSION = 13; // The original offerer does not have enough permissions anymore
     public static final int USER_ALREADY_MEMBER = 14; // Calling user is already a member of a group
     public static final int TASK_ALREADY_SHARED_WITH_GROUP = 15; // Task is already shared with a group (called on resolving TaskSharingOffer)
+    public static final int WRONG_MEMBERROLE_VALUE = 16; // Member role parameter is wrong (listGroups)
+    public static final int GROUP_NAME_ALREADY_EXISTS = 17;
+    public static final int TASK_NOT_OF_GROUP = 18; // A task is not shared with a group - manager cannot assign roles on it
+    public static final int CANNOT_SET_MANAGER_TO_ADMIN = 19; // Calling user is attempting to set MANAGER role to an ADMIN
 
 }

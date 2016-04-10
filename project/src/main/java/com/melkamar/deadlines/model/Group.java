@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
@@ -49,6 +50,7 @@ public class Group {
 
     // TODO: 02.04.2016 Added cascade-remove - if working, ok
     @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private Set<MembershipOffer> membershipOffers = new HashSet<>();
 
     public Group(){

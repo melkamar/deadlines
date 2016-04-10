@@ -138,7 +138,7 @@ public class UserAPITest {
 
     @Test
     @Transactional
-    public void getGroupsOfUser() throws WrongParameterException, UserAlreadyExistsException {
+    public void getGroupsOfUser() throws WrongParameterException, UserAlreadyExistsException, AlreadyExistsException {
         int groupsSize = 0;
 
         User user = userAPI.createUser("someuser", "password", "somename", "someemail");

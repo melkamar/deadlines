@@ -66,13 +66,13 @@ public class GroupAPITest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullParameters() throws WrongParameterException {
+    public void nullParameters() throws WrongParameterException, AlreadyExistsException {
         groupAPI.createGroup(null, null, null);
     }
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void nullFounder() throws WrongParameterException {
+    public void nullFounder() throws WrongParameterException, AlreadyExistsException {
         groupAPI.createGroup("SomeName", null, null);
     }
 
@@ -87,6 +87,14 @@ public class GroupAPITest {
 
         Assert.assertEquals(retrievedUser, retrievedGroup.getGroupMembers(MemberRole.ADMIN).iterator().next().getUser());
         Assert.assertTrue(groupMemberHelper.getGroupMember(retrievedUser, retrievedGroup).getRole() == MemberRole.ADMIN);
+    }
+
+    @Test(expected = AlreadyExistsException.class)
+    @Transactional
+    public void duplicateName() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
+        User user = userAPI.createUser("GroupAdmin", "pwd", null, null);
+        Group group = groupAPI.createGroup("AGroup", user, null);
+        Group group2 = groupAPI.createGroup("AGroup", user, null);
     }
 
     @Test(expected = WrongParameterException.class)

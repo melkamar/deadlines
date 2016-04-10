@@ -130,18 +130,31 @@ public class TaskController {
         }
     }
 
+    /**
+     * Offers task to a list of Users and Groups.
+     * @param userId
+     * @param id
+     * @param requestBody
+     * @return
+     * @throws DoesNotExistException
+     * @throws WrongParameterException
+     */
     @RequestMapping(value = "/share/{id}", method = RequestMethod.POST)
-    public ResponseEntity shareTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskSharingRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+    public ResponseEntity shareTask(@AuthenticationPrincipal Long userId,
+                                    @PathVariable("id") Long id,
+                                    @RequestBody TaskSharingRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
 
         try {
             Task task = taskAPI.getTask(user, id);
 
-            for (User offeredTo : requestBody.getUsers()) {
+            for (Long offeredToId : requestBody.getUsers()) {
+                User offeredTo = userAPI.getUser(offeredToId);
                 sharingAPI.offerTaskSharing(user, task, offeredTo);
             }
 
-            for (Group offeredTo : requestBody.getGroups()) {
+            for (Long offeredToId : requestBody.getGroups()) {
+                Group offeredTo = groupAPI.getGroup(offeredToId);
                 sharingAPI.offerTaskSharing(user, task, offeredTo);
             }
 
@@ -170,6 +183,18 @@ public class TaskController {
         }
     }
 
+    /**
+     * Change a role of a user at a task (WATCHER/WORKER).
+     *
+     * @param userId
+     * @param id
+     * @param targetUserId
+     * @param targetGroupId
+     * @param targetRole
+     * @return
+     * @throws DoesNotExistException
+     * @throws WrongParameterException
+     */
     @RequestMapping(value = "/role/{id}", method = RequestMethod.POST)
     public ResponseEntity changeTaskRole(@AuthenticationPrincipal Long userId,
                                          @PathVariable("id") Long id,
@@ -177,29 +202,40 @@ public class TaskController {
                                          @RequestParam(value = "targetGroup", required = false) Long targetGroupId,
                                          @RequestParam(value = "newRole", required = true) String targetRole) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
-
+        Task task;
         try {
-            Task task = taskAPI.getTask(user, id);
-
-            if (targetUserId == null) { // No target user -> apply to caller
-                taskAPI.setTaskRole(user, task, TaskRole.valueOf(targetRole.toUpperCase()));
-            } else {
-                if (targetGroupId == null)
-                    throw new WrongParameterException(stringConstants.EXC_TASK_ROLE_TARGET_USER_NOT_GROUP);
-                User targetUser = userAPI.getUser(targetUserId);
-                Group targetGroup = groupAPI.getGroup(targetGroupId);
-                taskAPI.setTaskRole(targetUser, task, TaskRole.valueOf(targetRole.toUpperCase()), user, targetGroup);
-            }
-
-            return ResponseEntity.ok(task);
-
+            task = taskAPI.getTask(user, id);
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
-        } catch (NotAllowedException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
-        } catch (GroupPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
         }
+
+        if (targetUserId == null) { // No target user -> apply to caller
+            try {
+                taskAPI.setTaskRole(user, task, TaskRole.valueOf(targetRole.toUpperCase()));
+            } catch (NotMemberOfException e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+            }
+        } else { // Target user exists -> change someone else's role
+            if (targetGroupId == null)
+                throw new WrongParameterException(stringConstants.EXC_TASK_ROLE_TARGET_USER_NOT_GROUP);
+
+            User targetUser = userAPI.getUser(targetUserId);
+            Group targetGroup = groupAPI.getGroup(targetGroupId);
+
+            // TODO: 10.04.2016 Check if FORBIDDEN is okay for this use (or use BAD REQUEST?)
+
+            try {
+                taskAPI.setTaskRole(targetUser, task, TaskRole.valueOf(targetRole.toUpperCase()), user, targetGroup);
+            } catch (NotMemberOfException e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+            } catch (GroupPermissionException e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+            } catch (NotAllowedException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+            }
+        }
+
+        return ResponseEntity.ok(task);
     }
 
     @RequestMapping(value = "/report/{id}", method = RequestMethod.POST)
