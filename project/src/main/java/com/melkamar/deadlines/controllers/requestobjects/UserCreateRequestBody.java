@@ -1,10 +1,10 @@
-package com.melkamar.deadlines.controllers.stubs;
+package com.melkamar.deadlines.controllers.requestobjects;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 08.04.2016 11:10
  */
-public class UserStub {
+public class UserCreateRequestBody {
     private String username;
     private String password;
     private String name;

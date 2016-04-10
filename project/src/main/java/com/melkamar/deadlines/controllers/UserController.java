@@ -1,22 +1,16 @@
 package com.melkamar.deadlines.controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.melkamar.deadlines.config.ErrorCodes;
-import com.melkamar.deadlines.controllers.stubs.UserStub;
-import com.melkamar.deadlines.controllers.views.JsonViews;
+import com.melkamar.deadlines.controllers.requestobjects.UserCreateRequestBody;
 import com.melkamar.deadlines.exceptions.DoesNotExistException;
 import com.melkamar.deadlines.exceptions.UserAlreadyExistsException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.misc.ErrorResponse;
 import com.melkamar.deadlines.services.api.UserAPI;
-import org.hibernate.annotations.common.reflection.java.generics.CompoundTypeEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -53,9 +47,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = CTYPE_JSON, produces = CTYPE_JSON)
-    public ResponseEntity createUser(@RequestBody UserStub userStub) {
+    public ResponseEntity createUser(@RequestBody UserCreateRequestBody userCreateRequestBody) {
         try {
-            User user = userAPI.createUser(userStub.getUsername(), userStub.getPassword(), userStub.getName(), userStub.getEmail());
+            User user = userAPI.createUser(userCreateRequestBody.getUsername(), userCreateRequestBody.getPassword(), userCreateRequestBody.getName(), userCreateRequestBody.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(user);
         } catch (WrongParameterException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -78,7 +72,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.PUT, produces = CTYPE_JSON, consumes = CTYPE_JSON)
-    public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody UserStub request) {
+    public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody UserCreateRequestBody request) {
         User user = null;
         try {
             user = userAPI.getUser(userId);

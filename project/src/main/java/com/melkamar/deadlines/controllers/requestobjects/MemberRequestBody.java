@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.stubs;
+package com.melkamar.deadlines.controllers.requestobjects;
 
 import com.melkamar.deadlines.model.MemberRole;
 

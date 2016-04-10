@@ -3,9 +3,9 @@ package com.melkamar.deadlines.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
-import com.melkamar.deadlines.controllers.stubs.TaskReportRequestBody;
-import com.melkamar.deadlines.controllers.stubs.TaskSharingRequestBody;
-import com.melkamar.deadlines.controllers.stubs.TaskStub;
+import com.melkamar.deadlines.controllers.requestobjects.TaskReportRequestBody;
+import com.melkamar.deadlines.controllers.requestobjects.TaskSharingRequestBody;
+import com.melkamar.deadlines.controllers.requestobjects.TaskCreateRequestBody;
 import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.dao.processing.*;
 import com.melkamar.deadlines.exceptions.*;
@@ -102,18 +102,18 @@ public class TaskController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskStub taskStub) throws WrongParameterException, DoesNotExistException {
+    public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
         User creator = userAPI.getUser(userId);
 
-        checkIfDeadlineXorGrowing(taskStub);
+        checkIfDeadlineXorGrowing(taskCreateRequestBody);
 
         Task task;
-        if (taskStub.getDeadline() != null) {
-            task = taskAPI.createTask(creator, taskStub.getName(), taskStub.getDescription(), taskStub.getPriority(), taskStub.getWorkEstimate(),
-                    DateConvertor.dateToLocalDateTime(taskStub.getDeadline()));
+        if (taskCreateRequestBody.getDeadline() != null) {
+            task = taskAPI.createTask(creator, taskCreateRequestBody.getName(), taskCreateRequestBody.getDescription(), taskCreateRequestBody.getPriority(), taskCreateRequestBody.getWorkEstimate(),
+                    DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()));
         } else {
-            task = taskAPI.createTask(creator, taskStub.getName(), taskStub.getDescription(), taskStub.getPriority(), taskStub.getWorkEstimate(),
-                    taskStub.getGrowSpeed());
+            task = taskAPI.createTask(creator, taskCreateRequestBody.getName(), taskCreateRequestBody.getDescription(), taskCreateRequestBody.getPriority(), taskCreateRequestBody.getWorkEstimate(),
+                    taskCreateRequestBody.getGrowSpeed());
         }
 
         return ResponseEntity.ok().body(task);
@@ -135,20 +135,20 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity editTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskStub taskStub) throws DoesNotExistException, WrongParameterException {
+    public ResponseEntity editTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
 
         try {
             Task task = taskAPI.getTask(user, id);
 
-            if (taskStub.getGrowSpeed() != null) {
+            if (taskCreateRequestBody.getGrowSpeed() != null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.CANNOT_EDIT_GROWSPEED, "Growing speed of a task cannot be changed."));
             }
 
-            taskAPI.editTask(user, task, taskStub.getDescription(), DateConvertor.dateToLocalDateTime(taskStub.getDeadline()), taskStub.getWorkEstimate(), taskStub.getPriority());
+            taskAPI.editTask(user, task, taskCreateRequestBody.getDescription(), DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()), taskCreateRequestBody.getWorkEstimate(), taskCreateRequestBody.getPriority());
 
-            if (taskStub.getStatus() != null) {
-                taskAPI.setTaskStatus(user, task, taskStub.getStatus());
+            if (taskCreateRequestBody.getStatus() != null) {
+                taskAPI.setTaskStatus(user, task, taskCreateRequestBody.getStatus());
             }
 
             return ResponseEntity.ok(task);
@@ -292,9 +292,9 @@ public class TaskController {
     }
 
 
-    private void checkIfDeadlineXorGrowing(TaskStub taskStub) throws WrongParameterException {
-        if ((taskStub.getDeadline() == null && taskStub.getGrowSpeed() == null)
-                || (taskStub.getDeadline() != null && taskStub.getGrowSpeed() != null)) {
+    private void checkIfDeadlineXorGrowing(TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException {
+        if ((taskCreateRequestBody.getDeadline() == null && taskCreateRequestBody.getGrowSpeed() == null)
+                || (taskCreateRequestBody.getDeadline() != null && taskCreateRequestBody.getGrowSpeed() != null)) {
             throw new WrongParameterException(stringConstants.EXC_SET_DEADLINE_OR_GROWSPEED);
         }
     }

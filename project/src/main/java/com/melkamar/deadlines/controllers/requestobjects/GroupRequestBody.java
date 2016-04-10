@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.stubs;
+package com.melkamar.deadlines.controllers.requestobjects;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)

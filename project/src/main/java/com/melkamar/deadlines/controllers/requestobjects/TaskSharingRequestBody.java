@@ -1,7 +1,4 @@
-package com.melkamar.deadlines.controllers.stubs;
-
-import com.melkamar.deadlines.model.Group;
-import com.melkamar.deadlines.model.User;
+package com.melkamar.deadlines.controllers.requestobjects;
 
 import java.util.List;
 
