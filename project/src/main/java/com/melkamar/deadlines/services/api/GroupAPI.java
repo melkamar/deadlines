@@ -1,7 +1,6 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.config.StringConstants;
-import com.melkamar.deadlines.dao.processing.GroupFilter;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
@@ -20,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -97,13 +98,34 @@ public class GroupAPI {
 
     /**
      * Lists all existing groups.
-     * @param filter Filter of groups to apply. If null, all groups are listed.
      * @return List of {@link Group}
      */
-    public List<Group> listGroups(GroupFilter filter, Object... params) {
-        if (filter == null) return groupDAO.findAll();
-        return filter.getGroups(params);
+    @Transactional
+    public List<Group> listGroups(){
+        return groupDAO.findAll();
     }
+
+    /**
+     * Lists all groups where User is a member.
+     * @param user
+     * @return List of {@link Group}
+     */
+    @Transactional
+    public List<Group> listGroups(User user){
+        return groupDAO.findByMembers_User(user);
+    }
+
+    /**
+     * Lists all groups where User has a role.
+     * @param user
+     * @param role
+     * @return List of {@link Group}
+     */
+    @Transactional
+    public List<Group> listGroups(User user, MemberRole role){
+        return groupDAO.findByMembers_UserAndRole(user, role);
+    }
+
 
     public Group getGroup(Long groupId) {
         return groupDAO.findById(groupId);
