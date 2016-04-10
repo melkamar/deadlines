@@ -1,10 +1,12 @@
 package com.melkamar.deadlines.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.controllers.stubs.TaskReportRequestBody;
 import com.melkamar.deadlines.controllers.stubs.TaskSharingRequestBody;
 import com.melkamar.deadlines.controllers.stubs.TaskStub;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.dao.processing.*;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
@@ -59,8 +61,10 @@ public class TaskController {
      * @return
      * @throws DoesNotExistException
      */
+    @JsonView(JsonViews.Controller.TaskList.class)
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity listTasks(@AuthenticationPrincipal Long userId,
+                                    @RequestParam(value = "group", required = false) Long groupId,
                                     @RequestParam(value = "order", required = false) String order,
                                     @RequestParam(value = "orderdirection", required = false) String orderDirection,
                                     @RequestParam(value = "rolefilter", required = false) String roleFilter,
@@ -78,7 +82,22 @@ public class TaskController {
             return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_FILTER_VALUE, e.getMessage()));
         }
 
-        List<Task> tasks = taskAPI.listTasks(user, taskOrdering, filters);
+        List<Task> tasks;
+        if (groupId == null){
+            tasks = taskAPI.listTasks(user, taskOrdering, filters);
+        } else {
+            Group group = groupAPI.getGroup(groupId);
+
+            try {
+                tasks = groupAPI.listTasks(user, group, taskOrdering, filters);
+            } catch (NotMemberOfException e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+            } catch (GroupPermissionException e) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+            }
+        }
+
+
         return ResponseEntity.ok().body(tasks);
     }
 
@@ -101,6 +120,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @JsonView(JsonViews.Controller.TaskDetails.class)
     public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
 

@@ -1,6 +1,9 @@
 package com.melkamar.deadlines.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 
 import javax.persistence.*;
 
@@ -17,11 +20,12 @@ public class GroupMember {
     @Id
     @Column(name = COL_GROUP_MEMBER_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = User.COL_USER_ID)
-    @JsonBackReference
+    @JsonView(JsonViews.GroupMember.Basic.class)
     private final User user;
 
     @ManyToOne(cascade = CascadeType.MERGE)
@@ -31,6 +35,7 @@ public class GroupMember {
 
     @Column(name = COL_ROLE)
     @Enumerated(EnumType.STRING)
+    @JsonView(JsonViews.GroupMember.Basic.class)
     private MemberRole role;
 
     public GroupMember(User user, Group group, MemberRole role) {

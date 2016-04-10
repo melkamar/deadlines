@@ -1,8 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -36,46 +35,57 @@ public abstract class Task {
     @Id
     @Column(name = COL_TASK_ID, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(JsonViews.Task.Minimal.class)
     protected Long id;
 
     @Column(name = COL_TASK_DATE_CREATED, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonView(JsonViews.Task.Detail.class)
     protected final Date dateCreated;
 
     @Column(name = COL_TASK_NAME, nullable = false)
+    @JsonView(JsonViews.Task.Minimal.class)
     protected String name;
 
     @Column(name = COL_TASK_DESCRIPTION)
+    @JsonView(JsonViews.Task.Detail.class)
     protected String description;
 
     @Column(name = COL_TASK_WORK_ESTIMATE)
+    @JsonView(JsonViews.Task.Detail.class)
     protected Double workEstimate; // In manhours
 
     @Column(name = COL_TASK_PRIORITY)
     @Enumerated(EnumType.ORDINAL)
+    @JsonView(JsonViews.Task.Basic.class)
     protected Priority priority;
 
     @Column(name = COL_TASK_STATUS)
     @Enumerated(EnumType.STRING)
+    @JsonView(JsonViews.Task.Minimal.class)
     protected TaskStatus status;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = Urgency.COL_URGENCY_ID)
+    @JsonView(JsonViews.Task.Basic.class)
     protected Urgency urgency;
 
     @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name = TaskWork.COL_OWNING_TASK_ID, referencedColumnName = COL_TASK_ID)
+    @JsonView(JsonViews.Task.Detail.class)
     protected Set<TaskWork> workReports = new HashSet<>();
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.MERGE)
-    @JsonManagedReference
+    @JsonView(JsonViews.Task.Detail.class)
     protected Set<TaskParticipant> participants = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = COL_JTABLE_TASK_GROUP,
             joinColumns = {@JoinColumn(name = COL_TASK_ID)},
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})
+    @JsonProperty("groups")
+    @JsonView(JsonViews.Task.Detail.class)
     private Set<Group> sharedGroups = new HashSet<>();
 
     public Task() {
@@ -106,6 +116,7 @@ public abstract class Task {
      *
      * @return The number of manhours worked.
      */
+    @JsonView(JsonViews.Task.Detail.class)
     public double getManhoursWorked() {
         double total = 0;
         for (TaskWork work : workReports) {
@@ -241,6 +252,7 @@ public abstract class Task {
      *
      * @return Real number between 0 and 1 indicating the percentage worked, or -1 indicating no estimate was set.
      */
+    @JsonView(JsonViews.Task.Basic.class)
     public double getWorkedPercentage() {
         if (workEstimate == 0) return -1;
 
@@ -256,5 +268,14 @@ public abstract class Task {
     }
 
     public abstract void updateUrgency(UrgencyComputer computer);
+
+    @JsonView(JsonViews.Task.Minimal.class)
+    @JsonProperty("type")
+    public abstract String taskTypeString();
+
+
+//    public String getType(){
+//        return this.taskTypeString();
+//    }
 }
 

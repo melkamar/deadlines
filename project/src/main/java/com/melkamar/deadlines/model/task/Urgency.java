@@ -1,6 +1,8 @@
 package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,14 +20,17 @@ public class Urgency {
     @Id
     @Column(name = COL_URGENCY_ID, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     @Column(name = COL_LAST_UPDATE, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonView(JsonViews.Always.class)
     private Date lastUpdate;
 
     @Column(name = COL_VALUE, nullable = false)
+    @JsonView(JsonViews.Always.class)
     private double value;
 
     public Urgency() {

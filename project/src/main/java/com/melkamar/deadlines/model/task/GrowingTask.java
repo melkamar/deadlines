@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 
 import javax.persistence.Column;
@@ -17,6 +19,7 @@ public class GrowingTask extends Task {
     public static final String COL_GROW_SPEED = "GROW_SPEED";
 
     @Column(name = COL_GROW_SPEED)
+    @JsonView(JsonViews.Always.class)
     protected Double growspeed;
 
     public GrowingTask() {
@@ -38,6 +41,11 @@ public class GrowingTask extends Task {
     @Override
     public void updateUrgency(UrgencyComputer computer) {
         this.urgency.update(computer.computeGrowingTaskUrgency(this));
+    }
+
+    @Override
+    public String taskTypeString() {
+        return "GROWING";
     }
 
     public Double getGrowspeed() {

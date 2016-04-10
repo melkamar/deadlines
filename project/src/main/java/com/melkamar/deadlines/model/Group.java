@@ -8,11 +8,9 @@ import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.task.Task;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,28 +28,32 @@ public class Group {
     @Id
     @Column(name = COL_GROUP_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(JsonViews.Base.class)
+    @JsonView(JsonViews.Always.class)
     Long id;
 
     @Column(name = COL_GROUP_DESCRIPTION)
+    @JsonView(JsonViews.Group.Details.class)
     String description;
 
     @Column(name = COL_GROUP_NAME, unique = true, nullable = false)
-    @JsonView(JsonViews.Base.class)
+    @JsonView(JsonViews.Always.class)
     final String name;
 
     @ManyToMany(mappedBy = "groups")
+    @JsonView(JsonViews.Group.Details.class)
     private Set<TaskParticipant> participants = new HashSet<>();
 
     @ManyToMany(mappedBy = "sharedGroups")
+    @JsonView(JsonViews.Group.Details.class)
     private Set<Task> sharedTasks = new HashSet<>();
 
     @OneToMany(mappedBy = "group")
-    @JsonManagedReference
+    @JsonView(JsonViews.Group.Details.class)
     private Set<GroupMember> members = new HashSet<>();
 
     // TODO: 02.04.2016 Added cascade-remove - if working, ok
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private Set<GroupTaskSharingOffer> taskOffers = new HashSet<>();
 
     // TODO: 02.04.2016 Added cascade-remove - if working, ok
@@ -190,23 +192,23 @@ public class Group {
         return name.hashCode();
     }
 
-    @JsonView(JsonViews.GroupShowAdminInfo.class)
+    @JsonView(JsonViews.Group.AdminInfo.class)
     public AdminInfo adminInfo(){
         User admin = this.getGroupMembers(MemberRole.ADMIN).iterator().next().getUser();
         return new AdminInfo(admin.getId(), admin.getUsername(), admin.getName(), admin.getEmail());
     }
 
     class AdminInfo{
-        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonView(JsonViews.Group.AdminInfo.class)
         @JsonProperty
         Long id;
-        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonView(JsonViews.Group.AdminInfo.class)
         @JsonProperty
         String username;
-        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonView(JsonViews.Group.AdminInfo.class)
         @JsonProperty
         String name;
-        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonView(JsonViews.Group.AdminInfo.class)
         @JsonProperty
         String email;
 

@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model.offer;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.User;
 
 import javax.persistence.*;
@@ -16,10 +18,12 @@ public abstract class Offer {
     @Id
     @Column(name = "OFFER_ID")
     @GeneratedValue(strategy = GenerationType.TABLE)
+    @JsonView(JsonViews.Offer.Basic.class)
     protected Long id;
 
     @ManyToOne
     @JoinColumn(name = COL_OFFERER_ID, referencedColumnName = User.COL_USER_ID)
+    @JsonView(JsonViews.Offer.Basic.class)
     final protected User offerer;
 
     public Offer(User offerer) {

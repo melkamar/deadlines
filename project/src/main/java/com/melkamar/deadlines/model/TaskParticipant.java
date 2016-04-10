@@ -3,6 +3,8 @@ package com.melkamar.deadlines.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
 
@@ -28,32 +30,31 @@ public class TaskParticipant {
     @Id
     @Column(name = COL_TASKPARTICIPANT_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(name = COL_SOLO)
-    @JsonIgnore
+    @JsonView(JsonViews.TaskParticipant.Basic.class)
     private Boolean solo = false;
 
     @Column(name = COL_ROLE)
     @Enumerated(EnumType.STRING)
+    @JsonView(JsonViews.TaskParticipant.Basic.class)
     private TaskRole role;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = User.COL_USER_ID)
-    @JsonBackReference
+    @JsonView(JsonViews.TaskParticipant.Basic.class)
     private final User user;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = Task.COL_TASK_ID)
-    @JsonBackReference
     private final Task task;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = COL_JTABLE_TASKPARTICIPANT_GROUP,
             joinColumns = {@JoinColumn(name = COL_TASKPARTICIPANT_ID)},
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})
-    @JsonIgnore
+//    @JsonView(JsonViews.TaskParticipant.Basic.class)   -- No need to show group, it will be shown in sharedGroups of Task
     private Set<Group> groups = new HashSet<>();
 
     /*************************************************************/
@@ -126,18 +127,32 @@ public class TaskParticipant {
 
     /******************************************************************************************************************/
     // Getters used by Jackson for serializing
-    @JsonProperty(value = "userId")
-    public Long getUserId() {
-        return this.getUser().getId();
+//    @JsonProperty(value = "userId")
+//    @JsonView(JsonViews.Always.class)
+//    public Long getUserId() {
+//        return this.getUser().getId();
+//    }
+//
+//    @JsonProperty(value = "username")
+//    @JsonView(JsonViews.Always.class)
+//    public String getUserUsername() {
+//        return this.getUser().getUsername();
+//    }
+//
+//    @JsonProperty(value = "groupIds")
+//    @JsonView(JsonViews.Always.class)
+//    public List<Long> getGroupsIds() {
+//        return this.getGroups().stream().map(Group::getId).collect(Collectors.toList());
+//    }
+    @JsonProperty("taskId")
+    @JsonView(JsonViews.TaskParticipant.ShowTaskId.class)
+    public Long getTaskId() {
+        return this.task.getId();
     }
 
-    @JsonProperty(value = "username")
-    public String getUserUsername() {
-        return this.getUser().getUsername();
-    }
-
-    @JsonProperty(value = "groupIds")
-    public List<Long> getGroupsIds() {
-        return this.getGroups().stream().map(Group::getId).collect(Collectors.toList());
+    @JsonProperty("taskName")
+    @JsonView(JsonViews.TaskParticipant.ShowTaskName.class)
+    public String getTaskName() {
+        return this.task.getName();
     }
 }

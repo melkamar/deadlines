@@ -1,8 +1,10 @@
 package com.melkamar.deadlines.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.controllers.stubs.OfferResolutionRequestBody;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
@@ -46,6 +48,7 @@ public class OfferController {
 
 
     @RequestMapping(value = "/task/user", method = RequestMethod.GET)
+    @JsonView(JsonViews.Controller.OfferList.class)
     public ResponseEntity listUserTaskOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
         Set<UserTaskSharingOffer> offers = sharingAPI.listTaskOffersOfUser(user);
@@ -73,6 +76,7 @@ public class OfferController {
         }
     }
 
+    @JsonView(JsonViews.Controller.OfferList.class)
     @RequestMapping(value = "/membership", method = RequestMethod.GET)
     public ResponseEntity listMembershipOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
@@ -106,6 +110,7 @@ public class OfferController {
 
     }
 
+    @JsonView(JsonViews.Controller.OfferList.class)
     @RequestMapping(value = "/task/group/{id}", method = RequestMethod.GET)
     public ResponseEntity listGroupTaskOffers(@AuthenticationPrincipal Long userId,
                                               @PathVariable("id") Long id) throws DoesNotExistException {

@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model.offer;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -22,6 +24,7 @@ public class MembershipOffer extends Offer {
 
     @ManyToOne
     @JoinColumn(name = Group.COL_GROUP_ID)
+    @JsonView(JsonViews.Offer.Basic.class)
     private final Group group;
 
     public User getOfferedTo() {

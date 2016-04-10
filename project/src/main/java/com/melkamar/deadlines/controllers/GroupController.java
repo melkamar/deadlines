@@ -56,7 +56,7 @@ public class GroupController {
      * @return
      * @throws DoesNotExistException
      */
-    @JsonView(JsonViews.GroupBasic.class)
+    @JsonView(JsonViews.Controller.GroupList.class)
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity listGroups(@AuthenticationPrincipal Long userId,
                                      @RequestParam(value = "role", required = false) String role) throws DoesNotExistException {
@@ -90,6 +90,7 @@ public class GroupController {
         }
     }
 
+    @JsonView(JsonViews.Controller.GroupDetails.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity groupDetails(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId) throws DoesNotExistException {
@@ -252,7 +253,7 @@ public class GroupController {
 
     private MemberRole paramToMemberRole(String param) throws WrongParameterException {
         try {
-            return MemberRole.valueOf(param);
+            return MemberRole.valueOf(param.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_PARAM_MEMBER_ROLE_INVALID, param));
         }

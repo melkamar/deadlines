@@ -1,6 +1,8 @@
 package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 
 import javax.persistence.*;
@@ -18,6 +20,7 @@ public class DeadlineTask extends Task {
     @Column(name = COL_DATE_DEADLINE)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonView(JsonViews.Task.Basic.class)
     protected Date deadline;
 
     public DeadlineTask() {
@@ -41,6 +44,11 @@ public class DeadlineTask extends Task {
     @Override
     public void updateUrgency(UrgencyComputer computer) {
         this.urgency.update(computer.computeDeadlineTaskUrgency(this));
+    }
+
+    @Override
+    public String taskTypeString() {
+        return "DEADLINE";
     }
 
     public Date getDeadline() {

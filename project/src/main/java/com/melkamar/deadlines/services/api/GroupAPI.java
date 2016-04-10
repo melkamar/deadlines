@@ -3,6 +3,8 @@ package com.melkamar.deadlines.services.api;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
+import com.melkamar.deadlines.dao.processing.TaskFilter;
+import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
@@ -51,6 +53,8 @@ public class GroupAPI {
     private TaskParticipantDAOHibernate taskparticipantDAO;
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
+    @Autowired
+    private TaskAPI taskAPI;
 
 
     @Transactional
@@ -167,6 +171,12 @@ public class GroupAPI {
         return group;
     }
 
+    public List<Task> listTasks(User user, Group group, TaskOrdering ordering, TaskFilter... filters) throws NotMemberOfException, GroupPermissionException {
+        if (!permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MEMBER, user, group));
+
+        return taskAPI.listTasks(group, ordering, filters);
+    }
 
 
     /**

@@ -36,15 +36,17 @@ public class User implements UserDetails {
     @Column(name = COL_USER_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
+    @JsonView(JsonViews.User.Minimal.class)
     private Long id;
 
     @JsonProperty
     @Column(name = COL_USERNAME, nullable = false, unique = true)
-//    @JsonView(JsonViews.Public.class)
+    @JsonView(JsonViews.User.Minimal.class)
     private final String username;
 
     @JsonProperty
     @Column(name = COL_EMAIL)
+    @JsonView(JsonViews.User.Basic.class)
     private String email;
 
     @JsonIgnore
@@ -57,6 +59,7 @@ public class User implements UserDetails {
 
     @JsonProperty
     @Column(name = COL_NAME)
+    @JsonView(JsonViews.User.Basic.class)
     private String name;
 
     /* RELATIONS */
