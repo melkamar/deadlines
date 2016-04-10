@@ -2,6 +2,7 @@ package com.melkamar.deadlines.dao.group;
 
 import com.google.common.collect.Lists;
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,10 @@ public class GroupDAOHibernate implements GroupDAO {
     @Override
     public List<Group> findByMembers_User(User user) {
         return groupRepository.findByMembers_User(user);
+    }
+
+    @Override
+    public List<Group> findByMembers_UserAndRole(User user, MemberRole role) {
+        return groupRepository.findByMembers_UserAndMembers_Role(user, role);
     }
 }

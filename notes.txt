@@ -7,3 +7,6 @@ With @OneToMany unidirectional association you need to manually define the colum
 @Transactional is by default "PROPAGATION_REQUIRED", which means that it will "latch" onto an existing (parent) transaction if there is one, or create its own, if there is no existing.
 
 to prevent recursive JSON marshalling, use @JsonManagedReference and @JsonBackReference
+
+
+NotMemberOf - FORBIDDEN

@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.dao.group;
 
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface GroupDAO {
     Group findById(Long id);
     List<Group> findAll();
     List<Group> findByMembers_User(User user);
+    List<Group> findByMembers_UserAndRole(User user, MemberRole role);
 }

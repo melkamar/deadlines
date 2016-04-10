@@ -9,7 +9,6 @@ import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.misc.ErrorResponse;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
-import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.api.GroupAPI;
@@ -24,10 +23,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Set;
 
 /**

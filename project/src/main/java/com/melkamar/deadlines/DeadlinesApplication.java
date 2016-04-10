@@ -49,6 +49,8 @@ public class DeadlinesApplication {
 
     @PostConstruct
     public void doStuff() {
+        boolean fillSampleData = false;
+        if (!fillSampleData) return;
         try {
             User user = userAPI.createUser("abc", "heya", "dummy user", null);
             Task task = taskAPI.createTask(user, "Something", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
