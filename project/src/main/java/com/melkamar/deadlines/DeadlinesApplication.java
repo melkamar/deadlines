@@ -49,7 +49,10 @@ public class DeadlinesApplication {
 
     @PostConstruct
     public void doStuff() {
-        boolean fillSampleData = false;
+//        boolean fillSampleData = false;
+        boolean fillSampleData = true;
+
+
         if (!fillSampleData) return;
         try {
             User user = userAPI.createUser("abc", "heya", "dummy user", null);

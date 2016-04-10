@@ -240,6 +240,13 @@ public class TaskAPI {
     }
 
     @Transactional
+    public Task getTask(Long taskId) throws DoesNotExistException {
+        Task task = taskDAO.findById(taskId);
+        if (task==null) throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_TASK, taskId));
+        return task;
+    }
+
+    @Transactional
     public Task getTask(User executor, Long taskId) throws DoesNotExistException, NotMemberOfException {
         Task task = taskDAO.findById(taskId);
         if (task==null) throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_TASK, taskId));

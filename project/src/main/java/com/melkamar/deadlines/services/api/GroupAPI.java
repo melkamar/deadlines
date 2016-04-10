@@ -226,7 +226,7 @@ public class GroupAPI {
 
 
         if (group.getGroupMembers(MemberRole.ADMIN).iterator().next().equals(groupMemberToRemove))
-            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_ADMIN_LEAVE);
+            throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_ADMIN_LEAVE_OR_REMOVE);
 
         // Remove each TaskParticipant entry of the removed user from the group
         for (TaskParticipant taskParticipant : taskparticipantDAO.findByUserAndGroups(groupMemberToRemove.getUser(), group)) {

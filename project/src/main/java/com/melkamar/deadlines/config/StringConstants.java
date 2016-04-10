@@ -49,7 +49,7 @@ public class StringConstants {
     public final String EXC_GROUP_PERMISSION = "Permission denied. Operation requires {0}. User [{1}] is not that in group [{2}].";
 
     public final String EXC_NOT_ALLOWED_DEMOTE_ADMIN = "Admin cannot be demoted to manager. He needs to grant Admin role to someone else first.";
-    public final String EXC_NOT_ALLOWED_ADMIN_LEAVE = "Admin cannot leave the group. Either give the Admin rights to another user, or delete the group.";
+    public final String EXC_NOT_ALLOWED_ADMIN_LEAVE_OR_REMOVE = "Admin cannot leave or be removed from the group. Either give the Admin rights to another user, or delete the group.";
     public final String EXC_NOT_ALLOWED_SETING_DEADLINE_ON_GROWING = "Deadline cannot be set on a non-DeadlineTask.";
     public final String EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE = "Urgency cannot be reset on a DeadlineTask.";
 
