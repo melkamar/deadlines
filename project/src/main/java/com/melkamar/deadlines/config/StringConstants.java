@@ -25,6 +25,8 @@ public class StringConstants {
 
     public final String EXC_PARAM_ALL_NEED_NOT_NULL = "All parameters need to be not null.";
 
+    public final String EXC_BODY_MUST_HAVE_FIELD = "Request body must contain field: {0}";
+
     public final String EXC_ALREADY_EXISTS_USER_NAME = "User with username [{0}] already exists.";
     public final String EXC_ALREADY_EXISTS_TASK_PARTICIPANT = "Task participant already exists! {0} -- {1}";
     public final String EXC_ALREADY_EXISTS_GROUP_MEMBER = "Group member already exists! {0} -- {1}";
@@ -52,6 +54,7 @@ public class StringConstants {
     public final String EXC_DOES_NOT_EXIST_USER_ID = "User with id {0} does not exist.";
     public final String EXC_DOES_NOT_EXIST_USERNAME = "User with username {0} does not exist.";
     public final String EXC_DOES_NOT_EXIST_TASK = "Task with id {0} does not exist.";
+    public final String EXC_DOES_NOT_EXIST_OFFER = "Offer with id {0} does not exist.";
 
     public final String EXC_TASK_ROLE_TARGET_USER_NOT_GROUP = "targetGroup=[id] must be supplied with targetUser.";
     public final String EXC_BODY_MUST_ = "targetGroup=[id] must be supplied with targetUser.";

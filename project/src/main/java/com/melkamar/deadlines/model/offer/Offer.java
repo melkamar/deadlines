@@ -33,4 +33,8 @@ public abstract class Offer {
     public User getOfferer() {
         return offerer;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

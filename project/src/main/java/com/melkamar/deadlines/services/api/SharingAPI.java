@@ -5,10 +5,7 @@ import com.melkamar.deadlines.dao.offer.OfferDAOHibernate;
 import com.melkamar.deadlines.dao.offer.grouptask.GroupTaskSharingDAOHibernate;
 import com.melkamar.deadlines.dao.offer.membership.MembershipSharingDAOHibernate;
 import com.melkamar.deadlines.dao.offer.usertask.UserTaskSharingDAOHibernate;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.GroupPermissionException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
@@ -124,6 +121,7 @@ public class SharingAPI {
     }
 
 
+    @Transactional
     public Set<UserTaskSharingOffer> listTaskOffersOfUser(User user) {
         return userTaskSharingDao.findByOfferedTo(user);
     }
@@ -140,14 +138,15 @@ public class SharingAPI {
         return membershipSharingDao.findByOfferedTo(user);
     }
 
-    public void resolveTaskSharingOffer(User user, UserTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException {
+    @Transactional
+    public Task resolveTaskSharingOffer(User user, UserTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException {
         permissionHandler.checkOfferOwnership(user, offer);
         // Passed - permission to do this ok
 
         if (!accept) {
             // If declined, delete
             deleteOffer(offer);
-            return;
+            return null;
         }
 
         // TODO: 01.04.2016 See if it works with this commented out. It should not matter if the user is already on task, as nothing will get rewritten
@@ -155,10 +154,10 @@ public class SharingAPI {
 //            deleteOffer(offer);
 //            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_PARTICIPANT, user, offer.getTaskOffered()));
 //        } else {
-        taskParticipantHelper.editOrCreateTaskParticipant(user, offer.getTaskOffered(), TaskRole.WATCHER, null, false);
-
+        Task taskOffered = offer.getTaskOffered();
+        taskParticipantHelper.editOrCreateTaskParticipant(user, taskOffered, TaskRole.WATCHER, null, false);
         deleteOffer(offer);
-
+        return taskOffered;
 //        }
     }
 
@@ -185,18 +184,20 @@ public class SharingAPI {
         }
     }
 
-    public void resolveMembershipOffer(User user, MembershipOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
+    @Transactional
+    public Group resolveMembershipOffer(User user, MembershipOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
         permissionHandler.checkOfferOwnership(user, offer);
         // Passed - permission to do this ok
 
         if (!accept) {
             // If declined, delete
             deleteOffer(offer);
-            return;
+            return null;
         }
 
         try {
             groupAPI.addMember(offer.getOfferer(), offer.getGroup(), user);
+            return offer.getGroup();
         } catch (GroupPermissionException | AlreadyExistsException | NotMemberOfException e) {
             deleteOffer(offer);
             throw e;
@@ -245,6 +246,36 @@ public class SharingAPI {
         }
 
         return false;
+    }
+
+    @Transactional
+    public UserTaskSharingOffer getUserTaskSharingOffer(Long id) throws DoesNotExistException {
+        UserTaskSharingOffer offer = userTaskSharingDao.findById(id);
+        if (offer == null) {
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_OFFER, id));
+        } else {
+            return offer;
+        }
+    }
+
+    @Transactional
+    public MembershipOffer getMembershipOffer(Long id) throws DoesNotExistException {
+        MembershipOffer offer = membershipSharingDao.findById(id);
+        if (offer == null) {
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_OFFER, id));
+        } else {
+            return offer;
+        }
+    }
+
+    @Transactional
+    public GroupTaskSharingOffer getGroupTaskSharingOffer(Long id) throws DoesNotExistException {
+        GroupTaskSharingOffer offer = groupTaskSharingDao.findById(id);
+        if (offer == null) {
+            throw new DoesNotExistException(MessageFormat.format(stringConstants.EXC_DOES_NOT_EXIST_OFFER, id));
+        } else {
+            return offer;
+        }
     }
 
 }

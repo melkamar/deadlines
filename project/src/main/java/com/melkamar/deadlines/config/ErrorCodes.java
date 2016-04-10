@@ -18,5 +18,8 @@ public class ErrorCodes {
     public static final int USER_ALREADY_PARTICIPANT = 9; // Calling user is already a participant on a task
     public static final int USER_NOT_MEMBER_OF_GROUP = 10; // Calling user is not a member of affected group
     public static final int USER_NOT_ENOUGH_GROUP_PERMISSION = 11; // Calling user does not have enough permissions in affected group
+    public static final int OFFER_USER_NOT_OWNER = 12; // The offer is not adressed to the calling user
+    public static final int OFFER_OFFERER_NOT_PERMISSION = 13; // The original offerer does not have enough permissions anymore
+    public static final int USER_ALREADY_MEMBER = 14; // Calling user is already a member of a group
 
 }

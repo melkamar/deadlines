@@ -1,5 +1,6 @@
 package com.melkamar.deadlines.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -39,6 +40,7 @@ public class Group {
     private Set<Task> sharedTasks = new HashSet<>();
 
     @OneToMany(mappedBy = "group")
+    @JsonManagedReference
     private Set<GroupMember> members = new HashSet<>();
 
     // TODO: 02.04.2016 Added cascade-remove - if working, ok

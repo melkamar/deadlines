@@ -1,5 +1,7 @@
 package com.melkamar.deadlines.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 /**
@@ -19,10 +21,12 @@ public class GroupMember {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = User.COL_USER_ID)
+    @JsonBackReference
     private final User user;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = Group.COL_GROUP_ID)
+    @JsonBackReference
     private final Group group;
 
     @Column(name = COL_ROLE)

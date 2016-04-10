@@ -1,9 +1,6 @@
 package com.melkamar.deadlines.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -77,18 +74,20 @@ public class User implements UserDetails{
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     @JsonManagedReference
     @JsonProperty
+    @JsonIgnore
     private Set<TaskParticipant> participants = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     @JsonProperty
+    @JsonManagedReference
     private Set<GroupMember> memberAs = new HashSet<>();
 
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
-    @JsonProperty
+    @JsonIgnore
     private Set<MembershipOffer> membershipOffers = new HashSet<>();
 
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
-    @JsonProperty
+    @JsonIgnore
     private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
 
     /*************************************************************/
@@ -140,7 +139,7 @@ public class User implements UserDetails{
      * Serves as a shortcut so that it is not necessary
      * to navigate through the GroupMember.
      *
-     * @return List of Grups
+     * @return List of Gruops
      */
     public List<Group> groupsOfUserAsList() {
         return memberAs.stream().map(GroupMember::getGroup).collect(Collectors.toList());

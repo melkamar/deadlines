@@ -1,12 +1,14 @@
 package com.melkamar.deadlines;
 
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.UserAlreadyExistsException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
+import com.melkamar.deadlines.services.api.GroupAPI;
+import com.melkamar.deadlines.services.api.SharingAPI;
 import com.melkamar.deadlines.services.api.TaskAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,10 @@ import java.time.LocalDateTime;
 public class DeadlinesApplication {
     @Autowired
     private TaskAPI taskAPI;
+    @Autowired
+    private SharingAPI sharingAPI;
+    @Autowired
+    private GroupAPI groupAPI;
 
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(DeadlinesApplication.class, args);
@@ -47,11 +53,36 @@ public class DeadlinesApplication {
             User user = userAPI.createUser("abc", "heya", "dummy user", null);
             Task task = taskAPI.createTask(user, "Something", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
             taskAPI.setTaskRole(user, task, TaskRole.WORKER);
+            Group group = groupAPI.createGroup("testgroup", user, "nothing");
+
+
+            User user2 = userAPI.createUser("abcbbb", "heya", "dummy user", null);
+            User user3 = userAPI.createUser("nope", "heya", "dummy user", null);
+            Task task2 = taskAPI.createTask(user, "SomethingA", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
+            Task task3 = taskAPI.createTask(user, "SomethingB", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
+            Task task4 = taskAPI.createTask(user, "SomethingC", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
+
+            sharingAPI.offerTaskSharing(user, task2, user2);
+            sharingAPI.offerTaskSharing(user, task4, user2);
+            sharingAPI.offerTaskSharing(user, task3, user3);
+
+            sharingAPI.offerMembership(user, group, user2);
+            sharingAPI.offerTaskSharing(user, task3, group);
+
+            UserTaskSharingOffer offer = sharingAPI.getUserTaskSharingOffer(5L);
+            System.out.println(offer);
         } catch (WrongParameterException e) {
             e.printStackTrace();
         } catch (UserAlreadyExistsException e) {
             e.printStackTrace();
         } catch (NotMemberOfException e) {
+            e.printStackTrace();
+        } catch (AlreadyExistsException e) {
+            e.printStackTrace();
+        } catch (GroupPermissionException e) {
+            e.printStackTrace();
+        } catch (DoesNotExistException e) {
+            System.out.println("DOES NOT EXIST!");
             e.printStackTrace();
         }
     }
