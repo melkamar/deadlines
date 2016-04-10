@@ -171,6 +171,7 @@ public class GroupAPI {
         return group;
     }
 
+    @Transactional
     public List<Task> listTasks(User user, Group group, TaskOrdering ordering, TaskFilter... filters) throws NotMemberOfException, GroupPermissionException {
         if (!permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MEMBER, user, group));
@@ -186,6 +187,7 @@ public class GroupAPI {
      * @param group   Group to add the user to
      * @param newUser A user that should be added to the group
      */
+    @Transactional
     public void addMember(User manager, Group group, User newUser) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
         if (manager == null || group == null || newUser == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
@@ -215,6 +217,7 @@ public class GroupAPI {
      * @throws GroupPermissionException Manager does not have sufficient permissions.
      * @throws WrongParameterException  One of parameters is null.
      */
+    @Transactional
     public void removeMember(User manager, Group group, User toRemove) throws NotAllowedException, NotMemberOfException, GroupPermissionException, WrongParameterException {
         if (manager == null || group == null || toRemove == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
@@ -226,6 +229,7 @@ public class GroupAPI {
         removeMember(manager, group, toRemoveGroupMember);
     }
 
+    @Transactional
     public void removeMember(User manager, Group group, GroupMember groupMemberToRemove) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException {
         if (manager == null || group == null || groupMemberToRemove == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
@@ -254,6 +258,7 @@ public class GroupAPI {
      * @param group   Group to share the task with.
      * @param task    Task to share.
      */
+    @Transactional
     public void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
         if (manager == null || group == null || task == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
@@ -367,6 +372,7 @@ public class GroupAPI {
         groupDAO.delete(group);
     }
 
+    @Transactional
     public Set<User> getUsersOfGroup(Group group) {
         return groupMemberDAO.findByGroup(group).stream().map(GroupMember::getUser).collect(Collectors.toSet());
     }

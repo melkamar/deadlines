@@ -91,6 +91,7 @@ public class UserAPI {
      *
      * @return
      */
+    @Transactional
     public List<User> listUsers() {
         return userDAO.findAll();
     }
@@ -105,10 +106,12 @@ public class UserAPI {
      * @throws GroupPermissionException
      * @throws NotMemberOfException
      */
+    @Transactional
     public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException {
         groupAPI.removeMember(user, group, user);
     }
 
+    @Transactional
     public void leaveTask(User user, Task task) throws NotMemberOfException {
         taskParticipantHelper.removeSoloConnection(user, task);
     }

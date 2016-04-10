@@ -135,6 +135,7 @@ public class SharingAPI {
         return groupTaskSharingDao.findByOfferedTo(group);
     }
 
+    @Transactional
     public Set<MembershipOffer> listMembershipOffersOfUser(User user) {
         return membershipSharingDao.findByOfferedTo(user);
     }
