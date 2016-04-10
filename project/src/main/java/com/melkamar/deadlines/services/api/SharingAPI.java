@@ -126,6 +126,7 @@ public class SharingAPI {
         return userTaskSharingDao.findByOfferedTo(user);
     }
 
+    @Transactional
     public Set<GroupTaskSharingOffer> listTaskOffersOfGroup(User manager, Group group) throws NotMemberOfException, GroupPermissionException {
         // Check if user has enough permissions
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
@@ -161,8 +162,8 @@ public class SharingAPI {
 //        }
     }
 
-
-    public void resolveTaskSharingOffer(Group group, User manager, GroupTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
+    @Transactional
+    public Task resolveTaskSharingOffer(Group group, User manager, GroupTaskSharingOffer offer, boolean accept) throws NotMemberOfException, WrongParameterException, AlreadyExistsException, GroupPermissionException {
         permissionHandler.checkOfferOwnership(group, offer);
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER)) {
@@ -173,11 +174,12 @@ public class SharingAPI {
         if (!accept) {
             // If declined, delete
             deleteOffer(offer);
-            return;
+            return null;
         }
 
         try {
             groupAPI.addTask(manager, group, offer.getTaskOffered());
+            return offer.getTaskOffered();
         } catch (NotMemberOfException | GroupPermissionException | WrongParameterException | AlreadyExistsException e) {
             deleteOffer(offer);
             throw e;

@@ -7,10 +7,12 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.misc.ErrorResponse;
+import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.SharingAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,8 @@ public class OfferController {
     private UserAPI userAPI;
     @Autowired
     private StringConstants stringConstants;
+    @Autowired
+    private GroupAPI groupAPI;
 
 
     @RequestMapping(value = "/task/user", method = RequestMethod.GET)
@@ -52,7 +56,7 @@ public class OfferController {
         return ResponseEntity.ok(offers);
     }
 
-    @RequestMapping(value = "/task/user/resolve/{id}",method = RequestMethod.POST)
+    @RequestMapping(value = "/task/user/resolve/{id}", method = RequestMethod.POST)
     public ResponseEntity resolveUserTaskOffer(@AuthenticationPrincipal Long userId,
                                                @PathVariable("id") Long id,
                                                @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
@@ -61,7 +65,7 @@ public class OfferController {
 
         try {
             Boolean accept = requestBody.isAccept();
-            if (accept == null){
+            if (accept == null) {
                 throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
             }
 
@@ -80,7 +84,7 @@ public class OfferController {
         return ResponseEntity.ok(offers);
     }
 
-    @RequestMapping("/membership/resolve/{id}")
+    @RequestMapping(value = "/membership/resolve/{id}", method = RequestMethod.POST)
     public ResponseEntity resolveMembershipOffer(@AuthenticationPrincipal Long userId,
                                                  @PathVariable("id") Long id,
                                                  @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
@@ -89,7 +93,7 @@ public class OfferController {
 
         try {
             Boolean accept = requestBody.isAccept();
-            if (accept == null){
+            if (accept == null) {
                 throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
             }
 
@@ -105,13 +109,47 @@ public class OfferController {
 
     }
 
-    @RequestMapping("/task/group/{id}")
-    public ResponseEntity listGroupTaskOffers() {
-        throw new NotImplementedException();
+    @RequestMapping(value = "/task/group/{id}", method = RequestMethod.GET)
+    public ResponseEntity listGroupTaskOffers(@AuthenticationPrincipal Long userId,
+                                              @PathVariable("id") Long id) throws DoesNotExistException {
+        User user = userAPI.getUser(userId);
+        Group group = groupAPI.getGroup(id);
+        try {
+            Set<GroupTaskSharingOffer> offers = sharingAPI.listTaskOffersOfGroup(user, group);
+            return ResponseEntity.ok().body(offers);
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+        } catch (GroupPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+        }
     }
 
-    @RequestMapping("/task/group/{groupid}/resolve/{offerid}")
-    public ResponseEntity resolveGroupTaskOffer() {
-        throw new NotImplementedException();
+    @RequestMapping(value = "/task/group/{groupid}/resolve/{offerid}", method = RequestMethod.POST)
+    public ResponseEntity resolveGroupTaskOffer(@AuthenticationPrincipal Long userId,
+                                                @PathVariable("groupid") Long groupId,
+                                                @PathVariable("offerid") Long offerId,
+                                                @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+        User user = userAPI.getUser(userId);
+        Group group = groupAPI.getGroup(groupId);
+        GroupTaskSharingOffer offer = sharingAPI.getGroupTaskSharingOffer(offerId);
+
+        try {
+            checkResolutionRequestBody(requestBody.isAccept());
+            Task task = sharingAPI.resolveTaskSharingOffer(group, user, offer, requestBody.isAccept());
+
+            return  ResponseEntity.ok().body(task);
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.TASK_ALREADY_SHARED_WITH_GROUP, e.getMessage()));
+        } catch (GroupPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+        }
+    }
+
+    private void checkResolutionRequestBody(Boolean accept) throws WrongParameterException {
+        if (accept == null) {
+            throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
+        }
     }
 }

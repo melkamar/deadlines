@@ -21,5 +21,6 @@ public class ErrorCodes {
     public static final int OFFER_USER_NOT_OWNER = 12; // The offer is not adressed to the calling user
     public static final int OFFER_OFFERER_NOT_PERMISSION = 13; // The original offerer does not have enough permissions anymore
     public static final int USER_ALREADY_MEMBER = 14; // Calling user is already a member of a group
+    public static final int TASK_ALREADY_SHARED_WITH_GROUP = 15; // Task is already shared with a group (called on resolving TaskSharingOffer)
 
 }
