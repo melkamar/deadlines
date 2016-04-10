@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "USER")
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class User implements UserDetails{
+public class User implements UserDetails {
     public final static String COL_USER_ID = "USER_ID";
     public final static String COL_USERNAME = "USERNAME";
     public final static String COL_EMAIL = "EMAIL";
@@ -39,6 +40,7 @@ public class User implements UserDetails{
 
     @JsonProperty
     @Column(name = COL_USERNAME, nullable = false, unique = true)
+//    @JsonView(JsonViews.Public.class)
     private final String username;
 
     @JsonProperty
@@ -57,7 +59,25 @@ public class User implements UserDetails{
     @Column(name = COL_NAME)
     private String name;
 
+    /* RELATIONS */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    private Set<TaskParticipant> participants = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<GroupMember> memberAs = new HashSet<>();
+
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    private Set<MembershipOffer> membershipOffers = new HashSet<>();
+
+    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
+    @JsonIgnore
+    private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
+
+
+    /*************************************************************/
     public User() {
         this.username = null;
         this.passwordHash = null;
@@ -69,26 +89,6 @@ public class User implements UserDetails{
         this.passwordHash = hashAndSalt.hash;
         this.passwordSalt = hashAndSalt.salt;
     }
-
-    /* RELATIONS */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
-    @JsonManagedReference
-    @JsonProperty
-    @JsonIgnore
-    private Set<TaskParticipant> participants = new HashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    @JsonProperty
-    @JsonManagedReference
-    private Set<GroupMember> memberAs = new HashSet<>();
-
-    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
-    @JsonIgnore
-    private Set<MembershipOffer> membershipOffers = new HashSet<>();
-
-    @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.MERGE)
-    @JsonIgnore
-    private Set<UserTaskSharingOffer> taskOffers = new HashSet<>();
 
     /*************************************************************/
     public boolean addParticipant(TaskParticipant participant) {
@@ -111,18 +111,19 @@ public class User implements UserDetails{
         return taskOffers.add(offer);
     }
 
-    public boolean removeTaskSharingOffer(UserTaskSharingOffer offer){
+    public boolean removeTaskSharingOffer(UserTaskSharingOffer offer) {
         return taskOffers.remove(offer);
     }
 
 
-    public boolean addMembershipOffer(MembershipOffer offer){
+    public boolean addMembershipOffer(MembershipOffer offer) {
         return membershipOffers.add(offer);
     }
 
-    public boolean removeMembershipOffer(MembershipOffer offer){
+    public boolean removeMembershipOffer(MembershipOffer offer) {
         return membershipOffers.remove(offer);
     }
+
     /**
      * Lists all Tasks the User participates in.
      * Serves as a shortcut so that it is not necessary
@@ -141,7 +142,8 @@ public class User implements UserDetails{
      *
      * @return List of Gruops
      */
-    public List<Group> groupsOfUserAsList() {
+    @JsonIgnore
+    public List<Group> getGroupsOfUser() {
         return memberAs.stream().map(GroupMember::getGroup).collect(Collectors.toList());
     }
 

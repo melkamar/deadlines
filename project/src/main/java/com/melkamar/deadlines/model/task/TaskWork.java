@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.melkamar.deadlines.model.User;
 
 import javax.persistence.*;
@@ -68,5 +69,10 @@ public class TaskWork {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @JsonProperty(value = "userId")
+    public Long getUserId(){
+        return this.workedBy.getId();
     }
 }

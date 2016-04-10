@@ -1,10 +1,12 @@
 package com.melkamar.deadlines.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.controllers.stubs.GroupRequestBody;
 import com.melkamar.deadlines.controllers.stubs.MemberRequestBody;
 import com.melkamar.deadlines.controllers.stubs.MembershipOfferRequestBody;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
@@ -45,15 +47,30 @@ public class GroupController {
     private TaskAPI taskAPI;
 
 
+    /**
+     * Lists groups in the system. Based on parameters it will list all groups, only groups the calling user is a
+     * member of, or only groups in which he has a certain role.
+     *
+     * @param userId
+     * @param role
+     * @return
+     * @throws DoesNotExistException
+     */
+    @JsonView(JsonViews.GroupBasic.class)
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity listGroups(@AuthenticationPrincipal Long userId,
                                      @RequestParam(value = "role", required = false) String role) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
         if (role == null || role.isEmpty()) {
-            return ResponseEntity.ok().body(groupAPI.listGroups(user));
+            return ResponseEntity.ok().body(groupAPI.listGroups());
         } else {
             try {
-                return ResponseEntity.ok().body(groupAPI.listGroups(user, paramToMemberRole(role)));
+                if (role.toUpperCase().equals("ANY")) {
+                    return ResponseEntity.ok().body(groupAPI.listGroups(user));
+                } else {
+                    return ResponseEntity.ok().body(groupAPI.listGroups(user, paramToMemberRole(role)));
+                }
+
             } catch (WrongParameterException e) {
                 return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_MEMBERROLE_VALUE, e.getMessage()));
             }

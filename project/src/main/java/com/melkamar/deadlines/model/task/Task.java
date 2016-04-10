@@ -1,6 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
@@ -120,6 +121,7 @@ public abstract class Task {
      *
      * @return Set of Users.
      */
+    @JsonIgnore
     public Set<User> getUsersOnTask() {
         Set<User> users = new HashSet<User>(participants.size());
         users.addAll(participants.stream().map(TaskParticipant::getUser).collect(Collectors.toList()));

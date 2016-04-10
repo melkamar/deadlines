@@ -67,7 +67,7 @@ public class OfferController {
             }
 
             Task task = sharingAPI.resolveTaskSharingOffer(user, offer, accept);
-            return ResponseEntity.ok().body(task);
+            return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_USER_NOT_OWNER, e.getMessage()));
         }
@@ -95,7 +95,7 @@ public class OfferController {
             }
 
             Group group = sharingAPI.resolveMembershipOffer(user, offer, accept);
-            return ResponseEntity.ok().body(group);
+            return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_USER_NOT_OWNER, e.getMessage()));
         } catch (GroupPermissionException e) {
@@ -136,7 +136,7 @@ public class OfferController {
             checkResolutionRequestBody(requestBody.isAccept());
             Task task = sharingAPI.resolveTaskSharingOffer(group, user, offer, requestBody.isAccept());
 
-            return ResponseEntity.ok().body(task);
+            return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
         } catch (AlreadyExistsException e) {

@@ -2,6 +2,9 @@ package com.melkamar.deadlines.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.views.JsonViews;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.task.Task;
@@ -9,6 +12,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -26,12 +30,14 @@ public class Group {
     @Id
     @Column(name = COL_GROUP_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(JsonViews.Base.class)
     Long id;
 
     @Column(name = COL_GROUP_DESCRIPTION)
     String description;
 
     @Column(name = COL_GROUP_NAME, unique = true, nullable = false)
+    @JsonView(JsonViews.Base.class)
     final String name;
 
     @ManyToMany(mappedBy = "groups")
@@ -182,5 +188,33 @@ public class Group {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    @JsonView(JsonViews.GroupShowAdminInfo.class)
+    public AdminInfo adminInfo(){
+        User admin = this.getGroupMembers(MemberRole.ADMIN).iterator().next().getUser();
+        return new AdminInfo(admin.getId(), admin.getUsername(), admin.getName(), admin.getEmail());
+    }
+
+    class AdminInfo{
+        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonProperty
+        Long id;
+        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonProperty
+        String username;
+        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonProperty
+        String name;
+        @JsonView(JsonViews.GroupShowAdminInfo.class)
+        @JsonProperty
+        String email;
+
+        public AdminInfo(Long id, String username, String name, String email) {
+            this.id = id;
+            this.username = username;
+            this.name = name;
+            this.email = email;
+        }
     }
 }

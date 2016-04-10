@@ -1,7 +1,6 @@
 package com.melkamar.deadlines.services.api;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
@@ -17,7 +16,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -214,20 +212,20 @@ public class UserAPITest {
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
         Group group2 = groupAPI.createGroup("Groupname2", userAdmin, "Random description");
 
-        Assert.assertEquals(0, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(0, userMember.getGroupsOfUser().size());
         Assert.assertEquals(1, group.getGroupMembers().size());
         Assert.assertEquals(1, group2.getGroupMembers().size());
 
         groupAPI.addMember(userAdmin, group, userMember);
         groupAPI.addMember(userAdmin, group2, userMember);
 
-        Assert.assertEquals(2, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(2, userMember.getGroupsOfUser().size());
         Assert.assertEquals(2, group.getGroupMembers().size());
         Assert.assertEquals(2, group2.getGroupMembers().size());
 
         userAPI.leaveGroup(userMember, group);
 
-        Assert.assertEquals(1, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(1, userMember.getGroupsOfUser().size());
         Assert.assertEquals(1, group.getGroupMembers().size());
         Assert.assertEquals(2, group2.getGroupMembers().size());
     }
@@ -241,14 +239,14 @@ public class UserAPITest {
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
         Group group2 = groupAPI.createGroup("Groupname2", userAdmin, "Random description");
 
-        Assert.assertEquals(0, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(0, userMember.getGroupsOfUser().size());
         Assert.assertEquals(1, group.getGroupMembers().size());
         Assert.assertEquals(1, group2.getGroupMembers().size());
 
         groupAPI.addMember(userAdmin, group, userMember);
         groupAPI.addMember(userAdmin, group2, userMember);
 
-        Assert.assertEquals(2, userMember.groupsOfUserAsList().size());
+        Assert.assertEquals(2, userMember.getGroupsOfUser().size());
         Assert.assertEquals(2, group.getGroupMembers().size());
         Assert.assertEquals(2, group2.getGroupMembers().size());
 

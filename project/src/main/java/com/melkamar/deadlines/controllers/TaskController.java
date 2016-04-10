@@ -47,6 +47,18 @@ public class TaskController {
     @Autowired
     private GroupAPI groupAPI;
 
+    /**
+     * Lists tasks of the calling user.
+     * @param userId
+     * @param order
+     * @param orderDirection
+     * @param roleFilter
+     * @param typeFilter
+     * @param statusFilter
+     * @param priorityFilters
+     * @return
+     * @throws DoesNotExistException
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity listTasks(@AuthenticationPrincipal Long userId,
                                     @RequestParam(value = "order", required = false) String order,
@@ -89,7 +101,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity getTaskDetails(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
+    public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
 
         try {
@@ -176,7 +188,7 @@ public class TaskController {
 
             userAPI.leaveTask(user, task);
 
-            return ResponseEntity.ok(task);
+            return ResponseEntity.ok().build();
 
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));

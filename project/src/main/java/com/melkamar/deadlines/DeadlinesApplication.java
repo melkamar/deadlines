@@ -49,8 +49,8 @@ public class DeadlinesApplication {
 
     @PostConstruct
     public void doStuff() {
-//        boolean fillSampleData = false;
-        boolean fillSampleData = true;
+        boolean fillSampleData = false;
+//        boolean fillSampleData = true;
 
 
         if (!fillSampleData) return;

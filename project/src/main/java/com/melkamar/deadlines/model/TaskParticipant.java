@@ -1,12 +1,17 @@
 package com.melkamar.deadlines.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -23,9 +28,11 @@ public class TaskParticipant {
     @Id
     @Column(name = COL_TASKPARTICIPANT_ID)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name = COL_SOLO)
+    @JsonIgnore
     private Boolean solo = false;
 
     @Column(name = COL_ROLE)
@@ -46,6 +53,7 @@ public class TaskParticipant {
     @JoinTable(name = COL_JTABLE_TASKPARTICIPANT_GROUP,
             joinColumns = {@JoinColumn(name = COL_TASKPARTICIPANT_ID)},
             inverseJoinColumns = {@JoinColumn(name = Group.COL_GROUP_ID)})
+    @JsonIgnore
     private Set<Group> groups = new HashSet<>();
 
     /*************************************************************/
@@ -54,7 +62,7 @@ public class TaskParticipant {
      * Returns true if the group was not already present.
      * False if the group was already in the set.
      */
-    public boolean addGroup(Group group){
+    public boolean addGroup(Group group) {
         return groups.add(group);
     }
 
@@ -62,19 +70,19 @@ public class TaskParticipant {
      * Returns true if an existing group was removed from the set.
      * False if the group was not in the set.
      */
-    public boolean removeGroup(Group group){
+    public boolean removeGroup(Group group) {
         return groups.remove(group);
     }
 
     /*************************************************************/
 
 
-    public TaskParticipant(){
+    public TaskParticipant() {
         this.user = null;
         this.task = null;
     }
 
-    public TaskParticipant(User user, Task task){
+    public TaskParticipant(User user, Task task) {
         this.user = user;
         this.task = task;
     }
@@ -114,5 +122,22 @@ public class TaskParticipant {
 
     public void setSolo(Boolean solo) {
         this.solo = solo;
+    }
+
+    /******************************************************************************************************************/
+    // Getters used by Jackson for serializing
+    @JsonProperty(value = "userId")
+    public Long getUserId() {
+        return this.getUser().getId();
+    }
+
+    @JsonProperty(value = "username")
+    public String getUserUsername() {
+        return this.getUser().getUsername();
+    }
+
+    @JsonProperty(value = "groupIds")
+    public List<Long> getGroupsIds() {
+        return this.getGroups().stream().map(Group::getId).collect(Collectors.toList());
     }
 }
