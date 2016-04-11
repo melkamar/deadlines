@@ -76,4 +76,6 @@ public class StringConstants {
     public final static String FILTER_PRIORITY_3 = "3";
     public final static String FILTER_PRIORITY_4 = "4";
     public final static String FILTER_PRIORITY_5 = "5";
+
+    public final static String CONTENT_TYPE_APP_JSON = "application/json";
 }

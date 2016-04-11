@@ -7,12 +7,14 @@ import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.SharingAPI;
 import com.melkamar.deadlines.services.api.TaskAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
+import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
 import com.melkamar.deadlines.utils.JsonPrettyPrint;
 import com.melkamar.deadlines.utils.RandomString;
 import org.junit.Assert;
@@ -29,6 +31,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,6 +70,7 @@ public class UserControllerIntegrationTest {
     Group group1;
     Group group2;
     Group group3;
+    Group group4;
 
     Task task1;
     Task task2;
@@ -95,12 +100,13 @@ public class UserControllerIntegrationTest {
         user2 = userAPI.createUser("User2", "pwd", null, null);
         user3 = userAPI.createUser("User3", "pwd", RandomString.get("Name "), RandomString.getEmail());
 //
-//        group1 = groupAPI.createGroup("Group1", user1, RandomString.get("Description "));
-//        group2 = groupAPI.createGroup("Group2", user3, RandomString.get("Description "));
-//        group3 = groupAPI.createGroup("Group3", user2, RandomString.get("Description "));
+        group1 = groupAPI.createGroup("Group1", user1, RandomString.get("Description "));
+        group4 = groupAPI.createGroup("Group4", user1, RandomString.get("Description "));
+        group2 = groupAPI.createGroup("Group2", user3, RandomString.get("Description "));
+        group3 = groupAPI.createGroup("Group3", user2, RandomString.get("Description "));
 //
 //
-//        task1 = taskAPI.createTask(user1, "Task1", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+        task1 = taskAPI.createTask(user1, "Task1", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
 //        task2 = taskAPI.createTask(user1, "Task2", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
 //        task3 = taskAPI.createTask(user1, "Task3", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
 //        task4 = taskAPI.createTask(user1, "Task4", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
@@ -237,25 +243,49 @@ public class UserControllerIntegrationTest {
 //        System.out.println(JsonPrettyPrint.prettyPrint(response));
 //    }
 //
-//    /**
-//     * Get all tasks of the logged user.
-//     */
-//    @Transactional
-//    @Test
-//    public void taskGet() throws Exception {
-//        final String url = "/task";
-//
-//        MvcResult result = mvc.perform(get(url)
-//                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-//        )
+    /**
+     * Get all tasks of the logged user.
+     */
+    @Transactional
+    @Test
+    public void taskGet() throws Exception {
+        final String url = "/task";
+
+        MvcResult result = mvc.perform(get(url)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrint.prettyPrint(response));
+    }
+
+    @Transactional
+    @Test
+    public void taskPost() throws Exception {
+        final String url = "/task";
+        final String strcontent = "{\"name\":\"sometask\", \"description\":\"just stuff\",\"priority\":\"LOW\", \"workEstimate\":3,\"hoursToPeak\":12.5, \"groupIds\":["+group1.getId()+","+group4.getId()+"]}";
+
+        MvcResult result = mvc.perform(post(url)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(strcontent)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
 //                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String response = result.getResponse().getContentAsString();
-//        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
-//    }
-//
+                .andReturn();
+
+        for (String headername: result.getResponse().getHeaderNames()){
+            System.out.println(headername+":"+result.getResponse().getHeader(headername));
+        }
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrint.prettyPrint(response));
+
+    }
+
+
 //    /**
 //     * Get all tasks of a group of the logged user.
 //     */
@@ -275,24 +305,24 @@ public class UserControllerIntegrationTest {
 //        System.out.println(JsonPrettyPrint.prettyPrint(response));
 //    }
 //
-//    /**
-//     * Get all groups in the system.
-//     */
-//    @Transactional
-//    @Test
-//    public void groupGet() throws Exception {
-//        final String url = "/group";
-//
-//        MvcResult result = mvc.perform(get(url)
-//                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-//        )
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String response = result.getResponse().getContentAsString();
-//        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
-//    }
+    /**
+     * Get all groups in the system.
+     */
+    @Transactional
+    @Test
+    public void groupGet() throws Exception {
+        final String url = "/group";
+
+        MvcResult result = mvc.perform(get(url)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrint.prettyPrint(response));
+    }
 //
 //    /**
 //     * Get all groups of the logged user
@@ -388,23 +418,20 @@ public class UserControllerIntegrationTest {
 //    }
 //
 //
-//    /**
-//     * Get task sharing offers of the logged user.
-//     */
-//    @Transactional
-//    @Test
-//    public void taskIdGet() throws Exception {
-//        final String url = "/task/"+task1.getId();
-//
-//        MvcResult result = mvc.perform(get(url)
-//                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-//        )
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String response = result.getResponse().getContentAsString();
-//        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
-//    }
+    @Transactional
+    @Test
+    public void taskIdGet() throws Exception {
+        final String url = "/task/"+task1.getId();
+
+        MvcResult result = mvc.perform(get(url)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrint.prettyPrint(response));
+    }
 
 }

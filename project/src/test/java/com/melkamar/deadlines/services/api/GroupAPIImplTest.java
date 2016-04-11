@@ -24,7 +24,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -207,11 +209,11 @@ public class GroupAPIImplTest {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
-        Set<Group> groupSet = new HashSet<>();
-        groupSet.add(group);
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
 
-        Task task = taskAPI.createTask(userAdmin, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
-        Task task2 = taskAPI.createTask(userAdmin, "TestTask2", null, null, 0, groupSet, LocalDateTime.now().plusDays(101));
+        Task task = taskAPI.createTask(userAdmin, "TestTask", null, null, 0, groupList, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(userAdmin, "TestTask2", null, null, 0, groupList, LocalDateTime.now().plusDays(101));
         Task task3 = taskAPI.createTask(userToBeMember, "TestTask3", null, null, 0, null, LocalDateTime.now().plusDays(102));
 
         Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);

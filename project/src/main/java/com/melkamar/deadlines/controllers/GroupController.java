@@ -19,6 +19,7 @@ import com.melkamar.deadlines.services.api.TaskAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -72,12 +73,12 @@ public class GroupController {
                 }
 
             } catch (WrongParameterException e) {
-                return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_MEMBERROLE_VALUE, e.getMessage()));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.WRONG_MEMBERROLE_VALUE, e.getMessage()));
             }
         }
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity createGroup(@AuthenticationPrincipal Long userId,
                                       @RequestBody GroupRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
@@ -91,7 +92,7 @@ public class GroupController {
     }
 
     @JsonView(JsonViews.Controller.GroupDetails.class)
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity groupDetails(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
@@ -104,7 +105,7 @@ public class GroupController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity editGroup(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long groupId,
                                     @RequestBody GroupRequestBody requestBody) throws DoesNotExistException {

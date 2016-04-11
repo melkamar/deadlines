@@ -92,12 +92,18 @@ public class TaskAPIImpl implements TaskAPI {
      * Creator must be manager of all of them.
      */
     @Override
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, LocalDateTime deadline) throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate,
+                           List<Group> groups, LocalDateTime deadline) throws
+            WrongParameterException, GroupPermissionException, NotMemberOfException {
         if (groups == null) return createTask(creator, name, description, priority, workEstimate, deadline);
         Task newTask = createTask(creator, name, description, priority, workEstimate, deadline);
 
         for (Group group : groups) {
-            groupApi.addTask(creator, group, newTask);
+            try {
+                groupApi.addTask(creator, group, newTask);
+            } catch (AlreadyExistsException e) {
+                // Do nothing, in this case we don't care about the exception and can ignore it
+            }
         }
 
         return newTask;
@@ -108,12 +114,18 @@ public class TaskAPIImpl implements TaskAPI {
      * Creator must be manager of all of them.
      */
     @Override
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double hoursToPeak) throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate,
+                           List<Group> groups, double hoursToPeak)
+            throws WrongParameterException, GroupPermissionException, NotMemberOfException{
         if (groups == null) return createTask(creator, name, description, priority, workEstimate, hoursToPeak);
         Task newTask = createTask(creator, name, description, priority, workEstimate, hoursToPeak);
 
         for (Group group : groups) {
-            groupApi.addTask(creator, group, newTask);
+            try {
+                groupApi.addTask(creator, group, newTask);
+            } catch (AlreadyExistsException e) {
+                // Do nothing, in this case we don't care about the exception and can ignore it
+            }
         }
 
         return newTask;

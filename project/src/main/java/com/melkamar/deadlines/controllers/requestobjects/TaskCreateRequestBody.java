@@ -5,6 +5,7 @@ import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.TaskStatus;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -19,6 +20,11 @@ public class TaskCreateRequestBody {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private Date deadline;
     private Double hoursToPeak;
+    private List<Long> groupIds;
+
+    public List<Long> getGroupIds() {
+        return groupIds;
+    }
 
     public String getName() {
         return name;

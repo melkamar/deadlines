@@ -25,6 +25,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,36 +103,64 @@ public class TaskController {
 
         return ResponseEntity.ok().body(tasks);
     }
-
+    @JsonView(JsonViews.Controller.TaskDetails.class)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
         User creator = userAPI.getUser(userId);
 
         checkIfDeadlineXorGrowing(taskCreateRequestBody);
 
-        Task task;
-        if (taskCreateRequestBody.getDeadline() != null) {
-            task = taskAPI.createTask(creator,
-                    taskCreateRequestBody.getName(),
-                    taskCreateRequestBody.getDescription(),
-                    taskCreateRequestBody.getPriority(),
-                    taskCreateRequestBody.getWorkEstimate(),
-                    DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()));
-        } else {
-            task = taskAPI.createTask(creator,
-                    taskCreateRequestBody.getName(),
-                    taskCreateRequestBody.getDescription(),
-                    taskCreateRequestBody.getPriority(),
-                    taskCreateRequestBody.getWorkEstimate(),
-                    taskCreateRequestBody.getHoursToPeak());
+        List<Group> groups = null;
+        if (taskCreateRequestBody.getGroupIds() != null && taskCreateRequestBody.getGroupIds().size() > 0) {
+            groups = groupsFromIds(taskCreateRequestBody.getGroupIds());
         }
 
-        return ResponseEntity.ok().body(task);
+        Task task;
+        try {
+            if (taskCreateRequestBody.getDeadline() != null) {
+                task = taskAPI.createTask(creator,
+                        taskCreateRequestBody.getName(),
+                        taskCreateRequestBody.getDescription(),
+                        taskCreateRequestBody.getPriority(),
+                        taskCreateRequestBody.getWorkEstimate(),
+                        groups,
+                        DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()));
+            } else {
+                task = taskAPI.createTask(creator,
+                        taskCreateRequestBody.getName(),
+                        taskCreateRequestBody.getDescription(),
+                        taskCreateRequestBody.getPriority(),
+                        taskCreateRequestBody.getWorkEstimate(),
+                        groups,
+                        taskCreateRequestBody.getHoursToPeak());
+            }
+        } catch (GroupPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
+        }
+
+        try {
+            return ResponseEntity.created(new URI(null, null,"/task/"+task.getId(),null)).body(task);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private List<Group> groupsFromIds(List<Long> ids) throws DoesNotExistException {
+        List<Group> groups = new ArrayList<>(ids.size());
+        for (Long id : ids) {
+            groups.add(groupAPI.getGroup(id));
+        }
+
+        return groups;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @JsonView(JsonViews.Controller.TaskDetails.class)
-    public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
+    public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId,
+                                      @PathVariable("id") Long id) throws DoesNotExistException {
         User user = userAPI.getUser(userId);
 
         try {
@@ -213,20 +243,30 @@ public class TaskController {
 
             for (Long offeredToId : requestBody.getUsers()) {
                 User offeredTo = userAPI.getUser(offeredToId);
-                sharingAPI.offerTaskSharing(user, task, offeredTo);
+
+                try {
+                    sharingAPI.offerTaskSharing(user, task, offeredTo);
+                } catch (AlreadyExistsException e) {
+                    // Doesn't matter, just ignore it if user is already a member
+                }
             }
 
             for (Long offeredToId : requestBody.getGroups()) {
                 Group offeredTo = groupAPI.getGroup(offeredToId);
-                sharingAPI.offerTaskSharing(user, task, offeredTo);
+                try {
+                    sharingAPI.offerTaskSharing(user, task, offeredTo);
+                } catch (AlreadyExistsException e) {
+                    // Doesn't matter, just ignore it if user is already a member
+                }
             }
 
             return ResponseEntity.ok(task);
 
         } catch (NotMemberOfException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_ALREADY_PARTICIPANT, e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+//        } catch (AlreadyExistsException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_ALREADY_PARTICIPANT, e.getMessage()));
+//        }
         }
     }
 
@@ -242,7 +282,7 @@ public class TaskController {
             return ResponseEntity.ok().build();
 
         } catch (NotMemberOfException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
         }
     }
 

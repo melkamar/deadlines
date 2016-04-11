@@ -124,12 +124,12 @@ public class TaskAPITest {
         User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", user, null);
 
-        Set<Group> groupSet = new HashSet<>();
-        groupSet.add(group);
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
 
-        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
-        Task task2 = taskAPI.createTask(user, "TestTask2", null, null, 0, groupSet, LocalDateTime.now().plusDays(101));
-        Task task3 = taskAPI.createTask(user, "TestTask3", null, null, 0, groupSet, LocalDateTime.now().plusDays(102));
+        Task task = taskAPI.createTask(user, "TestTask", null, null, 0, groupList, LocalDateTime.now().plusDays(10));
+        Task task2 = taskAPI.createTask(user, "TestTask2", null, null, 0, groupList, LocalDateTime.now().plusDays(101));
+        Task task3 = taskAPI.createTask(user, "TestTask3", null, null, 0, groupList, LocalDateTime.now().plusDays(102));
         Task task4 = taskAPI.createTask(user, "TestTask4", null, null, 0, null, LocalDateTime.now().plusDays(102));
 
         Assert.assertEquals(user.tasksOfUser().size(), 4);
@@ -144,10 +144,10 @@ public class TaskAPITest {
         User userNonMember = userAPI.createUser("TestUserNonMember", "pwd", "Some name", "a@b.c");
         Group group = groupAPI.createGroup("TestGroup", user, null);
 
-        Set<Group> groupSet = new HashSet<>();
-        groupSet.add(group);
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
 
-        Task task = taskAPI.createTask(userNonMember, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(userNonMember, "TestTask", null, null, 0, groupList, LocalDateTime.now().plusDays(10));
     }
 
     @Test
@@ -159,11 +159,11 @@ public class TaskAPITest {
 
         groupAPI.addMember(userAdmin, group, userMember);
 
-        Set<Group> groupSet = new HashSet<>();
-        groupSet.add(group);
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
 
         expectedException.expect(GroupPermissionException.class);
-        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, groupSet, LocalDateTime.now().plusDays(10));
+        Task task = taskAPI.createTask(userMember, "TestTask", null, null, 0, groupList, LocalDateTime.now().plusDays(10));
     }
 
     // WORK REPORTS TESTS

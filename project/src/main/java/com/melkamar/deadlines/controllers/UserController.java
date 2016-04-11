@@ -35,15 +35,6 @@ public class UserController {
     public ResponseEntity listUsers() {
         List<User> users = userAPI.listUsers();
         return ResponseEntity.ok().body(users);
-
-//        ObjectWriter objectWriter = objectMapper.writerWithView(JsonViews.Secret.class);
-//        try {
-//            return ResponseEntity.ok().body(objectWriter.writeValueAsString(users));
-
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = CTYPE_JSON, produces = CTYPE_JSON)
@@ -67,7 +58,7 @@ public class UserController {
 
             return ResponseEntity.ok().body(user);
         } catch (DoesNotExistException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

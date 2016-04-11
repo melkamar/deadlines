@@ -19,7 +19,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -69,11 +71,11 @@ public class GroupMemberHelperTest {
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
 
-        Set<Group> groupSet = new HashSet<>();
-        groupSet.add(group);
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
 
-        Task task1 = taskAPI.createTask(user, "Task", null, Priority.NORMAL, 10, groupSet, 1);
-        Task task2 = taskAPI.createTask(user, "Task2", null, Priority.NORMAL, 10, groupSet, 1);
+        Task task1 = taskAPI.createTask(user, "Task", null, Priority.NORMAL, 10, groupList, 1);
+        Task task2 = taskAPI.createTask(user, "Task2", null, Priority.NORMAL, 10, groupList, 1);
         Task task3 = taskAPI.createTask(user2, "Task3", null, Priority.NORMAL, 10, null, 1);
 
         Assert.assertEquals(1, user2.tasksOfUser().size());
