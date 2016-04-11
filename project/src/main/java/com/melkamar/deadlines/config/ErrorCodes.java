@@ -26,5 +26,6 @@ public class ErrorCodes {
     public static final int GROUP_NAME_ALREADY_EXISTS = 17;
     public static final int TASK_NOT_OF_GROUP = 18; // A task is not shared with a group - manager cannot assign roles on it
     public static final int CANNOT_DEMOTE_ADMIN = 19; // Calling user is attempting to set MANAGER role to an ADMIN
-    public static final int CANNOT_REMOVE_ADMIN = 20; // Calling user is attempting remove an ADMIN from the group
+    public static final int CANNOT_REMOVE_ADMIN = 20; // Calling user is attempting to remove an ADMIN from the group
+    public static final int CANNOT_RESET_NON_GROWING = 21; // Calling user is attempting to reset deadline on a non-growing task
 }

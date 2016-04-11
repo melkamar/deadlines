@@ -28,6 +28,6 @@ public class UpdateUrgency {
     @Scheduled(fixedDelayString = "${update.urgency.interval}")
     public void logCurrentTime() {
         logger.info("Updating urgency. Interval: "+interval);
-        internalAPI.updateAllUrgencies();
+        internalAPI.updateAllUrgencies(true);
     }
 }

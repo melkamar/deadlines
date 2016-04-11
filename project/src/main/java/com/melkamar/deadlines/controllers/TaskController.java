@@ -51,6 +51,7 @@ public class TaskController {
 
     /**
      * Lists tasks of the calling user.
+     *
      * @param userId
      * @param order
      * @param orderDirection
@@ -83,7 +84,7 @@ public class TaskController {
         }
 
         List<Task> tasks;
-        if (groupId == null){
+        if (groupId == null) {
             tasks = taskAPI.listTasks(user, taskOrdering, filters);
         } else {
             Group group = groupAPI.getGroup(groupId);
@@ -135,7 +136,9 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity editTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws DoesNotExistException, WrongParameterException {
+    public ResponseEntity editTask(@AuthenticationPrincipal Long userId,
+                                   @PathVariable("id") Long id,
+                                   @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws DoesNotExistException, WrongParameterException {
         User user = userAPI.getUser(userId);
 
         try {
@@ -162,8 +165,28 @@ public class TaskController {
         }
     }
 
+    @RequestMapping(value = "/{id}/reseturgency", method = RequestMethod.POST)
+    public ResponseEntity resetUrgency(@AuthenticationPrincipal Long userId,
+                                       @PathVariable("id") Long taskId) throws DoesNotExistException {
+        User user = userAPI.getUser(userId);
+        Task task = taskAPI.getTask(taskId);
+
+        try {
+            taskAPI.resetUrgency(user, task);
+            return ResponseEntity.ok().build();
+        } catch (NotAllowedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.CANNOT_RESET_NON_GROWING, e.getMessage()));
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
+        } catch (TaskPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_WORKER, e.getMessage()));
+        }
+
+    }
+
     /**
      * Offers task to a list of Users and Groups.
+     *
      * @param userId
      * @param id
      * @param requestBody

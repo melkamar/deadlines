@@ -50,8 +50,8 @@ public class DeadlinesApplication {
 
     @PostConstruct
     public void doStuff() {
-        boolean fillSampleData = false;
-//        boolean fillSampleData = true;
+//        boolean fillSampleData = false;
+        boolean fillSampleData = true;
 
 
         if (!fillSampleData) return;
@@ -67,6 +67,7 @@ public class DeadlinesApplication {
             Task task2 = taskAPI.createTask(user, "SomethingA", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
             Task task3 = taskAPI.createTask(user, "SomethingB", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
             Task task4 = taskAPI.createTask(user, "SomethingC", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
+            Task task5 = taskAPI.createTask(user, "SomethingD", "Other", Priority.NORMAL, 10, 100);
 
             sharingAPI.offerTaskSharing(user, task2, user2);
             sharingAPI.offerTaskSharing(user, task4, user2);
@@ -74,6 +75,8 @@ public class DeadlinesApplication {
 
             sharingAPI.offerMembership(user, group, user2);
             sharingAPI.offerTaskSharing(user, task3, group);
+
+            taskAPI.setTaskRole(user, task5, TaskRole.WORKER);
 
             UserTaskSharingOffer offer = sharingAPI.getUserTaskSharingOffer(5L);
             System.out.println(offer);
