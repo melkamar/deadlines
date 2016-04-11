@@ -6,6 +6,7 @@ import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -47,6 +48,7 @@ public class User implements UserDetails {
     @JsonProperty
     @Column(name = COL_EMAIL)
     @JsonView(JsonViews.User.Basic.class)
+    @Email
     private String email;
 
     @JsonIgnore

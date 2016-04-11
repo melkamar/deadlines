@@ -7,6 +7,10 @@ import java.util.Random;
  * 10.04.2016 17:33
  */
 public class RandomString {
+    public static String getEmail(){
+        return get("Email.")+"@address.com";
+    }
+
     public static String get(String prefix){
         int length = 8;
         String characters = "abcdefghijklmnopqrstuvwxyz";

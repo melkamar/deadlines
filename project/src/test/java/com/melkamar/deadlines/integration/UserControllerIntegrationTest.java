@@ -95,9 +95,9 @@ public class UserControllerIntegrationTest {
                 .build();
 
 
-        user1 = userAPI.createUser("User1", "pwd", RandomString.get("Name "), RandomString.get("Email "));
+        user1 = userAPI.createUser("User1", "pwd", RandomString.get("Name "), RandomString.getEmail());
         user2 = userAPI.createUser("User2", "pwd", null, null);
-        user3 = userAPI.createUser("User3", "pwd", RandomString.get("Name "), RandomString.get("Email "));
+        user3 = userAPI.createUser("User3", "pwd", RandomString.get("Name "), RandomString.getEmail());
 //
 //        group1 = groupAPI.createGroup("Group1", user1, RandomString.get("Description "));
 //        group2 = groupAPI.createGroup("Group2", user3, RandomString.get("Description "));
@@ -169,7 +169,7 @@ public class UserControllerIntegrationTest {
     @Test
     public void userPost() throws Exception {
         int startUsers = userAPI.listUsers().size();
-        String request = "{\"username\":\"Created User\",\"password\":\"abraka\",\"email\":\"muj-email\",\"name\":\"Name Of Created User\"}";
+        String request = "{\"username\":\"Created User\",\"password\":\"abraka\",\"email\":\"muj-email@neco.com\",\"name\":\"Name Of Created User\"}";
 
         MvcResult result = mvc.perform(post("/user")
                 .content(request)
@@ -208,8 +208,6 @@ public class UserControllerIntegrationTest {
 
         System.out.println("CODE: " + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrint.prettyPrint(response));
-
-
     }
 
 //    @Transactional

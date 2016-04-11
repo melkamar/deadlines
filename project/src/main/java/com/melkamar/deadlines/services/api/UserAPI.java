@@ -4,7 +4,9 @@ import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
-import com.melkamar.deadlines.model.*;
+import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.GroupMember;
+import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.PasswordHashGenerator;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
@@ -13,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +61,12 @@ public class UserAPI {
             userDAO.save(newUser);
         } catch (DataIntegrityViolationException e){
             throw new UserAlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_USER_NAME, username));
-//            throw new DataIntegrityViolationException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_USER_NAME, username));
+        } catch (javax.validation.ConstraintViolationException e){
+            StringBuilder err = new StringBuilder();
+            for (ConstraintViolation violation: e.getConstraintViolations()){
+                err.append(violation.getMessage());
+            }
+            throw new WrongParameterException(err.toString());
         }
 
         return newUser;

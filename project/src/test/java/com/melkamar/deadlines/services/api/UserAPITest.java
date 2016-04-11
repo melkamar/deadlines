@@ -76,7 +76,7 @@ public class UserAPITest {
     @Test
     @Transactional
     public void fieldsPersistence() throws WrongParameterException, UserAlreadyExistsException {
-        User user = userAPI.createUser("User2", "password", "somename", "someemail");
+        User user = userAPI.createUser("User2", "password", "somename", "someemail@address.com");
         User retrieved = userDAO.findByUsername("User2");
 
         System.out.println(user);
@@ -89,29 +89,29 @@ public class UserAPITest {
     @Test
     @Transactional
     public void editUserDetails() throws WrongParameterException, UserAlreadyExistsException {
-        User user = userAPI.createUser("UserDetails", "password", "somename", "someemailDetails");
+        User user = userAPI.createUser("UserDetails", "password", "somename", "someemailDetails@address.com");
 
         Assert.assertTrue(user.getUsername().equals("UserDetails"));
         Assert.assertTrue(user.getName().equals("somename"));
-        Assert.assertTrue(user.getEmail().equals("someemailDetails"));
+        Assert.assertTrue(user.getEmail().equals("someemailDetails@address.com"));
         Assert.assertNotNull(authenticator.authenticate(user, "password"));
 
         userAPI.editUserDetails(user, "NewName", null, null);
         Assert.assertTrue(user.getUsername().equals("UserDetails"));
         Assert.assertTrue(user.getName().equals("NewName"));
-        Assert.assertTrue(user.getEmail().equals("someemailDetails"));
+        Assert.assertTrue(user.getEmail().equals("someemailDetails@address.com"));
         Assert.assertNotNull(authenticator.authenticate(user, "password"));
 
-        userAPI.editUserDetails(user, null, "newemail", null);
+        userAPI.editUserDetails(user, null, "newemail@c.a", null);
         Assert.assertTrue(user.getUsername().equals("UserDetails"));
         Assert.assertTrue(user.getName().equals("NewName"));
-        Assert.assertTrue(user.getEmail().equals("newemail"));
+        Assert.assertTrue(user.getEmail().equals("newemail@c.a"));
         Assert.assertNotNull(authenticator.authenticate(user, "password"));
 
         userAPI.editUserDetails(user, null, null, "newpassword");
         Assert.assertTrue(user.getUsername().equals("UserDetails"));
         Assert.assertTrue(user.getName().equals("NewName"));
-        Assert.assertTrue(user.getEmail().equals("newemail"));
+        Assert.assertTrue(user.getEmail().equals("newemail@c.a"));
         Assert.assertNotNull(authenticator.authenticate(user, "newpassword"));
         Assert.assertNull(authenticator.authenticate(user, "password"));
     }
@@ -122,15 +122,15 @@ public class UserAPITest {
         int size = userAPI.listUsers().size();
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
-        userAPI.createUser("someuser" + size, "password", "somename", "someemail" + size);
+        userAPI.createUser("someuser" + size, "password", "somename", "someemail@address.com" + size);
         size++;
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
-        userAPI.createUser("someuser" + size, "password", "somename", "someemail" + size);
+        userAPI.createUser("someuser" + size, "password", "somename", "someemail@address.com" + size);
         size++;
 
         Assert.assertEquals(userAPI.listUsers().size(), size);
-        userAPI.createUser("someuser" + size, "password", "somename", "someemail" + size);
+        userAPI.createUser("someuser" + size, "password", "somename", "someemail@address.com" + size);
         size++;
     }
 
@@ -139,8 +139,8 @@ public class UserAPITest {
     public void getGroupsOfUser() throws WrongParameterException, UserAlreadyExistsException, AlreadyExistsException {
         int groupsSize = 0;
 
-        User user = userAPI.createUser("someuser", "password", "somename", "someemail");
-        User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2");
+        User user = userAPI.createUser("someuser", "password", "somename", "someemail@address.com");
+        User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2@address.com");
         Assert.assertEquals(userAPI.getGroupsOfUser(user).size(), groupsSize);
 
         Group groupA = groupAPI.createGroup("group" + groupsSize, user, "desc");
@@ -174,8 +174,8 @@ public class UserAPITest {
     @Test
     @Transactional
     public void leaveTask() throws WrongParameterException, NotMemberOfException, UserAlreadyExistsException {
-        User user = userAPI.createUser("someuser", "password", "somename", "someemail");
-        User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2");
+        User user = userAPI.createUser("someuser", "password", "somename", "someemail@address.com");
+        User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2@address.com");
 
         Assert.assertEquals(0, user.tasksOfUser().size());
         Assert.assertEquals(0, anotherUser.tasksOfUser().size());
