@@ -4,11 +4,8 @@ import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
 import com.melkamar.deadlines.model.task.TaskStatus;
 import com.melkamar.deadlines.services.DateConvertor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -47,6 +44,10 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
 
     private static final double maxUrgency = 200; // Maximum urgency, cut anything greater
 
+    // If no work estimate set or worked more than the estimate, use this number instead.
+    // That way urgency will still be generated for proper sorting (even though its values might be misleading)
+    private static final double emptyRemainingWork = 0.5;
+
     @Override
     public double computeDeadlineTaskUrgency(DeadlineTask task) {
         if (task.getStatus() == TaskStatus.CANCELLED || task.getStatus() == TaskStatus.COMPLETED) {
@@ -55,11 +56,10 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
 
         double remainingWork = getRemainingWork(task);
         if (remainingWork <= 0) {
-            return 0;
+            remainingWork = emptyRemainingWork;
         }
 
         double remainingTime = getRemainingTime(task);
-
         double reserve = remainingTime / d + remainingTime / remainingWork;
 
         double urgencyValue;

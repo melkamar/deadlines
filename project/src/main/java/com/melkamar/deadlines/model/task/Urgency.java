@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.controllers.views.JsonViews;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -49,5 +50,13 @@ public class Urgency {
 
     public double getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "Urgency{" +
+                "lastUpdate=" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lastUpdate) +
+                ", value=" + value +
+                '}';
     }
 }

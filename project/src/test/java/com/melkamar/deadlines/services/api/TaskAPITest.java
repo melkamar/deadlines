@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.AssertionErrors;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -421,9 +422,13 @@ public class TaskAPITest {
         Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
 
 
-        List<Task> resultList;
-
-//        throw new NotImplementedException();
+        List<Task> resultList = taskAPI.listTasks(user, TaskOrdering.URGENCY_DESC);
+        for (Task task : resultList) {
+            System.out.println("TASK: " + task);
+        }
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
     }
 
     @Test
