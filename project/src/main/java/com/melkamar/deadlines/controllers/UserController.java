@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody UserCreateRequestBody userCreateRequestBody) {
         try {
             User user = userAPI.createUser(userCreateRequestBody.getUsername(), userCreateRequestBody.getPassword(), userCreateRequestBody.getName(), userCreateRequestBody.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body(user);
+            return ResponseEntity.created(URI.create("/user/"+user.getId())).body(user);
         } catch (WrongParameterException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, e.getMessage()));

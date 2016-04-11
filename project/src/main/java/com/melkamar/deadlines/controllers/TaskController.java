@@ -103,6 +103,7 @@ public class TaskController {
 
         return ResponseEntity.ok().body(tasks);
     }
+
     @JsonView(JsonViews.Controller.TaskDetails.class)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
@@ -140,12 +141,8 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
         }
 
-        try {
-            return ResponseEntity.created(new URI(null, null,"/task/"+task.getId(),null)).body(task);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return ResponseEntity.created(URI.create("/task/" + task.getId())).body(task);
+
     }
 
     private List<Group> groupsFromIds(List<Long> ids) throws DoesNotExistException {

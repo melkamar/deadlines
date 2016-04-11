@@ -25,6 +25,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.text.MessageFormat;
 
 /**
@@ -85,7 +86,7 @@ public class GroupController {
 
         try {
             Group group = groupAPI.createGroup(requestBody.getName(), user, requestBody.getDescription());
-            return ResponseEntity.status(HttpStatus.CREATED).body(group);
+            return ResponseEntity.created(URI.create("/group/"+group.getId())).body(group);
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ErrorCodes.GROUP_NAME_ALREADY_EXISTS, e.getMessage()));
         }
