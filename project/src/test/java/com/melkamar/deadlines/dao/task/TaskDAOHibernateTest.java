@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 07.04.2016 19:37

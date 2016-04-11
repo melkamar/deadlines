@@ -8,7 +8,6 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
-import com.melkamar.deadlines.model.offer.Offer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
@@ -19,12 +18,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)

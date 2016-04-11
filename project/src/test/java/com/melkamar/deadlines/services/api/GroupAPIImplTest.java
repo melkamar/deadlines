@@ -35,7 +35,7 @@ import java.util.Set;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 @WebAppConfiguration
-public class GroupAPITest {
+public class GroupAPIImplTest {
     @Autowired
     private GroupDAO groupDAO;
     @Autowired

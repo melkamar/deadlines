@@ -10,3 +10,5 @@ to prevent recursive JSON marshalling, use @JsonManagedReference and @JsonBackRe
 
 
 NotMemberOf - FORBIDDEN
+
+RollbackFor - userapi#createuser

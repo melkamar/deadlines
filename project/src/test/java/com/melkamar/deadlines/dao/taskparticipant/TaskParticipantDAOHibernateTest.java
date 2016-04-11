@@ -37,7 +37,6 @@ public class TaskParticipantDAOHibernateTest {
     @Autowired
     private GroupAPI groupAPI;
 
-
     @Test
     @Transactional
     public void findByUserAndTask() throws WrongParameterException, UserAlreadyExistsException {

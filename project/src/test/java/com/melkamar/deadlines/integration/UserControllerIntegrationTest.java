@@ -1,22 +1,18 @@
 package com.melkamar.deadlines.integration;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.model.task.TaskRole;
 import com.melkamar.deadlines.services.api.GroupAPI;
 import com.melkamar.deadlines.services.api.SharingAPI;
 import com.melkamar.deadlines.services.api.TaskAPI;
 import com.melkamar.deadlines.services.api.UserAPI;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
-import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
 import com.melkamar.deadlines.utils.JsonPrettyPrint;
 import com.melkamar.deadlines.utils.RandomString;
 import org.junit.Assert;
@@ -34,11 +30,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDateTime;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)

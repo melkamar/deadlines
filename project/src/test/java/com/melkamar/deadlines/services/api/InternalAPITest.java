@@ -5,6 +5,7 @@ import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskStatus;
 import com.melkamar.deadlines.model.task.Urgency;
+import com.melkamar.deadlines.services.api.implementation.InternalAPIImpl;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +35,7 @@ public class InternalAPITest {
     UrgencyHelper urgencyHelper;
 
     @InjectMocks
-    InternalAPI internalAPI;
+    InternalAPI internalAPI = new InternalAPIImpl();
 
     List<Task> tasksOpen = new ArrayList<>();
     List<Task> tasksInProgress = new ArrayList<>();
