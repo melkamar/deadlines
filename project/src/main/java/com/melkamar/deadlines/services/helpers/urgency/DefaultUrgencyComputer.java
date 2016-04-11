@@ -4,8 +4,6 @@ import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
 import com.melkamar.deadlines.model.task.TaskStatus;
 import com.melkamar.deadlines.services.DateConvertor;
-import org.apache.commons.logging.Log;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -77,14 +75,23 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
 
     @Override
     public double computeGrowingTaskUrgency(GrowingTask task) {
-        task.getGrowspeed();
+        task.getHoursToPeak();
 
         Date lastUpdate = task.getUrgency().getLastUpdate();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nowConverted = DateConvertor.dateToLocalDateTime(lastUpdate);
 
+        double hoursToPeak = task.getHoursToPeak();
+        double incrPerHour;
+        if (hoursToPeak < 0.0000001) {
+            incrPerHour = 0;
+        } else {
+            incrPerHour = 1 / hoursToPeak * 100;
+        }
+
         double hoursSinceUpdate = DateConvertor.dateToLocalDateTime(task.getUrgency().getLastUpdate()).until(LocalDateTime.now(), ChronoUnit.SECONDS) / 3600.0;
-        double increment = task.getGrowspeed() * hoursSinceUpdate;
+//        double increment = task.getHoursToPeak() * hoursSinceUpdate;
+        double increment = incrPerHour * hoursSinceUpdate;
         double res = task.getUrgency().getValue() + increment;
 
         return Math.min(res, maxUrgency);

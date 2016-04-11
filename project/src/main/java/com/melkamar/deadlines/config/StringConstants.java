@@ -21,7 +21,7 @@ public class StringConstants {
     public final String EXC_PARAM_TASK_MANHOURS_INVALID = "Manhours done must be >=0.";
 //    public final String EXC_PARAM_NOT_NULL = "All parameters need to be non-null";
     public final String EXC_FILTER_WRONG_VALUE = "Wrong value for filter {0}.";
-    public final String EXC_SET_DEADLINE_OR_GROWSPEED = "Either growspeed or deadline must be set and not both.";
+    public final String EXC_SET_DEADLINE_OR_GROWSPEED = "Either hoursToPeak or deadline must be set and not both.";
     public final String EXC_PARAM_MEMBER_ROLE_INVALID = "Member role can be one of member, manager, admin. Provided: [{0}].";
 
     public final String EXC_PARAM_ALL_NEED_NOT_NULL = "All parameters need to be not null.";

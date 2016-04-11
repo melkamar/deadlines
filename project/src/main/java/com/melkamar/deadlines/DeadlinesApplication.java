@@ -50,8 +50,8 @@ public class DeadlinesApplication {
 
     @PostConstruct
     public void doStuff() {
-//        boolean fillSampleData = false;
-        boolean fillSampleData = true;
+        boolean fillSampleData = false;
+//        boolean fillSampleData = true;
 
 
         if (!fillSampleData) return;
@@ -67,7 +67,8 @@ public class DeadlinesApplication {
             Task task2 = taskAPI.createTask(user, "SomethingA", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
             Task task3 = taskAPI.createTask(user, "SomethingB", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
             Task task4 = taskAPI.createTask(user, "SomethingC", "Other", Priority.NORMAL, 10, LocalDateTime.now().plusDays(2));
-            Task task5 = taskAPI.createTask(user, "SomethingD", "Other", Priority.NORMAL, 10, 100);
+            Task task5 = taskAPI.createTask(user, "SomethingD", "Other", Priority.NORMAL, 10, 1/60d);
+            Task task6 = taskAPI.createTask(user, "SomethingE", "Other", Priority.NORMAL, 10, 1/120d);
 
             sharingAPI.offerTaskSharing(user, task2, user2);
             sharingAPI.offerTaskSharing(user, task4, user2);

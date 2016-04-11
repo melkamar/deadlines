@@ -20,7 +20,7 @@ public class GrowingTask extends Task {
 
     @Column(name = COL_GROW_SPEED)
     @JsonView(JsonViews.Always.class)
-    protected Double growspeed;
+    protected Double hoursToPeak;
 
     public GrowingTask() {
         super();
@@ -29,20 +29,20 @@ public class GrowingTask extends Task {
     /**
      *
      * @param dateCreated
-     * @param growspeed Approximately how many hours should pass until the task should be completed.
+     * @param hoursToPeak Approximately how many hours should pass until the task should be completed.
      *                  E.g. number 20 would mean that 20 hours after the task has been created its
      *                  urgency will be equal to urgency of a Task that should be worked on at that moment.
      * @param urgency
      */
-    public GrowingTask(Date dateCreated, Double growspeed, Urgency urgency) {
+    public GrowingTask(Date dateCreated, Double hoursToPeak, Urgency urgency) {
         super(dateCreated, urgency);
-        this.growspeed = growspeed;
+        this.hoursToPeak = hoursToPeak;
     }
 
     @Override
     public String toString() {
         return super.toString() + "GrowingTask{" +
-                "growspeed=" + growspeed +
+                "hoursToPeak=" + hoursToPeak +
                 '}';
     }
 
@@ -56,7 +56,7 @@ public class GrowingTask extends Task {
         return "GROWING";
     }
 
-    public Double getGrowspeed() {
-        return growspeed;
+    public Double getHoursToPeak() {
+        return hoursToPeak;
     }
 }

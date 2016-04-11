@@ -451,9 +451,9 @@ public class TaskAPITest {
         for (Task task : resultList) {
             System.out.println("TASK: " + task);
         }
-        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(0).equals(task1));
         Assert.assertTrue(resultList.get(1).equals(task3));
-        Assert.assertTrue(resultList.get(2).equals(task1));
+        Assert.assertTrue(resultList.get(2).equals(task2));
     }
 
     @Test

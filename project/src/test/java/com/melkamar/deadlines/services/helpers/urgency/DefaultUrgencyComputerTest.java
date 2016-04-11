@@ -140,7 +140,7 @@ public class DefaultUrgencyComputerTest {
 
     @Test
     public void computeGrowingTaskUrgency() throws Exception {
-        Mockito.when(growingTask.getGrowspeed()).thenReturn(10d);
+        Mockito.when(growingTask.getHoursToPeak()).thenReturn(10d);
         Mockito.when(growingTask.getUrgency()).thenReturn(mockUrgency);
 
         double startUrgency = 0;
@@ -166,7 +166,7 @@ public class DefaultUrgencyComputerTest {
      */
     @Test
     public void computeGrowingTaskUrgency_maxUrgency(){
-        Mockito.when(growingTask.getGrowspeed()).thenReturn(10000000d);
+        Mockito.when(growingTask.getHoursToPeak()).thenReturn(10000000d);
         Mockito.when(growingTask.getUrgency()).thenReturn(mockUrgency);
 
         double startUrgency = 0;
@@ -182,7 +182,7 @@ public class DefaultUrgencyComputerTest {
 
     @Test
     public void computeGrowingTaskUrgency_zeroGrow(){
-        Mockito.when(growingTask.getGrowspeed()).thenReturn(0d);
+        Mockito.when(growingTask.getHoursToPeak()).thenReturn(0d);
         Mockito.when(growingTask.getUrgency()).thenReturn(mockUrgency);
 
         double startUrgency = 0;

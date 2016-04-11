@@ -6,7 +6,6 @@ import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.dao.taskwork.TaskWorkDAO;
-import com.melkamar.deadlines.dao.taskwork.TaskWorkDAOHibernate;
 import com.melkamar.deadlines.dao.urgency.UrgencyDAO;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
@@ -21,7 +20,6 @@ import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -72,14 +70,14 @@ public class TaskAPI {
     }
 
     @Transactional
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, double growSpeed) throws WrongParameterException {
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, double hoursToPeak) throws WrongParameterException {
         validateGenericCreateTaskParams(creator, name);
-        if (growSpeed < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
+        if (hoursToPeak < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
 
         Urgency urgency = new Urgency();
         urgencyDao.save(urgency);
 
-        GrowingTask task = new GrowingTask(new Date(), growSpeed, urgency);
+        GrowingTask task = new GrowingTask(new Date(), hoursToPeak, urgency);
         this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
         taskDAO.save(task);
@@ -108,9 +106,9 @@ public class TaskAPI {
      * Creator must be manager of all of them.
      */
     @Transactional
-    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double growSpeed) throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
-        if (groups == null) return createTask(creator, name, description, priority, workEstimate, growSpeed);
-        Task newTask = createTask(creator, name, description, priority, workEstimate, growSpeed);
+    public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, Set<Group> groups, double hoursToPeak) throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+        if (groups == null) return createTask(creator, name, description, priority, workEstimate, hoursToPeak);
+        Task newTask = createTask(creator, name, description, priority, workEstimate, hoursToPeak);
 
         for (Group group : groups) {
             groupAPI.addTask(creator, group, newTask);

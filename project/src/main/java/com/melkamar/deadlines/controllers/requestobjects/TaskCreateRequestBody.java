@@ -18,7 +18,7 @@ public class TaskCreateRequestBody {
     private TaskStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private Date deadline;
-    private Double growSpeed;
+    private Double hoursToPeak;
 
     public String getName() {
         return name;
@@ -40,8 +40,8 @@ public class TaskCreateRequestBody {
         return deadline;
     }
 
-    public Double getGrowSpeed() {
-        return growSpeed;
+    public Double getHoursToPeak() {
+        return hoursToPeak;
     }
 
     public TaskStatus getStatus() {

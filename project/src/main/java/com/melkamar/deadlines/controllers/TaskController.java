@@ -110,11 +110,19 @@ public class TaskController {
 
         Task task;
         if (taskCreateRequestBody.getDeadline() != null) {
-            task = taskAPI.createTask(creator, taskCreateRequestBody.getName(), taskCreateRequestBody.getDescription(), taskCreateRequestBody.getPriority(), taskCreateRequestBody.getWorkEstimate(),
+            task = taskAPI.createTask(creator,
+                    taskCreateRequestBody.getName(),
+                    taskCreateRequestBody.getDescription(),
+                    taskCreateRequestBody.getPriority(),
+                    taskCreateRequestBody.getWorkEstimate(),
                     DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()));
         } else {
-            task = taskAPI.createTask(creator, taskCreateRequestBody.getName(), taskCreateRequestBody.getDescription(), taskCreateRequestBody.getPriority(), taskCreateRequestBody.getWorkEstimate(),
-                    taskCreateRequestBody.getGrowSpeed());
+            task = taskAPI.createTask(creator,
+                    taskCreateRequestBody.getName(),
+                    taskCreateRequestBody.getDescription(),
+                    taskCreateRequestBody.getPriority(),
+                    taskCreateRequestBody.getWorkEstimate(),
+                    taskCreateRequestBody.getHoursToPeak());
         }
 
         return ResponseEntity.ok().body(task);
@@ -144,7 +152,7 @@ public class TaskController {
         try {
             Task task = taskAPI.getTask(user, id);
 
-            if (taskCreateRequestBody.getGrowSpeed() != null) {
+            if (taskCreateRequestBody.getHoursToPeak() != null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.CANNOT_EDIT_GROWSPEED, "Growing speed of a task cannot be changed."));
             }
 
@@ -314,8 +322,8 @@ public class TaskController {
 
 
     private void checkIfDeadlineXorGrowing(TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException {
-        if ((taskCreateRequestBody.getDeadline() == null && taskCreateRequestBody.getGrowSpeed() == null)
-                || (taskCreateRequestBody.getDeadline() != null && taskCreateRequestBody.getGrowSpeed() != null)) {
+        if ((taskCreateRequestBody.getDeadline() == null && taskCreateRequestBody.getHoursToPeak() == null)
+                || (taskCreateRequestBody.getDeadline() != null && taskCreateRequestBody.getHoursToPeak() != null)) {
             throw new WrongParameterException(stringConstants.EXC_SET_DEADLINE_OR_GROWSPEED);
         }
     }
