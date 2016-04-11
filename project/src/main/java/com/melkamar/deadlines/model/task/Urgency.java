@@ -34,6 +34,11 @@ public class Urgency {
     @JsonView(JsonViews.Always.class)
     private double value;
 
+    @Deprecated
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     public Urgency() {
         this.value = 0;
         lastUpdate = new Date();

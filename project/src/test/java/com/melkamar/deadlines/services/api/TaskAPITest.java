@@ -55,6 +55,8 @@ public class TaskAPITest {
     public ExpectedException expectedException = ExpectedException.none();
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
+    @Autowired
+    private InternalAPI internalAPI;
 
     @Test(expected = WrongParameterException.class)
     @Transactional
@@ -421,6 +423,29 @@ public class TaskAPITest {
         Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, LocalDateTime.now().plusDays(10));
         Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, LocalDateTime.now().plusDays(11));
 
+
+        List<Task> resultList = taskAPI.listTasks(user, TaskOrdering.URGENCY_DESC);
+        for (Task task : resultList) {
+            System.out.println("TASK: " + task);
+        }
+        Assert.assertTrue(resultList.get(0).equals(task2));
+        Assert.assertTrue(resultList.get(1).equals(task3));
+        Assert.assertTrue(resultList.get(2).equals(task1));
+    }
+
+    @Test
+    @Transactional
+    public void listTasksSortByUrgencyGrowing() throws UserAlreadyExistsException, WrongParameterException, AlreadyExistsException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.cb");
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, 10);
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, 13);
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, 12);
+
+        task1.getUrgency().setLastUpdate(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        task2.getUrgency().setLastUpdate(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        task3.getUrgency().setLastUpdate(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+
+        internalAPI.updateAllUrgencies(true);
 
         List<Task> resultList = taskAPI.listTasks(user, TaskOrdering.URGENCY_DESC);
         for (Task task : resultList) {

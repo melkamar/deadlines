@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -75,6 +76,10 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
     @Override
     public double computeGrowingTaskUrgency(GrowingTask task) {
         task.getGrowspeed();
+
+        Date lastUpdate = task.getUrgency().getLastUpdate();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nowConverted = DateConvertor.dateToLocalDateTime(lastUpdate);
 
         double hoursSinceUpdate = DateConvertor.dateToLocalDateTime(task.getUrgency().getLastUpdate()).until(LocalDateTime.now(), ChronoUnit.HOURS);
         double increment = task.getGrowspeed() * hoursSinceUpdate;

@@ -25,10 +25,15 @@ public class InternalAPI {
 
     @Transactional
     public void updateAllUrgencies(){
+        updateAllUrgencies(false);
+    }
+
+    @Transactional
+    public void updateAllUrgencies(boolean force){
         List<Task> activeTasks = new ArrayList<>();
         for (TaskStatus status: Task.activeStates){
             for (Task task: taskDAO.findByStatus(status)){
-                urgencyHelper.updateUrgency(task, false);
+                urgencyHelper.updateUrgency(task, force);
             }
         }
     }
