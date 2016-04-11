@@ -7,6 +7,7 @@
 % \usepackage{amssymb} %additional math symbols
 \usepackage[figuresleft]{rotating}
 \usepackage[flushleft]{threeparttable} % for footnote in tabular
+\usepackage{fancyvrb}
 
 \usepackage{dirtree} %directory tree visualisation
 
@@ -38,6 +39,7 @@
 \newcommand{\forworkers}{Povoleno jen pro Pracovníky úkolu.}
 \newcommand{\foradmin}{Povoleno jen pro Admina skupiny.}
 \newcommand{\formanagers}{Povoleno jen pro Manažery skupiny.}
+\newcommand{\formembers}{Povoleno jen pro Členy skupiny.}
 % _________________________________________________________________________
 
 
@@ -391,16 +393,12 @@
 			
 			\begin{description}
 				\item[UC 1.01 Registrovat se] \hfill \\
-					Umožní uživateli aplikace zaregistrovat se. Zadá svoje unikátní uživatelské jméno, e-mail, heslo a svoje jméno.
+					Umožní uživateli aplikace zaregistrovat se. Zadá svoje unikátní uživatelské jméno, e-mail, heslo a jméno.
 					
 				\item[UC 1.02 Přihlásit se] \hfill \\
 					Umožní uživateli přihlásit se pomocí svého uživatelského jména a hesla.	
 					
 			\end{description}
-		
-		
-		
-		
 		
 		
 			\subsubsection{Případy užití pro jednotlivce}	
@@ -416,44 +414,47 @@
 					Umožní uživateli upravit si své jméno, heslo a e-mail.
 				
 				\item[UC 2.03 Vytvořit úkol] \hfill \\
-					1. Uživatel chce vytvořit úkol. \\
-					2. Uživatel vyplní informace k úkolu, povinně název a typ. Pokud je typ \uv{S deadlinem},  pak je povinné i datum a čas deadlinu. Volitelně může zadat popis, pracnost v \textit{manhours} a prioritu jako celé číslo v intervalu 1--5. \\
-					3. <Sdílet úkol> \\
-					4. Aplikace vytvoří úkol, uživatel se stane jeho Pracovníkem. \\
+					1. Scénář začíná, když se uživatel rozhodne vytvořit nový úkol. \\
+					2. Uživatel zašle požadavek s informacemi k vytvoření úkolu, povinně název a typ. Pokud je typ \uv{S deadlinem},  pak je povinné i datum a čas deadlinu. Pokud je typ \uv{rostoucí}, pak je povinná rychlost růstu. Volitelně může zadat popis, pracnost, prioritu a seznam skupin. \\
+					3. Pokud některé povinné informace chybí, scénář končí. \\
+					4. Pokud uživatel není alespoň Manažerem všech skupin, které zadal, scénář končí. \\
+					5. Aplikace vytvoří úkol, uživatel se stane jeho Pozorovatelem a úkol bude nasdílen všem zadaným skupinám. \\
 				
 				\item[UC 2.04 Sdílet úkol] \hfill \\
-					1. Uživatel chce sdílet úkol. \\
+					1. Scénář začíná, když chce Účastník sdílet úkol. \\
 					2. <Zobrazit seznam uživatelů> \\
 					3. <Zobrazit seznam skupin> \\
-					3. Uživatel určí uživatele a skupiny, se kterými chce úkol sdílet. \\
-					4. Aplikace pošle vybraným uživatelům a skupinám nabídku ke sdílení úkolu.
+					4. Uživatel zašle požadavek obsahující úkol, uživatele a skupiny, se kterými chce úkol sdílet. \\
+					5. Aplikace pošle zadaným uživatelům a skupinám nabídku ke sdílení úkolu.
 					% TODO sdílet by měl jenom účastník úkolu, ne jakýkliv přihlášený user.
 				
 				\item[UC 2.05 Zobrazit seznam mých úkolů] \hfill \\
-				    1. <Filtrovat úkoly> \\
-				    2. <Řadit úkoly> \\
-					3. Aplikace zobrazí seznam všech úkolů, kterých je uživatel součástí, se zvoleným filtrem a řazením. \\
+					1. Scénář začíná, když chce uživatel zobrazit své úkoly.\\
+				    2. <Filtrovat úkoly> \\
+				    3. <Řadit úkoly> \\
+				    4. Uživatel zašle požadavek na zobrazení úkolů s vybranými filtry a řazením.\\
+					5. Aplikace vrátí seznam všech úkolů, kterých je uživatel součástí, se zvolenými parametry. Zobrazené informace budou identifikátor, jméno, priorita, status, urgentnost, \textit{deadline} či rychlost růstu, odpracovanost a typ. \\
 					
 				\item[UC 2.06 Filtrovat úkoly] \hfill \\
-					Úkoly je možné filtrovat podle role uživatele v nich (pozorovatel nebo pracovník), podle jejich typu (s deadlinem nebo rostoucí), stavu a priority (celé číslo 1--5).
+					Úkoly je možné filtrovat podle role uživatele v nich (pozorovatel nebo pracovník), podle jejich typu (s deadlinem nebo rostoucí), stavu a priority (pět úrovní).
 					
 				\item[UC 2.07 Řadit úkoly] \hfill \\
 					Úkoly je možné řadit podle zvoleného kritéria. Tím může být název, datum začátku nebo \textit{deadlinu} úkolu, rozpracovanost (v procentech odpracováno ku celkové pracnosti), priorita a urgentnost.
 				
 				\item[UC 2.08 Rozhodnout o příchozí nabídce sdílení úkolu] \hfill \\
-					1. <Zobrazit seznam příchozích nabídek na sdílení úkolu> \\
-					2. Uživatel rozhodne, zda chce nabídku přijmout, nebo zamítnout. \\
-					3. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
+					1. Scénář začíná, když chce uživatel přijmout nebo zamítnout nabídku ke sdílení úkolu. \\
+					2. <Zobrazit seznam příchozích nabídek na sdílení úkolu> \\
+					3. Uživatel zašle požadavek s jeho rozhodnutím a nabídkou, které se týká. \\
+					4. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
 				
 				\item[UC 2.09 Zobrazit seznam nabídek na sdílení úkolu] \hfill \\
 					Zobrazí seznam nabídek pro uživatele k připojení se ke sdílenému úkolu, v němž bude u každé nabídky uvedeno uživatelské a skutečné jméno sdílejícího uživatele a název úkolu.
 				
 				\item[UC 2.10 Založit pracovní skupinu] \hfill \\
-					1. Uživatel chce založit pracovní skupinu \\
+					1. Scénář začíná, když chce uživatel založit pracovní skupinu. \\
 					2. <Zobrazit seznam uživatelů> \\
-					3. Uživatel zadá jméno skupiny a volitelně její popis. Dále zadá seznam uživatelských jmen uživatelů, které chce do skupiny pozvat. \\
+					3. Uživatel zašle požadavek obsahující jméno skupiny a volitelně její popis. \\
 					4. Aplikace vytvoří novou skupinu s daným názvem a popisem. Zakládající uživatel se stane jejím Adminem. \\
-					5. Aplikace rozešle nabídky ke vstupu do skupiny zadaným uživatelům. \\
 					
 				\item[UC 2.11 Rozhodnout o příchozí nabídce ke vstupu do skupiny] \hfill \\
 					Uživatel rozhodne, zda chce přijmout nebo odmítnout nabídku ke vstupu do skupiny. Pokud ji přijme, stane se jejím Členem.
@@ -462,19 +463,19 @@
 					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny, uživatelské a skutečné jméno uživatele, od něhož nabídka pochází.
 				
 				\item[UC 2.13 Zobrazit seznam uživatelů] \hfill \\
-					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho uživatelské a skutečné jméno.
+					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho identifikátor, e-mail, uživatelské a skutečné jméno.
 					
 				\item[UC 2.14 Zobrazit seznam skupin] \hfill \\
-					Zobrazí seznam skupin v aplikaci. U skupiny bude uvedeno její jméno a uživatelské i skutečné jméno jejího Admina. 
+					Zobrazí seznam skupin v aplikaci. U skupiny bude uveden její identifikátor, jméno a informace o Adminovi -- identifikátor, uživatelské i skutečné jméno a e-mail.
 					
 				\item[UC 2.15 Filtrovat skupiny] \hfill \\
-					Umožňuje filtrovat skupiny podle toho, zda je uživatel jejich Členem.
+					Umožňuje filtrovat skupiny podle toho, zda je uživatel jejich Členem a v jaké roli.
 					
 				\item[UC 2.16 Zobrazit úkol] \hfill \\
-					1. Uživatel chce zobrazit detaily úkolu \\
+					1. Scénář začíná, když chce uživatel zobrazit detaily úkolu. \\
 					2. <Zobrazit seznam mých úkolů> \\
-					3. Uživatel zašle požadavek na zobrazení úkolu.
-					4. Aplikace zobrazí všechny informace o úkolu, tedy název, popis, datum a čas začátku a \textit{deadlinu}, pracnost, prioritu, typ, stav a seznam jeho Pracovníků a Pozorovatelů. \\
+					3. Uživatel zašle požadavek k zobrazení úkolu. \\
+					4. Aplikace zobrazí všechny informace o úkolu, tedy identifikátor, název, popis, datum a čas začátku a \textit{deadlinu}, případně rychlost růstu. Dále pracnost, prioritu, typ, stav, urgentnost, záznamy o práci a seznam jeho Pracovníků, Pozorovatelů a zúčastněných skupin. \\
 					
 					
 				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -501,15 +502,17 @@
 					Umožňuje Pracovníkovi změnit stav úkolu na jakýkoliv z jeho možných stavů.
 				
 				\item[UC 2.19 Upravit úkol] \hfill \\
-					Umožňuje Pracovníkovi upravit u úkolu jeho popis, \textit{deadline}, pracnost a prioritu.
+					Umožňuje Pracovníkovi upravit u úkolu jeho název, popis, \textit{deadline}, pracnost a prioritu.
 				
 				\item[UC 2.20 Stát se pozorovatelem úkolu] \hfill \\
 					Umožňuje Pracovníkovi úkolu stát se jeho Pozorovatelem.
 					
 				\item[UC 2.21 Zadat odvedenou práci] \hfill \\
-					1. Include(Zobrazit úkol) \\
-					2. Uživatel zašle požadavek s počtem odpracovaných hodin. \\
-					3. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
+					1. Scénář začíná, když uživatel odvedl nějakou práci a chce ji na úkolu zaznamenat. \\
+					2. <Zobrazit seznam mých úkolů> \\
+					3. Uživatel zašle požadavek s identifikátorem úkolu a počtem odpracovaných hodin. \\
+					4. Pokud uživatel není Pracovníkem daného úkolu, scénář končí.
+					5. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
 					
 				\item[UC 2.22 Vynulovat urgentnost rostoucího úkolu] \hfill \\
 					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
@@ -517,16 +520,12 @@
 				\item[UC 2.23 Opustit úkol] \hfill \\
 					Umožňuje Účastníkovi úkolu opustit ho. Účastníkem úkolu je možné být přímo a/nebo skrze skupinu. Opustit úkol lze pouze, pokud je Účastník součástí úkolu přímo.
 				
-					1. Případ užití začíná, když se Účastník úkolu rozhodne opustit úkol. \\
-					2. Include(Zobrazit úkol) \\
+					1. Scénář začíná, když se Účastník úkolu rozhodne opustit úkol. \\
+					2. <Zobrazit seznam mých úkolů> \\
 					3. Účastník zašle požadavek na opuštění úkolu. \\
-					4. Pokud nebyl úkol sdílen přímo s Účastníkem (ale skupinou, ve které je Členem), scénář končí. \\
+					4. Pokud nebyl úkol sdílen přímo s Účastníkem (ale jen skupinou, ve které je Členem), scénář končí. \\
 					5. Aplikace odebere Účastníka z úkolu. Pokud byl ale Účastník navíc součástí úkolu skrze skupinu, jíž je členem, nadále zůstane součástí úkolu skrze tuto skupinu.
 			\end{description}
-			
-			
-			
-			
 			
 			
 			
@@ -544,14 +543,16 @@
 			% TODO projít usecases a u všech doplnit podmínky, jestli má uživatel právo to vykonat?
 			\begin{description}
 				\item[UC 3.01 Zobrazit seznam úkolů skupiny] \hfill \\
-					1. Člen skupiny chce zobrazit úkoly své skupiny. \\
+					1. Scénář začíná, když chce Člen skupiny zobrazit úkoly své skupiny. \\
 					2. <Filtrovat úkoly> \\
 					3. <Řadit úkoly> \\
-					4. Aplikace zobrazí seznam všech úkolů skupiny se zvoleným filtrem a řazením. \\
+					4. Uživatel zašle požadavek na zobrazení úkolů dané skupiny se zvolenými filtry a řazením. \\
+					5. Pokud Člen nepatří do zvolené skupiny, je zobrazení odepřeno a scénář končí. \\
+					6. Aplikace vrází seznam všech úkolů skupiny se zvolenými parametry. \\
 					
 				\item[UC 3.02 Opustit skupinu] \hfill \\
-					1. Člen chce opustit skupinu. \\
-					2. Include(Zobrazit detail skupiny) \\
+					1. Scénář začíná, když chce Člen opustit skupinu. \\
+					2. <Zobrazit seznam mých skupin> \\
 					3. Člen zašle požadavek na opuštění skupiny. \\
 					4. Pokud je Člen Adminem skupiny, opuštění je zamítnuto a scénář končí. \\
 					5. Aplikace odebere Člena ze skupiny a ze všech úkolů, jichž byl součástí skrze opouštěnou skupinu.
@@ -560,16 +561,17 @@
 					Zobrazí Členovi seznam názvů všech skupin, ve kterých je Členem.
 				
 				\item[UC 3.04 Zobrazit detail skupiny] \hfill \\
-					1. <Zobrazit seznam mých skupin> \\
-					2. Člen zvolí skupinu, u které chce zobrazit detaily, a pošle požadavek. \\
-					3. Pokud Člen nepatří do zvolené skupiny, je zobrazení odepřeno a scénář končí. \\
-					4. Aplikace zobrazí detaily skupiny, tedy její jméno, popis, seznam Členů, Manažerů a Admina.
+					1. Scénář začíná, když Člen chce zobrazit detaily skupiny. \\
+					2. <Zobrazit seznam mých skupin> \\
+					3. Člen zašle požadavek na zobrazení detailů dané skupiny. \\
+					4. Pokud Člen nepatří do zvolené skupiny, je zobrazení odepřeno a scénář končí. \\
+					5. Aplikace zobrazí detaily skupiny, tedy její jméno, popis, seznam Členů, Manažerů a Admina.
 				
 				\item[UC 3.05 Pozvat uživatele do skupiny] \hfill \\
-					1. Případ užití začíná, když Manažer chce pozvat uživatele do skupiny. \\
+					1. Scénář začíná, když Manažer chce pozvat uživatele do skupiny. \\
 					2. <Zobrazit seznam uživatelů> \\
-					3. Manažer vybere uživatele, kterého chce pozvat, a pošle požadavek. \\
-					4. Aplikace zašle uživateli nabídku ke vstupu do skupiny. \\
+					3. Manažer pošle požadavek obsahující uživatele, které chce pozvat do skupiny. \\
+					4. Aplikace vytvoří abídku ke vstupu do skupiny zadaným uživatelům. \\
 				
 				\item[UC 3.06 Přiřadit Členovi roli na úkolu] \hfill \\
 					Umožňuje přiřadit Členům skupiny roli Pozorovatele nebo Pracovníka na úkolech skupiny.
@@ -578,27 +580,23 @@
 					Zobrazí seznam příchozích nabídek ke sdílení úkolů. U nabídky bude uživatelské a skutečné jméno uživatele, od kterého pochází, a název úkolu, kterého se týká.
 					
 				\item[UC 3.08 Rozhodnout o nabídce sdílení úkolu se skupinou] \hfill \\
-					1. Případ užití začíná, když Manažer chce rozhodnout o nabídce sdílení úkolu se skupinou. \\
+					1. Scénář začíná, když Manažer chce rozhodnout o nabídce sdílení úkolu se skupinou. \\
 					2. <Zobrazit seznam nabídek na sdílení úkolu se skupinou> \\
-					3. Pokud Manažer nabídku odmítne, je smazána a scénář končí. \\
-					4. Pokud Manažer nabídku přijme, Aplikace úkol zařadí mezi úkoly skupiny a všichni Členové skupiny se stanou jeho Pozorovateli.
+					3. Manažer pošle požadavek na přijetí či odmítnutí nabídky. \\
+					4. Aplikace provede požadovanou akci. Pokud Manažer nabídku odmítá, je smazána. Pokud Manažer nabídku přijímá, Aplikace úkol zařadí mezi úkoly skupiny a všichni Členové skupiny se stanou jeho Pozorovateli.
 				
 				\item[UC 3.09 Vytvořit úkol pro skupinu] \hfill \\
-					1. Případ užití začíná, když Manažer chce vytvořit úkol pro skupinu. \\
-					2. Manažer vyplní informace k úkolu, povinně název a typ. Pokud je typ \uv{S deadlinem}, pak je povinné i datum a čas deadlinu. Volitelně může zadat popis, pracnost v \textit{manhours} a prioritu jako celé číslo v intervalu 1--5. Zadá také skupinu, pro kterou chce úkol vytvořit. \\
-					3. Pokud Manažer není Manažerem zvolené skupiny, vytvoření úkolu selže a scénář končí. \\
-					4. Aplikace vytvoří úkol se zadanými parametry a přidá ho do úkolů skupiny, s níž byl sdílen. \\
-					5. Aplikace přiřadí na úkolu všem Členům skupiny roli Pozorovatel.
+					1. Scénář začíná, když Manažer chce vytvořit úkol pro skupinu. \\
+					2. Include(Vytvořit úkol) %TODO má to tu být, nebo smazat?
 				
 				\item[UC 3.10 Odebrat uživatele ze skupiny] \hfill \\
 					Umožňuje Manažerovi odebrat zvoleného uživatele ze skupiny. Ten je odebrán ze všech úkolů, jichž byl součástí skrze skupinu. Pokud se jedná o Manažera nebo Admina, je odebrání zakázáno. 
 				
 				\item[UC 3.11 Odebrat skupinu z úkolu] \hfill \\
-					1. Případ užití začíná, když chce Manažer odebrat skupinu z úkolu, aby už nebyla jeho součástí. \\
-					2. <Zobrazit úkol> \\
-					3. <Zobrazit seznam úkolů skupiny> \\
-					4. Manažer vybere úkol, ze kterého chce skupinu odebrat, a zašle požadavek. \\
-					5. Aplikace u úkolu odebere sdílení se skupinou a odebere z úkolu všechny Členy skupiny, pokud nejsou součástí úkolu i mimo skupinu. \\
+					1. Scénář začíná, když chce Manažer odebrat skupinu z úkolu, aby už nebyla jeho součástí. \\
+					2. <Zobrazit seznam úkolů skupiny> \\
+					3. Manažer zašle požadavek na odebrání skupinu z vybraného úkolu. \\
+					4. Aplikace odebere úkol ze skupiny. U úkolu odebere skupinu a všechny Členy skupiny, pokud nejsou součástí úkolu i mimo skupinu. \\
 					
 				\item[UC 3.12 Upravit detail skupiny] \hfill \\
 					Umožňuje Adminovi měnit popis skupiny.
@@ -610,14 +608,13 @@
 					Umožňuje Adminovi přenechat svou roli jinému členovi skupiny.
 					
 				\item[UC 3.15 Smazat skupinu] \hfill \\
-					1. Případ užití začíná, když se Admin rozhodne smazat skupinu. \\
-					2. Include(Zobrazit detail skupiny) \\
+					1. Scénář začíná, když se Admin rozhodne smazat skupinu. \\
+					2. <Zobrazit seznam mých skupin> \\
 					3. Admin zašle požadavek na smazání skupiny. \\
-					4. Pokud Admin není Adminem ve skupině, kterou chce smazat, scénář končí. \\
-					5. Aplikace odebere všechny ostatní členy ze skupiny (\uv{Odebrat uživatele ze skupiny}). \\
-					6. Aplikace odebere skupinu ze všech jejích úkolů (\uv{Odebrat skupinu z úkolu}). \\
-					7. Aplikace odebere Admina ze skupiny. \\
-					8. Aplikace smaže skupinu. \\
+					4. Aplikace odebere všechny ostatní členy ze skupiny -- Include(\uv{Odebrat uživatele ze skupiny}). \\
+					5. Aplikace odebere skupinu ze všech jejích úkolů -- Include(\uv{Odebrat skupinu z úkolu}). \\
+					6. Aplikace odebere Admina ze skupiny. \\
+					7. Aplikace smaže skupinu. \\
 					
 			\end{description}
 				
@@ -631,13 +628,11 @@
 			\end{figure}
 			
 			\begin{description}
-				\item[UC 4.01 Zvýšení urgentnosti rostoucích úkolů] \hfill \\
-					1. Případ užití začíná po uplynutí časového intervalu pro zvyšování urgentnosti rostoucích úkolů. \\
-					2. Aplikace u všech úkolů typu \uv{rostoucí} zvýší urgentnost o hodnotu danou nastavením úkolu. \\
-				
-				\item[UC 4.02 Aktualizace urgentnosti úkolů] \hfill \\
-					1. Případ užití začíná po uplynutí časového intervalu pro aktualizaci urgentnosti úkolů. \\
-					2. Aplikace u všech úkolů typu \uv{s deadlinem} vypočte novou hodnotu urgentnosti. \\
+				\item[UC 4.01 Zvýšení urgentnosti úkolů] \hfill \\
+					1. Scénář začíná po uplynutí časového intervalu pro zvyšování urgentnosti úkolů. \\
+					2. Aplikace načte každý úkol, jehož stav není Splněný ani Zrušený. \\
+					3. Pokud byla urgentnost úkolu aktualizována v nedávné době, scénář končí. \\
+					4. Aplikace vypočte novou hodnotu urgentnosti pro úkol. \\
 			\end{description}
 			
 			
@@ -766,12 +761,33 @@
 			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
 			
 		\subsection{REST API aplikace Deadlines}
-			API aplikace budu dokumentovat ve formátu API Blueprint. \cite{api-blueprint} Ten představuje jednoduchý způsob, jak popsat zdroje, jejich \textit{endpointy}, návratové hodnoty a další informace. Jeho syntaxe vychází z jazyka Markdown. \cite{markdown} 
+			%API aplikace budu dokumentovat ve formátu API Blueprint. \cite{api-blueprint} Ten představuje jednoduchý způsob, jak popsat zdroje, jejich \textit{endpointy}, návratové hodnoty a další informace. Jeho syntaxe vychází z jazyka Markdown. \cite{markdown} 
+			
 			
 			%TODO příloha, nebo online?
-			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze [....] a dostupný na webu Apiary\footnote{\texttt{http://docs.deadlines.apiary.io/}}. Zde jen uvedu \textit{endpoints} a popíšu jejich funkci. 
+			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze v sekci \ref{appdx:restapi} a dostupný na webu Apiary\footnote{\texttt{http://docs.deadlines.apiary.io/}}. Zde uvedu možné odpovědi aplikace na požadavky, dostupné \textit{endpoints} a popíšu jejich funkci. 
 			
 			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
+			
+			\subsubsection{Odpovědi}
+			Každý endpoint odpovídá na požadavek odpovědí, která obsahuje HTTP kód popisující, jak volání dopadlo, a případně tělo ve formátu JSON. Odpovědi od aplikace mohou mít následující kódy:
+			\begin{description}
+				\item[200 OK] Požadavek proběhl v pořádku.
+				\item[201 CREATED] Požadovaný objekt či záznam byl vytvořen.
+				\item[400 BAD REQUEST] V požadavku je chyba. Detaily o konkrétní chybě jsou obsaženy v těle zprávy, která má následující formát:
+				\item[401 UNAUTHORIZED] Požadavek neobsahuje autentifikační údaje.
+				\item[403 FORBIDDEN] Volající uživatel nemá dostatečná práva k provedení požadavku.
+				\item[404 NOT FOUND] Požadovaný zdroj nebyl nalezen.
+				\item[409 CONFLICT] Objekt či záznam nemohl být vytvořen, protože již existuje.
+			\end{description}
+			Všechny chybové odpovědi obsahují v těle odpovědi další informace o chybě. Tělo má následující formát:
+				\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"errorCode": 0,
+	"errorMessage": "Sample error message."
+}
+				\end{Verbatim}
+				Výčet možných chybových kódů se nachází v příloze v sekci \ref{appdx:rest-error-codes}.
 			
 			\hfill \\
 			\subsubsection{\texttt{/user [GET, POST]}}
@@ -783,73 +799,75 @@
 				
 			\subsubsection{\texttt{/user/\{user\_id\} [GET, PUT]}}
 				GET vrátí informace uživatele s ID \texttt{user\_id}. \\
-				PUT upraví profil uživatele s ID \texttt{user\_id} předanými daty.
+				PUT upraví profil uživatele s ID \texttt{user\_id} předanými daty. Povoleno je měnit pouze profil volajícího uživatele.
 			
-			\subsubsection{\texttt{/task\{?filter\} [GET, POST]}}
-				GET vrátí seznam všech úkolů, které odpovídají zadanému filtru. Zobrazit lze jen úkoly, jichž je volající účastníkem. \\
-				POST vytvoří nový úkol z poskytnutých dat. 
+			\subsubsection{\texttt{/task[\{?filter\&order\}] [GET, POST]}}
+				GET vrátí seznam všech úkolů volajícího uživatele, které odpovídají zadaným parametrům. Detailní popis možných parametrů je dostupný v příloze v sekci \ref{appdx:restapi}. \\
+				POST vytvoří nový úkol z poskytnutých dat. Volající uživatel se stane jeno Pozorovatelem.
 			
 			\subsubsection{\texttt{/task/\{task\_id\} [GET, PUT]}}
-				GET vrátí informace o úkolu se zadaným ID. \\
-				PUT upraví úkol se zadaným ID. \forworkers
+				GET vrátí detailní informace o úkolu se zadaným ID. \forworkers \\
+				PUT upraví úkol se zadaným ID podle informací v těle požadavku. \forworkers
 			
+			\subsubsection{\texttt{/task/\{task\_id\}/reseturgency [POST]}}
+				Vynuluje urgentnost zadaného úkolu. Použitelné jen pro rostoucí úkoly. \forworkers
 			
 			\subsubsection{\texttt{/task/share/\{task\_id\} [POST]}}
-				POST zašle nabídku na sdílení úkolu předaným uživatelům a skupinám. \forworkers
+				Zašle nabídku na sdílení úkolu uživatelům a skupinám předaným v těle požadavku. \forworkers
 			
 			\subsubsection{\texttt{/task/leave/\{task\_id\} [POST]}}
-				POST odebere volajícího uživatele z úkolu se zadaným ID.
+				Odebere volajícího uživatele z úkolu se zadaným ID. 
 			
-			\subsubsection{\texttt{/task/userrole/\{task\_id\} [PUT]}}
-				PUT nastaví roli volajícího uživatele v úkolu se zadaným ID na roli předanou v těle požadavku. Pozorovatel se tak může stát Pracovníkem a naopak. Volitelně lze také v těle požadavku zadat ID uživatele, jehož se má volání týkat, a pokud k tomu má volající dostatečné oprávnění,  může změnit status jiného uživatele. To slouží Manažerům skupin k přiřazování Členů k úkolům.
-			
-			\subsubsection{\texttt{/task/status/\{task\_id\} [PUT]}}
-				PUT nastaví stav úkolu na stav předaný v těle požadavku.
+			\subsubsection{\texttt{/task/role/\{task\_id\}\{?newRole[\&targetUser\&targetGroup]\} [POST]}}
+				Nastaví roli volajícího uživatele v úkolu se zadaným ID na roli předanou v parametru \texttt{newRole}. Pozorovatel se tak může stát Pracovníkem a naopak. 
+				
+				Volitelně lze také zadat ID skupiny a uživatele, jehož se má volání týkat. Pokud je volající uživatel Manažerem zadané skupiny a cílový uživatel jejím členem, pak je Manažerovi umožněno změnit roli uživatele.
 			
 			\subsubsection{\texttt{/task/report/\{task\_id\} [POST]}}
-				POST zaznamená práci odvedenou na úkolu. Detaily záznamu jsou obsaženy v těle požadavku.
+				Vytvoří záznam o odvedené práci od volajícího uživatele na úkolu s předaným ID. Detaily záznamu jsou obsaženy v těle požadavku. \forworkers
 				
-			\subsubsection{\texttt{/offer/task [GET]}}
-				GET vrátí seznam nabídek ke sdílení úkolu volajícího uživatele.
+			\subsubsection{\texttt{/offer/task/user [GET]}}
+				Vrátí seznam nabídek ke sdílení úkolu pro volajícího uživatele.
 			
-			\subsubsection{\texttt{/offer/task/\{task\_offer\_id\} [POST]}}
-				POST přijme nebo zamítne nabídku ke sdílení úkolu s předaným ID. 
+			\subsubsection{\texttt{/offer/task/user/resolve/\{task\_offer\_id\} [POST]}}
+				Přijme nebo zamítne nabídku ke sdílení úkolu se zadaným ID. Volající uživatel musí být příjemcem nabídky.
+				
+			\subsubsection{\texttt{/offer/task/group/\{group\_id\} [GET]}}
+				Vrátí seznam nabídek ke sdílení úkolu pro skupinu se zadaným ID. \formanagers
 			
-			\subsubsection{\texttt{/offer/group [GET]}}
-				GET vrátí seznam nabídek ke vstupu do skupiny volajícího uživatele.
+			\subsubsection{\texttt{/offer/task/group/\{group\_id\}/resolve/\{task\_offer\_id\} [POST]}}
+				Přijme nebo zamítne nabídku ke sdílení úkolu se skupinou se zadaným ID. \formanagers
 			
-			\subsubsection{\texttt{/offer/group/\{membership\_offer\_id\} [POST]}}
-				POST přijme nebo zamítne nabídku ke vstupu do skupiny s předaným ID. 
+			\subsubsection{\texttt{/offer/membership [GET]}}
+				Vrátí seznam nabídek ke vstupu do skupiny pro volajícího uživatele.
 			
-			\subsubsection{\texttt{/group\{?filter\} [GET, POST]}}
-				GET vrátí seznam skupin v aplikaci. Parametr \texttt{filter} určuje, zda vracet všechny skupiny, nebo jen ty, jichž je volající Členem. \\
+			\subsubsection{\texttt{/offer/membership/resolve/\{membership\_offer\_id\} [POST]}}
+				Přijme nebo zamítne nabídku ke vstupu do skupiny s předaným ID.  Volající uživatel musí být příjemcem nabídky.
+			
+			\subsubsection{\texttt{/group\{?role\} [GET, POST]}}
+				GET vrátí seznam skupin v aplikaci. Volitelný parametr \texttt{role} určuje, zda vracet všechny skupiny, nebo jen ty, jichž je volající členem v zadané roli. \\
 				POST vytvoří novou skupinu z informací předaných v těle požadavku. Volající uživatel se stane jejím Adminem.
 			
 			\subsubsection{\texttt{/group/\{group\_id\} [GET, PUT, DELETE]}}
-				GET vrátí detaily skupiny se zadaným ID. \\
+				GET vrátí detaily skupiny se zadaným ID. \formembers \\
 				PUT upraví detaily skupiny se zadaným ID daty předanými v těle požadavku. \foradmin \\
 				DELETE smaže skupinu se zadaným ID. \foradmin \\
 			
 
-			\subsubsection{\texttt{/group/manager/member/\{group\_id\}/\{user\_id\} [POST, DELETE]}}
-				POST Pošle nabídku ke vstupu do skupiny identifikované \texttt{group\_id} uživateli s ID \texttt{user\_id}.  \\
+			\subsubsection{\texttt{/group/\{group\_id\}/member/offer [POST]}}
+				Zašle nabídku ke vstupu do skupiny se zadaným ID uživatelům předaným v těle požadavku. \formanagers
+
+			\subsubsection{\texttt{/group/\{group\_id\}/member/\{member\_id\} [PUT, DELETE]}}				
+				PUT upraví záznam o členovi skupiny. Změní jeho roli ve skupině na tu předanou v těle požadavku. \formanagers \\
 				DELETE Odebere uživatele s ID \texttt{user\_id} ze skupiny s ID \texttt{group\_id}. \formanagers \\
+			
+			\subsubsection{\texttt{/group/\{group\_id\}/task/\{task\_id\} [DELETE]}}							
+				Odebere skupinu s ID \texttt{group\_id} z úkolu s ID \texttt{task\_id}. \formanagers
+			
 			
 			\subsubsection{\texttt{/group/manager/offer/task/\{group\_id\} [GET, POST]}}
 				GET vrátí seznam všech nabídek ke sdílení úkolu se zadanou skupinou. \formanagers \\
 				POST přijme nebo zamítne nabídky ke sdílení úkolů se zadanou skupinou. Rozhodnutí a nabídky, kterých se týkají, jsou předané v těle požadavku. \formanagers
-				
-			
-			\subsubsection{\texttt{/group/manager/removetask/\{group\_id\} [POST]}}
-				POST odebere skupinu z úkolů předaných v těle požadavku. \formanagers
-			
-			\subsubsection{\texttt{/group/admin/setmanager/\{group\_id\}/\{user\_id\} [POST]}}
-				POST přiřadí nebo odebere roli Manažera danému uživateli. \foradmin
-			
-			\subsubsection{\texttt{/group/admin/setadmin/\{group\_id\}/\{user\_id\} [POST]}}
-				POST odebere roli Admina volajícímu uživateli a přiřadí ji zadanému uživateli. \foradmin
-			
-			
 	
 
 	\section{Návrhový model}
@@ -973,6 +991,53 @@
 		\caption[Model tříd]{Návrhový model tříd aplikace Deadlines}
 		\label{diagram:class-model}
 	\end{figure}
+
+\chapter{Detaily REST API}
+	\label{appdx:restapi}
+	V této části uvedu pro každý API endpoint detaily o formátu požadavku, odpovědi a možné návratové kódy.
+	\section{Odpovědi}
+
+
+	
+	\section{\texttt{/user}}
+		\subsection{GET}
+			\begin{description}
+				\item[200 OK] \hfill
+					\begin{Verbatim}[obeytabs,tabsize=2]
+[
+	{
+		"id": 1,
+		"username": "jdoe",
+		"email": "sample@email.com",
+		"name": "John Doe"
+	},
+	{
+		...
+	}
+]
+				\end{Verbatim}
+				Pole \texttt{email} a \texttt{name} mohou v odpovědi chybět, pokud nejsou vyplněny.
+			\end{description}
+			
+		\subsection{POST}
+
+			Možné odpovědi:
+			\begin{description}
+				\item[201 CREATED] Vytvoření proběhlo bez chyb. \\
+					\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"username": "jdoe",
+	"password": "sample-password",
+	"email": "sample@email.com",
+	"name": "John Doe"
+}							
+					\end{Verbatim}
+					Pole \texttt{email} a \texttt{name} jsou nepovinná.\\
+				\item[400 BAD REQUEST] Požadavek je chybný. Detaily chyby jsou uvedeny v těle zprávy.
+			\end{description}
+			
+	\section{Chybové kódy}
+	\label{appdx:rest-error-codes}
 
 \chapter{Obsah přiloženého CD}
 
