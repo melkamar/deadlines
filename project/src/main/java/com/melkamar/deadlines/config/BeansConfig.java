@@ -5,6 +5,7 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
@@ -16,6 +17,7 @@ import javax.servlet.Filter;
  * 25.03.2016 14:07
  */
 @Configuration
+@EnableScheduling
 public class BeansConfig {
     @Bean
     public ShaPasswordEncoder passwordEncoder() {

@@ -7,6 +7,7 @@ import com.melkamar.deadlines.services.helpers.urgency.DefaultUrgencyComputer;
 import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,7 +18,6 @@ import java.time.temporal.ChronoUnit;
  */
 @Service
 public class UrgencyHelper {
-    // TODO make this be called automatically
     @Autowired
     private UrgencyComputer urgencyComputer;
     private static int CHECK_INTERVAL_MINUTES = 30;
@@ -29,6 +29,7 @@ public class UrgencyHelper {
      * @param force When true, urgency will be updated. If false, urgency will
      *              only be updated if {@link UrgencyHelper#needsUpdate(Task)} is true.
      */
+    @Transactional
     public void updateUrgency(Task task, boolean force) {
         System.out.println("updateUrgency: "+task.getName());
         if (force) {
@@ -38,6 +39,11 @@ public class UrgencyHelper {
                 task.updateUrgency(urgencyComputer);
             }
         }
+    }
+
+    @Transactional
+    public void resetUrgency(Task task){
+        task.resetUrgency();
     }
 
     /**

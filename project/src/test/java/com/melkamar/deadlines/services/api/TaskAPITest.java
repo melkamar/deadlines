@@ -758,6 +758,56 @@ public class TaskAPITest {
         Assert.assertTrue(resultList.get(0).equals(task3));
     }
 
+    @Transactional
+    @Test
+    public void resetUrgency() throws AlreadyExistsException, WrongParameterException, UserAlreadyExistsException, TaskPermissionException, NotMemberOfException, NotAllowedException {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, 15);
+        Task task2 = taskAPI.createTask(user, "AAA", null, null, 0, 20);
+        Task task3 = taskAPI.createTask(user, "BBB", null, null, 0, 30);
+
+        taskAPI.setTaskRole(user, task1, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task2, TaskRole.WORKER);
+        taskAPI.setTaskRole(user, task3, TaskRole.WORKER);
+
+        task1.getUrgency().setLastUpdate(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        task2.getUrgency().setLastUpdate(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+        task3.getUrgency().setLastUpdate(DateConvertor.localDateTimeToDate(LocalDateTime.now().minusHours(10)));
+
+        internalAPI.updateAllUrgencies();
+
+        Assert.assertTrue(task1.getUrgency().getValue() > 0);
+        Assert.assertTrue(task2.getUrgency().getValue() > 0);
+        Assert.assertTrue(task3.getUrgency().getValue() > 0);
+
+        taskAPI.resetUrgency(user, task1);
+        Assert.assertEquals(0, task1.getUrgency().getValue(), 0.1);
+        Assert.assertTrue(task2.getUrgency().getValue() > 0);
+        Assert.assertTrue(task3.getUrgency().getValue() > 0);
+
+        taskAPI.resetUrgency(user, task2);
+        Assert.assertEquals(0, task1.getUrgency().getValue(), 0.1);
+        Assert.assertEquals(0, task2.getUrgency().getValue(), 0.1);
+        Assert.assertTrue(task3.getUrgency().getValue() > 0);
+
+        taskAPI.resetUrgency(user, task3);
+        Assert.assertEquals(0, task1.getUrgency().getValue(), 0.1);
+        Assert.assertEquals(0, task2.getUrgency().getValue(), 0.1);
+        Assert.assertEquals(0, task3.getUrgency().getValue(), 0.1);
+    }
+
+    @Transactional
+    @Test(expected = NotAllowedException.class)
+    public void resetUrgencyNotGrowingTask() throws Exception {
+        User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
+
+        Task task1 = taskAPI.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(1));
+
+        taskAPI.setTaskRole(user, task1, TaskRole.WORKER);
+
+        taskAPI.resetUrgency(user, task1);
+    }
 
     private void sleepALittle() {
         try {

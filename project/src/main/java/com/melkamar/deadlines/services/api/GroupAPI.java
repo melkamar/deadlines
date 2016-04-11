@@ -368,7 +368,6 @@ public class GroupAPI {
         }
 
         groupMemberHelper.deleteGroupMember(adminGroupMember);
-        // TODO: 31.03.2016 Also delete all sharing offers! (they were not implemented yet when writing this)
         groupDAO.delete(group);
     }
 

@@ -213,6 +213,10 @@ public abstract class Task {
         this.urgency = urgency;
     }
 
+    public void resetUrgency(){
+        this.urgency.update(0);
+    }
+
     public Set<TaskWork> getWorkReports() {
         return workReports;
     }

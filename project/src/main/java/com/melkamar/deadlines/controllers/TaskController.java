@@ -254,8 +254,6 @@ public class TaskController {
             User targetUser = userAPI.getUser(targetUserId);
             Group targetGroup = groupAPI.getGroup(targetGroupId);
 
-            // TODO: 10.04.2016 Check if FORBIDDEN is okay for this use (or use BAD REQUEST?)
-
             try {
                 taskAPI.setTaskRole(targetUser, task, TaskRole.valueOf(targetRole.toUpperCase()), user, targetGroup);
             } catch (NotMemberOfException e) {

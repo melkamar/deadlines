@@ -151,11 +151,6 @@ public class SharingAPI {
             return null;
         }
 
-        // TODO: 01.04.2016 See if it works with this commented out. It should not matter if the user is already on task, as nothing will get rewritten
-//        if (isAlreadyOnTask(user, offer.getTaskOffered())) {
-//            deleteOffer(offer);
-//            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_TASK_PARTICIPANT, user, offer.getTaskOffered()));
-//        } else {
         Task taskOffered = offer.getTaskOffered();
         taskParticipantHelper.editOrCreateTaskParticipant(user, taskOffered, TaskRole.WATCHER, null, false);
         deleteOffer(offer);

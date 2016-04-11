@@ -328,18 +328,23 @@ public class TaskAPI {
     /**
      * Resets urgency of a GrowingTask. Does not affect DeadlineTasks.
      *
-     * @param worker
+     * @param user
      * @param task
      * @return
      */
     @Transactional
-    public Task resetUrgency(User worker, Task task) throws NotAllowedException {
+    public Task resetUrgency(User user, Task task) throws NotAllowedException, NotMemberOfException, TaskPermissionException {
         if (!(task instanceof GrowingTask)){
             throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE);
         }
 
-        // TODO: 31.03.2016 Implement when Urgency is implemented
-        throw new NotImplementedException();
+        if (!permissionHandler.hasTaskPermission(user, task, TaskRole.WORKER)){
+            throw new TaskPermissionException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
+        }
+
+        urgencyHelper.resetUrgency(task);
+
+        return task;
     }
 
     @Transactional
