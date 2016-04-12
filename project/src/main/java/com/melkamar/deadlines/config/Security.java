@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+public class Security extends WebSecurityConfigurerAdapter {
     @Autowired
     DeadlinesAuthenticationProvider authenticationProvider;
     @Autowired

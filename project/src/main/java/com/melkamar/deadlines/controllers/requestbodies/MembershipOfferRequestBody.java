@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.requestobjects;
+package com.melkamar.deadlines.controllers.requestbodies;
 
 import java.util.List;
 

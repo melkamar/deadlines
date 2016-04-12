@@ -18,7 +18,7 @@ import javax.servlet.Filter;
  */
 @Configuration
 @EnableScheduling
-public class BeansConfig {
+public class Beans {
     @Bean
     public ShaPasswordEncoder passwordEncoder() {
         return new ShaPasswordEncoder();

@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.requestobjects;
+package com.melkamar.deadlines.controllers.requestbodies;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)

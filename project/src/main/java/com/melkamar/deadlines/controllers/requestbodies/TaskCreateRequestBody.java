@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.requestobjects;
+package com.melkamar.deadlines.controllers.requestbodies;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.melkamar.deadlines.model.task.Priority;

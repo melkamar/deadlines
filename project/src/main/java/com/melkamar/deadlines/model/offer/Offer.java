@@ -1,7 +1,7 @@
 package com.melkamar.deadlines.model.offer;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.melkamar.deadlines.controllers.views.JsonViews;
+import com.melkamar.deadlines.controllers.JsonViews;
 import com.melkamar.deadlines.model.User;
 
 import javax.persistence.*;

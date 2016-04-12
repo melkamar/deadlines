@@ -1,7 +1,7 @@
 package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.*;
-import com.melkamar.deadlines.controllers.views.JsonViews;
+import com.melkamar.deadlines.controllers.JsonViews;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
@@ -10,7 +10,6 @@ import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

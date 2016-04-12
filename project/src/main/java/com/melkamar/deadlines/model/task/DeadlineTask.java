@@ -2,7 +2,7 @@ package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.melkamar.deadlines.controllers.views.JsonViews;
+import com.melkamar.deadlines.controllers.JsonViews;
 import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
 
 import javax.persistence.*;

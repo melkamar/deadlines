@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.views;
+package com.melkamar.deadlines.controllers;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
