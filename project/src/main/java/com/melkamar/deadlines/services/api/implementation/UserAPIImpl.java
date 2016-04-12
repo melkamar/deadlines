@@ -45,8 +45,8 @@ public class UserAPIImpl implements UserAPI {
 
 
     @Override
-    @Transactional(rollbackFor = UserAlreadyExistsException.class)
-    public User createUser(String username, String password, String name, String email) throws WrongParameterException, UserAlreadyExistsException {
+    @Transactional(rollbackFor = AlreadyExistsException.class)
+    public User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException {
         if (username == null || username.isEmpty()) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
         }
@@ -64,7 +64,7 @@ public class UserAPIImpl implements UserAPI {
         try {
             userDAO.save(newUser);
         } catch (DataIntegrityViolationException e){
-            throw new UserAlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_USER_NAME, username));
+            throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_USER_NAME, username));
         } catch (javax.validation.ConstraintViolationException e){
             StringBuilder err = new StringBuilder();
             for (ConstraintViolation violation: e.getConstraintViolations()){

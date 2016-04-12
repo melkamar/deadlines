@@ -39,7 +39,7 @@ public class TaskParticipantDAOHibernateTest {
 
     @Test
     @Transactional
-    public void findByUserAndTask() throws WrongParameterException, UserAlreadyExistsException {
+    public void findByUserAndTask() throws WrongParameterException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
@@ -51,7 +51,7 @@ public class TaskParticipantDAOHibernateTest {
 
     @Test
     @Transactional
-    public void findByUserAndGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, UserAlreadyExistsException {
+    public void findByUserAndGroup() throws WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, AlreadyExistsException {
         User user = userAPI.createUser("TestUser", "pwd", "Some name", "a@b.c");
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
         Task task2 = taskAPI.createTask(user, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));

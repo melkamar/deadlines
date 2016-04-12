@@ -41,7 +41,7 @@ public class TaskDAOHibernateTest {
     @SuppressWarnings("Duplicates")
     @Transactional
     @Test
-    public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException, UserAlreadyExistsException {
+    public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
         User user = userAPI.createUser("User1", "pwd", "Name", "email@something.cz");
         Task task1 = taskAPI.createTask(user, "Task1", "Description", Priority.NORMAL, 10, 1);
         Task task2 = taskAPI.createTask(user, "Task2", "Description", Priority.NORMAL, 10, 1);

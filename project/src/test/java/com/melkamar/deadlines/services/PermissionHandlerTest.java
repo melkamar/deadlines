@@ -39,7 +39,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test(expected = NotMemberOfException.class)
-    public void hasGroupPermissionNonMember() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
+    public void hasGroupPermissionNonMember() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -54,7 +54,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test(expected = NotMemberOfException.class)
-    public void hasGroupPermissionNonMember2() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
+    public void hasGroupPermissionNonMember2() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -69,7 +69,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test(expected = NotMemberOfException.class)
-    public void hasGroupPermissionNonMember3() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
+    public void hasGroupPermissionNonMember3() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -84,7 +84,7 @@ public class PermissionHandlerTest {
 
     @Transactional
     @Test
-    public void hasGroupPermission() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
+    public void hasGroupPermission() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");

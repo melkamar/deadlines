@@ -1,7 +1,7 @@
 package com.melkamar.deadlines.controllers;
 
 import com.melkamar.deadlines.config.ErrorCodes;
-import com.melkamar.deadlines.exceptions.UserAlreadyExistsException;
+import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.api.UserAPI;
@@ -67,7 +67,7 @@ public class UserControllerTest {
 
     @Test
     public void testCreateDuplicateUser() throws Exception {
-        Mockito.when(userAPI.createUser(any(), any(), any(), any())).thenThrow(new UserAlreadyExistsException("Foo msg"));
+        Mockito.when(userAPI.createUser(any(), any(), any(), any())).thenThrow(new AlreadyExistsException("Foo msg"));
         this.mvc.perform(MockMvcRequestBuilders
                 .post("/user").content("{ \"username\":\"NewgUasasdername\", \"password\":\"haha\"} ").contentType("application/json"))
                 .andExpect(status().isConflict())

@@ -43,14 +43,14 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void createGroupMemberGroupCreation() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
+    public void createGroupMemberGroupCreation() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
     }
 
     @Transactional
     @Test
-    public void createGroupMember() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
+    public void createGroupMember() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
@@ -64,7 +64,7 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void createGroupMember_TasksShared() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, UserAlreadyExistsException {
+    public void createGroupMember_TasksShared() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         Group group = groupAPI.createGroup("Groupname", user, "Random description");
@@ -92,7 +92,7 @@ public class GroupMemberHelperTest {
 
     @Transactional
     @Test
-    public void getGroupMember() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
+    public void getGroupMember() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
         User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
         User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
         User user3 = userAPI.createUser("NewlyAddedUser2", "password", "Alice Doe", "ab@b.c");

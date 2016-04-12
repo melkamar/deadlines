@@ -75,11 +75,9 @@ public class DeadlinesApplication {
             System.out.println(offer);
         } catch (WrongParameterException e) {
             e.printStackTrace();
-        } catch (UserAlreadyExistsException e) {
+        } catch (AlreadyExistsException e) {
             e.printStackTrace();
         } catch (NotMemberOfException e) {
-            e.printStackTrace();
-        } catch (AlreadyExistsException e) {
             e.printStackTrace();
         } catch (GroupPermissionException e) {
             e.printStackTrace();

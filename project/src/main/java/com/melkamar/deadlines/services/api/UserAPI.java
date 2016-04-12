@@ -15,7 +15,7 @@ import java.util.Set;
  * {@link com.melkamar.deadlines.services.api.implementation.UserAPIImpl}
  */
 public interface UserAPI {
-    public User createUser(String username, String password, String name, String email) throws WrongParameterException, UserAlreadyExistsException;
+    public User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException;
     public User editUserDetails(User user, String name, String email, String password);
     public List<User> listUsers();
     public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException;

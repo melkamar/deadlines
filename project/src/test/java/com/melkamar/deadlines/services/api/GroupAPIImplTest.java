@@ -78,7 +78,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void founderAdmin() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
+    public void founderAdmin() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
         User user = userAPI.createUser("GroupAdmin", "pwd", null, null);
         Group group = groupAPI.createGroup("AGroup", user, null);
 
@@ -91,7 +91,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void duplicateName() throws WrongParameterException, AlreadyExistsException, UserAlreadyExistsException {
+    public void duplicateName() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
         User user = userAPI.createUser("GroupAdmin", "pwd", null, null);
         Group group = groupAPI.createGroup("AGroup", user, null);
         Group group2 = groupAPI.createGroup("AGroup", user, null);
@@ -99,7 +99,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void setManagerWrongParam1() throws WrongParameterException, GroupPermissionException, NotMemberOfException, NotAllowedException, AlreadyExistsException, UserAlreadyExistsException {
+    public void setManagerWrongParam1() throws WrongParameterException, GroupPermissionException, NotMemberOfException, NotAllowedException, AlreadyExistsException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -112,7 +112,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void setManagerWrongParam2() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
+    public void setManagerWrongParam2() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.cb");
@@ -125,7 +125,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = WrongParameterException.class)
     @Transactional
-    public void setManagerWrongParam3() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setManagerWrongParam3() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -138,7 +138,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = GroupPermissionException.class)
     @Transactional
-    public void setManagerNoPermission() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setManagerNoPermission() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -153,7 +153,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = NotMemberOfException.class)
     @Transactional
-    public void setManagerTargetNotMember() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setManagerTargetNotMember() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -166,7 +166,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void setManagerOk() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setManagerOk() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.ca");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -187,7 +187,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = NotAllowedException.class)
     @Transactional
-    public void setManagerOnAdmin() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void setManagerOnAdmin() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.cab");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -202,7 +202,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void addMember() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void addMember() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userToBeMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -227,7 +227,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void addAndRemoveMember() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void addAndRemoveMember() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         /**
          * Scenario:
          * 1) Have some tests and a group with admin
@@ -436,7 +436,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void addTask() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void addTask() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userNonMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -467,7 +467,7 @@ public class GroupAPIImplTest {
 
     @Test(expected = AlreadyExistsException.class)
     @Transactional
-    public void addTask_Twice() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void addTask_Twice() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
@@ -478,7 +478,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void leaveTask() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void leaveTask() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -514,7 +514,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void editDetails() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void editDetails() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
 
@@ -525,7 +525,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void changeAdminUserNotMember() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void changeAdminUserNotMember() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.ca");
         User newAdmin = userAPI.createUser("NewAdmin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -538,7 +538,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void changeAdminOkFormerAdminFails() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void changeAdminOkFormerAdminFails() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.ca");
         User newAdmin = userAPI.createUser("NewAdmin", "password", "John Doe", "c@b.ca");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -557,7 +557,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void deleteGroup() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void deleteGroup() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userMember2 = userAPI.createUser("Member2", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
@@ -605,7 +605,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void deleteGroup_OffersDeleted() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+    public void deleteGroup_OffersDeleted() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
@@ -631,7 +631,7 @@ public class GroupAPIImplTest {
 
     @Test
     @Transactional
-    public void listGroups() throws UserAlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void listGroups() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
         User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
         User userMember2 = userAPI.createUser("Member2", "password", "John Doe", "a@b.c");
         User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
