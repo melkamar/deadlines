@@ -2,12 +2,12 @@ package com.melkamar.deadlines.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melkamar.deadlines.config.ErrorCodes;
-import com.melkamar.deadlines.controllers.requestbodies.UserCreateRequestBody;
+import com.melkamar.deadlines.controllers.httpbodies.UserCreateRequestBody;
 import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import com.melkamar.deadlines.exceptions.DoesNotExistException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.model.misc.ErrorResponse;
+import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import com.melkamar.deadlines.services.api.UserAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

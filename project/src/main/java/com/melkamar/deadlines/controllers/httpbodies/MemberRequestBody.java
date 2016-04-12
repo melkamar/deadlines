@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.controllers.requestbodies;
+package com.melkamar.deadlines.controllers.httpbodies;
 
 import com.melkamar.deadlines.model.MemberRole;
 

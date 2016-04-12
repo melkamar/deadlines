@@ -3,7 +3,7 @@ package com.melkamar.deadlines.controllers;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.exceptions.DoesNotExistException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
-import com.melkamar.deadlines.model.misc.ErrorResponse;
+import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

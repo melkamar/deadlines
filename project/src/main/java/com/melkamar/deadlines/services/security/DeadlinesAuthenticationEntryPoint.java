@@ -1,10 +1,9 @@
 package com.melkamar.deadlines.services.security;
 
 import com.melkamar.deadlines.config.ErrorCodes;
-import com.melkamar.deadlines.model.misc.ErrorResponse;
+import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
