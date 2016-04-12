@@ -28,7 +28,7 @@ public class GroupMemberHelper {
     /**
      * Creates a new GroupMember object for given {@link User} and {@link Group}, with a given {@link MemberRole}.
      * Handles only creation of the object and setting associations for User and Group, it does not handle any other
-     * logic (it will not add Group's tasks to the User etc., this has to be handled above).
+     * logic (it will not add Group's jobs to the User etc., this has to be handled above).
      * @param user
      * @param group
      * @param role

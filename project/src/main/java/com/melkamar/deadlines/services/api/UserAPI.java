@@ -4,6 +4,7 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
+import com.melkamar.deadlines.services.api.implementation.UserApiImpl;
 
 import java.util.List;
 import java.util.Set;
@@ -12,9 +13,9 @@ import java.util.Set;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 11.04.2016 14:12
  *
- * {@link com.melkamar.deadlines.services.api.implementation.UserAPIImpl}
+ * {@link UserApiImpl}
  */
-public interface UserAPI {
+public interface UserApi {
     public User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException;
     public User editUserDetails(User user, String name, String email, String password);
     public List<User> listUsers();

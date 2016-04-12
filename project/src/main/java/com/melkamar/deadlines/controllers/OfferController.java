@@ -12,9 +12,9 @@ import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.SharingAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.SharingApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,20 +37,20 @@ import java.util.Set;
 public class OfferController {
 
     @Autowired
-    private SharingAPI sharingAPI;
+    private SharingApi sharingApi;
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
     @Autowired
     private StringConstants stringConstants;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
 
 
     @RequestMapping(value = "/task/user", method = RequestMethod.GET)
     @JsonView(JsonViews.Controller.OfferList.class)
     public ResponseEntity listUserTaskOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
-        Set<UserTaskSharingOffer> offers = sharingAPI.listTaskOffersOfUser(user);
+        User user = userApi.getUser(userId);
+        Set<UserTaskSharingOffer> offers = sharingApi.listTaskOffersOfUser(user);
 
         return ResponseEntity.ok(offers);
     }
@@ -59,8 +59,8 @@ public class OfferController {
     public ResponseEntity resolveUserTaskOffer(@AuthenticationPrincipal Long userId,
                                                @PathVariable("id") Long id,
                                                @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
-        UserTaskSharingOffer offer = sharingAPI.getUserTaskSharingOffer(id);
+        User user = userApi.getUser(userId);
+        UserTaskSharingOffer offer = sharingApi.getUserTaskSharingOffer(id);
 
         try {
             Boolean accept = requestBody.isAccept();
@@ -68,7 +68,7 @@ public class OfferController {
                 throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
             }
 
-            Task task = sharingAPI.resolveTaskSharingOffer(user, offer, accept);
+            Task task = sharingApi.resolveTaskSharingOffer(user, offer, accept);
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_USER_NOT_OWNER, e.getMessage()));
@@ -78,8 +78,8 @@ public class OfferController {
     @JsonView(JsonViews.Controller.OfferList.class)
     @RequestMapping(value = "/membership", method = RequestMethod.GET)
     public ResponseEntity listMembershipOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
-        Set<MembershipOffer> offers = sharingAPI.listMembershipOffersOfUser(user);
+        User user = userApi.getUser(userId);
+        Set<MembershipOffer> offers = sharingApi.listMembershipOffersOfUser(user);
 
         return ResponseEntity.ok(offers);
     }
@@ -88,8 +88,8 @@ public class OfferController {
     public ResponseEntity resolveMembershipOffer(@AuthenticationPrincipal Long userId,
                                                  @PathVariable("id") Long id,
                                                  @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
-        MembershipOffer offer = sharingAPI.getMembershipOffer(id);
+        User user = userApi.getUser(userId);
+        MembershipOffer offer = sharingApi.getMembershipOffer(id);
 
         try {
             Boolean accept = requestBody.isAccept();
@@ -97,7 +97,7 @@ public class OfferController {
                 throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
             }
 
-            Group group = sharingAPI.resolveMembershipOffer(user, offer, accept);
+            Group group = sharingApi.resolveMembershipOffer(user, offer, accept);
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_USER_NOT_OWNER, e.getMessage()));
@@ -113,11 +113,11 @@ public class OfferController {
     @RequestMapping(value = "/task/group/{id}", method = RequestMethod.GET)
     public ResponseEntity listGroupTaskOffers(@AuthenticationPrincipal Long userId,
                                               @PathVariable("id") Long id) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(id);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(id);
 
         try {
-            Set<GroupTaskSharingOffer> offers = sharingAPI.listTaskOffersOfGroup(user, group);
+            Set<GroupTaskSharingOffer> offers = sharingApi.listTaskOffersOfGroup(user, group);
             return ResponseEntity.ok().body(offers);
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
@@ -131,14 +131,14 @@ public class OfferController {
                                                 @PathVariable("groupid") Long groupId,
                                                 @PathVariable("offerid") Long offerId,
                                                 @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
 
-        GroupTaskSharingOffer offer = sharingAPI.getGroupTaskSharingOffer(offerId);
+        GroupTaskSharingOffer offer = sharingApi.getGroupTaskSharingOffer(offerId);
 
         try {
             checkResolutionRequestBody(requestBody.isAccept());
-            Task task = sharingAPI.resolveTaskSharingOffer(group, user, offer, requestBody.isAccept());
+            Task task = sharingApi.resolveTaskSharingOffer(group, user, offer, requestBody.isAccept());
 
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {

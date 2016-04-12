@@ -8,9 +8,9 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.services.PasswordHashGenerator;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.utils.PasswordHashGenerator;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Service("userApi")
 @Transactional
-public class UserAPIImpl implements UserAPI {
+public class UserApiImpl implements UserApi {
     @Autowired
     private StringConstants stringConstants;
     @Autowired
@@ -39,7 +39,7 @@ public class UserAPIImpl implements UserAPI {
     @Autowired
     private GroupMemberDAO groupMemberDAO;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
 
@@ -109,7 +109,7 @@ public class UserAPIImpl implements UserAPI {
     }
 
     /**
-     * Removes the user from a group, including all his group-related tasks.
+     * Removes the user from a group, including all his group-related jobs.
      *
      * @param user
      * @param group
@@ -120,7 +120,7 @@ public class UserAPIImpl implements UserAPI {
      */
     @Override
     public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException {
-        groupAPI.removeMember(user, group, user);
+        groupApi.removeMember(user, group, user);
     }
 
     @Override

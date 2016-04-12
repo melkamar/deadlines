@@ -5,9 +5,10 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
+import com.melkamar.deadlines.services.security.PermissionHandler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +29,9 @@ public class PermissionHandlerTest {
 
 
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
     @Autowired
     private PermissionHandler permissionHandler;
     @Autowired
@@ -40,12 +41,12 @@ public class PermissionHandlerTest {
     @Transactional
     @Test(expected = NotMemberOfException.class)
     public void hasGroupPermissionNonMember() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
-        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
-        User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
-        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
-        User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
+        User userMember = userApi.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userApi.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userApi.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
-        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupApi.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 
@@ -55,12 +56,12 @@ public class PermissionHandlerTest {
     @Transactional
     @Test(expected = NotMemberOfException.class)
     public void hasGroupPermissionNonMember2() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
-        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
-        User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
-        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
-        User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.ca");
+        User userMember = userApi.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userApi.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userApi.createUser("Nonmember", "password", "John Doe", "d@b.ca");
 
-        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupApi.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 
@@ -70,12 +71,12 @@ public class PermissionHandlerTest {
     @Transactional
     @Test(expected = NotMemberOfException.class)
     public void hasGroupPermissionNonMember3() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
-        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
-        User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
-        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
-        User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.ca");
+        User userMember = userApi.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userApi.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userApi.createUser("Nonmember", "password", "John Doe", "d@b.ca");
 
-        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupApi.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 
@@ -85,12 +86,12 @@ public class PermissionHandlerTest {
     @Transactional
     @Test
     public void hasGroupPermission() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
-        User userMember = userAPI.createUser("Member", "password", "John Doe", "a@b.c");
-        User userManager = userAPI.createUser("Manager", "password", "John Doe", "b@b.c");
-        User userAdmin = userAPI.createUser("Admin", "password", "John Doe", "c@b.c");
-        User userNonmember = userAPI.createUser("Nonmember", "password", "John Doe", "d@b.c");
+        User userMember = userApi.createUser("Member", "password", "John Doe", "a@b.c");
+        User userManager = userApi.createUser("Manager", "password", "John Doe", "b@b.c");
+        User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
+        User userNonmember = userApi.createUser("Nonmember", "password", "John Doe", "d@b.c");
 
-        Group group = groupAPI.createGroup("Groupname", userAdmin, "Random description");
+        Group group = groupApi.createGroup("Groupname", userAdmin, "Random description");
         groupMemberHelper.createGroupMember(userMember, group, MemberRole.MEMBER);
         groupMemberHelper.createGroupMember(userManager, group, MemberRole.MANAGER);
 

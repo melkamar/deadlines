@@ -1,9 +1,9 @@
-package com.melkamar.deadlines.services.helpers.urgency;
+package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
 import com.melkamar.deadlines.model.task.TaskStatus;
-import com.melkamar.deadlines.services.DateConvertor;
+import com.melkamar.deadlines.utils.DateConvertor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,10 +25,10 @@ import java.util.Date;
  * <p>
  * <p>
  * Where reserve = [remaining time] / [remaining work] + [remaining time] / d.
- * Parameter d denotes the "significance" of remaining time. So if there are two tasks
+ * Parameter d denotes the "significance" of remaining time. So if there are two jobs
  * with equal time-to-work ratio (e.g. 6:3 vs 4:2), the reserve will be greater for the task that has longer
  * until its deadline.
- * This way the tasks that are nearing their deadlines are prioritized over tasks that have equal
+ * This way the jobs that are nearing their deadlines are prioritized over jobs that have equal
  * "reserve", but longer until their deadline.
  * <p>
  * E.g. there is 10 hours left on a task and 25 hours is left to its deadline.

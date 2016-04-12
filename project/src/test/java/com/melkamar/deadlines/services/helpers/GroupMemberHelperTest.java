@@ -7,9 +7,9 @@ import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.TaskAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.TaskApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,25 +35,25 @@ public class GroupMemberHelperTest {
     @Autowired
     private GroupMemberHelper groupMemberHelper;
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
     @Autowired
-    private TaskAPI taskAPI;
+    private TaskApi taskApi;
 
     @Transactional
     @Test
     public void createGroupMemberGroupCreation() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
-        User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        Group group = groupAPI.createGroup("Groupname", user, "Random description");
+        User user = userApi.createUser("Username", "password", "John Doe", "a@b.c");
+        Group group = groupApi.createGroup("Groupname", user, "Random description");
     }
 
     @Transactional
     @Test
     public void createGroupMember() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
-        User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
-        Group group = groupAPI.createGroup("Groupname", user, "Random description");
+        User user = userApi.createUser("Username", "password", "John Doe", "a@b.c");
+        User user2 = userApi.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
+        Group group = groupApi.createGroup("Groupname", user, "Random description");
 
         Assert.assertNull(groupMemberHelper.getGroupMember(user2, group));
         groupMemberHelper.createGroupMember(user2, group, MemberRole.MEMBER);
@@ -65,27 +65,27 @@ public class GroupMemberHelperTest {
     @Transactional
     @Test
     public void createGroupMember_TasksShared() throws WrongParameterException, AlreadyExistsException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
-        User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
-        Group group = groupAPI.createGroup("Groupname", user, "Random description");
+        User user = userApi.createUser("Username", "password", "John Doe", "a@b.c");
+        User user2 = userApi.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
+        Group group = groupApi.createGroup("Groupname", user, "Random description");
 
         List<Group> groupList = new ArrayList<>();
         groupList.add(group);
 
-        Task task1 = taskAPI.createTask(user, "Task", null, Priority.NORMAL, 10, groupList, 1);
-        Task task2 = taskAPI.createTask(user, "Task2", null, Priority.NORMAL, 10, groupList, 1);
-        Task task3 = taskAPI.createTask(user2, "Task3", null, Priority.NORMAL, 10, null, 1);
+        Task task1 = taskApi.createTask(user, "Task", null, Priority.NORMAL, 10, groupList, 1);
+        Task task2 = taskApi.createTask(user, "Task2", null, Priority.NORMAL, 10, groupList, 1);
+        Task task3 = taskApi.createTask(user2, "Task3", null, Priority.NORMAL, 10, null, 1);
 
         Assert.assertEquals(1, user2.getTasksOfUser().size());
-        groupAPI.addMember(user, group, user2);
+        groupApi.addMember(user, group, user2);
         Assert.assertEquals(3, user2.getTasksOfUser().size());
     }
 
     @Transactional
     @Test(expected = AlreadyExistsException.class)
     public void createDuplicateGroupMember() throws Exception {
-        User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        Group group = groupAPI.createGroup("Groupname", user, "Random description");
+        User user = userApi.createUser("Username", "password", "John Doe", "a@b.c");
+        Group group = groupApi.createGroup("Groupname", user, "Random description");
 
         groupMemberHelper.createGroupMember(user, group, MemberRole.MEMBER);
     }
@@ -93,11 +93,11 @@ public class GroupMemberHelperTest {
     @Transactional
     @Test
     public void getGroupMember() throws WrongParameterException, AlreadyExistsException, AlreadyExistsException {
-        User user = userAPI.createUser("Username", "password", "John Doe", "a@b.c");
-        User user2 = userAPI.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
-        User user3 = userAPI.createUser("NewlyAddedUser2", "password", "Alice Doe", "ab@b.c");
+        User user = userApi.createUser("Username", "password", "John Doe", "a@b.c");
+        User user2 = userApi.createUser("NewlyAddedUser", "password", "Alice Doe", "ab@b.c");
+        User user3 = userApi.createUser("NewlyAddedUser2", "password", "Alice Doe", "ab@b.c");
 
-        Group group = groupAPI.createGroup("Groupname", user, "Random description");
+        Group group = groupApi.createGroup("Groupname", user, "Random description");
 
         Assert.assertTrue(groupMemberHelper.getGroupMember(user, group).getUser().equals(user));
         Assert.assertNull(groupMemberHelper.getGroupMember(user2, group));

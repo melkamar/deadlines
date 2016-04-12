@@ -12,11 +12,11 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import com.melkamar.deadlines.model.task.*;
-import com.melkamar.deadlines.services.DateConvertor;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.SharingAPI;
-import com.melkamar.deadlines.services.api.TaskAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.utils.DateConvertor;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.SharingApi;
+import com.melkamar.deadlines.services.api.TaskApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,20 +37,20 @@ import java.util.List;
 @RequestMapping(value = "/task")
 public class TaskController {
     @Autowired
-    private TaskAPI taskAPI;
+    private TaskApi taskApi;
 
 
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
     @Autowired
     private StringConstants stringConstants;
     @Autowired
-    private SharingAPI sharingAPI;
+    private SharingApi sharingApi;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
 
     /**
-     * Lists tasks of the calling user.
+     * Lists jobs of the calling user.
      *
      * @param userId
      * @param order
@@ -72,7 +72,7 @@ public class TaskController {
                                     @RequestParam(value = "typefilter", required = false) String typeFilter,
                                     @RequestParam(value = "statusfilter", required = false) String statusFilter,
                                     @RequestParam(value = "priorityfilter", required = false) String[] priorityFilters) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         TaskOrdering taskOrdering = getTaskOrderingFromParam(order, orderDirection);
         TaskFilter[] filters = null;
@@ -85,12 +85,12 @@ public class TaskController {
 
         List<Task> tasks;
         if (groupId == null) {
-            tasks = taskAPI.listTasks(user, taskOrdering, filters);
+            tasks = taskApi.listTasks(user, taskOrdering, filters);
         } else {
-            Group group = groupAPI.getGroup(groupId);
+            Group group = groupApi.getGroup(groupId);
 
             try {
-                tasks = groupAPI.listTasks(user, group, taskOrdering, filters);
+                tasks = taskApi.listTasks(user, group, taskOrdering, filters);
             } catch (NotMemberOfException e) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
             } catch (GroupPermissionException e) {
@@ -105,7 +105,7 @@ public class TaskController {
     @JsonView(JsonViews.Controller.TaskDetails.class)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
-        User creator = userAPI.getUser(userId);
+        User creator = userApi.getUser(userId);
 
         checkIfDeadlineXorGrowing(taskCreateRequestBody);
 
@@ -117,7 +117,7 @@ public class TaskController {
         Task task;
         try {
             if (taskCreateRequestBody.getDeadline() != null) {
-                task = taskAPI.createTask(creator,
+                task = taskApi.createTask(creator,
                         taskCreateRequestBody.getName(),
                         taskCreateRequestBody.getDescription(),
                         taskCreateRequestBody.getPriority(),
@@ -125,7 +125,7 @@ public class TaskController {
                         groups,
                         DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()));
             } else {
-                task = taskAPI.createTask(creator,
+                task = taskApi.createTask(creator,
                         taskCreateRequestBody.getName(),
                         taskCreateRequestBody.getDescription(),
                         taskCreateRequestBody.getPriority(),
@@ -146,7 +146,7 @@ public class TaskController {
     private List<Group> groupsFromIds(List<Long> ids) throws DoesNotExistException {
         List<Group> groups = new ArrayList<>(ids.size());
         for (Long id : ids) {
-            groups.add(groupAPI.getGroup(id));
+            groups.add(groupApi.getGroup(id));
         }
 
         return groups;
@@ -156,10 +156,10 @@ public class TaskController {
     @JsonView(JsonViews.Controller.TaskDetails.class)
     public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId,
                                       @PathVariable("id") Long id) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         try {
-            Task task = taskAPI.getTask(user, id);
+            Task task = taskApi.getTask(user, id);
             return ResponseEntity.ok(task);
         } catch (DoesNotExistException e) {
             return ResponseEntity.notFound().build();
@@ -172,19 +172,19 @@ public class TaskController {
     public ResponseEntity editTask(@AuthenticationPrincipal Long userId,
                                    @PathVariable("id") Long id,
                                    @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         try {
-            Task task = taskAPI.getTask(user, id);
+            Task task = taskApi.getTask(user, id);
 
             if (taskCreateRequestBody.getHoursToPeak() != null) {
                 return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.CANNOT_EDIT_GROWSPEED, "Growing speed of a task cannot be changed."));
             }
 
-            taskAPI.editTask(user, task, taskCreateRequestBody.getDescription(), DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()), taskCreateRequestBody.getWorkEstimate(), taskCreateRequestBody.getPriority());
+            taskApi.editTask(user, task, taskCreateRequestBody.getDescription(), DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()), taskCreateRequestBody.getWorkEstimate(), taskCreateRequestBody.getPriority());
 
             if (taskCreateRequestBody.getStatus() != null) {
-                taskAPI.setTaskStatus(user, task, taskCreateRequestBody.getStatus());
+                taskApi.setTaskStatus(user, task, taskCreateRequestBody.getStatus());
             }
 
             return ResponseEntity.ok(task);
@@ -201,11 +201,11 @@ public class TaskController {
     @RequestMapping(value = "/{id}/reseturgency", method = RequestMethod.POST)
     public ResponseEntity resetUrgency(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long taskId) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
-        Task task = taskAPI.getTask(taskId);
+        User user = userApi.getUser(userId);
+        Task task = taskApi.getTask(taskId);
 
         try {
-            taskAPI.resetUrgency(user, task);
+            taskApi.resetUrgency(user, task);
             return ResponseEntity.ok().build();
         } catch (NotAllowedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.CANNOT_RESET_NON_GROWING, e.getMessage()));
@@ -231,25 +231,25 @@ public class TaskController {
     public ResponseEntity shareTask(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long id,
                                     @RequestBody TaskSharingRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         try {
-            Task task = taskAPI.getTask(user, id);
+            Task task = taskApi.getTask(user, id);
 
             for (Long offeredToId : requestBody.getUsers()) {
-                User offeredTo = userAPI.getUser(offeredToId);
+                User offeredTo = userApi.getUser(offeredToId);
 
                 try {
-                    sharingAPI.offerTaskSharing(user, task, offeredTo);
+                    sharingApi.offerTaskSharing(user, task, offeredTo);
                 } catch (AlreadyExistsException e) {
                     // Doesn't matter, just ignore it if user is already a member
                 }
             }
 
             for (Long offeredToId : requestBody.getGroups()) {
-                Group offeredTo = groupAPI.getGroup(offeredToId);
+                Group offeredTo = groupApi.getGroup(offeredToId);
                 try {
-                    sharingAPI.offerTaskSharing(user, task, offeredTo);
+                    sharingApi.offerTaskSharing(user, task, offeredTo);
                 } catch (AlreadyExistsException e) {
                     // Doesn't matter, just ignore it if user is already a member
                 }
@@ -267,12 +267,12 @@ public class TaskController {
 
     @RequestMapping(value = "/leave/{id}", method = RequestMethod.POST)
     public ResponseEntity leaveTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         try {
-            Task task = taskAPI.getTask(user, id);
+            Task task = taskApi.getTask(user, id);
 
-            userAPI.leaveTask(user, task);
+            userApi.leaveTask(user, task);
 
             return ResponseEntity.ok().build();
 
@@ -299,17 +299,17 @@ public class TaskController {
                                          @RequestParam(value = "targetUser", required = false) Long targetUserId,
                                          @RequestParam(value = "targetGroup", required = false) Long targetGroupId,
                                          @RequestParam(value = "newRole", required = true) String targetRole) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
         Task task;
         try {
-            task = taskAPI.getTask(user, id);
+            task = taskApi.getTask(user, id);
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
         }
 
         if (targetUserId == null) { // No target user -> apply to caller
             try {
-                taskAPI.setTaskRole(user, task, TaskRole.valueOf(targetRole.toUpperCase()));
+                taskApi.setTaskRole(user, task, TaskRole.valueOf(targetRole.toUpperCase()));
             } catch (NotMemberOfException e) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
             }
@@ -317,11 +317,11 @@ public class TaskController {
             if (targetGroupId == null)
                 throw new WrongParameterException(stringConstants.EXC_TASK_ROLE_TARGET_USER_NOT_GROUP);
 
-            User targetUser = userAPI.getUser(targetUserId);
-            Group targetGroup = groupAPI.getGroup(targetGroupId);
+            User targetUser = userApi.getUser(targetUserId);
+            Group targetGroup = groupApi.getGroup(targetGroupId);
 
             try {
-                taskAPI.setTaskRole(targetUser, task, TaskRole.valueOf(targetRole.toUpperCase()), user, targetGroup);
+                taskApi.setTaskRole(targetUser, task, TaskRole.valueOf(targetRole.toUpperCase()), user, targetGroup);
             } catch (NotMemberOfException e) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
             } catch (GroupPermissionException e) {
@@ -338,11 +338,11 @@ public class TaskController {
     public ResponseEntity reportWork(@AuthenticationPrincipal Long userId,
                                      @PathVariable("id") Long id,
                                      @RequestBody TaskReportRequestBody requestBody) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         try {
-            Task task = taskAPI.getTask(user, id);
-            taskAPI.reportWork(user, task, requestBody.getWorkDone());
+            Task task = taskApi.getTask(user, id);
+            taskApi.reportWork(user, task, requestBody.getWorkDone());
 
             return ResponseEntity.ok(task);
 

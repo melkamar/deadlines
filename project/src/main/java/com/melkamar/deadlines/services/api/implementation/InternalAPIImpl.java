@@ -3,7 +3,7 @@ package com.melkamar.deadlines.services.api.implementation;
 import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskStatus;
-import com.melkamar.deadlines.services.api.InternalAPI;
+import com.melkamar.deadlines.services.api.InternalApi;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Service("internalApi")
 @Transactional
-public class InternalAPIImpl implements InternalAPI{
+public class InternalApiImpl implements InternalApi {
     @Autowired
     private TaskDAO taskDAO;
     @Autowired

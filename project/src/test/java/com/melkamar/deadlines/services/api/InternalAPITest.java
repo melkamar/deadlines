@@ -5,7 +5,7 @@ import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskStatus;
 import com.melkamar.deadlines.model.task.Urgency;
-import com.melkamar.deadlines.services.api.implementation.InternalAPIImpl;
+import com.melkamar.deadlines.services.api.implementation.InternalApiImpl;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,14 +28,14 @@ import static org.mockito.Matchers.eq;
  * 07.04.2016 20:03
  */
 @RunWith(MockitoJUnitRunner.class)
-public class InternalAPITest {
+public class InternalApiTest {
     @Mock
     TaskDAO taskDAO;
     @Mock
     UrgencyHelper urgencyHelper;
 
     @InjectMocks
-    InternalAPI internalAPI = new InternalAPIImpl();
+    InternalApi internalApi = new InternalApiImpl();
 
     List<Task> tasksOpen = new ArrayList<>();
     List<Task> tasksInProgress = new ArrayList<>();
@@ -58,12 +58,12 @@ public class InternalAPITest {
     }
 
     /**
-     * Check that {@link InternalAPI#updateAllUrgencies()} is called on appropriate Tasks correctly.
+     * Check that {@link InternalApi#updateAllUrgencies()} is called on appropriate Tasks correctly.
      * @throws Exception
      */
     @Test
     public void updateAllUrgencies() throws Exception {
-        internalAPI.updateAllUrgencies();
+        internalApi.updateAllUrgencies();
 
         ArgumentCaptor<Task> taskArgumentCaptor = ArgumentCaptor.forClass(Task.class);
         Mockito.verify(urgencyHelper, Mockito.times(4)).updateUrgency(taskArgumentCaptor.capture(), eq(false));

@@ -1,6 +1,6 @@
-package com.melkamar.deadlines.tasks;
+package com.melkamar.deadlines.jobs;
 
-import com.melkamar.deadlines.services.api.InternalAPI;
+import com.melkamar.deadlines.services.api.InternalApi;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
  * 11.04.2016 11:36
  */
 @Component
-public class UpdateUrgency {
+public class UrgencyUpdateJob {
     private final Logger logger = Logger.getLogger(this.getClass());
     @Autowired
-    private InternalAPI internalAPI;
+    private InternalApi internalApi;
 
 //    @Value("${update.urgency.interval}")
 //    private final Long interval = 15 * 60 * 1000L;
@@ -28,6 +28,6 @@ public class UpdateUrgency {
     @Scheduled(fixedDelayString = "${update.urgency.interval}")
     public void logCurrentTime() {
         logger.info("Updating urgency. Interval: "+interval);
-        internalAPI.updateAllUrgencies(true);
+        internalApi.updateAllUrgencies(true);
     }
 }

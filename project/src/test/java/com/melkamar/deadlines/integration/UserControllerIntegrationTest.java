@@ -9,10 +9,10 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.SharingAPI;
-import com.melkamar.deadlines.services.api.TaskAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.SharingApi;
+import com.melkamar.deadlines.services.api.TaskApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
 import com.melkamar.deadlines.utils.JsonPrettyPrint;
@@ -55,13 +55,13 @@ public class UserControllerIntegrationTest {
 
     MockMvc mvc;
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
     @Autowired
-    private TaskAPI taskAPI;
+    private TaskApi taskApi;
     @Autowired
-    private SharingAPI sharingAPI;
+    private SharingApi sharingApi;
 
     User user1;
     User user2;
@@ -96,46 +96,46 @@ public class UserControllerIntegrationTest {
                 .build();
 
 
-        user1 = userAPI.createUser("User1", "pwd", RandomString.get("Name "), RandomString.getEmail());
-        user2 = userAPI.createUser("User2", "pwd", null, null);
-        user3 = userAPI.createUser("User3", "pwd", RandomString.get("Name "), RandomString.getEmail());
+        user1 = userApi.createUser("User1", "pwd", RandomString.get("Name "), RandomString.getEmail());
+        user2 = userApi.createUser("User2", "pwd", null, null);
+        user3 = userApi.createUser("User3", "pwd", RandomString.get("Name "), RandomString.getEmail());
 //
-        group1 = groupAPI.createGroup("Group1", user1, RandomString.get("Description "));
-        group4 = groupAPI.createGroup("Group4", user1, RandomString.get("Description "));
-        group2 = groupAPI.createGroup("Group2", user3, RandomString.get("Description "));
-        group3 = groupAPI.createGroup("Group3", user2, RandomString.get("Description "));
+        group1 = groupApi.createGroup("Group1", user1, RandomString.get("Description "));
+        group4 = groupApi.createGroup("Group4", user1, RandomString.get("Description "));
+        group2 = groupApi.createGroup("Group2", user3, RandomString.get("Description "));
+        group3 = groupApi.createGroup("Group3", user2, RandomString.get("Description "));
 //
 //
-        task1 = taskAPI.createTask(user1, "Task1", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task2 = taskAPI.createTask(user1, "Task2", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task3 = taskAPI.createTask(user1, "Task3", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task4 = taskAPI.createTask(user1, "Task4", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task5 = taskAPI.createTask(user1, "Task5", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task6 = taskAPI.createTask(user1, "Task6", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task7 = taskAPI.createTask(user1, "Task7", RandomString.get("GroupSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task8 = taskAPI.createTask(user2, "Task8", RandomString.get("GroupSharing "), Priority.NORMAL, 15, 45);
-//        task9 = taskAPI.createTask(user1, "Task9", RandomString.get("GroupTask "), Priority.NORMAL, 15, 45);
-//        task10 = taskAPI.createTask(user3, "Task10", RandomString.get("GroupTask "), Priority.NORMAL, 15, 45);
-//        task11 = taskAPI.createTask(user1, "Task11", RandomString.get("GroupTask "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+        task1 = taskApi.createTask(user1, "Task1", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task2 = taskApi.createTask(user1, "Task2", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task3 = taskApi.createTask(user1, "Task3", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task4 = taskApi.createTask(user1, "Task4", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task5 = taskApi.createTask(user1, "Task5", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task6 = taskApi.createTask(user1, "Task6", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task7 = taskApi.createTask(user1, "Task7", RandomString.get("GroupSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+//        task8 = taskApi.createTask(user2, "Task8", RandomString.get("GroupSharing "), Priority.NORMAL, 15, 45);
+//        task9 = taskApi.createTask(user1, "Task9", RandomString.get("GroupTask "), Priority.NORMAL, 15, 45);
+//        task10 = taskApi.createTask(user3, "Task10", RandomString.get("GroupTask "), Priority.NORMAL, 15, 45);
+//        task11 = taskApi.createTask(user1, "Task11", RandomString.get("GroupTask "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
 //
 //        participantHelper.editOrCreateTaskParticipant(user3, task3, TaskRole.WORKER, null, false);
-//        groupAPI.addTask(user3, group2, task3);
+//        groupApi.addTask(user3, group2, task3);
 //
-//        sharingAPI.offerTaskSharing(user1, task4, user2);
-//        sharingAPI.offerTaskSharing(user1, task5, user3);
-//        sharingAPI.offerTaskSharing(user1, task6, user3);
+//        sharingApi.offerTaskSharing(user1, task4, user2);
+//        sharingApi.offerTaskSharing(user1, task5, user3);
+//        sharingApi.offerTaskSharing(user1, task6, user3);
 //
-//        sharingAPI.offerTaskSharing(user1, task7, group1);
-//        sharingAPI.offerTaskSharing(user2, task8, group1);
+//        sharingApi.offerTaskSharing(user1, task7, group1);
+//        sharingApi.offerTaskSharing(user2, task8, group1);
 //
-//        sharingAPI.offerMembership(user1, group1, user2);
-//        sharingAPI.offerMembership(user3, group2, user2);
+//        sharingApi.offerMembership(user1, group1, user2);
+//        sharingApi.offerMembership(user3, group2, user2);
 //
-//        groupAPI.addTask(user1, group1, task9);
-//        groupAPI.addTask(user1, group1, task11);
-//        groupAPI.addTask(user3, group2, task10);
+//        groupApi.addTask(user1, group1, task9);
+//        groupApi.addTask(user1, group1, task11);
+//        groupApi.addTask(user3, group2, task10);
 //
-//        groupAPI.addMember(user1, group1, user2);
+//        groupApi.addMember(user1, group1, user2);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class UserControllerIntegrationTest {
     @Transactional
     @Test
     public void userPost() throws Exception {
-        int startUsers = userAPI.listUsers().size();
+        int startUsers = userApi.listUsers().size();
         String request = "{\"username\":\"Created User\",\"password\":\"abraka\",\"email\":\"muj-email@neco.com\",\"name\":\"Name Of Created User\"}";
 
         MvcResult result = mvc.perform(post("/user")
@@ -188,7 +188,7 @@ public class UserControllerIntegrationTest {
         Assert.assertNotNull(object.get("username"));
         Assert.assertNotNull(object.get("email"));
         Assert.assertNotNull(object.get("name"));
-        Assert.assertEquals(startUsers+1, userAPI.listUsers().size());
+        Assert.assertEquals(startUsers+1, userApi.listUsers().size());
 
         System.out.println(JsonPrettyPrint.prettyPrint(response));
     }
@@ -244,7 +244,7 @@ public class UserControllerIntegrationTest {
 //    }
 //
     /**
-     * Get all tasks of the logged user.
+     * Get all jobs of the logged user.
      */
     @Transactional
     @Test
@@ -287,7 +287,7 @@ public class UserControllerIntegrationTest {
 
 
 //    /**
-//     * Get all tasks of a group of the logged user.
+//     * Get all jobs of a group of the logged user.
 //     */
 //    @Transactional
 //    @Test

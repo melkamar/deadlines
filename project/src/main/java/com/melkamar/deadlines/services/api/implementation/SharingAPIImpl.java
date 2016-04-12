@@ -12,9 +12,9 @@ import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
-import com.melkamar.deadlines.services.PermissionHandler;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.SharingAPI;
+import com.melkamar.deadlines.services.security.PermissionHandler;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.SharingApi;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 @Service("sharingApi")
 @Transactional
-public class SharingAPIImpl implements SharingAPI {
+public class SharingApiImpl implements SharingApi {
     @Autowired
     private PermissionHandler permissionHandler;
     @Autowired
@@ -50,7 +50,7 @@ public class SharingAPIImpl implements SharingAPI {
     @Autowired
     private GroupMemberHelper groupMemberHelper;
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
 
     @Override
     public UserTaskSharingOffer offerTaskSharing(User offerer, Task task, User offeredTo) throws NotMemberOfException, AlreadyExistsException {
@@ -177,7 +177,7 @@ public class SharingAPIImpl implements SharingAPI {
         }
 
         try {
-            groupAPI.addTask(manager, group, offer.getTaskOffered());
+            groupApi.addTask(manager, group, offer.getTaskOffered());
             return offer.getTaskOffered();
         } catch (NotMemberOfException | GroupPermissionException | WrongParameterException | AlreadyExistsException e) {
             deleteOffer(offer);
@@ -197,7 +197,7 @@ public class SharingAPIImpl implements SharingAPI {
         }
 
         try {
-            groupAPI.addMember(offer.getOfferer(), offer.getGroup(), user);
+            groupApi.addMember(offer.getOfferer(), offer.getGroup(), user);
             return offer.getGroup();
         } catch (GroupPermissionException | AlreadyExistsException | NotMemberOfException e) {
             deleteOffer(offer);

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 01.04.2016 15:43
  *
- * Filters given tasks based on their status
+ * Filters given jobs based on their status
  */
 public class TaskFilterStatus implements TaskFilter {
     private final TaskStatus status;

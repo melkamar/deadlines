@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services;
+package com.melkamar.deadlines.utils;
 
 import org.springframework.stereotype.Service;
 

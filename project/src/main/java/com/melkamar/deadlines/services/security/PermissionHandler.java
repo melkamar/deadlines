@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services;
+package com.melkamar.deadlines.services.security;
 
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;

@@ -1,10 +1,7 @@
 package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.model.task.Urgency;
-import com.melkamar.deadlines.services.DateConvertor;
-import com.melkamar.deadlines.services.helpers.urgency.DefaultUrgencyComputer;
-import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
+import com.melkamar.deadlines.utils.DateConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

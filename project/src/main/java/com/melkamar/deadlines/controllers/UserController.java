@@ -8,7 +8,7 @@ import com.melkamar.deadlines.exceptions.DoesNotExistException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,21 +27,21 @@ public class UserController {
     final static String CTYPE_JSON = "application/json";
 
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = CTYPE_JSON)
     public ResponseEntity listUsers() {
-        List<User> users = userAPI.listUsers();
+        List<User> users = userApi.listUsers();
         return ResponseEntity.ok().body(users);
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = CTYPE_JSON, produces = CTYPE_JSON)
     public ResponseEntity createUser(@RequestBody UserCreateRequestBody userCreateRequestBody) {
         try {
-            User user = userAPI.createUser(userCreateRequestBody.getUsername(),
+            User user = userApi.createUser(userCreateRequestBody.getUsername(),
                     userCreateRequestBody.getPassword(),
                     userCreateRequestBody.getName(),
                     userCreateRequestBody.getEmail());
@@ -58,7 +58,7 @@ public class UserController {
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = CTYPE_JSON)
     public ResponseEntity userDetails(@PathVariable("id") long id) {
         try {
-            User user = userAPI.getUser(id);
+            User user = userApi.getUser(id);
 
             return ResponseEntity.ok().body(user);
         } catch (DoesNotExistException e) {
@@ -70,7 +70,7 @@ public class UserController {
     public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody UserCreateRequestBody request) {
         User user = null;
         try {
-            user = userAPI.getUser(userId);
+            user = userApi.getUser(userId);
         } catch (DoesNotExistException e) {
             return ResponseEntity.notFound().build();
         }
@@ -79,7 +79,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        userAPI.editUserDetails(user, request.getName(), request.getEmail(), request.getPassword());
+        userApi.editUserDetails(user, request.getName(), request.getEmail(), request.getPassword());
 
         return ResponseEntity.ok().body(user);
     }

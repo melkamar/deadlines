@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 01.04.2016 15:42
  * <p>
- * Filters given tasks based on their type (Deadline/Growing)
+ * Filters given jobs based on their type (Deadline/Growing)
  */
 public class TaskFilterType implements TaskFilter {
     private Class wantedType;

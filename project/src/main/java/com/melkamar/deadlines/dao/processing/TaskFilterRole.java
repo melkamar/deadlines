@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 01.04.2016 15:42
  *
- * Filters given tasks based on user's role on them.
+ * Filters given jobs based on user's role on them.
  */
 public class TaskFilterRole implements TaskFilter {
     private final TaskRole showRole;

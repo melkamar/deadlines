@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services;
+package com.melkamar.deadlines.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;

@@ -12,10 +12,10 @@ import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.SharingAPI;
-import com.melkamar.deadlines.services.api.TaskAPI;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.SharingApi;
+import com.melkamar.deadlines.services.api.TaskApi;
+import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,16 +35,16 @@ import java.text.MessageFormat;
 public class GroupController {
 
     @Autowired
-    private GroupAPI groupAPI;
+    private GroupApi groupApi;
 
     @Autowired
-    private UserAPI userAPI;
+    private UserApi userApi;
     @Autowired
     private StringConstants stringConstants;
     @Autowired
-    private SharingAPI sharingAPI;
+    private SharingApi sharingApi;
     @Autowired
-    private TaskAPI taskAPI;
+    private TaskApi taskApi;
 
 
     /**
@@ -60,15 +60,15 @@ public class GroupController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity listGroups(@AuthenticationPrincipal Long userId,
                                      @RequestParam(value = "role", required = false) String role) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
         if (role == null || role.isEmpty()) {
-            return ResponseEntity.ok().body(groupAPI.listGroups());
+            return ResponseEntity.ok().body(groupApi.listGroups());
         } else {
             try {
                 if (role.toUpperCase().equals("ANY")) {
-                    return ResponseEntity.ok().body(groupAPI.listGroups(user));
+                    return ResponseEntity.ok().body(groupApi.listGroups(user));
                 } else {
-                    return ResponseEntity.ok().body(groupAPI.listGroups(user, paramToMemberRole(role)));
+                    return ResponseEntity.ok().body(groupApi.listGroups(user, paramToMemberRole(role)));
                 }
 
             } catch (WrongParameterException e) {
@@ -80,10 +80,10 @@ public class GroupController {
     @RequestMapping(value = "", method = RequestMethod.POST, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity createGroup(@AuthenticationPrincipal Long userId,
                                       @RequestBody GroupRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
 
         try {
-            Group group = groupAPI.createGroup(requestBody.getName(), user, requestBody.getDescription());
+            Group group = groupApi.createGroup(requestBody.getName(), user, requestBody.getDescription());
             return ResponseEntity.created(URI.create("/group/"+group.getId())).body(group);
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ErrorCodes.GROUP_NAME_ALREADY_EXISTS, e.getMessage()));
@@ -94,10 +94,10 @@ public class GroupController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity groupDetails(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
+        User user = userApi.getUser(userId);
         Group group = null;
         try {
-            group = groupAPI.getGroup(groupId, user);
+            group = groupApi.getGroup(groupId, user);
             return ResponseEntity.ok().body(group);
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
@@ -108,8 +108,8 @@ public class GroupController {
     public ResponseEntity editGroup(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long groupId,
                                     @RequestBody GroupRequestBody requestBody) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
 
         String newDescription = requestBody.getDescription();
         if (newDescription == null) {
@@ -117,7 +117,7 @@ public class GroupController {
         }
 
         try {
-            groupAPI.editDetails(user, group, newDescription);
+            groupApi.editDetails(user, group, newDescription);
             return ResponseEntity.ok().body(group);
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
@@ -129,11 +129,11 @@ public class GroupController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteGroup(@AuthenticationPrincipal Long userId,
                                       @PathVariable("id") Long groupId) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
 
         try {
-            groupAPI.deleteGroup(user, group);
+            groupApi.deleteGroup(user, group);
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
@@ -152,8 +152,8 @@ public class GroupController {
     public ResponseEntity offerMembership(@AuthenticationPrincipal Long userId,
                                           @PathVariable("id") Long groupId,
                                           @RequestBody MembershipOfferRequestBody requestBody) throws DoesNotExistException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
 
         if (requestBody.getUserIds() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, "Expected array field 'userIds'"));
@@ -161,8 +161,8 @@ public class GroupController {
 
         try {
             for (Long offerToId : requestBody.getUserIds()) {
-                User offerTo = userAPI.getUser(offerToId);
-                sharingAPI.offerMembership(user, group, offerTo);
+                User offerTo = userApi.getUser(offerToId);
+                sharingApi.offerMembership(user, group, offerTo);
             }
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
@@ -179,19 +179,19 @@ public class GroupController {
                                          @PathVariable("id") Long groupId,
                                          @PathVariable("memberid") Long targetUserId,
                                          @RequestBody MemberRequestBody requestBody) throws DoesNotExistException, WrongParameterException { // V request těle bude prostě newrole:member/manager/admin
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
 
         if (requestBody.getRole() == null) {
             return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, "Field 'role' expected with values MEMBER,MANAGER,ADMIN"));
         }
 
-        User targetUser = userAPI.getUser(targetUserId);
+        User targetUser = userApi.getUser(targetUserId);
 
         MemberRole newRole = requestBody.getRole();
         if (newRole == MemberRole.ADMIN) {
             try {
-                groupAPI.changeAdmin(user, group, targetUser);
+                groupApi.changeAdmin(user, group, targetUser);
             } catch (NotMemberOfException e) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
             } catch (GroupPermissionException e) {
@@ -200,7 +200,7 @@ public class GroupController {
         } else {
             boolean newValue = (newRole == MemberRole.MANAGER);
             try {
-                groupAPI.setManager(user, group, targetUser, newValue);
+                groupApi.setManager(user, group, targetUser, newValue);
             } catch (GroupPermissionException e) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
             } catch (NotMemberOfException e) {
@@ -217,12 +217,12 @@ public class GroupController {
     public ResponseEntity removeMember(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId,
                                        @PathVariable("memberid") Long targetUserId) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
-        User targetUser = userAPI.getUser(targetUserId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
+        User targetUser = userApi.getUser(targetUserId);
 
         try {
-            groupAPI.removeMember(user, group, targetUser);
+            groupApi.removeMember(user, group, targetUser);
             return ResponseEntity.ok().build();
         } catch (NotAllowedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.CANNOT_DEMOTE_ADMIN, stringConstants.EXC_NOT_ALLOWED_ADMIN_LEAVE_OR_REMOVE));
@@ -237,12 +237,12 @@ public class GroupController {
     public ResponseEntity removeTask(@AuthenticationPrincipal Long userId,
                                      @PathVariable("id") Long groupId,
                                      @PathVariable("taskid") Long targetTaskId) throws DoesNotExistException, WrongParameterException {
-        User user = userAPI.getUser(userId);
-        Group group = groupAPI.getGroup(groupId);
-        Task task = taskAPI.getTask(targetTaskId);
+        User user = userApi.getUser(userId);
+        Group group = groupApi.getGroup(groupId);
+        Task task = taskApi.getTask(targetTaskId);
 
         try {
-            groupAPI.leaveTask(user, group, task);
+            groupApi.leaveTask(user, group, task);
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));

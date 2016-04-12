@@ -14,7 +14,7 @@ import java.util.Set;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 11.04.2016 14:23
  */
-public interface SharingAPI {
+public interface SharingApi {
     public UserTaskSharingOffer offerTaskSharing(User offerer, Task task, User offeredTo) throws NotMemberOfException, AlreadyExistsException;
     public GroupTaskSharingOffer offerTaskSharing(User offerer, Task task, Group offeredTo) throws NotMemberOfException, AlreadyExistsException;
     public MembershipOffer offerMembership(User offerer, Group group, User offeredTo) throws NotMemberOfException, GroupPermissionException, AlreadyExistsException;

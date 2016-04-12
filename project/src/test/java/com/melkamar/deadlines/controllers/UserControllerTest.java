@@ -4,7 +4,7 @@ import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.services.api.UserAPI;
+import com.melkamar.deadlines.services.api.UserApi;
 import org.hamcrest.core.StringContains;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
     private MockMvc mvc;
     @Mock
-    UserAPI userAPI;
+    UserApi userApi;
     @Mock
     User user;
 
@@ -51,12 +51,12 @@ public class UserControllerTest {
     public void testListUsers() throws Exception {
         this.mvc.perform(MockMvcRequestBuilders
                 .get("/user")).andExpect(status().isOk());
-        Mockito.verify(userAPI, Mockito.times(1)).listUsers();
+        Mockito.verify(userApi, Mockito.times(1)).listUsers();
     }
 
     @Test
     public void testCreateUser() throws Exception {
-        when(userAPI.createUser(any(), any(), any(), any())).thenReturn(user);
+        when(userApi.createUser(any(), any(), any(), any())).thenReturn(user);
         when(user.getId()).thenReturn(12467L);
 
         this.mvc.perform(MockMvcRequestBuilders
@@ -67,7 +67,7 @@ public class UserControllerTest {
 
     @Test
     public void testCreateDuplicateUser() throws Exception {
-        Mockito.when(userAPI.createUser(any(), any(), any(), any())).thenThrow(new AlreadyExistsException("Foo msg"));
+        Mockito.when(userApi.createUser(any(), any(), any(), any())).thenThrow(new AlreadyExistsException("Foo msg"));
         this.mvc.perform(MockMvcRequestBuilders
                 .post("/user").content("{ \"username\":\"NewgUasasdername\", \"password\":\"haha\"} ").contentType("application/json"))
                 .andExpect(status().isConflict())
@@ -78,7 +78,7 @@ public class UserControllerTest {
 
     @Test
     public void testCreateUserMissingParams() throws Exception {
-        Mockito.when(userAPI.createUser(any(), any(), any(), any())).thenThrow(new WrongParameterException("Foo msg"));
+        Mockito.when(userApi.createUser(any(), any(), any(), any())).thenThrow(new WrongParameterException("Foo msg"));
         this.mvc.perform(MockMvcRequestBuilders
                 .post("/user").content("{ \"username\":\"NewgUasasdername\"} ").contentType("application/json"))
                 .andExpect(status().isBadRequest())
@@ -88,18 +88,18 @@ public class UserControllerTest {
 
     @Test
     public void editUser() throws Exception {
-        when(userAPI.getUser(any(Long.class))).thenReturn(user);
+        when(userApi.getUser(any(Long.class))).thenReturn(user);
         when(user.getId()).thenReturn(1L);
 
         this.mvc.perform(MockMvcRequestBuilders
                 .put("/user/1").content("{\"password\":\"haha\"} ").contentType("application/json"))
                 .andExpect(status().isOk());
-        Mockito.verify(userAPI, Mockito.times(1)).editUserDetails(any(User.class), isNull(String.class), isNull(String.class), eq("haha"));
+        Mockito.verify(userApi, Mockito.times(1)).editUserDetails(any(User.class), isNull(String.class), isNull(String.class), eq("haha"));
     }
 
     @Test
     public void editUserBadId() throws Exception {
-        when(userAPI.getUser(any(Long.class))).thenReturn(user);
+        when(userApi.getUser(any(Long.class))).thenReturn(user);
         when(user.getId()).thenReturn(2L);
 
         this.mvc.perform(MockMvcRequestBuilders

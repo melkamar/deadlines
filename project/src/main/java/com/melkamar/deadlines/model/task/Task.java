@@ -5,7 +5,7 @@ import com.melkamar.deadlines.controllers.JsonViews;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.services.helpers.urgency.UrgencyComputer;
+import com.melkamar.deadlines.services.helpers.UrgencyComputer;
 
 import javax.persistence.*;
 import java.util.Date;

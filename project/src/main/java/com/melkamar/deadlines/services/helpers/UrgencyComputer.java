@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.services.helpers.urgency;
+package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
