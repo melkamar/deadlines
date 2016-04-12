@@ -25,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -216,13 +214,13 @@ public class GroupAPIImplTest {
         Task task2 = taskAPI.createTask(userAdmin, "TestTask2", null, null, 0, groupList, LocalDateTime.now().plusDays(101));
         Task task3 = taskAPI.createTask(userToBeMember, "TestTask3", null, null, 0, null, LocalDateTime.now().plusDays(102));
 
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);
-        Assert.assertEquals(userToBeMember.tasksOfUser().size(), 1);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userToBeMember.getTasksOfUser().size(), 1);
         Assert.assertEquals(group.getSharedTasks().size(), 2);
 
         groupAPI.addMember(userAdmin, group, userToBeMember);
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);
-        Assert.assertEquals(userToBeMember.tasksOfUser().size(), 3);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userToBeMember.getTasksOfUser().size(), 3);
         Assert.assertEquals(group.getSharedTasks().size(), 2);
     }
 
@@ -264,21 +262,21 @@ public class GroupAPIImplTest {
          * member2: task4(s)
          * admin: task5(sg), task6, task2(g) task3(g)
          */
-        Assert.assertTrue(userMember.tasksOfUser().size() == 3);
-        Assert.assertTrue(userMember.tasksOfUser().contains(task));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task3));
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 3);
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task3));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task2)); // test if solo-TaskParticipant will be preserved after user is removed from group
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userMember, task5)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userMember2.tasksOfUser().size() == 1);
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task4));
+        Assert.assertTrue(userMember2.getTasksOfUser().size() == 1);
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task4));
 
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 4);
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task5));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task6));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task5));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task6));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task3));
 
         Assert.assertTrue(task2.getUsersOnTask().size() == 2);
 
@@ -297,24 +295,24 @@ public class GroupAPIImplTest {
          * member2: task4(s)
          * admin: task5(sg), task6, task2(g) task3(g)
          */
-        Assert.assertTrue(userMember.tasksOfUser().size() == 4);
-        Assert.assertTrue(userMember.tasksOfUser().contains(task));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task3));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task5));
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task3));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task5));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task2)); // test if solo-TaskParticipant will be preserved after user is removed from group
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task5)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userMember2.tasksOfUser().size() == 1);
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task4));
+        Assert.assertTrue(userMember2.getTasksOfUser().size() == 1);
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task4));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember2, task4)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userMember2, task2)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 4);
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task5));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task6));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task5));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task6));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task3));
 
         Assert.assertTrue(task2.getUsersOnTask().size() == 2);
 
@@ -333,28 +331,28 @@ public class GroupAPIImplTest {
          * member2: task4(s), task2(g), task3(g), task5(g)
          * admin: task5(sg), task6, task2(g) task3(g)
          */
-        Assert.assertTrue(userMember.tasksOfUser().size() == 4);
-        Assert.assertTrue(userMember.tasksOfUser().contains(task));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task3));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task5));
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task3));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task5));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task2)); // test if solo-TaskParticipant will be preserved after user is removed from group
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task5)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userMember2.tasksOfUser().size() == 4);
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task4));
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task3));
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task5));
+        Assert.assertTrue(userMember2.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task4));
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task3));
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task5));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember2, task4)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember2, task2)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
 
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 4);
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task5));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task6));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task5));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task6));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task3));
 
         Assert.assertTrue(task2.getUsersOnTask().size() == 3);
 
@@ -373,26 +371,26 @@ public class GroupAPIImplTest {
          * member2: task4(s), task2(g), task3(g), task5(g)
          * admin: task5(sg), task6, task2(g) task3(g)
          */
-        Assert.assertTrue(userMember.tasksOfUser().size() == 3);
-        Assert.assertTrue(userMember.tasksOfUser().contains(task));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task3));
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 3);
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task3));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task2)); // test if solo-TaskParticipant will be preserved after user is removed from group
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userMember, task5)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userMember2.tasksOfUser().size() == 4);
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task4));
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task3));
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task5));
+        Assert.assertTrue(userMember2.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task4));
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task3));
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task5));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember2, task4)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember2, task2)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 4);
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task5));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task6));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task5));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task6));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task3));
 
         Assert.assertTrue(task2.getUsersOnTask().size() == 3);
         Assert.assertEquals(group.getGroupMembers().size(), 2);
@@ -410,23 +408,23 @@ public class GroupAPIImplTest {
          * member2: task4(s)
          * admin: task5(sg), task6, task2(g) task3(g)
          */
-        Assert.assertTrue(userMember.tasksOfUser().size() == 3);
-        Assert.assertTrue(userMember.tasksOfUser().contains(task));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task2));
-        Assert.assertTrue(userMember.tasksOfUser().contains(task3));
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 3);
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userMember.getTasksOfUser().contains(task3));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember, task2)); // test if solo-TaskParticipant will be preserved after user is removed from group
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userMember, task5)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userMember2.tasksOfUser().size() == 1);
-        Assert.assertTrue(userMember2.tasksOfUser().contains(task4));
+        Assert.assertTrue(userMember2.getTasksOfUser().size() == 1);
+        Assert.assertTrue(userMember2.getTasksOfUser().contains(task4));
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userMember2, task4)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userMember2, task2)); // test if taskParticipant will be created and then destroyed when user joins/leaves the group
 
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 4);
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task5));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task6));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task2));
-        Assert.assertTrue(userAdmin.tasksOfUser().contains(task3));
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 4);
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task5));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task6));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task2));
+        Assert.assertTrue(userAdmin.getTasksOfUser().contains(task3));
 
         Assert.assertTrue(task2.getUsersOnTask().size() == 2);
         Assert.assertEquals(group.getGroupMembers().size(), 1);
@@ -448,23 +446,23 @@ public class GroupAPIImplTest {
         Task task3 = taskAPI.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
 
         Assert.assertEquals(group.getSharedTasks().size(), 0);
-        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 1);
+        Assert.assertEquals(userNonMember.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 1);
 
         groupAPI.addTask(userAdmin, group, task);
         Assert.assertEquals(group.getSharedTasks().size(), 1);
-        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);
+        Assert.assertEquals(userNonMember.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 2);
 
         groupAPI.addTask(userAdmin, group, task2);
         Assert.assertEquals(group.getSharedTasks().size(), 2);
-        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 3);
+        Assert.assertEquals(userNonMember.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 3);
 
         groupAPI.addTask(userAdmin, group, task3);
         Assert.assertEquals(group.getSharedTasks().size(), 3);
-        Assert.assertEquals(userNonMember.tasksOfUser().size(), 2);
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 3);
+        Assert.assertEquals(userNonMember.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 3);
     }
 
     @Test(expected = AlreadyExistsException.class)
@@ -493,24 +491,24 @@ public class GroupAPIImplTest {
 
         Assert.assertTrue(task.getUsersOnTask().size() == 1); // userMember
         Assert.assertTrue(group.getSharedTasks().size() == 0); // No shared task at start
-        Assert.assertTrue(userMember.tasksOfUser().size() == 2);
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 1);
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 1);
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
 
         groupAPI.addTask(userAdmin, group, task);
 
         Assert.assertTrue(task.getUsersOnTask().size() == 2); // userMember, admin
         Assert.assertTrue(group.getSharedTasks().size() == 1);
-        Assert.assertTrue(userMember.tasksOfUser().size() == 2);
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 2);
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 2);
         Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
 
         groupAPI.leaveTask(userAdmin, group, task);
 
         Assert.assertTrue(task.getUsersOnTask().size() == 1); // userMember
         Assert.assertTrue(group.getSharedTasks().size() == 0);
-        Assert.assertTrue(userMember.tasksOfUser().size() == 2);
-        Assert.assertTrue(userAdmin.tasksOfUser().size() == 1);
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 1);
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
     }
 
@@ -585,9 +583,9 @@ public class GroupAPIImplTest {
         Assert.assertEquals(userMember.getMemberAs().size(), 1);
         Assert.assertEquals(userMember2.getMemberAs().size(), 1);
 
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 2);
-        Assert.assertEquals(userMember.tasksOfUser().size(), 2);
-        Assert.assertEquals(userMember2.tasksOfUser().size(), 1);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userMember.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userMember2.getTasksOfUser().size(), 1);
 
         Assert.assertNotNull(groupDAO.findByName("GroupnameToDelete"));
 
@@ -598,9 +596,9 @@ public class GroupAPIImplTest {
         Assert.assertEquals(userMember.getMemberAs().size(), 1);
         Assert.assertEquals(userMember2.getMemberAs().size(), 0);
 
-        Assert.assertEquals(userAdmin.tasksOfUser().size(), 1);
-        Assert.assertEquals(userMember.tasksOfUser().size(), 2);
-        Assert.assertEquals(userMember2.tasksOfUser().size(), 0);
+        Assert.assertEquals(userAdmin.getTasksOfUser().size(), 1);
+        Assert.assertEquals(userMember.getTasksOfUser().size(), 2);
+        Assert.assertEquals(userMember2.getTasksOfUser().size(), 0);
 
         Assert.assertNull(groupDAO.findByName("GroupnameToDelete"));
     }

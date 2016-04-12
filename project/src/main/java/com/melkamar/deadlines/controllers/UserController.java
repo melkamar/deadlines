@@ -41,7 +41,10 @@ public class UserController {
     @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = CTYPE_JSON, produces = CTYPE_JSON)
     public ResponseEntity createUser(@RequestBody UserCreateRequestBody userCreateRequestBody) {
         try {
-            User user = userAPI.createUser(userCreateRequestBody.getUsername(), userCreateRequestBody.getPassword(), userCreateRequestBody.getName(), userCreateRequestBody.getEmail());
+            User user = userAPI.createUser(userCreateRequestBody.getUsername(),
+                    userCreateRequestBody.getPassword(),
+                    userCreateRequestBody.getName(),
+                    userCreateRequestBody.getEmail());
             return ResponseEntity.created(URI.create("/user/"+user.getId())).body(user);
         } catch (WrongParameterException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

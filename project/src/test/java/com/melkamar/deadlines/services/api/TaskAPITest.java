@@ -24,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -98,7 +96,7 @@ public class TaskAPITest {
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         Assert.assertTrue(task.getUsersOnTask().contains(user));
-        Assert.assertTrue(user.tasksOfUser().contains(task));
+        Assert.assertTrue(user.getTasksOfUser().contains(task));
     }
 
     @Test
@@ -108,9 +106,9 @@ public class TaskAPITest {
         Task task = taskAPI.createTask(user, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
 
         User retrievedUser = userDAO.findByUsername("TestUser");
-        Assert.assertTrue(retrievedUser.tasksOfUser().size() == 1);
+        Assert.assertTrue(retrievedUser.getTasksOfUser().size() == 1);
 
-        Task retrievedTask = retrievedUser.tasksOfUser().iterator().next();
+        Task retrievedTask = retrievedUser.getTasksOfUser().iterator().next();
         Assert.assertTrue(retrievedTask.getName().equals("TestTask"));
 
         System.out.println("Original:  " + task);
@@ -132,8 +130,8 @@ public class TaskAPITest {
         Task task3 = taskAPI.createTask(user, "TestTask3", null, null, 0, groupList, LocalDateTime.now().plusDays(102));
         Task task4 = taskAPI.createTask(user, "TestTask4", null, null, 0, null, LocalDateTime.now().plusDays(102));
 
-        Assert.assertEquals(user.tasksOfUser().size(), 4);
-        Assert.assertEquals(userNonMember.tasksOfUser().size(), 0);
+        Assert.assertEquals(user.getTasksOfUser().size(), 4);
+        Assert.assertEquals(userNonMember.getTasksOfUser().size(), 0);
         Assert.assertEquals(group.getSharedTasks().size(), 3);
     }
 

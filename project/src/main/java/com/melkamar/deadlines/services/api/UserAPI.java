@@ -11,6 +11,8 @@ import java.util.Set;
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 11.04.2016 14:12
+ *
+ * {@link com.melkamar.deadlines.services.api.implementation.UserAPIImpl}
  */
 public interface UserAPI {
     public User createUser(String username, String password, String name, String email) throws WrongParameterException, UserAlreadyExistsException;

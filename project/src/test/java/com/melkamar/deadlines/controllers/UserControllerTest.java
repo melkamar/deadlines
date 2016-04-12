@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -55,9 +56,13 @@ public class UserControllerTest {
 
     @Test
     public void testCreateUser() throws Exception {
+        when(userAPI.createUser(any(), any(), any(), any())).thenReturn(user);
+        when(user.getId()).thenReturn(12467L);
+
         this.mvc.perform(MockMvcRequestBuilders
                 .post("/user").content("{ \"username\":\"NewgUasasdername\", \"password\":\"haha\"} ").contentType("application/json"))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/user/12467"));
     }
 
     @Test

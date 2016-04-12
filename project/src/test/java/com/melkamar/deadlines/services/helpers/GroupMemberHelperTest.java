@@ -20,9 +20,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -78,9 +76,9 @@ public class GroupMemberHelperTest {
         Task task2 = taskAPI.createTask(user, "Task2", null, Priority.NORMAL, 10, groupList, 1);
         Task task3 = taskAPI.createTask(user2, "Task3", null, Priority.NORMAL, 10, null, 1);
 
-        Assert.assertEquals(1, user2.tasksOfUser().size());
+        Assert.assertEquals(1, user2.getTasksOfUser().size());
         groupAPI.addMember(user, group, user2);
-        Assert.assertEquals(3, user2.tasksOfUser().size());
+        Assert.assertEquals(3, user2.getTasksOfUser().size());
     }
 
     @Transactional

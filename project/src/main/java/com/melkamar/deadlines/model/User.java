@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "USER")
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class User implements UserDetails {
+public class User {
     public final static String COL_USER_ID = "USER_ID";
     public final static String COL_USERNAME = "USERNAME";
     public final static String COL_EMAIL = "EMAIL";
@@ -136,7 +136,7 @@ public class User implements UserDetails {
      *
      * @return Set of Tasks
      */
-    public Set<Task> tasksOfUser() {
+    public Set<Task> getTasksOfUser() {
         return participants.stream().map(TaskParticipant::getTask).collect(Collectors.toSet());
     }
 
@@ -158,40 +158,9 @@ public class User implements UserDetails {
         return id;
     }
 
-    /*************************************************************/
-    // SECURITY
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
 
     public String getUsername() {
         return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     /*************************************************************/

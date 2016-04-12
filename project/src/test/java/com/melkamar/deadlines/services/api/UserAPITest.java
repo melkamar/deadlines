@@ -177,14 +177,14 @@ public class UserAPITest {
         User user = userAPI.createUser("someuser", "password", "somename", "someemail@address.com");
         User anotherUser = userAPI.createUser("anotherUser", "password", "somename", "someemail2@address.com");
 
-        Assert.assertEquals(0, user.tasksOfUser().size());
-        Assert.assertEquals(0, anotherUser.tasksOfUser().size());
+        Assert.assertEquals(0, user.getTasksOfUser().size());
+        Assert.assertEquals(0, anotherUser.getTasksOfUser().size());
 
         Task task1 = taskAPI.createTask(user, "Task1", null, Priority.NORMAL, 10, LocalDateTime.now().plusDays(5));
         Task task2 = taskAPI.createTask(user, "Task2", null, Priority.NORMAL, 10, LocalDateTime.now().plusDays(5));
 
-        Assert.assertEquals(2, user.tasksOfUser().size());
-        Assert.assertEquals(0, anotherUser.tasksOfUser().size());
+        Assert.assertEquals(2, user.getTasksOfUser().size());
+        Assert.assertEquals(0, anotherUser.getTasksOfUser().size());
         Assert.assertNotNull(taskparticipantDAO.findByUserAndTask(user, task1));
         Assert.assertNotNull(taskparticipantDAO.findByUserAndTask(user, task2));
         Assert.assertEquals(2, taskparticipantDAO.findByUser(user).size());
@@ -192,8 +192,8 @@ public class UserAPITest {
 
         userAPI.leaveTask(user ,task2);
 
-        Assert.assertEquals(1, user.tasksOfUser().size());
-        Assert.assertEquals(0, anotherUser.tasksOfUser().size());
+        Assert.assertEquals(1, user.getTasksOfUser().size());
+        Assert.assertEquals(0, anotherUser.getTasksOfUser().size());
         Assert.assertNotNull(taskparticipantDAO.findByUserAndTask(user, task1));
         Assert.assertNull(taskparticipantDAO.findByUserAndTask(user, task2));
         Assert.assertEquals(1, taskparticipantDAO.findByUser(user).size());

@@ -460,21 +460,21 @@ public class SharingAPITest {
         MembershipOffer offer1 = sharingAPI.offerMembership(user1, group1, user2);
         MembershipOffer offer2 = sharingAPI.offerMembership(user1, group1, user3);
 
-        Assert.assertEquals(3, user1.tasksOfUser().size());
-        Assert.assertEquals(0, user2.tasksOfUser().size());
-        Assert.assertEquals(0, user3.tasksOfUser().size());
+        Assert.assertEquals(3, user1.getTasksOfUser().size());
+        Assert.assertEquals(0, user2.getTasksOfUser().size());
+        Assert.assertEquals(0, user3.getTasksOfUser().size());
         Assert.assertEquals(1, group1.getMembers().size());
 
         sharingAPI.resolveMembershipOffer(user2, offer1, true);
-        Assert.assertEquals(3, user1.tasksOfUser().size());
-        Assert.assertEquals(2, user2.tasksOfUser().size());
-        Assert.assertEquals(0, user3.tasksOfUser().size());
+        Assert.assertEquals(3, user1.getTasksOfUser().size());
+        Assert.assertEquals(2, user2.getTasksOfUser().size());
+        Assert.assertEquals(0, user3.getTasksOfUser().size());
         Assert.assertEquals(2, group1.getMembers().size());
 
         sharingAPI.resolveMembershipOffer(user3, offer2, false);
-        Assert.assertEquals(3, user1.tasksOfUser().size());
-        Assert.assertEquals(2, user2.tasksOfUser().size());
-        Assert.assertEquals(0, user3.tasksOfUser().size());
+        Assert.assertEquals(3, user1.getTasksOfUser().size());
+        Assert.assertEquals(2, user2.getTasksOfUser().size());
+        Assert.assertEquals(0, user3.getTasksOfUser().size());
         Assert.assertEquals(2, group1.getMembers().size());
     }
 
