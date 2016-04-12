@@ -1,0 +1,7 @@
+{
+  "name":"NewTask Has Name!",
+  "description":"It is very pretty. With description and all.",
+  "priority":"LOW",
+  "workEstimate":15.5,
+  "deadline":"2016-12-30 13:45"
+}

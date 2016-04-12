@@ -13,28 +13,26 @@ import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
-import com.melkamar.deadlines.services.DateConvertor;
-import com.melkamar.deadlines.services.PermissionHandler;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.TaskAPI;
+import com.melkamar.deadlines.utils.DateConvertor;
+import com.melkamar.deadlines.services.security.PermissionHandler;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.TaskApi;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
  * 27.03.2016 12:52
  */
 @Service
-public class TaskAPIImpl implements TaskAPI {
+public class TaskApiImpl implements TaskApi {
     @Autowired
     private StringConstants stringConstants;
     @Autowired
@@ -46,7 +44,7 @@ public class TaskAPIImpl implements TaskAPI {
     @Autowired
     private TaskParticipantDAO taskparticipantDAO;
     @Autowired
-    private GroupAPI groupApi;
+    private GroupApi groupApi;
     @Autowired
     private PermissionHandler permissionHandler;
     @Autowired
@@ -156,7 +154,7 @@ public class TaskAPIImpl implements TaskAPI {
     }
 
     /**
-     * Lists tasks of the user, optionally applying filters and ordering to it.
+     * Lists jobs of the user, optionally applying filters and ordering to it.
      *
      * @param tasksOfUser
      * @return
@@ -170,6 +168,14 @@ public class TaskAPIImpl implements TaskAPI {
         }
 
         return tasks;
+    }
+
+    @Override
+    public List<Task> listTasks(User user, Group group, TaskOrdering ordering, TaskFilter... filters) throws NotMemberOfException, GroupPermissionException {
+        if (!permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER))
+            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MEMBER, user, group));
+
+        return listTasks(group, ordering, filters);
     }
 
 
@@ -346,7 +352,7 @@ public class TaskAPIImpl implements TaskAPI {
      * @return
      */
     @Override
-    public Task resetUrgency(User user, Task task) throws NotAllowedException, NotMemberOfException, TaskPermissionException {
+    public void resetUrgency(User user, Task task) throws NotAllowedException, NotMemberOfException, TaskPermissionException {
         if (!(task instanceof GrowingTask)) {
             throw new NotAllowedException(stringConstants.EXC_NOT_ALLOWED_RESET_URGENCY_ON_DEADLINE);
         }
@@ -356,8 +362,6 @@ public class TaskAPIImpl implements TaskAPI {
         }
 
         urgencyHelper.resetUrgency(task);
-
-        return task;
     }
 
     @Override

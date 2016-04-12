@@ -5,6 +5,6 @@ package com.melkamar.deadlines.services.api;
  * 11.04.2016 14:21
  */
 public interface InternalApi {
-    public void updateAllUrgencies();
-    public void updateAllUrgencies(boolean force);
+    void updateAllUrgencies();
+    void updateAllUrgencies(boolean force);
 }

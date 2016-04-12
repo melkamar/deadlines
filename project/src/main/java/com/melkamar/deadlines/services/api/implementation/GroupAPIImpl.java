@@ -11,9 +11,9 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
-import com.melkamar.deadlines.services.PermissionHandler;
-import com.melkamar.deadlines.services.api.GroupAPI;
-import com.melkamar.deadlines.services.api.TaskAPI;
+import com.melkamar.deadlines.services.security.PermissionHandler;
+import com.melkamar.deadlines.services.api.GroupApi;
+import com.melkamar.deadlines.services.api.TaskApi;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Service("groupApi")
 @Transactional
-public class GroupAPIImpl implements GroupAPI {
+public class GroupApiImpl implements GroupApi {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -57,7 +57,7 @@ public class GroupAPIImpl implements GroupAPI {
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
     @Autowired
-    private TaskAPI taskAPI;
+    private TaskApi taskApi;
 
 
     @Override
@@ -86,7 +86,7 @@ public class GroupAPIImpl implements GroupAPI {
     }
 
     @Override
-    public boolean setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException, NotAllowedException {
+    public void setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException, NotAllowedException {
         if (executor == null || group == null || member == null) {
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
         }
@@ -107,8 +107,6 @@ public class GroupAPIImpl implements GroupAPI {
         } else {
             promotedGroupMember.setRole(MemberRole.MEMBER);
         }
-
-        return true;
     }
 
     /**
@@ -178,17 +176,17 @@ public class GroupAPIImpl implements GroupAPI {
         return group;
     }
 
-    @Override
-    public List<Task> listTasks(User user, Group group, TaskOrdering ordering, TaskFilter... filters) throws NotMemberOfException, GroupPermissionException {
-        if (!permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER))
-            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MEMBER, user, group));
-
-        return taskAPI.listTasks(group, ordering, filters);
-    }
+//    @Override
+//    public List<Task> listTasks(User user, Group group, TaskOrdering ordering, TaskFilter... filters) throws NotMemberOfException, GroupPermissionException {
+//        if (!permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER))
+//            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MEMBER, user, group));
+//
+//        return taskApi.listTasks(group, ordering, filters);
+//    }
 
 
     /**
-     * Adds a new member to the group. All tasks shared with the group will be shared with the new member as well.
+     * Adds a new member to the group. All jobs shared with the group will be shared with the new member as well.
      *
      * @param manager User "approving" the addition, needs to be at least a Manager of the group
      * @param group   Group to add the user to
@@ -363,7 +361,7 @@ public class GroupAPIImpl implements GroupAPI {
 
         }
 
-        // Leave all tasks associated with group
+        // Leave all jobs associated with group
         Set<Task> sharedTasksCopy = new HashSet<>(group.getSharedTasks());
         for (Task task : sharedTasksCopy) {
             leaveTask(admin, group, task);

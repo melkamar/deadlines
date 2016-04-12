@@ -11,3 +11,5 @@ ea/melka-bp.ldb
 project/.idea/
 project/target/
 *.iml
+files/
+project/out/

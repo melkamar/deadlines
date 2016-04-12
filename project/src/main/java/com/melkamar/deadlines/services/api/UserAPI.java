@@ -16,12 +16,14 @@ import java.util.Set;
  * {@link UserApiImpl}
  */
 public interface UserApi {
-    public User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException;
-    public User editUserDetails(User user, String name, String email, String password);
-    public List<User> listUsers();
-    public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException;
-    public void leaveTask(User user, Task task) throws NotMemberOfException;
-    public Set<Group> getGroupsOfUser(User executor);
-    public User getUser(Long id) throws DoesNotExistException;
-    public User getUser(String username) throws DoesNotExistException;
+    User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException;
+    User editUserDetails(User user, String name, String email, String password);
+    //
+    List<User> listUsers();
+    Set<Group> getGroupsOfUser(User executor);
+    User getUser(Long id) throws DoesNotExistException;
+    User getUser(String username) throws DoesNotExistException;
+    //
+    void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException;
+    void leaveTask(User user, Task task) throws NotMemberOfException;
 }
