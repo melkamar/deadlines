@@ -653,16 +653,16 @@
 			Entita User reprezentuje uživatele aplikace. Uchovává jeho uživatelské jméno, které je unikátní v rámci aplikace, e-mail, jméno a heslo k jeho přihlášení.
 			
 		\subsection{Group}
-			Entita Group reprezentuje pracovní skupinu. Má název a popis. Uživatelé s ní mohou být ve třech různých vztazích -- jako Člen, Manažer a Admin. Tyto vztahy jsou vzájemně vylučující, takže uživatel nemůže být zároveň například Člen a Manažer.
+			Entita Group reprezentuje pracovní skupinu. Má název a popis. Uživatelé s ní mohou být ve třech různých vztazích -- jako Člen, Manažer, nebo Admin. 
 		
 		\subsection{Task}
-			Entita Task reprezentuje úkol. Obsahuje informace definované v předchozích krocích analýzy. Uživatel může být součástí úkolu jako pozorovatel, nebo pracovník. Nemůže být ale oboje zároveň. 
+			Entita Task reprezentuje úkol. Obsahuje informace stanovené v předchozích krocích analýzy. Uživatel může být součástí úkolu jako pozorovatel, nebo pracovník. Nemůže být ale oboje zároveň. 
 		
 		\subsection{DeadlineTask}
 			Entita DeadlineTask je typ entity Task, reprezentující úkol s \textit{deadlinem}. 
 		
 		\subsection{GrowingTask}
-			Entita GrowingTask je typ entity Task, reprezentující rostoucí úkol. Obsahuje informaci o rychlosti růstu jeho urgentnosti.
+			Entita GrowingTask je typ entity Task, reprezentující rostoucí úkol. Obsahuje informaci o rychlosti růstu.
 		
 		\subsection{TaskParticipant}
 			TaskParticipant je entita reprezentující dvojici entit User--Task. Tato dvojice je v aplikaci unikátní, takže nemohou existovat dvě stejné zároveň. 
@@ -670,7 +670,7 @@
 			Skrze tuto entitu je uživatel součástí úkolu. Součástí úkolu může být sám, pokud je nastaven příznak \texttt{solo}, nebo jako člen skupiny či skupin, pokud jsou k entitě TaskParticipant přiřazeny.
 		
 		\subsection{TaskWork}
-			Entita TaskWork reprezentuje práci vykonanou na úkolu uživatelem. Je spjata s entitou User, místo TaskParticipant, takže i když uživatel úkol opustí, pořád bude záznam o jeho práci na úkolu existovat.
+			Entita TaskWork reprezentuje práci vykonanou na úkolu uživatelem. Je spjata s entitami User a Task, takže i když uživatel úkol opustí a odpovídající TaskParticipant zanikne, pořád bude záznam o jeho práci na úkolu existovat.
 		
 		\subsection{Offer}
 			Entita Offer reprezentuje nabídku, kterou uživatel někomu zasílá.
@@ -723,9 +723,6 @@
 			Hibernate \cite{hibernate} je framework pro platformu Java, usnadňující persistenci dat. Jedná se o nástroj pro ORM (objektově-relační mapování), který se stará o transformaci objektů aplikace do podoby vhodné pro uložení do relační databáze, jejich uložení, a následné načtení a transformaci z databáze zpět na objekty. Způsob mapování objektů do databáze lze nastavit buď v konfiguračním XML souboru, nebo přímo ve zdrojovém kódu anotacemi.
 			
 			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny uložiště. Kód aplikace komunikuje s jeho API stejným způsobem, nehledě na typ databáze, ke které je připojen.
-			
-		\subsection{apiary/dredd?}
-			% TODO - budu používate dredd na testování API?
 		
 		\subsection{MySQL}
 			Persistence dat aplikace bude zprostředkována relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace.
@@ -770,17 +767,17 @@
 			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
 			\subsubsection{Odpovědi}
-			Každý endpoint odpovídá na požadavek odpovědí, která obsahuje HTTP kód popisující, jak volání dopadlo, a případně tělo ve formátu JSON. Odpovědi od aplikace mohou mít následující kódy:
+			Každý \textit{endpoint} odpovídá na požadavek odpovědí, která obsahuje HTTP kód popisující, jak volání dopadlo, a případně tělo ve formátu JSON. Odpovědi od aplikace mohou mít následující kódy:
 			\begin{description}
 				\item[200 OK] Požadavek proběhl v pořádku.
-				\item[201 CREATED] Požadovaný objekt či záznam byl vytvořen.
-				\item[400 BAD REQUEST] V požadavku je chyba. Detaily o konkrétní chybě jsou obsaženy v těle zprávy, která má následující formát:
-				\item[401 UNAUTHORIZED] Požadavek neobsahuje autentifikační údaje.
+				\item[201 CREATED] Požadovaný objekt či záznam byl vytvořen. V hlavičce odpovědi s názvem \textit{Location} je uvedena relativní cesta k nově vytvořenému zdroji.
+				\item[400 BAD REQUEST] V požadavku je chyba. Detaily o konkrétní chybě jsou obsaženy v těle zprávy.
+				\item[401 UNAUTHORIZED] Požadavek neobsahuje autentifikační údaje, nebo jsou údaje chybné.
 				\item[403 FORBIDDEN] Volající uživatel nemá dostatečná práva k provedení požadavku.
 				\item[404 NOT FOUND] Požadovaný zdroj nebyl nalezen.
 				\item[409 CONFLICT] Objekt či záznam nemohl být vytvořen, protože již existuje.
 			\end{description}
-			Všechny chybové odpovědi obsahují v těle odpovědi další informace o chybě. Tělo má následující formát:
+			Chybové odpovědi mohou obsahovat v těle odpovědi další informace o chybě. Tělo má následující formát:
 				\begin{Verbatim}[obeytabs,tabsize=2]
 {
 	"errorCode": 0,
