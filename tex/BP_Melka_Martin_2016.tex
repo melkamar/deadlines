@@ -787,92 +787,114 @@
 				Výčet možných chybových kódů se nachází v příloze v sekci \ref{appdx:rest-error-codes}.
 			
 			\hfill \\
-			\subsubsection{\texttt{/user [GET, POST]}}
-				\label{restapi-1}
+			
+			
+			\subsubsection{Endpointy}
+			\label{restapi-1}
+			\begin{description}			
+			\item[\texttt{/user [GET, POST]}] \hfill \\
 				GET vrátí seznam všech uživatelů v systému. \\
 				POST vytvoří nového uživatele z poskytnutých dat. \\
 				
 				Tento \textit{endpoint} je přístupný i neautentifikovaným voláním.
 				
-			\subsubsection{\texttt{/user/\{user\_id\} [GET, PUT]}}
+			\item[\texttt{/user/\{user\_id\} [GET, PUT]}] \hfill \\
 				GET vrátí informace uživatele s ID \texttt{user\_id}. \\
 				PUT upraví profil uživatele s ID \texttt{user\_id} předanými daty. Povoleno je měnit pouze profil volajícího uživatele.
 			
-			\subsubsection{\texttt{/task[\{?filter\&order\}] [GET, POST]}}
+			\item[\texttt{/task[\{?filter\&order\}] [GET, POST]}] \hfill \\
 				GET vrátí seznam všech úkolů volajícího uživatele, které odpovídají zadaným parametrům. Detailní popis možných parametrů je dostupný v příloze v sekci \ref{appdx:restapi}. \\
 				POST vytvoří nový úkol z poskytnutých dat. Volající uživatel se stane jeno Pozorovatelem.
 			
-			\subsubsection{\texttt{/task/\{task\_id\} [GET, PUT]}}
+			\item[\texttt{/task/\{task\_id\} [GET, PUT]}] \hfill \\
 				GET vrátí detailní informace o úkolu se zadaným ID. \forworkers \\
 				PUT upraví úkol se zadaným ID podle informací v těle požadavku. \forworkers
 			
-			\subsubsection{\texttt{/task/\{task\_id\}/reseturgency [POST]}}
+			\item[\texttt{/task/\{task\_id\}/reseturgency [POST]}] \hfill \\
 				Vynuluje urgentnost zadaného úkolu. Použitelné jen pro rostoucí úkoly. \forworkers
 			
-			\subsubsection{\texttt{/task/share/\{task\_id\} [POST]}}
+			\item[\texttt{/task/share/\{task\_id\} [POST]}] \hfill \\
 				Zašle nabídku na sdílení úkolu uživatelům a skupinám předaným v těle požadavku. \forworkers
 			
-			\subsubsection{\texttt{/task/leave/\{task\_id\} [POST]}}
+			\item[\texttt{/task/leave/\{task\_id\} [POST]}] \hfill \\
 				Odebere volajícího uživatele z úkolu se zadaným ID. 
 			
-			\subsubsection{\texttt{/task/role/\{task\_id\}\{?newRole[\&targetUser\&targetGroup]\} [POST]}}
+			\item[\texttt{/task/role/\{task\_id\}\{?newRole[\&targetUser\&targetGroup]\} [POST]}] \hfill \\
 				Nastaví roli volajícího uživatele v úkolu se zadaným ID na roli předanou v parametru \texttt{newRole}. Pozorovatel se tak může stát Pracovníkem a naopak. 
 				
 				Volitelně lze také zadat ID skupiny a uživatele, jehož se má volání týkat. Pokud je volající uživatel Manažerem zadané skupiny a cílový uživatel jejím členem, pak je Manažerovi umožněno změnit roli uživatele.
 			
-			\subsubsection{\texttt{/task/report/\{task\_id\} [POST]}}
+			\item[\texttt{/task/report/\{task\_id\} [POST]}] \hfill \\
 				Vytvoří záznam o odvedené práci od volajícího uživatele na úkolu s předaným ID. Detaily záznamu jsou obsaženy v těle požadavku. \forworkers
 				
-			\subsubsection{\texttt{/offer/task/user [GET]}}
+			\item[\texttt{/offer/task/user [GET]}] \hfill \\
 				Vrátí seznam nabídek ke sdílení úkolu pro volajícího uživatele.
 			
-			\subsubsection{\texttt{/offer/task/user/resolve/\{task\_offer\_id\} [POST]}}
+			\item[\texttt{/offer/task/user/resolve/\{task\_offer\_id\} [POST]}] \hfill \\
 				Přijme nebo zamítne nabídku ke sdílení úkolu se zadaným ID. Volající uživatel musí být příjemcem nabídky.
 				
-			\subsubsection{\texttt{/offer/task/group/\{group\_id\} [GET]}}
+			\item[\texttt{/offer/task/group/\{group\_id\} [GET]}] \hfill \\
 				Vrátí seznam nabídek ke sdílení úkolu pro skupinu se zadaným ID. \formanagers
 			
-			\subsubsection{\texttt{/offer/task/group/\{group\_id\}/resolve/\{task\_offer\_id\} [POST]}}
+			\item[\texttt{/offer/task/group/\{group\_id\}/resolve/\{task\_offer\_id\} [POST]}] \hfill \\
 				Přijme nebo zamítne nabídku ke sdílení úkolu se skupinou se zadaným ID. \formanagers
 			
-			\subsubsection{\texttt{/offer/membership [GET]}}
+			\item[\texttt{/offer/membership [GET]}] \hfill \\
 				Vrátí seznam nabídek ke vstupu do skupiny pro volajícího uživatele.
 			
-			\subsubsection{\texttt{/offer/membership/resolve/\{membership\_offer\_id\} [POST]}}
+			\item[\texttt{/offer/membership/resolve/\{membership\_offer\_id\} [POST]}] \hfill \\
 				Přijme nebo zamítne nabídku ke vstupu do skupiny s předaným ID.  Volající uživatel musí být příjemcem nabídky.
 			
-			\subsubsection{\texttt{/group\{?role\} [GET, POST]}}
+			\item[\texttt{/group\{?role\} [GET, POST]}] \hfill \\
 				GET vrátí seznam skupin v aplikaci. Volitelný parametr \texttt{role} určuje, zda vracet všechny skupiny, nebo jen ty, jichž je volající členem v zadané roli. \\
 				POST vytvoří novou skupinu z informací předaných v těle požadavku. Volající uživatel se stane jejím Adminem.
 			
-			\subsubsection{\texttt{/group/\{group\_id\} [GET, PUT, DELETE]}}
+			\item[\texttt{/group/\{group\_id\} [GET, PUT, DELETE]}] \hfill \\
 				GET vrátí detaily skupiny se zadaným ID. \formembers \\
 				PUT upraví detaily skupiny se zadaným ID daty předanými v těle požadavku. \foradmin \\
-				DELETE smaže skupinu se zadaným ID. \foradmin \\
-			
+				DELETE smaže skupinu se zadaným ID. \foradmin 
 
-			\subsubsection{\texttt{/group/\{group\_id\}/member/offer [POST]}}
+			\item[\texttt{/group/\{group\_id\}/member/offer [POST]}] \hfill \\
 				Zašle nabídku ke vstupu do skupiny se zadaným ID uživatelům předaným v těle požadavku. \formanagers
 
-			\subsubsection{\texttt{/group/\{group\_id\}/member/\{member\_id\} [PUT, DELETE]}}				
+			\item[\texttt{/group/\{group\_id\}/member/\{member\_id\} [PUT, DELETE]}] \hfill \\
 				PUT upraví záznam o členovi skupiny. Změní jeho roli ve skupině na tu předanou v těle požadavku. \formanagers \\
-				DELETE Odebere uživatele s ID \texttt{user\_id} ze skupiny s ID \texttt{group\_id}. \formanagers \\
+				DELETE Odebere uživatele s ID \texttt{user\_id} ze skupiny s ID \texttt{group\_id}. \formanagers
 			
-			\subsubsection{\texttt{/group/\{group\_id\}/task/\{task\_id\} [DELETE]}}							
+			\item[\texttt{/group/\{group\_id\}/task/\{task\_id\} [DELETE]}] \hfill \\
 				Odebere skupinu s ID \texttt{group\_id} z úkolu s ID \texttt{task\_id}. \formanagers
 			
-			
-			\subsubsection{\texttt{/group/manager/offer/task/\{group\_id\} [GET, POST]}}
+			\item[\texttt{/group/manager/offer/task/\{group\_id\} [GET, POST]}] \hfill \\
 				GET vrátí seznam všech nabídek ke sdílení úkolu se zadanou skupinou. \formanagers \\
 				POST přijme nebo zamítne nabídky ke sdílení úkolů se zadanou skupinou. Rozhodnutí a nabídky, kterých se týkají, jsou předané v těle požadavku. \formanagers
-	
 
+			\end{description}
+			
+			
+			
+			
+			
+			
+			
+	\section{Architektura}
+		Architektura aplikace popisuje způsob, jakým je členěna na logické celky a jak ty mezi sebou komunikují. Úroveň složitosti architektury souvisí s nefunkčními požadavky na aplikaci. Větší nároky, například na škálovatelnost, výkon, bezpečnost a další aspekty, znamenají nutnost navrhnout dostatečně robustní architekturu, která jim bude vyhovovat. 
+		
+		V této sekci popíšu, jak bude vypadat architektura aplikace Deadlines.
+		
+	\subsection{Architektura Deadlines}	
+		Aplikaci navrhuji podle vzoru vícevrstvé architektury. Tu tvoří několik vrstev, z nichž každá je zodpovědná za jinou funkcionalitu. Způsob komunikace mezi vrstvami je definován rozhraním, které nabízí. Je tak snazší oddělit konkrétní implementaci vrstev od jejich okolí. Výhodou této architektury je možnost poměrně pohodlně měnit konkrétní implementaci dané vrstvy (zejména v kombinaci s použitím \textit{IoC}) a to bez zásahů do vrstev, které s ní komunikují.
+		
+		Diagram architektury aplikace je zobrazen v příloze, na obrázku \ref{diagram:component-model}.
+	
+	
+	
+	
+	
 	\section{Návrhový model}
 		% TODO popis toho, co to je návrhový model a yada yada.
 		Návrhový model tříd je zachycen v diagramu \ref{diagram:class-model}.
 	
 	\section{Databázový model}
-	\section{Architektura aplikace}
 	\section{Urgentnost}
 		\begin{equation}
 			f(x)=\begin{cases}
@@ -939,6 +961,7 @@
 	\item[HW] Hardware
 	\item[SW] Software
 	\item[MVC] Model-View-Controller
+	\item[IOC] Inversion of Control
 \end{description}
 
 \chapter{Splnění kritérií rešerše}
@@ -1037,6 +1060,15 @@
 			
 	\section{Chybové kódy}
 	\label{appdx:rest-error-codes}
+
+\chapter{Komponenty aplikace}
+	\begin{figure}\centering
+		\includegraphics[width=1\textwidth]{ea-diagrams/architecture-diagram.png}
+		\caption[Diagram komponent]{Diagram architektury komponent aplikace}
+		\label{diagram:component-model}
+	\end{figure}
+
+
 
 \chapter{Obsah přiloženého CD}
 
