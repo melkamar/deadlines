@@ -264,6 +264,22 @@ public class UserControllerIntegrationTest {
 
     @Transactional
     @Test
+    public void taskGetWrongAuth() throws Exception {
+        final String url = "/task";
+
+        MvcResult result = mvc.perform(get(url)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwdwrong"))
+        )
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrint.prettyPrint(response));
+    }
+
+    @Transactional
+    @Test
     public void taskPost() throws Exception {
         final String url = "/task";
         final String strcontent = "{\"name\":\"sometask\", \"description\":\"just stuff\",\"priority\":\"LOW\", \"workEstimate\":3,\"hoursToPeak\":12.5, \"groupIds\":["+group1.getId()+","+group4.getId()+"]}";

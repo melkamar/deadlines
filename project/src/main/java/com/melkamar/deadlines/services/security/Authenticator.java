@@ -22,6 +22,8 @@ public class Authenticator {
      * If it succeeded, returns the user object.
      */
     public User authenticate(User user, String password){
+        if (user == null) return null;
+
         String encoded = passwordEncoder.encodePassword(password, user.getPasswordSalt());
         if (encoded.equals(user.getPasswordHash())){
             return user;

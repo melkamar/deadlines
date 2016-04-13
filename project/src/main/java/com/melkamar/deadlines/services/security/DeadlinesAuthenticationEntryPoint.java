@@ -20,6 +20,7 @@ public class DeadlinesAuthenticationEntryPoint implements AuthenticationEntryPoi
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setHeader("WWW-Authenticate", "Basic realm=\"Deadlines\"");
         response.setContentType("application/json");
         response.getOutputStream().println(new ErrorResponse(ErrorCodes.INVALID_CREDENTIALS, "Provided user credentials are invalid.").toString());
     }
