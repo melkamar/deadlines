@@ -270,7 +270,7 @@ public class UserControllerIntegrationTest {
         MvcResult result = mvc.perform(get(url)
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwdwrong"))
         )
-                .andExpect(status().isForbidden())
+                .andExpect(status().isUnauthorized())
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();

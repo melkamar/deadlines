@@ -32,10 +32,9 @@ public class GrowingTask extends Task {
      * @param hoursToPeak Approximately how many hours should pass until the task should be completed.
      *                  E.g. number 20 would mean that 20 hours after the task has been created its
      *                  urgency will be equal to urgency of a Task that should be worked on at that moment.
-     * @param urgency
      */
-    public GrowingTask(Date dateCreated, Double hoursToPeak, Urgency urgency) {
-        super(dateCreated, urgency);
+    public GrowingTask(Date dateCreated, Double hoursToPeak) {
+        super(dateCreated);
         this.hoursToPeak = hoursToPeak;
     }
 

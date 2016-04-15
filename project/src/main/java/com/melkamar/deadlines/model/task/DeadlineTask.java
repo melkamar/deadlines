@@ -27,8 +27,8 @@ public class DeadlineTask extends Task {
         super();
     }
 
-    public DeadlineTask(Date dateCreated, Date deadline, Urgency urgency) {
-        super(dateCreated, urgency);
+    public DeadlineTask(Date dateCreated, Date deadline) {
+        super(dateCreated);
         this.deadline = deadline;
     }
 

@@ -4,6 +4,8 @@ import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.factory.UserFactory;
+import com.melkamar.deadlines.factory.UserFactoryImpl;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.User;
@@ -42,24 +44,29 @@ public class UserApiImpl implements UserApi {
     private GroupApi groupApi;
     @Autowired
     private TaskParticipantHelper taskParticipantHelper;
+    @Autowired
+    private UserFactory userFactory;
 
 
     @Override
     @Transactional(rollbackFor = AlreadyExistsException.class)
     public User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException {
-        if (username == null || username.isEmpty()) {
-            throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
-        }
+//        if (username == null || username.isEmpty()) {
+//            throw new WrongParameterException(stringConstants.EXC_PARAM_USERNAME_EMPTY);
+//        }
+//
+//        if (password == null || password.isEmpty()) {
+//            throw new WrongParameterException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
+//        }
+//
+//        PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
+//
+//        User newUser = new User(username, hashAndSalt);
+//        newUser.setName(name);
+//        newUser.setEmail(email);
 
-        if (password == null || password.isEmpty()) {
-            throw new WrongParameterException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
-        }
+        User newUser = userFactory.createUser(username, password, name, email);
 
-        PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
-
-        User newUser = new User(username, hashAndSalt);
-        newUser.setName(name);
-        newUser.setEmail(email);
 
         try {
             userDAO.save(newUser);

@@ -8,6 +8,7 @@ import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAO;
 import com.melkamar.deadlines.dao.taskwork.TaskWorkDAO;
 import com.melkamar.deadlines.dao.urgency.UrgencyDAO;
 import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.factory.TaskFactory;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.TaskParticipant;
@@ -51,18 +52,20 @@ public class TaskApiImpl implements TaskApi {
     private UrgencyDAO urgencyDao;
     @Autowired
     private TaskWorkDAO taskWorkDAO;
+    @Autowired
+    private TaskFactory taskFactory;
 
 
     @Override
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException {
-        validateGenericCreateTaskParams(creator, name);
-        if (deadline == null) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_DEADLINE_NULL);
 
-        Urgency urgency = new Urgency();
-        urgencyDao.save(urgency);
+        DeadlineTask task = taskFactory.createTask(creator, name, description, priority, workEstimate, deadline);
 
-        DeadlineTask task = new DeadlineTask(new Date(), DateConvertor.localDateTimeToDate(deadline), urgency);
-        this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
+//        Urgency urgency = new Urgency();
+//        task.setUrgency(urgency);
+//        urgencyDao.save(urgency);
+
+        urgencyHelper.updateUrgency(task, true);
 
         taskDAO.save(task);
         taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null, true);
@@ -71,14 +74,21 @@ public class TaskApiImpl implements TaskApi {
 
     @Override
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate, double hoursToPeak) throws WrongParameterException {
-        validateGenericCreateTaskParams(creator, name);
-        if (hoursToPeak < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
+//        validateGenericCreateTaskParams(creator, name);
+//        if (hoursToPeak < 0) throw new WrongParameterException(stringConstants.EXC_PARAM_TASK_GROWSPEED_INVALID);
+//
+//        Urgency urgency = new Urgency();
+//        urgencyDao.save(urgency);
+//
+//        GrowingTask task = new GrowingTask(new Date(), hoursToPeak, urgency);
+//        this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
 
-        Urgency urgency = new Urgency();
-        urgencyDao.save(urgency);
+        GrowingTask task = taskFactory.createTask(creator, name, description, priority, workEstimate, hoursToPeak);
+        urgencyHelper.updateUrgency(task, true);
 
-        GrowingTask task = new GrowingTask(new Date(), hoursToPeak, urgency);
-        this.populateGenericTaskData(task, creator, name, description, priority, workEstimate);
+//        Urgency urgency = new Urgency();
+//        task.setUrgency(urgency);
+//        urgencyDao.save(urgency);
 
         taskDAO.save(task);
         taskParticipantHelper.editOrCreateTaskParticipant(creator, task, TaskRole.WATCHER, null, true);

@@ -44,12 +44,12 @@ public class InternalApiTest {
 
     @Before
     public void setUp() throws Exception {
-        tasksOpen.add(new DeadlineTask(new Date(), new Date(), new Urgency()).setStatus(TaskStatus.OPEN).setName("Task 1A"));
-        tasksOpen.add(new DeadlineTask(new Date(), new Date(), new Urgency()).setStatus(TaskStatus.OPEN).setName("Task 1B"));
-        tasksInProgress.add(new DeadlineTask(new Date(), new Date(), new Urgency()).setStatus(TaskStatus.IN_PROGRESS).setName("Task 2A"));
-        tasksInProgress.add(new DeadlineTask(new Date(), new Date(), new Urgency()).setStatus(TaskStatus.IN_PROGRESS).setName("Task 2B"));
-        tasksCompleted.add(new DeadlineTask(new Date(), new Date(), new Urgency()).setStatus(TaskStatus.COMPLETED).setName("Task 3A"));
-        tasksCancelled.add(new DeadlineTask(new Date(), new Date(), new Urgency()).setStatus(TaskStatus.CANCELLED).setName("Task 4A"));
+        tasksOpen.add(new DeadlineTask(new Date(), new Date()).setStatus(TaskStatus.OPEN).setName("Task 1A"));
+        tasksOpen.add(new DeadlineTask(new Date(), new Date()).setStatus(TaskStatus.OPEN).setName("Task 1B"));
+        tasksInProgress.add(new DeadlineTask(new Date(), new Date()).setStatus(TaskStatus.IN_PROGRESS).setName("Task 2A"));
+        tasksInProgress.add(new DeadlineTask(new Date(), new Date()).setStatus(TaskStatus.IN_PROGRESS).setName("Task 2B"));
+        tasksCompleted.add(new DeadlineTask(new Date(), new Date()).setStatus(TaskStatus.COMPLETED).setName("Task 3A"));
+        tasksCancelled.add(new DeadlineTask(new Date(), new Date()).setStatus(TaskStatus.CANCELLED).setName("Task 4A"));
 
         Mockito.when(taskDAO.findByStatus(TaskStatus.OPEN)).thenReturn(tasksOpen);
         Mockito.when(taskDAO.findByStatus(TaskStatus.IN_PROGRESS)).thenReturn(tasksInProgress);

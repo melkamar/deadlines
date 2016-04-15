@@ -65,7 +65,8 @@ public abstract class Task {
     @JsonView(JsonViews.Task.Minimal.class)
     protected TaskStatus status;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+//    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = Urgency.COL_URGENCY_ID)
     @JsonView(JsonViews.Task.Basic.class)
     protected Urgency urgency;
@@ -91,9 +92,9 @@ public abstract class Task {
         this.dateCreated = null;
     }
 
-    public Task(Date dateCreated, Urgency urgency) {
+    public Task(Date dateCreated) {
         this.dateCreated = dateCreated;
-        this.urgency = urgency;
+        this.urgency = new Urgency();
     }
 
     /*************************************************************/

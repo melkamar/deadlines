@@ -8,6 +8,8 @@ import com.melkamar.deadlines.dao.processing.TaskOrdering;
 import com.melkamar.deadlines.dao.taskparticipant.TaskParticipantDAOHibernate;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.factory.GroupFactory;
+import com.melkamar.deadlines.factory.GroupFactoryImpl;
 import com.melkamar.deadlines.model.*;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskRole;
@@ -58,15 +60,13 @@ public class GroupApiImpl implements GroupApi {
     private TaskParticipantHelper taskParticipantHelper;
     @Autowired
     private TaskApi taskApi;
+    @Autowired
+    private GroupFactory groupFactory;
 
 
     @Override
     public Group createGroup(String name, User founder, String description) throws WrongParameterException, AlreadyExistsException {
-        if (name == null || name.isEmpty()) throw new WrongParameterException(stringConstants.EXC_PARAM_NAME_EMPTY);
-        if (founder == null) throw new WrongParameterException(stringConstants.EXC_PARAM_FOUNDER_NULL);
-
-        Group group = new Group(name);
-        group.setDescription(description);
+        Group group = groupFactory.createGroup(name, founder, description);
 
         try {
             groupDAO.save(group);
