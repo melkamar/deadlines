@@ -1,4 +1,4 @@
-package com.melkamar.deadlines.utils;
+package com.melkamar.deadlines.services.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * 26.03.2016 15:13
  */
 @Service
-public class PasswordHashGenerator {
+public class HashAndSaltGenerator {
     @Autowired
     private ShaPasswordEncoder passwordEncoder;
     @Autowired

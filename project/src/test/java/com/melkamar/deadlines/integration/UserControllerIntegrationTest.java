@@ -15,7 +15,7 @@ import com.melkamar.deadlines.services.api.TaskApi;
 import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
-import com.melkamar.deadlines.utils.JsonPrettyPrint;
+import com.melkamar.deadlines.utils.JsonPrettyPrinter;
 import com.melkamar.deadlines.utils.RandomString;
 import org.junit.Assert;
 import org.junit.Before;
@@ -164,7 +164,7 @@ public class UserControllerIntegrationTest {
         Assert.assertTrue(object2.get("email").isJsonNull());
         Assert.assertTrue(object2.get("name").isJsonNull());
 
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
     @Transactional
@@ -190,7 +190,7 @@ public class UserControllerIntegrationTest {
         Assert.assertNotNull(object.get("name"));
         Assert.assertEquals(startUsers+1, userApi.listUsers().size());
 
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
     @Transactional
@@ -209,7 +209,7 @@ public class UserControllerIntegrationTest {
         Assert.assertEquals(ErrorCodes.INVALID_CREDENTIALS, object.get("errorCode").getAsInt());
 
         System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
 //    @Transactional
@@ -223,7 +223,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
 //    @Transactional
@@ -240,7 +240,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
     /**
@@ -259,7 +259,7 @@ public class UserControllerIntegrationTest {
 
         String response = result.getResponse().getContentAsString();
         System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
     @Transactional
@@ -275,7 +275,7 @@ public class UserControllerIntegrationTest {
 
         String response = result.getResponse().getContentAsString();
         System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
     @Transactional
@@ -297,7 +297,7 @@ public class UserControllerIntegrationTest {
         }
         String response = result.getResponse().getContentAsString();
         System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 
     }
 
@@ -318,7 +318,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
     /**
@@ -337,7 +337,7 @@ public class UserControllerIntegrationTest {
 
         String response = result.getResponse().getContentAsString();
         System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 //
 //    /**
@@ -356,7 +356,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
 //    @Transactional
@@ -372,7 +372,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
 //    /**
@@ -391,7 +391,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
 //    /**
@@ -411,7 +411,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
 //    /**
@@ -430,7 +430,7 @@ public class UserControllerIntegrationTest {
 //
 //        String response = result.getResponse().getContentAsString();
 //        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrint.prettyPrint(response));
+//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
 //
@@ -447,7 +447,7 @@ public class UserControllerIntegrationTest {
 
         String response = result.getResponse().getContentAsString();
         System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrint.prettyPrint(response));
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
 }

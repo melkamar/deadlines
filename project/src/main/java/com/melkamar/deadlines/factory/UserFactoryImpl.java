@@ -3,7 +3,7 @@ package com.melkamar.deadlines.factory;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.utils.PasswordHashGenerator;
+import com.melkamar.deadlines.services.security.HashAndSaltGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ public class UserFactoryImpl implements UserFactory {
     @Autowired
     private StringConstants stringConstants;
     @Autowired
-    private PasswordHashGenerator passwordHashGenerator;
+    private HashAndSaltGenerator hashAndSaltGenerator;
 
 
     @Override
@@ -31,7 +31,7 @@ public class UserFactoryImpl implements UserFactory {
             throw new WrongParameterException(stringConstants.EXC_PARAM_PASSWORD_EMPTY);
         }
 
-        PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
+        HashAndSaltGenerator.HashAndSalt hashAndSalt = hashAndSaltGenerator.generatePasswordHash(password);
 
         User newUser = new User(username, hashAndSalt);
         newUser.setName(name);

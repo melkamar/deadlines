@@ -5,12 +5,11 @@ import com.melkamar.deadlines.dao.groupmember.GroupMemberDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.factory.UserFactory;
-import com.melkamar.deadlines.factory.UserFactoryImpl;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.GroupMember;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.utils.PasswordHashGenerator;
+import com.melkamar.deadlines.services.security.HashAndSaltGenerator;
 import com.melkamar.deadlines.services.api.GroupApi;
 import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
@@ -35,7 +34,7 @@ public class UserApiImpl implements UserApi {
     @Autowired
     private StringConstants stringConstants;
     @Autowired
-    private PasswordHashGenerator passwordHashGenerator;
+    private HashAndSaltGenerator hashAndSaltGenerator;
     @Autowired
     private UserDAO userDAO;
     @Autowired
@@ -98,7 +97,7 @@ public class UserApiImpl implements UserApi {
         }
 
         if (password != null && !password.isEmpty()) {
-            PasswordHashGenerator.HashAndSalt hashAndSalt = passwordHashGenerator.generatePasswordHash(password);
+            HashAndSaltGenerator.HashAndSalt hashAndSalt = hashAndSaltGenerator.generatePasswordHash(password);
             user.setNewPassword(hashAndSalt);
         }
 

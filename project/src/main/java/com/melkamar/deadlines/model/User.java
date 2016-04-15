@@ -5,7 +5,7 @@ import com.melkamar.deadlines.controllers.JsonViews;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.offer.UserTaskSharingOffer;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.utils.PasswordHashGenerator;
+import com.melkamar.deadlines.services.security.HashAndSaltGenerator;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
@@ -86,7 +86,7 @@ public class User {
         this.passwordSalt = null;
     }
 
-    public User(String username, PasswordHashGenerator.HashAndSalt hashAndSalt) {
+    public User(String username, HashAndSaltGenerator.HashAndSalt hashAndSalt) {
         this.username = username;
         this.passwordHash = hashAndSalt.hash;
         this.passwordSalt = hashAndSalt.salt;
@@ -190,7 +190,7 @@ public class User {
         this.name = name;
     }
 
-    public void setNewPassword(PasswordHashGenerator.HashAndSalt hashAndSalt) {
+    public void setNewPassword(HashAndSaltGenerator.HashAndSalt hashAndSalt) {
         this.passwordHash = hashAndSalt.hash;
         this.passwordSalt = hashAndSalt.salt;
     }
