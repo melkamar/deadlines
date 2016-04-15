@@ -882,17 +882,77 @@
 		V této sekci popíšu, jak bude vypadat architektura aplikace Deadlines.
 		
 	\subsection{Architektura Deadlines}	
-		Aplikaci navrhuji podle vzoru vícevrstvé architektury. Tu tvoří několik vrstev, z nichž každá je zodpovědná za jinou funkcionalitu. Způsob komunikace mezi vrstvami je definován rozhraním, které nabízí. Je tak snazší oddělit konkrétní implementaci vrstev od jejich okolí. Výhodou této architektury je možnost poměrně pohodlně měnit konkrétní implementaci dané vrstvy (zejména v kombinaci s použitím \textit{IoC}) a to bez zásahů do vrstev, které s ní komunikují.
+		Aplikaci navrhuji podle vzoru vícevrstvé architektury. Tvoří ji několik vrstev, z nichž každá je zodpovědná za jinou funkcionalitu. Způsob komunikace je definován rozhraním, které vrstvy nabízí. Je tak snazší oddělit konkrétní implementaci vrstev od jejich okolí. Jednou z výhod této architektury je možnost znovupoužitelnosti vrstev. To je užitečné například v případě, kde existuje několik různých rozhraní pro interakci s uživatelem. Všechny mohou komunikovat s odpovídající vrstvou, pro kterou nehraje roli jejich typy a počet.
 		
-		Diagram architektury aplikace je zobrazen v příloze, na obrázku \ref{diagram:component-model}.
+		Další výhodou je možnost poměrně pohodlně měnit konkrétní implementaci dané vrstvy (zejména v kombinaci s použitím \textit{IoC}) a to bez zásahů do vrstev, které s ní komunikují. 
+		
+		Diagram architektury aplikace je zobrazen v příloze, na obrázku \ref{diagram:component-model}. 
+		
+		%TODO - chci popisovat komponenty? 
+		%\subsubsection{Controllers}
+		%\subsubsection{Bakground Jobs}
+		%\subsubsection{Security}
+		%\subsubsection{Business Services}
+		%\subsubsection{Model}
+		%\subsubsection{Data Access}
+		%\subsubsection{Hibernate}
+		%\subsubsection{Relational Database}				
 	
 	
 	
 	
 	
 	\section{Návrhový model}
-		% TODO popis toho, co to je návrhový model a yada yada.
-		Návrhový model tříd je zachycen v diagramu \ref{diagram:class-model}.
+		V této sekci se budu věnovat návrhovému modelu tříd a jeho popisu. Ten vychází z analytického modelu, rozšiřuje množství tříd a doplňuje implementační detaily. Mezi ně patří atributy a jejich typy, metody, viditelnost. Definují se zde také rozhraní, typy tříd a aplikují návrhové vzory. \cite{navrhovy-model}
+		
+		Ve zbytku této sekce budu popisovat jednotlivé části návrhového modelu. Obrázek zobrazující všechny třídy, rozdělené do balíčků (\textit{packages}), je k dispozici v příloze, diagram \ref{diagram:packages-root}.
+		
+		\subsection{Balíček \texttt{config}}
+			Tento balíček obsahuje třídy využívané napříč celou aplikací. Jsou zde definovány hodnoty chybových kódů a zpráv, \textit{Beans} pro využití frameworkem Spring a nastavení pravidel pro autentifikaci na \textit{endpointech} aplikace.
+			
+		\subsection{Balíček \texttt{controllers}}
+			Tento balíček reprezentuje vrstvu \textit{Controllers} v architektuře aplikace. Třídy \texttt{Controller} jsou zodpovědné za zpracování příchozích požadavků a zasílání odpovědí. Ověří autentifikaci požadavku a poté ho v odpovídajícím formátu delegují na vrstvu \textit{Business Service}. Odpoveď této vrstvy v odpovídajícím tvaru pošlou zpět.
+			
+			Třída \texttt{JsonViews} definuje hierarchii rozhraní, kterými lze filtrovat množství informací, které controller posílá v odpovědi.
+			
+			Balíček \texttt{httpbodies} obsahuje definice \textit{POJO} objektů, které reprezentují strukturu těl požadavků a odpovědí.
+			
+		\subsection{Balíček \texttt{exceptions}}
+			Zde se nacházejí třídy vyjímek aplikace.
+			
+		\subsection{Balíček \texttt{dao}}
+			Balíček reprezentuje vrstvu \textit{Data Access}, obsahuje třídy zprostředkovávající persistenci dat.
+			
+			Každá entita modelu zde má odpovídající podbalíček, který obsahuje rozhraní a třídy využité při jejím ukládání a načítání. Jeden z těchto podbalíčků, \texttt{group}, je zobrazen na obrázku \ref{diagram:package-dao}. Rozhraní \texttt{GroupDAO} definuje metody, které jsou nabízeny ostatním komponentám aplikace pro ukládání a načítání objektů \texttt{Group} z databáze. Třída \texttt{GroupDAOHibernate} je konkrétní implementací tohoto rozhraní, které využívá \textit{Hibernate}. Rozhraní \texttt{GroupRepository} představuje způsob komunikace právě s frameworkem \textit{Hibernate}.
+			
+			Balíček \texttt{processing} obsahuje třídy a rozhraní, které umožňují filtrování a řazení načítaných dat.
+			
+			\begin{figure}\centering
+				\includegraphics[width=0.7\textwidth]{ea-diagrams/packages/dao.png}
+				\caption[Balíček dao]{Detail tříd balíčku dao}
+				\label{diagram:package-dao}
+			\end{figure}
+				
+		\subsection{Balíček \texttt{services}}
+			Detailní pohled na balíček je na obrázku \ref{diagram:package-services}. 
+			
+			Služby v balíčku reprezentují vrstvu \textit{Business Services}. Balíček obsahuje rozhraní definující operace, které je možné v aplikaci provádět, a v podbalíčku \texttt{implementation} třídy, které ho implementují.
+			
+			Podbalíček \texttt{security} obsahuje interní služby pro autentifikování příchozích požadavků a pro kontrolu, zda mají volající uživatelé dostatečná práva k provádění požadovaných akcí.
+			
+			Podbalíček \texttt{helpers} obsahuje interní služby pro práci s entitami, které jsou využívány službami, ale nejsou součástí API této vrstvy.
+			
+			\begin{figure}\centering
+				\includegraphics[width=1\textwidth]{ea-diagrams/packages/services.png}
+				\caption[Balíček services]{Detail tříd balíčku services}
+				\label{diagram:package-services}
+			\end{figure}
+			
+			
+		
+		%V diagramu \ref{diagram:class-model} je zobrazen návrhový model doménových tříd, které nesou informace o účastnících a entitách v aplikaci. 
+		
+		
 	
 	\section{Databázový model}
 	\section{Urgentnost}
@@ -904,19 +964,19 @@
 		\end{equation}
 		
 		Mathematica formula:
-		\begin{verbatim}
-			a = 1.1
-			b = 100
-			c = 0
-			Plot[{ConditionalExpression[a^x*b + c, x <= 0], 
-			ConditionalExpression[Abs[(a^(-x)*b) - b] + b + c, 
-			x >= 0]}, {x, -40, 40}]
+		%\begin{verbatim}
+		%	a = 1.1
+		%	b = 100
+		%	c = 0
+		%	Plot[{ConditionalExpression[a^x*b + c, x <= 0], 
+		%	ConditionalExpression[Abs[(a^(-x)*b) - b] + b + c, 
+		%	x >= 0]}, {x, -40, 40}]
 			
-			Plot[{ConditionalExpression[a^(-x)*b + c, x >= 0], 
-			ConditionalExpression[Abs[(a^(x)*b) - b] + b + c, 
-			x <= 0]}, {x, -40,
-			40}]
-		\end{verbatim}
+		%	Plot[{ConditionalExpression[a^(-x)*b + c, x >= 0], 
+		%	ConditionalExpression[Abs[(a^(x)*b) - b] + b + c, 
+		%	x <= 0]}, {x, -40,
+		%	40}]
+		%\end{verbatim}
 		
 		Experimentálně zjištěno, že nejvyšší urgence se bude pohybovat kolem ~200 (s těmito parametry).
 		
@@ -962,6 +1022,7 @@
 	\item[SW] Software
 	\item[MVC] Model-View-Controller
 	\item[IOC] Inversion of Control
+	\item[POJO] Plain Old Java Object
 \end{description}
 
 \chapter{Splnění kritérií rešerše}
@@ -1005,13 +1066,6 @@
 		\includegraphics[width=1\textwidth]{ea-diagrams/domain-model.png}
 		\caption[Doménový model]{Doménový model aplikace Deadlines}
 		\label{diagram:domain-model}
-	\end{figure}
-
-\chapter{Model tříd}
-	\begin{figure}\centering
-		\includegraphics[width=1\textwidth]{ea-diagrams/class-model.png}
-		\caption[Model tříd]{Návrhový model tříd aplikace Deadlines}
-		\label{diagram:class-model}
 	\end{figure}
 
 \chapter{Detaily REST API}
@@ -1067,6 +1121,23 @@
 		\caption[Diagram komponent]{Diagram architektury komponent aplikace}
 		\label{diagram:component-model}
 	\end{figure}
+
+\chapter{Návrhový model}
+
+\section{Balíčky tříd aplikace}
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{ea-diagrams/packages/root.png}
+	\caption[Balíčky tříd]{Balíčky a třídy aplikace Deadlines}
+	\label{diagram:packages-root}
+\end{figure}
+
+\section{Třídy balíčku model}
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{ea-diagrams/class-model.png}
+	\caption[Model tříd]{Návrhový model tříd aplikace Deadlines}
+	\label{diagram:class-model}
+\end{figure}
+
 
 
 
