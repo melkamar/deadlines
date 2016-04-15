@@ -65,7 +65,6 @@ public abstract class Task {
     @JsonView(JsonViews.Task.Minimal.class)
     protected TaskStatus status;
 
-//    @OneToOne(cascade = CascadeType.MERGE)
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = Urgency.COL_URGENCY_ID)
     @JsonView(JsonViews.Task.Basic.class)
