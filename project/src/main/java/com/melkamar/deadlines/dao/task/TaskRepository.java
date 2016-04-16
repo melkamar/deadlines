@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Repository
 public interface TaskRepository extends CrudRepository<Task, Long> {
+    Task saveAndFlush(Task task);
     Task findById(Long id);
     List<Task> findByStatus(TaskStatus status);
 

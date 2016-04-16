@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends CrudRepository<User, Long> {
     public User findById(Long id);
     public User findByUsername(String username);
+    User saveAndFlush(User user);
 }

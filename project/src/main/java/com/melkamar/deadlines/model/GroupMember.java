@@ -19,7 +19,7 @@ public class GroupMember {
 
     @Id
     @Column(name = COL_GROUP_MEMBER_ID)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonIgnore
     private Long id;
 

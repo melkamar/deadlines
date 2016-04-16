@@ -35,7 +35,7 @@ public class TaskDAOHibernate implements TaskDAO {
 
     @Override
     public Task save(Task task) {
-        taskRepository.save(task);
+        taskRepository.saveAndFlush(task);
         return task;
     }
 

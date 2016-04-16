@@ -33,7 +33,7 @@ public abstract class Task {
 
     @Id
     @Column(name = COL_TASK_ID, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonView(JsonViews.Task.Minimal.class)
     protected Long id;
 

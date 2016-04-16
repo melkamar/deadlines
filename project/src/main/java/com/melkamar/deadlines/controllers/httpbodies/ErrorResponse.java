@@ -10,10 +10,10 @@ import java.text.MessageFormat;
  * Created by Martin Melka (martin.melka@gmail.com)
  * 08.04.2016 13:54
  */
-@Entity
+//@Entity
 public class ErrorResponse {
-    @JsonIgnore
-    @Id
+//    @JsonIgnore
+//    @Id
     private final int id;
     public final int errorCode;
     public final String errorMessage;

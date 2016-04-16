@@ -27,7 +27,8 @@ public class GroupDAOHibernate implements GroupDAO {
 
     @Override
     public Group save(Group group) {
-        groupRepository.save(group);
+//        groupRepository.save(group);
+        groupRepository.saveAndFlush(group);
         return group;
     }
 

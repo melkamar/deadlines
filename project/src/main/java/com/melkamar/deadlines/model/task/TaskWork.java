@@ -20,7 +20,7 @@ public class TaskWork {
 
     @Id
     @Column(name = COL_TASKWORK_ID, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     Long id;
 
     @Column(name = COL_MANHOURS, nullable = false)

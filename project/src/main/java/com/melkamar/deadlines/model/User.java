@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USER_TABLE")
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class User {
     public final static String COL_USER_ID = "USER_ID";
@@ -32,7 +32,7 @@ public class User {
 
     @Id
     @Column(name = COL_USER_ID)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonProperty
     @JsonView(JsonViews.User.Minimal.class)
     private Long id;

@@ -20,7 +20,7 @@ public class Urgency {
 
     @Id
     @Column(name = COL_URGENCY_ID, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(name = COL_LAST_UPDATE, nullable = false)

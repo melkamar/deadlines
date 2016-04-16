@@ -20,13 +20,13 @@ import java.util.Set;
 @Table(name = "GROUP_TABLE")
 public class Group {
     public final static String COL_GROUP_ID = "GROUP_ID";
-    public final static String COL_GROUP_NAME = "DESCRIPTION";
-    public final static String COL_GROUP_DESCRIPTION = "NAME";
+    public final static String COL_GROUP_NAME = "NAME";
+    public final static String COL_GROUP_DESCRIPTION = "DESCRIPTION";
     public final static String COL_GROUP_JCOL_ADMIN = "ADMIN_USER_ID";
 
     @Id
     @Column(name = COL_GROUP_ID)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonView(JsonViews.Always.class)
     Long id;
 

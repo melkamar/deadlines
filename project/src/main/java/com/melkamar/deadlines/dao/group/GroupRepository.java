@@ -18,4 +18,5 @@ public interface GroupRepository extends CrudRepository<Group, Long> {
     Group findById(Long id);
     List<Group> findByMembers_User(User user);
     List<Group> findByMembers_UserAndMembers_Role(User user, MemberRole role);
+    Group saveAndFlush(Group group);
 }

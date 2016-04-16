@@ -57,6 +57,11 @@
             <!--<version>1.4.179</version>-->
         </dependency>
 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
         <!-- Create List from iterable -->
         <dependency>
             <groupId>com.google.guava</groupId>

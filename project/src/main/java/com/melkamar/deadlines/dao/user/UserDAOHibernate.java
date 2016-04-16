@@ -25,7 +25,7 @@ public class UserDAOHibernate implements UserDAO {
 
     @Override
     public User save(User user) {
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         return user;
     }
 

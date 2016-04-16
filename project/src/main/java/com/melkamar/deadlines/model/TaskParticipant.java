@@ -24,7 +24,7 @@ public class TaskParticipant {
 
     @Id
     @Column(name = COL_TASKPARTICIPANT_ID)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(name = COL_SOLO)
