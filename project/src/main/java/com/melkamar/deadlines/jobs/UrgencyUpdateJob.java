@@ -17,17 +17,12 @@ public class UrgencyUpdateJob {
     @Autowired
     private InternalApi internalApi;
 
-//    @Value("${update.urgency.interval}")
-//    private final Long interval = 15 * 60 * 1000L;
-//    private static final String interval = 5 * 1000L;
-//    @Value()
-//    private final String interval;
     @Value("${update.urgency.interval}")
     private String interval;
 
     @Scheduled(fixedDelayString = "${update.urgency.interval}")
-    public void logCurrentTime() {
+    public void updateUrgencies() {
         logger.info("Updating urgency. Interval: "+interval);
-        internalApi.updateAllUrgencies(true);
+        internalApi.updateAllUrgencies();
     }
 }

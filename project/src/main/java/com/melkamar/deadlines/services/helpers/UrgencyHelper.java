@@ -2,7 +2,9 @@ package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.utils.DateConvertor;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +17,12 @@ import java.time.temporal.ChronoUnit;
  */
 @Service
 public class UrgencyHelper {
+    Logger logger = Logger.getLogger(this.getClass());
     @Autowired
     private UrgencyComputer urgencyComputer;
-    private static int CHECK_INTERVAL_MINUTES = 30;
+
+    @Value("update.urgency.interval")
+    private static int CHECK_INTERVAL_MILLIS = 30;
 
     /**
      * Recalculate Urgency for a given Task and save it in the Task.
@@ -28,12 +33,14 @@ public class UrgencyHelper {
      */
     @Transactional
     public void updateUrgency(Task task, boolean force) {
-        System.out.println("updateUrgency: "+task.getName());
         if (force) {
             task.updateUrgency(urgencyComputer);
         } else {
             if (needsUpdate(task)) {
+                logger.info("Updating urgency. "+task);
                 task.updateUrgency(urgencyComputer);
+            } else {
+                logger.info("Skipping updating urgency, has been updated recently. "+task);
             }
         }
     }
@@ -50,6 +57,6 @@ public class UrgencyHelper {
      */
     public boolean needsUpdate(Task task) {
         return DateConvertor.dateToLocalDateTime(task.getUrgency().getLastUpdate())
-                .until(LocalDateTime.now(), ChronoUnit.MINUTES) > CHECK_INTERVAL_MINUTES;
+                .until(LocalDateTime.now(), ChronoUnit.MILLIS) > CHECK_INTERVAL_MILLIS;
     }
 }
