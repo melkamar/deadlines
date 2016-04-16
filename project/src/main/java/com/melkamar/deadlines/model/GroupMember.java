@@ -33,7 +33,7 @@ public class GroupMember {
     @JsonBackReference
     private final Group group;
 
-    @Column(name = COL_ROLE)
+    @Column(name = COL_ROLE, nullable = false)
     @Enumerated(EnumType.STRING)
     @JsonView(JsonViews.GroupMember.Basic.class)
     private MemberRole role;

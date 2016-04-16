@@ -65,9 +65,9 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
 
         double urgencyValue;
         if (reserve >= 0) {
-            urgencyValue = Math.pow(a, -reserve) * b + c;
+            urgencyValue = Math.pow(a, -reserve+1) * b + c;
         } else { // reserve < 0
-            urgencyValue = Math.abs((Math.pow(a, reserve) - 1) * b) + b + c;
+            urgencyValue = Math.abs((Math.pow(a, reserve-1) - 1) * b) + b + c;
         }
 
         return urgencyValue;
@@ -75,12 +75,6 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
 
     @Override
     public double computeGrowingTaskUrgency(GrowingTask task) {
-        task.getHoursToPeak();
-
-        Date lastUpdate = task.getUrgency().getLastUpdate();
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nowConverted = DateConvertor.dateToLocalDateTime(lastUpdate);
-
         double hoursToPeak = task.getHoursToPeak();
         double incrPerHour;
         if (hoursToPeak < 0.0000001) {

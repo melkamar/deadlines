@@ -16,9 +16,9 @@ import java.util.Date;
 @Entity
 @DiscriminatorValue("Growing")
 public class GrowingTask extends Task {
-    public static final String COL_GROW_SPEED = "GROW_SPEED";
+    public static final String COL_HOURS_TO_PEAK = "HOURS_TO_PEAK";
 
-    @Column(name = COL_GROW_SPEED)
+    @Column(name = COL_HOURS_TO_PEAK)
     @JsonView(JsonViews.Always.class)
     protected Double hoursToPeak;
 

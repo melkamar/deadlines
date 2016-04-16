@@ -265,11 +265,17 @@ public class TaskApiTest {
         List<Task> resultList;
 
         resultList = taskApi.listTasks(user, TaskOrdering.DATE_START_ASC);
+        System.out.println("-------------");
+        for (Task task: resultList) System.out.println(task);
+        System.out.println("-------------");
         Assert.assertTrue(resultList.get(0).equals(task1));
         Assert.assertTrue(resultList.get(1).equals(task2));
         Assert.assertTrue(resultList.get(2).equals(task3));
 
         resultList = taskApi.listTasks(user, TaskOrdering.DATE_START_DESC);
+        System.out.println("-------------");
+        for (Task task: resultList) System.out.println(task);
+        System.out.println("-------------");
         Assert.assertTrue(resultList.get(2).equals(task1));
         Assert.assertTrue(resultList.get(1).equals(task2));
         Assert.assertTrue(resultList.get(0).equals(task3));
@@ -808,7 +814,7 @@ public class TaskApiTest {
 
     private void sleepALittle() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

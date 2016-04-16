@@ -70,7 +70,7 @@ public class GroupApiImpl implements GroupApi {
 
         try {
             groupDAO.save(group);
-        } catch (DataIntegrityViolationException e) {
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
             throw new AlreadyExistsException(MessageFormat.format(stringConstants.EXC_ALREADY_EXISTS_GROUP_NAME, name));
         }
 
