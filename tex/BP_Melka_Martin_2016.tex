@@ -645,6 +645,7 @@
 		
 	\section{Doménový model}
 	% TODO podívat se na http://stackoverflow.com/questions/36100826/uml-domain-model-how-to-model-multiple-roles-of-association-between-two-entiti/36101591   -- možná upravit model?
+		\label{sec:domain-model}
 		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi. \cite{domain-model} Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen entity a jejich vlastnosti dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
 		
 		Diagram doménového modelu je znázorněn na obrázku \ref{diagram:domain-model}. Znázorňuje vztahy mezi entitami a některá omezení, jako například vzájemnou výlučnost. \cite{domain-model-multiple-association} V této části se dále budu věnovat popisu jednotlivých entit modelu.
@@ -767,7 +768,7 @@
 			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
 			\subsubsection{Odpovědi}
-			Každý \textit{endpoint} odpovídá na požadavek odpovědí, která obsahuje HTTP kód popisující, jak volání dopadlo, a případně tělo ve formátu JSON. Odpovědi od aplikace mohou mít následující kódy:
+			Každý \textit{endpoint} odpovídá na požadavek odpovědí, která obsahuje standardní HTTP kód popisující, jak volání dopadlo, a případně tělo ve formátu JSON. Zde jsou některé z HTTP kódů:
 			\begin{description}
 				\item[200 OK] Požadavek proběhl v pořádku.
 				\item[201 CREATED] Požadovaný objekt či záznam byl vytvořen. V hlavičce odpovědi s názvem \textit{Location} je uvedena relativní cesta k nově vytvořenému zdroji.
@@ -871,11 +872,63 @@
 			\end{description}
 			
 			
+	\section{Urgentnost}
+		Jedním z funkčních požadavků je výpočet \textit{urgentnosti} úkolů. Ta má vyjadřovat důležitost úkolu v daném momentě a má pomoct uživateli rozhodnout se, na kterém úkolu bude pracovat. Čím vyšší hodnota, tím je nutnější se danému úkolu věnovat. Výpočet hodnoty urgentnosti bude záviset na typu úkolu. Způsob výpočtu pro oba typy úkolů popíšu ve zbytku této sekce.
+		
+		Hodnota urgentnosti bude reálné číslo v intervalu $\langle 0; 200 \rangle$. Hodnota 100 značí, že by měl uživatel na úkolu začít pracovat v tuto chvíli. Např. pro úkol s deadlinem urgentnost 100 znamená, že do deadlinu v tuto chvíli zbývá stejně času, jako je odhad zbývající pracnosti úkolu.
+	
+		\subsection{Rostoucí úkol}
+			Rostoucí úkol obsahuje informaci o rychlosti růstu urgentnosti. Tato hodnota představuje, za kolik hodin má být urgentnost rovna 100. Růst urgentnosti je lineární a řídí se vztahem
+			$$
+				u = \frac{1}{hrs} \cdot z \cdot 100
+			$$
+			kde $u$ je hodnota urgentnosti, $h$ je rychlost růstu a $z$ je počet hodin, které uběhly od vytvoření či vynulování úkolu.
+		
+		
+		\subsection{Úkol s deadlinem}
+			Úkol s deadlinem dosáhne urgentnosti 100, pokud do deadlinu zbývá přesně tolik času, jako je odhadovaná pracnost úkolu.
+		
+			Pro úkol s deadlinem definuji rezervu $r$ následujícím způsobem:
+			\begin{equation}
+				r = \frac{t}{w} + \frac{t}{d}
+			\end{equation}
+			kde $t$ je čas do deadlinu v hodinách, $w$ je zbývající pracnost v hodinách a $d$ je konstanta. Experimentálně jsem stanovil, že $d=5$. 
 			
+			První zlomek udává, v jakém poměru je zbývající čas ku pracnosti. Například pokud do deadlinu zbývá 8 hodin a zbývající pracnost je 2 hodiny, výsledkem bude 4. Druhý zlomek slouží k úpravě rezervy v závislosti na zbývajícím čase. Čím méně času zbývá, tím menší bude tento člen. To z důvodu, aby rezerva u úkolu, kterému zbývá více času, byla větší, než u úkolu, který má času méně, i když jsou poměry času ku práci stejné. 
+			K této úpravě jsem přistoupil, protože chci, aby úkoly blíže deadlinu měly větší urgentnost než stejně rozpracované úkoly dále od deadlinu.
 			
+			Chci, aby hodnota urgentnosti rostla nejrychleji s rezervou pohybující se kolem čísla 1; urgentnost úkolů s velkou kladnou nebo zápornou rezervou není tak důležitá, jako urgentnost těch úkolů, na kterých by uživatel měl začít pracovat v tuto chvíli -- ty mají rezervu blízko číslu 1. 
 			
+			Urgentnost úkolu s deadlinem se tak řídí následující funkcí:
+				\begin{equation}
+				f(r)=
+				\begin{cases}
+					\lvert(a^{-r+1}-1)\cdot b \rvert +b+c& \text{pro } r\leq 0 \\
+					a^{r-1}\cdot b + c& \text{pro } r\geq 0
+				\end{cases}
+				\end{equation}
+			kde $a$, $b$ a $c$ jsou konstanty, zvolené jako $a=1.1$, $b=100$, $c=0$.
+
+			Urgentnost úkolu nezávisí na jeho prioritě. Vzorec pro urgentnost lze ale jednoduše upravit tak, aby se priorita zohlednila, a to dosazením odpovídající hodnoty za $c$.
 			
+			Graf hodnoty urgentnosti vzhledem k rezervě je zobrazen na obrázku \ref{urgency-plot}.
 			
+			\begin{figure}\centering
+				\includegraphics[width=0.7\textwidth]{resources/urgency-plot.png}
+				\caption[Urgentnost úkolu s deadlinem]{Funkce urgentnosti pro úkol s deadlinem}
+				\label{urgency-plot}
+			\end{figure}
+			
+
+
+	
+	\section{Autentifikace}
+		Ukládání hesel uživatelů v databázi v čistém textu představuje bezpečnostní riziko. V případě, že dojde k úniku dat databáze, může útočník získat přihlašovací jména i hesla a tím i možnost přihlásit se do aplikace jako kterýkoliv uživatel. Z tohoto důvodu je vhodné neukládat samotná hesla, ale jen jejich \uv{otisk}. Ten se z hesla vytvoří pomocí \textit{hash funkce}. \cite{hash-function} Při použití vhodné funkce se jedná o bezpečný způsob, kterým ověřovat uživatele, aniž by mohlo dojít k úniku jejich hesel.
+		
+		Pro uživatele se stejným heslem funkce vygeneruje vždy stejný otisk. To znamená, že při prolomení hesla jednoho uživatele mohou být ohroženi i další uživatelé, kteří mají stejné heslo. Existují také tabulky, které obsahují výstupy hash funkcí a vstupní řetězce, které těmto výstupům odpovídají, tzv. \textit{rainbow tables}. \cite{rainbow-table} Ty mohou být použity pro zrychlení prolamování slabších hesel. 
+		
+		Z tohoto důvodu v aplikaci používám metodu \textit{solení}. Ta spočívá v tom, že se otisk negeneruje jen z hesla, ale navíc se k němu přidá náhodně vygenerovaný řetězec, tzv. \textit{sůl}. Stejná hesla tak budou mít rozdílné otisky a znemožní se využití \textit{rainbow tables} a slovníkových útoků. V databázi bude pro autentifikaci uložena dvojice \texttt{(hash(heslo, sůl), sůl)}. \cite{hash-function}
+				
 	\section{Architektura}
 		Architektura aplikace popisuje způsob, jakým je členěna na logické celky a jak ty mezi sebou komunikují. Úroveň složitosti architektury souvisí s nefunkčními požadavky na aplikaci. Větší nároky, například na škálovatelnost, výkon, bezpečnost a další aspekty, znamenají nutnost navrhnout dostatečně robustní architekturu, která jim bude vyhovovat. 
 		
@@ -948,39 +1001,42 @@
 				\label{diagram:package-services}
 			\end{figure}
 			
+		\subsection{Balíček \texttt{jobs}}
+			Balíček reprezentuje v architektuře vrstvu \textit{Background Jobs}. Třídy v něm spouští periodické akce, které se mají v systému vykonávat. Příkladem takové akce je pravidelné přepočítání urgentnosti všech aktivních úkolů.
 			
-		
-		%V diagramu \ref{diagram:class-model} je zobrazen návrhový model doménových tříd, které nesou informace o účastnících a entitách v aplikaci. 
+		\subsection{Balíček \texttt{utils}}
+			Zde jsou zařazeny pomocné třídy, které nabízí různé statické metody, využívané zejména při testování.
+			
+		\subsection{Balíček \texttt{model}}
+			Tento balíček odpovídá stejnojmenné komponentě z diagramu architektury. Obsahuje třídy, které reprezentují business entity aplikace, analyzované v sekci \ref{sec:domain-model}. Třídy v sobě drží informace prostřednictvím atributů a relací k dalším třídám tohoto balíčku. Mají jen základní metody pro čtení a ukládání atributů. Veškerá manipulace se vztahy mezi třídami a udržování konzistentních referencí v případě obousměrných vztahů je zodpovědností \textit{Business Services} vrstvy. 
+			
+			Diagram popisující detaily tříd a vztahy mezi nimi je zobrazen v příloze, na obrázku \ref{diagram:class-model}.
+			
+		\subsection{Třída \texttt{DeadlinesApplication}}
+			Metoda \texttt{main()} této třídy je vstupním bodem celé aplikace.
 		
 		
 	
 	\section{Databázový model}
-	\section{Urgentnost}
-		\begin{equation}
-			f(x)=\begin{cases}
-				a^{x}\cdot b + c,& \text{pro } x\leq 0\\
-				\lvert(a^{-x}-1)\rvert \cdot b +b+c,& \text{pro } x\geq 0
-			\end{cases}
-		\end{equation}
+		Databázový model popisuje způsob uložení dat do databáze. Udává, jaké tabulky a sloupce v databázi existují, jaké mají klíče a integritní omezení. Dekomponují se v něm vztahy kardinality \textit{m:n} vytvořením pomocné tabulky.
 		
-		Mathematica formula:
-		%\begin{verbatim}
-		%	a = 1.1
-		%	b = 100
-		%	c = 0
-		%	Plot[{ConditionalExpression[a^x*b + c, x <= 0], 
-		%	ConditionalExpression[Abs[(a^(-x)*b) - b] + b + c, 
-		%	x >= 0]}, {x, -40, 40}]
-			
-		%	Plot[{ConditionalExpression[a^(-x)*b + c, x >= 0], 
-		%	ConditionalExpression[Abs[(a^(x)*b) - b] + b + c, 
-		%	x <= 0]}, {x, -40,
-		%	40}]
-		%\end{verbatim}
+		Databázový model vznikl na základě doménového a návrhového modelu a je zobrazen v příloze na obrázcích \ref{diagram:database-model-base} a \ref{diagram:database-model-offers}. Diagram byl z důvodu přehlednosti rozdělen na dvě části. První diagram zobrazuje tabulky databáze kromě nabídek, druhý zobrazuje tabulky nabídek a jejich vztah k tabulkám v prvním diagramu.
 		
-		Experimentálně zjištěno, že nejvyšší urgence se bude pohybovat kolem ~200 (s těmito parametry).
+		V návrhovém modelu je několik tříd, které tvoří dědičnou hierarchii a tu je potřeba převést do reprezentace tabulkami. Na to existuje několik postupů:
+		\begin{itemize}
+			\item Jedna tabulka pro rodiče, která obsahuje sjednocení atributů všech jejích potomků a sloupec identifikující typ záznamu.
+			\item Tabulka pro každou konkrétní třídu.
+			\item Tabulka pro rodiče a s ní asociovaná tabulka pro každého z potomků, obsahující atributy v něm definované.
+		\end{itemize}
 		
-		Note - s úpravou C do záporných čísel může dojít k tomu, že hodnota y bude záporná, ale to nevadí.
+		Pro uložení dědičné hierarchie třídy \texttt{Task} jsem zvolil první způsob. Rozdíl mezi podtypy této třídy je jen v jediném atributu, takže při ukládání záznamů bude množství nevyužitých sloupců minimální.
+		
+		Pro uložení třídy \texttt{Offer} jsem zvolil druhý způsob. Všechny podtypy mají společný atribut identifikující uživatele, který jej vytvořil, ale v ostatních atributech se liší. Proto má každý podtyp svou vlastní tabulku.
+		
+		Inicializační SQL skript pro vytvoření databáze je přiložen na médiu. %TODO kde je SQL skript?
+	
+	
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1114,6 +1170,7 @@
 			
 	\section{Chybové kódy}
 	\label{appdx:rest-error-codes}
+		%TODO chybové kódy
 
 \chapter{Komponenty aplikace}
 	\begin{figure}\centering
@@ -1136,6 +1193,19 @@
 	\includegraphics[width=1\textwidth]{ea-diagrams/class-model.png}
 	\caption[Model tříd]{Návrhový model tříd aplikace Deadlines}
 	\label{diagram:class-model}
+\end{figure}
+
+\chapter{Databázový model}
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{ea-diagrams/database/base.png}
+	\caption[Databázový model]{Relační databázový model entit aplikace, kromě nabídek}
+	\label{diagram:database-model-base}
+\end{figure}
+
+\begin{figure}\centering
+	\includegraphics[width=1\textwidth]{ea-diagrams/database/offers.png}
+	\caption[Databázový model nabídek]{Relační databázový model nabídek}
+	\label{diagram:database-model-offers}
 \end{figure}
 
 
