@@ -8,6 +8,7 @@
 \usepackage[figuresleft]{rotating}
 \usepackage[flushleft]{threeparttable} % for footnote in tabular
 \usepackage{fancyvrb}
+\usepackage{microtype}
 
 \usepackage{dirtree} %directory tree visualisation
 
@@ -1043,9 +1044,60 @@
 
 \chapter{Implementace}
 	\label{chapter:implementation}
+	
+	V této kapitole se budu věnovat bližšímu popisu průběhu implementace aplikace. % TODO
+	
+	\section{Vývojové prostředí}
+		Aplikaci jsem vyvíjel v prostředí IntelliJ IDEA od firmy JetBrains. Poskytuje dobrou podporu práce s frameworkem Spring, například nabízí funkce pro vkládání, zobrazování a navigování definovanými Spring Beans. Studentům ČVUT FIT je poskytována licence pro edici Ultimate po dobu studia zdarma.
+	
+		Projekt využívá nástroj Maven pro správu závislostí a verzí. Soubor \texttt{pom.xml} aplikace je potomkem \texttt{spring-boot-starter-parent}, který Spring Boot označuje jako \textit{starter POM}. Ten obsahuje vybrané komponenty typicky využívané u Spring projektů. Vývojář podle svých potřeb může dodefinovat další závislosti na požadovaných modulech.
+		
+		Aplikace je postavena na Spring Boot verze 1.3.3.
+				
+	\section{Služby}
+		Služby (\textit{services}) v aplikaci jsou implementovány jako stejnojmenné komponenty frameworku Spring. Každou třídu anotovanou pomocí \texttt{@Service} Spring automaticky při startu aplikace detekuje a zaregistruje jako Bean. V ostatních komponentách je pak tuto službu možné využívat následující deklarací:
+		\begin{Verbatim}
+@Autowired
+private ServiceClass service;
+		\end{Verbatim}
+		
+		Framework se postará o vložení instance odpovídající třídy, pokud je tato třída zaregistrována jako Bean. Deklarovaný typ může být i rozhraní, Spring pak poskytne třídu, která toto rozhraní implementuje a je zaregistrována s odpovídajícím jménem.
+	
+	\section{Aktualizace urgentnosti}
+		Aktualizace urgentnosti úkolů se provádí v případě vytvoření nebo úpravy úkolu a také periodicky. Využívá se k tomu třídy \texttt{UrgencyHelper}, která deleguje výpočet hodnoty na třídu implementující rozhraní \texttt{UrgencyComputer}, poté uloží získanou urgentnost a upraví čas její poslední aktualizace.
+		
+		Pro periodickou aktualizaci urgentnosti využívám \textit{task scheduling} frameworku Spring. Tato funkcionalita je aktivována anotací \texttt{@EnableScheduling} na kterékoliv konfigurační třídě. Spring poté automaticky vykonává požadované metody v zadaném intervalu:
+		\begin{Verbatim}
+@Scheduled(fixedDelayString = "${update.urgency.interval}")
+public void updateUrgencies() {
+	logger.info("Updating urgencies of all tasks.");
+	internalApi.updateAllUrgencies(true);
+}
+		\end{Verbatim}
+		Interval aktualizace je načten z externího konfiguračního souboru z klíče \texttt{update.urgency.interval}.
+	
+	\section{Model}
+		Třídy reprezentující model aplikace jsou anotovány pomocí \texttt{@Entity}. Hibernate takto anotované třídy zpracuje a bude je možné serializovat a deserializovat jako objekty do a z databáze. Anotace na atributech entitní třídy určují název odpovídajícího sloupce v tabulce, integritní omezení, způsob mapování asociací, generování hodnot \textit{ID} a další možnosti.
+		
+		Hibernate umožňuje mapování \textit{m:n} asociací pomocí anotace \texttt{@JoinTable}, která definuje pomocnou tabulku, ve které se bude uchovávat informace o asociaci. Není tak nutné definovat pomocnou entitu, která by vztah dekomponovala.
+		
+		Pomocí anotací na atributech také definuji, jestli mají být při serializaci do JSON odpovědi zahrnuty či ne. Spring pro manipulaci s formátem JSON využívá knihovnu Jackson. Ta umožňuje následující:
+		\begin{Verbatim}
+@Column(name = COL_TASK_DESCRIPTION)
+@JsonView(JsonViews.Task.Detail.class)
+protected String description;
+		\end{Verbatim}
+		Atribut \textit{description} tak bude v JSON odpovědi zahrnutý, pouze pokud je metoda Spring Controlleru, zpracovávajícího požadavek, anotována rozhraním, které implementuje \texttt{JsonViews.\allowbreak Task.\allowbreak Detail.\allowbreak class}.
+	
+		
+		
+	\section{Persistence}
+	\section{Autentifikace}
+	\section{Endpointy}
+	
+	
 	http://stackoverflow.com/questions/25076718/spring-propagation-examples-in-laymans-terms/25083505\#25083505
 	
-	%TODO SQL create skript vzít z init logu springu - copypasta
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
