@@ -381,7 +381,7 @@
 			
 			
 		\subsection{Případy užití}
-			%TODO - scénáře užití aby začínaly "Scénář začíná, když ..."
+			\label{sec:usecases}
 			Případy užití získané analýzou \textit{user stories} zobrazuji v diagramech případů užití. Rozdělil jsem je do čtyř balíků podle jejich účastníků pro lepší přehlednost.
 			
 			\subsubsection{Nepřihlášený uživatel}
@@ -792,7 +792,7 @@
 			
 			
 			\subsubsection{Endpointy}
-			\label{restapi-1}
+			\label{sec:rest-api}
 			\begin{description}			
 			\item[\texttt{/user [GET, POST]}] \hfill \\
 				GET vrátí seznam všech uživatelů v systému. \\
@@ -1169,12 +1169,86 @@ public ResponseEntity editUser(
 
 \chapter{Testování}
 	\label{chapter:testing}
+	
+	Testy aplikace jsou nezbytnou součástí jejího vývoje a dlouhodobé udržitelnosti. Určují, jaké chování se od testované komponenty očekává a v případě chybného zásahu do její implementace programátora na problém upozorní. Při implementaci aplikace Deadlines jsem zároveň psal i používal automatizované jednotkové a integrační testy. 
+	
+	Celkem jsem při implementaci aplikace napsal více než 150 testovacích případů. % TODO je to víc než 150? fix
+
+	Pro manuální spuštění testů na příkazové řádce je nejprve nutné nastavit cestu v systému, kde se má vytvořit testovací databáze. Konfigurace testovacího prostředí je umístěna v \texttt{src/test/resources/application.properties}. V tomto souboru je potřeba upravit položku \texttt{spring.datasource.url}, aby ukazovala na místo na disku, kam lze zapisovat. Testy se poté spustí příkazem \texttt{mvn test}.
+	
+	\section{Nástroje}
+		\subsection{JUnit}
+			Spring obsahuje integraci s testovacím frameworkem JUnit \cite{junit}. Ten umožňuje psaní automatizovaných jednotkových i integračních testů, v nichž programátor může kontrolovat a porovnávat obsah proměnných, vyhazované výjimky a další.
+			
+			JUnit lze použít samostatně bez spuštění Spring kontejneru, kdy se programátor musí postarat o inicializaci všech testovaných komponent, nebo v kombinaci se Springem. V tom případě je dostupná veškerá funkcionalita frameworku, zejména \textit{dependency injection}.
+		
+		\subsection{Mockito}
+			Mockito \cite{mockito} je nástroj pro vytváření \textit{mock} objektů. To jsou jednoduché \uv{kopie} objektů s pevně daným chováním. Jejich účelem je izolování testované komponenty tak, aby veškeré testované chování pocházelo od ní a ne jejích závislostí.
+			
+			Příkladem \textit{mockování} v mnou implementovaných testech je například mock rozhraní UserAPI:
+			\begin{Verbatim}
+@Mock
+UserApi userApi;
+
+Mockito.when(
+  userApi.getUser(any(Long.class))
+).thenReturn(user);
+			\end{Verbatim}
+			Zde definuji chování objektu \texttt{userApi} takto: pokud je na objektu zavolána metoda \texttt{getUser} s jakýmkoliv parametrem typu \texttt{Long}, výsledkem bude objekt \texttt{user}.
+		
+		
+	\section{Jednotkové testy}
+		Jednotkové testy mají za úkol testovat nejmenší možné části aplikace. Těmi jsou zpravidla jednotlivé třídy a jejich metody. Testy pak kontrolují, jestli se třída chová tak, jak by měla. Tímto způsobem jsem testoval třídy, které mají málo, nebo vůbec žádné závislosti. U tříd se závislostmi jsem jejich chování izoloval pomocí výše popsané techniky \textit{mockování} za použití nástroje Mockito. 
+		
+		Třídy s větším počtem závislostí jsem testoval za plného běhu kontejneru Spring bez mockování. Závislosti těchto tříd již byly otestovány izolovanými jednotkovými testy, takže se na jejich chování dá spolehnout a neovlivní chování testované třídy.
+		
+	\section{Integrační testy}
+		Integrační testy se zabývají testováním větších částí aplikace. Předpokládá se, že jednotlivé komponenty jsou otestované a fungují správně a testuje se jejich spolupráce.
+		
+		V aplikaci Deadlines jsem takto testoval vrstvy \textit{Business Services} a \textit{Controllers}. Scénáře testování byly vytvořeny na základě scénářů užití z kapitoly \ref{sec:usecases} a nabízených \textit{endpointů} z kapitoly \ref{sec:rest-api}.
+		
+		Při integračním testování controllerů u každého endpointu simuluji zasílání validních i nevalidních požadavků a testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Nasazení}
 	\label{chapter:deployment}
+	
+	V této sekci se budu věnovat popisu toho, jak postupovat při nasazování aplikace Deadlines do provozu.
+	
+	Aplikace je distribuována a může být nasazena dvěma způsoby:
+	\begin{itemize}
+		\item WAR archiv pro nasazení do servlet kontejneru (například Apache Tomcat)
+		\item Spustitelný JAR, obsahující vlastní webserver
+	\end{itemize}
+	
+	\section{Verze Java}
+		K běhu aplikace je vyžadováno JRE alespoň verze 1.8.
+	
+	\section{Uložiště dat}
+		Deadlines může pro persistenci dat využít dva typy uložiště. Prvním, doporučeným uložištěm je databáze MySQL. Návod na její instalaci je ale mimo rozsah této práce, proto jej zde neuvádím.
+	
+		Druhým typem uložiště je databáze H2. Tuto databázi není nutné nijak instalovat, aplikace ji automaticky vytvoří a celá je obsažena v jednom souboru na disku. Vhodná pro testování a zkušební provoz aplikace. Typ a konkrétní umístění datového uložiště lze nastavit v konfiguračním souboru.
+	
+	\section{Nasazení WAR archivu}
+		K nasazení WAR archivu je nutné mít již nainstalovaný některý ze servlet kontejnerů. Nasazení aplikace bylo testováno na serveru Apache Tomcat verze 9.0.0.0 a návod se tak bude vztahovat právě k tomuto serveru. Předpokládané umístění instalace serveru je ve složce \$CATALINA\_HOME. Postup je následující:
+		\begin{enumerate}
+			\item Zkopírujte soubor \texttt{deadlines.war} do složky \texttt{\$CATALINA\_HOME/\allowbreak webapps/}.
+			\item Zkopírujte soubor \texttt{application.properties} do složky \texttt{\$CATALINA\_HOME/\allowbreak lib/\allowbreak deadlines/} a upravte potřebné informace.
+			\item Pokud používáte MySQL databázi, spusťte v ní inicializační skript \texttt{database\_init\_mysql.sql}.
+			\item Spusťte server. Aplikace bude dostupná na adrese \texttt{<server>/deadlines}.
+		\end{enumerate}
+	
+	\section{Nasazení JAR archivu}
+		K nasazení JAR archivu je nutná jen přítomnost JRE odpovídající verze a případně MySQL databáze.
+		\begin{enumerate}
+			\item Zkopírujte soubory \texttt{deadlines.jar} a \texttt{application.properties} do složky, odkud chcete aplikace spouštět.
+			\item Upravte konfigurační soubor.
+			\item Spusťte aplikaci příkazem \texttt{java -jar deadlines.jar}.
+		\end{enumerate}
+		
+	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
