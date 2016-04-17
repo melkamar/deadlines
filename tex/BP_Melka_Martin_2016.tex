@@ -1062,6 +1062,8 @@ private ServiceClass service;
 		\end{Verbatim}
 		
 		Framework se postará o vložení instance odpovídající třídy, pokud je tato třída zaregistrována jako Bean. Deklarovaný typ může být i rozhraní, Spring pak poskytne třídu, která toto rozhraní implementuje a je zaregistrována s odpovídajícím jménem.
+		
+		Třídy z vrstvy služeb jsou anotovány jako \texttt{@Transactional}. Tím je zaručeno, že každá jejich metoda bude součástí jediné databázové transakce. Pokud v metodě dojde k výjimce, všechny dosud provedené změny budou vráceny a databáze zůstane nezměněna.
 	
 	\section{Aktualizace urgentnosti}
 		Aktualizace urgentnosti úkolů se provádí v případě vytvoření nebo úpravy úkolu a také periodicky. Využívá se k tomu třídy \texttt{UrgencyHelper}, která deleguje výpočet hodnoty na třídu implementující rozhraní \texttt{UrgencyComputer}, poté uloží získanou urgentnost a upraví čas její poslední aktualizace.
@@ -1140,15 +1142,26 @@ public void configure(HttpSecurity http) throws Exception {
 }
 		\end{Verbatim}
 	
-	S touto konfigurací budou povoleny anonymní dotazy na adresu \texttt{/user} s metodami GET a POST, u všech ostatních jsou požadovány přihlašovací údaje. Logika autentifikace uživatele ze zadaných údajů probíhá v mnou definovaném \texttt{authenticationProvider}. Pokud autentifikace uspěje, pak je ID volajícího uživatele předáno odpovídajícímu \textit{Controlleru}.
+		S touto konfigurací budou povoleny anonymní dotazy na adresu \texttt{/user} s metodami GET a POST, u všech ostatních jsou požadovány přihlašovací údaje. Logika autentifikace uživatele ze zadaných údajů probíhá v mnou definovaném \texttt{authenticationProvider}. Pokud autentifikace uspěje, pak je ID volajícího uživatele předáno odpovídajícímu \textit{Controlleru}.
 	
-	Pokud nejsou poskytnuty údaje nebo autentifikace selže, volá se metoda v instanci \texttt{deadlinesAuthenticationEntryPoint}, která uživateli odpoví chybovým HTTP kódem.
+		Pokud nejsou poskytnuty údaje nebo autentifikace selže, volá se metoda v instanci \texttt{deadlinesAuthenticationEntryPoint}, která uživateli odpoví chybovým HTTP kódem.
 	
 	\section{Endpointy}
+		Komunikaci pomocí REST API zajišťují třídy anotované pomocí \texttt{@RestController}. Ty obsahují metody obsluhující jednotlivé \textit{endpointy}, které aplikace nabízí. Deklarace takové metody vypadá například takto:
+		\begin{Verbatim}
+@RequestMapping(value = "/user/{id}", 
+                method = RequestMethod.PUT, 
+                produces = CTYPE_JSON, 
+                consumes = CTYPE_JSON)
+public ResponseEntity editUser(
+          @AuthenticationPrincipal Long userId,
+          @PathVariable("id") Long id,
+          @RequestBody UserCreateRequestBody request) {}
+		\end{Verbatim}
 	
+	Anotace \texttt{@RequestMapping} určuje, jaká adresa a HTTP metoda bude touto metodou zpracována a jaký MIME typ \cite{mime-type} je akceptován a produkován. V parametrech je metodě předáno ID autentifikovaného uživatele, parametry z URL adresy a tělo požadavku deserializované do POJO objektu. 
 	
-	
-	http://stackoverflow.com/questions/25076718/spring-propagation-examples-in-laymans-terms/25083505\#25083505
+	Metoda controlleru volá odpovídající služby v závislosti na předaných parametrech a jejich výsledek transformuje do odpovědi, kterou zasílá zpět.
 	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
