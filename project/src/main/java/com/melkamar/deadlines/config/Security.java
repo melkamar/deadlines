@@ -36,13 +36,10 @@ public class Security extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authenticationProvider(authenticationProvider)
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/user").permitAll()
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
-//                .antMatchers("/user/**").permitAll()
                 .anyRequest().authenticated().and().httpBasic().authenticationEntryPoint(deadlinesAuthenticationEntryPoint)
                 .realmName("Deadlines App");
-//                .anyRequest().permitAll();
     }
 }

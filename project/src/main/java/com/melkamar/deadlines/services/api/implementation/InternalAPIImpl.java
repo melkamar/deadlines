@@ -32,7 +32,6 @@ public class InternalApiImpl implements InternalApi {
 
     @Override
     public void updateAllUrgencies(boolean force){
-        List<Task> activeTasks = new ArrayList<>();
         for (TaskStatus status: Task.activeStates){
             for (Task task: taskDAO.findByStatus(status)){
                 urgencyHelper.updateUrgency(task, force);

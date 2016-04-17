@@ -29,9 +29,6 @@ public class UserController {
     @Autowired
     private UserApi userApi;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = CTYPE_JSON)
     public ResponseEntity listUsers() {
         List<User> users = userApi.listUsers();
@@ -67,7 +64,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.PUT, produces = CTYPE_JSON, consumes = CTYPE_JSON)
-    public ResponseEntity editUser(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id, @RequestBody UserCreateRequestBody request) {
+    public ResponseEntity editUser(@AuthenticationPrincipal Long userId,
+                                   @PathVariable("id") Long id,
+                                   @RequestBody UserCreateRequestBody request) {
         User user = null;
         try {
             user = userApi.getUser(userId);

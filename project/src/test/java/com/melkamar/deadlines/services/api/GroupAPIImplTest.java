@@ -637,6 +637,8 @@ public class GroupApiImplTest {
         User userMember2 = userApi.createUser("Member2", "password", "John Doe", "a@b.c");
         User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
 
+        for (Group group: groupApi.listGroups()) System.out.println(group);
+
         Assert.assertEquals(groupApi.listGroups().size(), 0);
         Assert.assertEquals(groupApi.listGroups(userMember).size(), 0);
         Assert.assertEquals(groupApi.listGroups(userMember2).size(), 0);
