@@ -1048,7 +1048,7 @@
 	V této kapitole se budu věnovat bližšímu popisu průběhu implementace aplikace. % TODO
 	
 	\section{Vývojové prostředí}
-		Aplikaci jsem vyvíjel v prostředí IntelliJ IDEA od firmy JetBrains. Poskytuje dobrou podporu práce s frameworkem Spring, například nabízí funkce pro vkládání, zobrazování a navigování definovanými Spring Beans. Studentům ČVUT FIT je poskytována licence pro edici Ultimate po dobu studia zdarma.
+		Aplikaci jsem vyvíjel v prostředí IntelliJ IDEA od firmy JetBrains. Poskytuje dobrou podporu práce s frameworkem Spring, například nabízí funkce pro vkládání, zobrazování a navigování definovanými Spring Beans. Součástí je také nástroj pro ruční vytváření a posílání HTTP požadavků, který je užitečný pro základní testování REST rozhraní aplikace. Studentům ČVUT FIT je poskytována licence pro edici Ultimate po dobu studia zdarma.
 	
 		Projekt využívá nástroj Maven pro správu závislostí a verzí. Soubor \texttt{pom.xml} aplikace je potomkem \texttt{spring-boot-starter-parent}, který Spring Boot označuje jako \textit{starter POM}. Ten obsahuje vybrané komponenty typicky využívané u Spring projektů. Vývojář podle svých potřeb může dodefinovat další závislosti na požadovaných modulech.
 		
@@ -1071,7 +1071,7 @@ private ServiceClass service;
 @Scheduled(fixedDelayString = "${update.urgency.interval}")
 public void updateUrgencies() {
 	logger.info("Updating urgencies of all tasks.");
-	internalApi.updateAllUrgencies(true);
+	internalApi.updateAllUrgencies();
 }
 		\end{Verbatim}
 		Interval aktualizace je načten z externího konfiguračního souboru z klíče \texttt{update.urgency.interval}.
@@ -1092,8 +1092,60 @@ protected String description;
 		
 		
 	\section{Persistence}
+		Pro každou třídu modelu je definováno rozhraní \texttt{DAO} s metodami, které musí poskytovatel persistence implementovat. Já v používám framework Hibernate, takže implementací těchto rozhraní jsou třídy \texttt{DAOHibernate}. Ty deleguje volání odpovídajících metod na rozhraní implementující \texttt{CrudRepository<T,ID>}, kde \texttt{T} je typ třídy, kterou chci serializovat, a \texttt{ID} je datový typ jejího primárního klíče.
+		
+		V rozhraní, které implementuje \texttt{CrudRepository}, lze definovat metody podle dané jmenné konvence, pro které se při spuštění aplikace automaticky vygenerují odpovídající SQL dotazy. Toto je část definice \texttt{GroupRepository}, využívané třídou \texttt{GroupDAOHibernate}:
+		\begin{Verbatim}
+@Repository
+public interface GroupRepository 
+       extends CrudRepository<Group, Long> {
+  Group findByName(String name);
+  List<Group> findByMembers_User(User user);
+  Group saveAndFlush(Group group);
+}
+		\end{Verbatim}
+		
+	Metody definované v rozhraní není nutné vůbec implementovat, o to se postará Spring. Názvy metod tvoří jednoduché i složené databázové dotazy, informace o syntaxi a klíčových slovech je k dispozici v dokumentaci modulu \textit{Spring Data}. \cite{dao-query-methods}
+	
+	Například volání metody \texttt{findByName("jmeno")} se přeloží na následující databázový dotaz, jehož odpověď je vrácena jako instance třídy \texttt{Group}:
+	\begin{Verbatim}
+  select group0_.group_id as group_id1_1_, 
+         group0_.description as descript2_1_, 
+         group0_.name as name3_1_ 
+         from group_table group0_ 
+         where group0_.name="jmeno"
+	\end{Verbatim}
+	
+	Dotazy mohou být i složitější, jako je tomu u metody \texttt{findByMembers\_User}. Ta vrátí seznam všech skupin, jichž je uživatel členem. V jejím \uv{přeloženém} SQL tvaru jsou automaticky vygenerovány potřebné \textit{joins}.
+	
 	\section{Autentifikace}
+		Zabezpečení a autentifikaci uživatelů řeší v aplikaci modul \textit{Spring Security}. \cite{spring-security} V konfigurační třídě \texttt{config.Security}, která je potomkem třídy \texttt{WebSecurityConfigurerAdapter}, provádím nastavení zabezpečení HTTP \textit{endpointů}:
+		\begin{Verbatim}
+@Override
+protected void configure(AuthenticationManagerBuilder auth) 
+               throws Exception {
+  auth.authenticationProvider(authenticationProvider);
+}
+		
+@Override
+public void configure(HttpSecurity http) throws Exception {
+  http
+    .authorizeRequests()
+    .antMatchers(HttpMethod.GET, "/user").permitAll()
+    .antMatchers(HttpMethod.POST, "/user").permitAll()
+    .anyRequest().authenticated()
+      .and().httpBasic()
+      .authenticationEntryPoint(
+        deadlinesAuthenticationEntryPoint);
+}
+		\end{Verbatim}
+	
+	S touto konfigurací budou povoleny anonymní dotazy na adresu \texttt{/user} s metodami GET a POST, u všech ostatních jsou požadovány přihlašovací údaje. Logika autentifikace uživatele ze zadaných údajů probíhá v mnou definovaném \texttt{authenticationProvider}. Pokud autentifikace uspěje, pak je ID volajícího uživatele předáno odpovídajícímu \textit{Controlleru}.
+	
+	Pokud nejsou poskytnuty údaje nebo autentifikace selže, volá se metoda v instanci \texttt{deadlinesAuthenticationEntryPoint}, která uživateli odpoví chybovým HTTP kódem.
+	
 	\section{Endpointy}
+	
 	
 	
 	http://stackoverflow.com/questions/25076718/spring-propagation-examples-in-laymans-terms/25083505\#25083505
