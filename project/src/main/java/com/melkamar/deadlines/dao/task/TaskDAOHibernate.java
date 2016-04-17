@@ -2,16 +2,13 @@ package com.melkamar.deadlines.dao.task;
 
 import com.google.common.collect.Lists;
 import com.melkamar.deadlines.config.StringConstants;
-import com.melkamar.deadlines.exceptions.SortingException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskStatus;
-import com.sun.javafx.tk.Toolkit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.Comparator;
 import java.util.List;
