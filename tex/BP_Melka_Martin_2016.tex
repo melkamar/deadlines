@@ -1202,12 +1202,42 @@ Mockito.when(
 		
 		Třídy s větším počtem závislostí jsem testoval za plného běhu kontejneru Spring bez mockování. Závislosti těchto tříd již byly otestovány izolovanými jednotkovými testy, takže se na jejich chování dá spolehnout a neovlivní chování testované třídy.
 		
+		Příkladem jednoho z kratších jednotkových testů controlleru je následující kód:
+		
+		\begin{Verbatim}
+@Mock
+UserApi userApi;
+@Mock
+User user;
+@InjectMocks
+UserController testedController;
+
+@Test
+public void testListUsers() throws Exception {
+  MockMvc mvc = MockMvcBuilders
+    .standaloneSetup(testedController)
+    .build();
+  mvc.perform(MockMvcRequestBuilders
+      .get("/user"))
+    .andExpect(status().isOk());
+  Mockito.verify(userApi, Mockito.times(1)).listUsers();
+}
+		\end{Verbatim}
+		
+		V tomto testu třídy \texttt{UserController} nejprve za pomocí anotace \texttt{@Mock} vytvořím mock instance objektů. Anotace \texttt{@InjectMocks} poté informuje framework Mockito o tom, že má do takto anotované třídy vložit definované mock závislosti.
+		
+		Spring poskytuje třídu \texttt{MockMvc} určenou k testování MVC aplikací, jako je i tato. Controller inicializuji, aniž by bylo nutné spouštět celý Spring kontext. Poté simuluji zaslání GET požadavku na adresu \texttt{/user} a očekávám, že vrácený status bude 200 OK.
+		
+		Nakonec zkontroluji, zda controller zavolal metodu \texttt{userApi.listUsers()} tak, jak od něj očekávám. 
+		
 	\section{Integrační testy}
-		Integrační testy se zabývají testováním větších částí aplikace. Předpokládá se, že jednotlivé komponenty jsou otestované a fungují správně a testuje se jejich spolupráce.
+		Integrační testy se zabývají testováním větších částí aplikace. Předpokládá se, že jednotlivé komponenty jsou otestované a fungují správně a ověřuje se správnost jejich spolupráce.
 		
 		V aplikaci Deadlines jsem takto testoval vrstvy \textit{Business Services} a \textit{Controllers}. Scénáře testování byly vytvořeny na základě scénářů užití z kapitoly \ref{sec:usecases} a nabízených \textit{endpointů} z kapitoly \ref{sec:rest-api}.
 		
-		Při integračním testování controllerů u každého endpointu simuluji zasílání validních i nevalidních požadavků a testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
+		Při testování nejprve vytvořím počáteční stav entit v aplikaci. Poté simuluji scénář použití částí aplikace uživatelem, například zakládání skupin a úkolů, zasílání nabídek jiným uživatelům, přijímání nabídek a podobně. V průběhu scénáře ověřuji, že stav entit v aplikaci je takový, jaký očekávám.
+		
+		Při integračním testování controllerů u každého endpointu simuluji zasílání validních i nevalidních požadavků a testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
