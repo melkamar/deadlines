@@ -924,11 +924,11 @@
 
 	
 	\section{Autentifikace}
-		Ukládání hesel uživatelů v databázi v čistém textu představuje bezpečnostní riziko. V případě, že dojde k úniku dat databáze, může útočník získat přihlašovací jména i hesla a tím i možnost přihlásit se do aplikace jako kterýkoliv uživatel. Z tohoto důvodu je vhodné neukládat samotná hesla, ale jen jejich \uv{otisk}. Ten se z hesla vytvoří pomocí \textit{hash funkce}. \cite{hash-function} Při použití vhodné funkce se jedná o bezpečný způsob, kterým ověřovat uživatele, aniž by mohlo dojít k úniku jejich hesel.
+		Ukládání hesel uživatelů v databázi v čistém textu představuje bezpečnostní riziko. V případě, že dojde k úniku dat databáze, může útočník získat přihlašovací jména i hesla a tím i možnost přihlásit se do aplikace jako kterýkoliv uživatel. Z tohoto důvodu je vhodné neukládat samotná hesla, ale jen jejich \uv{otisk}. Ten se z hesla vytvoří pomocí \textit{hash funkce}. \cite{hash-function} Při použití vhodné funkce se jedná o relativně bezpečný způsob, kterým ověřovat uživatele, aniž by mohlo dojít k úniku jejich hesel.
 		
-		Pro uživatele se stejným heslem funkce vygeneruje vždy stejný otisk. To znamená, že při prolomení hesla jednoho uživatele mohou být ohroženi i další uživatelé, kteří mají stejné heslo. Existují také tabulky, které obsahují výstupy hash funkcí a vstupní řetězce, které těmto výstupům odpovídají, tzv. \textit{rainbow tables}. \cite{rainbow-table} Ty mohou být použity pro zrychlení prolamování slabších hesel. 
+		Nevýhodou této metody autentifikace je fakt, že pro uživatele se stejným heslem funkce vygeneruje vždy stejný otisk. To znamená, že při prolomení hesla jednoho uživatele mohou být ohroženi i další uživatelé, kteří mají stejné heslo. Navíc existují tabulky, které obsahují předpočítané výstupy hash funkcí a vstupní řetězce, které těmto výstupům odpovídají, tzv. \textit{rainbow tables}. \cite{rainbow-table} Ty mohou být použity pro zrychlení prolamování slabších hesel. 
 		
-		Z tohoto důvodu v aplikaci používám metodu \textit{solení}. Ta spočívá v tom, že se otisk negeneruje jen z hesla, ale navíc se k němu přidá náhodně vygenerovaný řetězec, tzv. \textit{sůl}. Stejná hesla tak budou mít rozdílné otisky a znemožní se využití \textit{rainbow tables} a slovníkových útoků. V databázi bude pro autentifikaci uložena dvojice \texttt{(hash(heslo, sůl), sůl)}. \cite{hash-function}
+		Z tohoto důvodu v aplikaci kromě hashování používám metodu \textit{solení}. Ta spočívá v tom, že se otisk negeneruje jen z hesla, ale navíc se k němu přidá náhodně vygenerovaný řetězec, tzv. \textit{sůl}. Stejná hesla tak budou mít rozdílné otisky a znemožní se využití \textit{rainbow tables} a slovníkových útoků. V databázi bude pro autentifikaci uložena dvojice \texttt{(hash(heslo, sůl), sůl)}. \cite{hash-function}
 				
 	\section{Architektura}
 		Architektura aplikace popisuje způsob, jakým je členěna na logické celky a jak ty mezi sebou komunikují. Úroveň složitosti architektury souvisí s nefunkčními požadavky na aplikaci. Větší nároky, například na škálovatelnost, výkon, bezpečnost a další aspekty, znamenají nutnost navrhnout dostatečně robustní architekturu, která jim bude vyhovovat. 
@@ -1283,9 +1283,35 @@ public void testListUsers() throws Exception {
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 \begin{conclusion}
-	TODO závěr
+	Cílem této práce byla tvorba backend části aplikace, komunikující pomocí rozhraní REST, která má usnadňovat správu soukromých i sdílených úkolů jednotlivcům a malým týmům. Dílčími úkoly práce bylo provedení rešerše existujících řešení a formulování požadavků na aplikaci. Dále detailnější analýza požadavků a problémové domény, návrh řešení, jeho implementace a otestování správné funkčnosti.
+	
+	Cíl práce jsem ve stanoveném rozsahu splnil, aplikaci lze využívat podle případů užití definovaných během analýzy. Součástí práce je i kompletní dokumentace způsobu komunikace s aplikací. Vytyčená funkcionalita byla implementována, otestována a aplikaci je možné nasadit a provozovat.
+	
+	Jelikož se jedná jen o serverovou část aplikace bez grafického rozhraní, je možnost jejího využití uživateli v současné podobě omezena. Představuje ale základní stavební prvek s dobře definovaným způsobem komunikace, který lze rozšiřovat a integrovat s dalšími klientskými moduly.
+	
+	Nedostatkem vytvořeného řešení je absence rolí uživatelů v rámci aplikace. Nelze tak určit administrátory s vyššími právy, kteří by se měli o její chod starat. To je, spolu s grafickým uživatelským rozhraním, námětem pro budoucí vývoj.
+	
+	
+	 
+	 
 \end{conclusion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
 
 \bibliographystyle{csn690}
 \bibliography{melka-bibliography}
