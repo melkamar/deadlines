@@ -35,8 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -188,7 +187,7 @@ public class UserControllerIntegrationTest {
         Assert.assertNotNull(object.get("username"));
         Assert.assertNotNull(object.get("email"));
         Assert.assertNotNull(object.get("name"));
-        Assert.assertEquals(startUsers+1, userApi.listUsers().size());
+        Assert.assertEquals(startUsers + 1, userApi.listUsers().size());
 
         System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
@@ -197,7 +196,7 @@ public class UserControllerIntegrationTest {
     @Test
     public void userIdGet_noAuth() throws Exception {
 
-        MvcResult result = mvc.perform(get("/user/"+user1.getId())
+        MvcResult result = mvc.perform(get("/user/" + user1.getId())
         )
                 .andExpect(status().isUnauthorized())
                 .andReturn();
@@ -212,37 +211,88 @@ public class UserControllerIntegrationTest {
         System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
 
-//    @Transactional
-//    @Test
-//    public void userIdGet() throws Exception {
-//
-//        MvcResult result = mvc.perform(get("/user/"+user1.getId())
-//                .header("Authorization", "somefoo")
-//        )
-//                .andReturn();
-//
-//        String response = result.getResponse().getContentAsString();
-//        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
-//    }
-//
-//    @Transactional
-//    @Test
-//    public void userIdPut() throws Exception {
-//
-//
-//        MvcResult result = mvc.perform(put("/user/"+user1.getId())
-//                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-//                .content("{\"password\":\"dabra\",\"email\":\"another-email\",\"name\":\"Brand New Name\"}")
-//                .contentType(MediaType.APPLICATION_JSON)
-//        )
-//                .andReturn();
-//
-//        String response = result.getResponse().getContentAsString();
-//        System.out.println("CODE: " + result.getResponse().getStatus());
-//        System.out.println(JsonPrettyPrinter.prettyPrint(response));
-//    }
-//
+    @Transactional
+    @Test
+    public void userIdGet_wrongAuth() throws Exception {
+
+        MvcResult result = mvc.perform(get("/user/" + user1.getId())
+                .header("Authorization", "somefoo")
+        )
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
+    }
+
+    @Transactional
+    @Test
+    public void userIdGet() throws Exception {
+
+        MvcResult result = mvc.perform(get("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(
+                        user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
+
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(response).getAsJsonObject();
+
+        long id = user1.getId();
+        Assert.assertEquals(id, object.get("id").getAsLong());
+        Assert.assertEquals(user1.getUsername(), object.get("username").getAsString());
+        Assert.assertEquals(user1.getEmail(), object.get("email").getAsString());
+        Assert.assertEquals(user1.getName(), object.get("name").getAsString());
+
+
+    }
+
+    @Transactional
+    @Test
+    public void userIdPut() throws Exception {
+
+        String newPwd = "dabra";
+        String newEmail = "another-email@hello.com";
+        String newName = "Brand new name";
+
+        MvcResult result = mvc.perform(put("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content("{\"password\":\"" + newPwd
+                        + "\",\"email\":\"" + newEmail
+                        + "\",\"name\":\"" + newName + "\"}")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
+
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(response).getAsJsonObject();
+
+        Assert.assertEquals(newEmail, object.get("email").getAsString());
+        Assert.assertEquals(newName, object.get("name").getAsString());
+
+        mvc.perform(get("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isUnauthorized());
+
+        mvc.perform(get("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), newPwd))
+        )
+                .andExpect(status().isOk());
+    }
+
+
     /**
      * Get all jobs of the logged user.
      */
@@ -282,7 +332,7 @@ public class UserControllerIntegrationTest {
     @Test
     public void taskPost() throws Exception {
         final String url = "/task";
-        final String strcontent = "{\"name\":\"sometask\", \"description\":\"just stuff\",\"priority\":\"LOW\", \"workEstimate\":3,\"hoursToPeak\":12.5, \"groupIds\":["+group1.getId()+","+group4.getId()+"]}";
+        final String strcontent = "{\"name\":\"sometask\", \"description\":\"just stuff\",\"priority\":\"LOW\", \"workEstimate\":3,\"hoursToPeak\":12.5, \"groupIds\":[" + group1.getId() + "," + group4.getId() + "]}";
 
         MvcResult result = mvc.perform(post(url)
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
@@ -292,8 +342,8 @@ public class UserControllerIntegrationTest {
 //                .andExpect(status().isOk())
                 .andReturn();
 
-        for (String headername: result.getResponse().getHeaderNames()){
-            System.out.println(headername+":"+result.getResponse().getHeader(headername));
+        for (String headername : result.getResponse().getHeaderNames()) {
+            System.out.println(headername + ":" + result.getResponse().getHeader(headername));
         }
         String response = result.getResponse().getContentAsString();
         System.out.println("CODE: " + result.getResponse().getStatus());
@@ -321,6 +371,7 @@ public class UserControllerIntegrationTest {
 //        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 //    }
 //
+
     /**
      * Get all groups in the system.
      */
@@ -339,7 +390,8 @@ public class UserControllerIntegrationTest {
         System.out.println("CODE: " + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(response));
     }
-//
+
+    //
 //    /**
 //     * Get all groups of the logged user
 //     */
@@ -437,7 +489,7 @@ public class UserControllerIntegrationTest {
     @Transactional
     @Test
     public void taskIdGet() throws Exception {
-        final String url = "/task/"+task1.getId();
+        final String url = "/task/" + task1.getId();
 
         MvcResult result = mvc.perform(get(url)
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))

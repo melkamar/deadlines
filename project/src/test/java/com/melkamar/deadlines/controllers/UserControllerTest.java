@@ -19,9 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -49,7 +47,7 @@ public class UserControllerTest {
 
     @Test
     public void testListUsers() throws Exception {
-        this.mvc.perform(MockMvcRequestBuilders
+        mvc.perform(MockMvcRequestBuilders
                 .get("/user")).andExpect(status().isOk());
         Mockito.verify(userApi, Mockito.times(1)).listUsers();
     }
