@@ -387,7 +387,7 @@
 			\subsubsection{Nepřihlášený uživatel}
 			V diagramu \ref{diagram:uc-unauthorized} jsou zachyceny případy užití pro Nepřihlášeného uživatele.
 			\begin{figure}\centering
-				\includegraphics[width=0.7\textwidth]{ea-diagrams/uc-unauthorized.png}
+				\includegraphics[width=0.6\textwidth]{ea-diagrams/uc-unauthorized.png}
 				\caption[Případy užití nepřihlášených uživatelů]{Diagram případů užití pro nepřihlášeného uživatele}
 				\label{diagram:uc-unauthorized}
 			\end{figure}
@@ -396,8 +396,8 @@
 				\item[UC 1.01 Registrovat se] \hfill \\
 					Umožní uživateli aplikace zaregistrovat se. Zadá svoje unikátní uživatelské jméno, e-mail, heslo a jméno.
 					
-				\item[UC 1.02 Přihlásit se] \hfill \\
-					Umožní uživateli přihlásit se pomocí svého uživatelského jména a hesla.	
+				\item[UC 1.02 Autentifikovat se] \hfill \\
+					Umožní uživateli autentifikovat se pomocí svého uživatelského jména a hesla.	
 					
 			\end{description}
 		
@@ -408,75 +408,72 @@
 			
 			
 			\begin{description}
-				\item[UC 2.01 Odhlásit se] \hfill \\
-					Odhlásí uživatele z aplikace. % TODO Má být usecase "odhlásit", když REST tohle už ze své podstaty neumožňuje?
-					
-				\item[UC 2.02 Upravit svůj profil] \hfill \\
+				\item[UC 2.01 Upravit svůj profil] \hfill \\
 					Umožní uživateli upravit si své jméno, heslo a e-mail.
 				
-				\item[UC 2.03 Vytvořit úkol] \hfill \\
+				\item[UC 2.02 Vytvořit úkol] \hfill \\
 					1. Scénář začíná, když se uživatel rozhodne vytvořit nový úkol. \\
 					2. Uživatel zašle požadavek s informacemi k vytvoření úkolu, povinně název a typ. Pokud je typ \uv{S deadlinem},  pak je povinné i datum a čas deadlinu. Pokud je typ \uv{rostoucí}, pak je povinná rychlost růstu. Volitelně může zadat popis, pracnost, prioritu a seznam skupin. \\
 					3. Pokud některé povinné informace chybí, scénář končí. \\
 					4. Pokud uživatel není alespoň Manažerem všech skupin, které zadal, scénář končí. \\
 					5. Aplikace vytvoří úkol, uživatel se stane jeho Pozorovatelem a úkol bude nasdílen všem zadaným skupinám. \\
 				
-				\item[UC 2.04 Sdílet úkol] \hfill \\
+				\item[UC 2.03 Sdílet úkol] \hfill \\
 					1. Scénář začíná, když chce Účastník sdílet úkol. \\
 					2. <Zobrazit seznam uživatelů> \\
 					3. <Zobrazit seznam skupin> \\
-					4. Uživatel zašle požadavek obsahující úkol, uživatele a skupiny, se kterými chce úkol sdílet. \\
+					4. Účastník zašle požadavek obsahující úkol, uživatele a skupiny, se kterými chce úkol sdílet. \\
 					5. Aplikace pošle zadaným uživatelům a skupinám nabídku ke sdílení úkolu.
-					% TODO sdílet by měl jenom účastník úkolu, ne jakýkliv přihlášený user.
 				
-				\item[UC 2.05 Zobrazit seznam mých úkolů] \hfill \\
+				\item[UC 2.04 Zobrazit seznam mých úkolů] \hfill \\
 					1. Scénář začíná, když chce uživatel zobrazit své úkoly.\\
 				    2. <Filtrovat úkoly> \\
 				    3. <Řadit úkoly> \\
 				    4. Uživatel zašle požadavek na zobrazení úkolů s vybranými filtry a řazením.\\
 					5. Aplikace vrátí seznam všech úkolů, kterých je uživatel součástí, se zvolenými parametry. Zobrazené informace budou identifikátor, jméno, priorita, status, urgentnost, \textit{deadline} či rychlost růstu, odpracovanost a typ. \\
 					
-				\item[UC 2.06 Filtrovat úkoly] \hfill \\
+				\item[UC 2.05 Filtrovat úkoly] \hfill \\
 					Úkoly je možné filtrovat podle role uživatele v nich (pozorovatel nebo pracovník), podle jejich typu (s deadlinem nebo rostoucí), stavu a priority (pět úrovní).
 					
-				\item[UC 2.07 Řadit úkoly] \hfill \\
+				\item[UC 2.06 Řadit úkoly] \hfill \\
 					Úkoly je možné řadit podle zvoleného kritéria. Tím může být název, datum začátku nebo \textit{deadlinu} úkolu, rozpracovanost (v procentech odpracováno ku celkové pracnosti), priorita a urgentnost.
 				
-				\item[UC 2.08 Rozhodnout o příchozí nabídce sdílení úkolu] \hfill \\
+				\item[UC 2.07 Rozhodnout o příchozí nabídce sdílení úkolu] \hfill \\
 					1. Scénář začíná, když chce uživatel přijmout nebo zamítnout nabídku ke sdílení úkolu. \\
 					2. <Zobrazit seznam příchozích nabídek na sdílení úkolu> \\
 					3. Uživatel zašle požadavek s jeho rozhodnutím a nabídkou, které se týká. \\
 					4. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
 				
-				\item[UC 2.09 Zobrazit seznam nabídek na sdílení úkolu] \hfill \\
+				\item[UC 2.08 Zobrazit seznam nabídek na sdílení úkolu] \hfill \\
 					Zobrazí seznam nabídek pro uživatele k připojení se ke sdílenému úkolu, v němž bude u každé nabídky uvedeno uživatelské a skutečné jméno sdílejícího uživatele a název úkolu.
 				
-				\item[UC 2.10 Založit pracovní skupinu] \hfill \\
+				\item[UC 2.09 Založit pracovní skupinu] \hfill \\
 					1. Scénář začíná, když chce uživatel založit pracovní skupinu. \\
 					2. <Zobrazit seznam uživatelů> \\
 					3. Uživatel zašle požadavek obsahující jméno skupiny a volitelně její popis. \\
 					4. Aplikace vytvoří novou skupinu s daným názvem a popisem. Zakládající uživatel se stane jejím Adminem. \\
 					
-				\item[UC 2.11 Rozhodnout o příchozí nabídce ke vstupu do skupiny] \hfill \\
+				\item[UC 2.10 Rozhodnout o příchozí nabídce ke vstupu do skupiny] \hfill \\
 					Uživatel rozhodne, zda chce přijmout nebo odmítnout nabídku ke vstupu do skupiny. Pokud ji přijme, stane se jejím Členem.
 					
-				\item[UC 2.12 Zobrazit seznam nabídek ke vstupu do skupiny] \hfill \\
+				\item[UC 2.11 Zobrazit seznam nabídek ke vstupu do skupiny] \hfill \\
 					Zobrazí seznam nabídek ke vstupu do skupin. U každé nabídky bude uvedeno jméno skupiny, uživatelské a skutečné jméno uživatele, od něhož nabídka pochází.
 				
-				\item[UC 2.13 Zobrazit seznam uživatelů] \hfill \\
+				\item[UC 2.12 Zobrazit seznam uživatelů] \hfill \\
 					Zobrazí seznam uživatelů aplikace. U uživatele bude uvedeno jeho identifikátor, e-mail, uživatelské a skutečné jméno.
 					
-				\item[UC 2.14 Zobrazit seznam skupin] \hfill \\
+				\item[UC 2.13 Zobrazit seznam skupin] \hfill \\
 					Zobrazí seznam skupin v aplikaci. U skupiny bude uveden její identifikátor, jméno a informace o Adminovi -- identifikátor, uživatelské i skutečné jméno a e-mail.
 					
-				\item[UC 2.15 Filtrovat skupiny] \hfill \\
+				\item[UC 2.14 Filtrovat skupiny] \hfill \\
 					Umožňuje filtrovat skupiny podle toho, zda je uživatel jejich Členem a v jaké roli.
 					
-				\item[UC 2.16 Zobrazit úkol] \hfill \\
+				\item[UC 2.15 Zobrazit úkol] \hfill \\
 					1. Scénář začíná, když chce uživatel zobrazit detaily úkolu. \\
 					2. <Zobrazit seznam mých úkolů> \\
 					3. Uživatel zašle požadavek k zobrazení úkolu. \\
-					4. Aplikace zobrazí všechny informace o úkolu, tedy identifikátor, název, popis, datum a čas začátku a \textit{deadlinu}, případně rychlost růstu. Dále pracnost, prioritu, typ, stav, urgentnost, záznamy o práci a seznam jeho Pracovníků, Pozorovatelů a zúčastněných skupin. \\
+					4. Pokud uživatel není účastníkem úkolu, scénář končí.  \\
+					5. Aplikace zobrazí všechny informace o úkolu, tedy identifikátor, název, popis, datum a čas začátku a \textit{deadlinu}, případně rychlost růstu. Dále pracnost, prioritu, typ, stav, urgentnost, záznamy o práci a seznam jeho Pracovníků, Pozorovatelů a zúčastněných skupin. \\
 					
 					
 				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -496,33 +493,33 @@
 				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 				
 				
-				\item[UC 2.17 Stát se pracovníkem úkolu] \hfill \\
+				\item[UC 2.16 Stát se pracovníkem úkolu] \hfill \\
 					Umožňuje Pozorovateli úkolu stát se jeho Pracovníkem.				
 								
-				\item[UC 2.18 Změnit stav úkolu] \hfill \\
+				\item[UC 2.17 Změnit stav úkolu] \hfill \\
 					Umožňuje Pracovníkovi změnit stav úkolu na jakýkoliv z jeho možných stavů.
 				
-				\item[UC 2.19 Upravit úkol] \hfill \\
+				\item[UC 2.18 Upravit úkol] \hfill \\
 					Umožňuje Pracovníkovi upravit u úkolu jeho název, popis, \textit{deadline}, pracnost a prioritu.
 				
-				\item[UC 2.20 Stát se pozorovatelem úkolu] \hfill \\
+				\item[UC 2.19 Stát se pozorovatelem úkolu] \hfill \\
 					Umožňuje Pracovníkovi úkolu stát se jeho Pozorovatelem.
 					
-				\item[UC 2.21 Zadat odvedenou práci] \hfill \\
+				\item[UC 2.20 Zadat odvedenou práci] \hfill \\
 					1. Scénář začíná, když uživatel odvedl nějakou práci a chce ji na úkolu zaznamenat. \\
-					2. <Zobrazit seznam mých úkolů> \\
+					2. <Zobrazit úkol> \\
 					3. Uživatel zašle požadavek s identifikátorem úkolu a počtem odpracovaných hodin. \\
 					4. Pokud uživatel není Pracovníkem daného úkolu, scénář končí.
 					5. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
 					
-				\item[UC 2.22 Vynulovat urgentnost rostoucího úkolu] \hfill \\
+				\item[UC 2.21 Vynulovat urgentnost rostoucího úkolu] \hfill \\
 					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
 					
-				\item[UC 2.23 Opustit úkol] \hfill \\
+				\item[UC 2.22 Opustit úkol] \hfill \\
 					Umožňuje Účastníkovi úkolu opustit ho. Účastníkem úkolu je možné být přímo a/nebo skrze skupinu. Opustit úkol lze pouze, pokud je Účastník součástí úkolu přímo.
 				
 					1. Scénář začíná, když se Účastník úkolu rozhodne opustit úkol. \\
-					2. <Zobrazit seznam mých úkolů> \\
+					2. <Zobrazit úkol> \\
 					3. Účastník zašle požadavek na opuštění úkolu. \\
 					4. Pokud nebyl úkol sdílen přímo s Účastníkem (ale jen skupinou, ve které je Členem), scénář končí. \\
 					5. Aplikace odebere Účastníka z úkolu. Pokud byl ale Účastník navíc součástí úkolu skrze skupinu, jíž je členem, nadále zůstane součástí úkolu skrze tuto skupinu.
@@ -610,7 +607,7 @@
 					
 				\item[UC 3.15 Smazat skupinu] \hfill \\
 					1. Scénář začíná, když se Admin rozhodne smazat skupinu. \\
-					2. <Zobrazit seznam mých skupin> \\
+					2. <Zobrazit detail skupiny>\\
 					3. Admin zašle požadavek na smazání skupiny. \\
 					4. Aplikace odebere všechny ostatní členy ze skupiny -- Include(\uv{Odebrat uživatele ze skupiny}). \\
 					5. Aplikace odebere skupinu ze všech jejích úkolů -- Include(\uv{Odebrat skupinu z úkolu}). \\
