@@ -189,7 +189,7 @@
 			
 			
 		\subsection{Poznámky, kalendář}
-			Tato sekce nepopisuje jeden konkrétní produkt, ale jejich skupinu. Uvádím je pro úplnost, jelikož je stále využívá velké množství lidí. Patří sem všechny nástroje pro psaní poznámek a vytváření událostí v kalendáři, a to jak elektronické, tak papírové. 
+			Posledním zástupcem je kategorie jednoduchých nástrojů, které uvádím pro úplnost, jelikož je stále používá množství lidí. Patří sem všechny nástroje pro psaní poznámek a vytváření událostí v kalendáři, a to jak elektronické, tak papírové. 
 			
 			Některé elektronické nástroje umožňují sdílení poznámek či kalendářů, takže se dají při dobře definovaných pravidlech použít i pro týmovou práci. Jejich použití je ale složitější s rostoucím počtem úkolů a projektů, protože neumožňují žádné filtrování, řazení úkolů ani přiřazování zodpovědností. Pro nenáročného uživatele, který si chce zapisovat nejdůležitější úkoly a sám se postará o to, že na nich nezapomene včas začít, může být toto řešení dostačující.
 			
@@ -197,7 +197,7 @@
 		
 	
 	\section{Shrnutí}
-		Přehled kritérií stanovených na začátku kapitoly \ref{chapter:current-state} a jejich splnění uvedenými nástroji prezentuji v tabulce \ref{table:criteria} (příloha).
+		Přehled kritérií stanovených na začátku kapitoly \ref{chapter:current-state} a jejich splnění uvedenými nástroji prezentuji v příloze v tabulce \ref{table:criteria}.
 		
 		Všechny nástroje umožňují vytvářet úkoly, ale v možnostech se liší. Nyní zvážím, které funkce jsou užitečné pro cílovou skupinu této práce a mají být obsaženy ve výsledné aplikaci. Při odkazování se k nástrojům nebo aplikacím v této sekci mám na mysli ty představené výše.
 		
@@ -217,7 +217,7 @@
 \chapter{Analýza}
 	\label{chapter:analysis}
 	
-	V této sekci se budu věnovat specifikování požadavků na aplikaci a jejich analýze. To mi poskytne konkrétní přehled o tom, co má výsledná aplikace umět a jaké entity v ní budou existovat.
+	V této kapitole se budu věnovat specifikování požadavků na aplikaci a jejich analýze. To mi poskytne konkrétní přehled o tom, co má výsledná aplikace umět a jaké entity v ní budou existovat.
 	
 	\section{Požadavky na aplikaci}
 		Požadavky na aplikaci popíšu pomocí \textit{user stories} (uživatelské příběhy)\cite{user-stories}. Jedná se o jednoduchý způsob, jakým vyjádřit požadavek na aplikaci z pohledu jejího uživatele. Měl by být krátký a napsán v terminologii uživatele budoucí aplikace.
@@ -642,7 +642,6 @@
 
 		
 	\section{Doménový model}
-	% TODO podívat se na http://stackoverflow.com/questions/36100826/uml-domain-model-how-to-model-multiple-roles-of-association-between-two-entiti/36101591   -- možná upravit model?
 		\label{sec:domain-model}
 		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi. \cite{domain-model} Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen entity a jejich vlastnosti dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
 		
@@ -693,7 +692,7 @@
 \chapter{Návrh řešení}
 	\label{chapter:design}
 	
-	V této kapitole představím technologie zvolené k vypracování aplikace a navrhnu REST API, které bude aplikace nabízet. Dále se budu věnovat architektuře aplikace, návrhovému modelu tříd a databázovému modelu, což bude představovat podklad pro následující implementaci prototypu aplikace ve zvolené technologii.
+	V této kapitole představím technologie zvolené k vypracování aplikace a navrhnu REST API, které bude aplikace nabízet. Dále se budu věnovat architektuře aplikace, návrhovému modelu tříd a databázovému modelu. Tím vytvořím podklad pro následující implementaci prototypu aplikace pomocí zvolených technologií.
 
 	\section{Technologie}
 	
@@ -727,19 +726,18 @@
 			Persistence dat aplikace bude zprostředkována relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace.
 			
 		\subsection{Apache Tomcat}
-			Pro nasazení aplikace bude použit server Apache Tomcat. \cite{tomcat} Je to \textit{lightweight} server, nenáročný na hardware a jednoduchý na zprovoznění. 
-			
-			V případě spuštění aplikace jako JAR souboru je v něm Tomcat automaticky zahrnutý.
+			Pro nasazení aplikace bude použit server Apache Tomcat. \cite{tomcat} Je nenáročný na hardware a jednoduchý na zprovoznění. 
+		
 	
 	\section{REST API}
-		V této sekci nejprve krátce vysvětlím pojmy API a REST API. Poté přistoupím ke konkrétnímu návrhu REST API pro aplikaci Deadlines.
+		V této sekci nejprve krátce vysvětlím pojmy API a REST API. Poté přistoupím k návrhu konkrétního REST API pro aplikaci Deadlines.
 	
 		\subsection{API}
 			API (\textit{Application Programming Interface}) slouží k jednoduché a spolehlivé komunikaci mezi aplikacemi nebo moduly aplikace. API představuje kontrakt, kterým se \textit{producent} zavazuje k nabízení svých služeb v dané zdokumentované podobě, jež mohou být využity \textit{konzumenty}.
 			
-			Autoři knihy \textit{APIs: A Strategy Guide} \cite{apis-a-strategy-guide} definují API takto:
+			Autoři knihy \textit{APIs: A Strategy Guide} \cite{apis-a-strategy-guide} definují API takto: (Přeloženo mnou z anglického originálu.)
 			
-			\textit{API je v podstatě kontrakt. Ve chvíli, kdy tento kontrakt existuje, vývojáři tíhnou k využívání API, protože ví, že se na něj mohou spolehnout. Kontrakt zvyšuje důvěru, což zlepšuje použitelnost. Tento kontrakt také zefektivňuje spojení mezi producentem a konzumentem, protože rozhraní jsou dokumentována, jsou konzistentní a předvídatelná.}
+			\textit{API je v podstatě kontrakt. Ve chvíli, kdy tento kontrakt existuje, vývojáři tíhnou k využívání API, protože ví, že se na něj mohou spolehnout. Kontrakt zvyšuje důvěru, což zlepšuje použitelnost. Tento kontrakt také zefektivňuje spojení mezi producentem a konzumentem, protože rozhraní jsou dokumentována, jsou konzistentní a předvídatelná.} 
 	
 		\subsection{REST}
 			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci. \cite{rest-dissertation} Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (resources). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
@@ -1104,9 +1102,9 @@ public interface GroupRepository
 }
 		\end{Verbatim}
 		
-	Metody definované v rozhraní není nutné vůbec implementovat, o to se postará Spring. Názvy metod tvoří jednoduché i složené databázové dotazy, informace o syntaxi a klíčových slovech je k dispozici v dokumentaci modulu \textit{Spring Data}. \cite{dao-query-methods}
+	Metody definované v rozhraní není nutné vůbec implementovat, jsou automaticky generovány frameworkem. Názvy metod tvoří jednoduché i složené databázové dotazy, informace o syntaxi a klíčových slovech je k dispozici v dokumentaci modulu \textit{Spring Data}. \cite{dao-query-methods}
 	
-	Například volání metody \texttt{findByName("jmeno")} se přeloží na následující databázový dotaz, jehož odpověď je vrácena jako instance třídy \texttt{Group}:
+	Například volání metody \texttt{findByName("jmeno")} se přeloží na následující databázový dotaz, jehož odpověď je deserializována do instance třídy \texttt{Group}:
 	\begin{Verbatim}
   select group0_.group_id as group_id1_1_, 
          group0_.description as descript2_1_, 
@@ -1115,7 +1113,7 @@ public interface GroupRepository
          where group0_.name="jmeno"
 	\end{Verbatim}
 	
-	Dotazy mohou být i složitější, jako je tomu u metody \texttt{findByMembers\_User}. Ta vrátí seznam všech skupin, jichž je uživatel členem. V jejím \uv{přeloženém} SQL tvaru jsou automaticky vygenerovány potřebné \textit{joins}.
+	Dotazy mohou být i složitější, jako je tomu u metody \texttt{findByMembers\_User}. Ta vrátí seznam všech skupin, jichž je uživatel členem. V jejím \uv{přeloženém} SQL tvaru jsou automaticky vygenerována potřebná spojení tabulek (\textit{join}).
 	
 	\section{Autentifikace}
 		Zabezpečení a autentifikaci uživatelů řeší v aplikaci modul \textit{Spring Security}. \cite{spring-security} V konfigurační třídě \texttt{config.Security}, která je potomkem třídy \texttt{WebSecurityConfigurerAdapter}, provádím nastavení zabezpečení HTTP \textit{endpointů}:
