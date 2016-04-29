@@ -91,7 +91,6 @@
 		
 		\item[Assignee] je člověk přidělený k určitému úkolu, je zodpovědný za práci na něm.
 		\item[Open source software] je softwarové dílo, k němuž jsou veřejně dostupné jeho zdrojové kódy.
-		\item[Closed source software] je softwarové dílo, jehož zdrojové kódy nejsou veřejně dostupné.
 		\item[Gamifikace] je uplatňování technik z herního designu a herních principů do neherních oblastí. Slouží například k motivaci formou získávání bodů za určité činnosti a zobrazováním grafů jejich vývoje.
 		\item[Backend] je část webové aplikace, která nekomunikuje přímo s uživatelem. V kontextu této práce zprostředkovává aplikační logiku a s okolím komunikuje skrze definované rozhraní.
 		\item[Manhour] je jednotka práce. Jeden člověk odpracuje za hodinu jeden \textit{manhour}. Vypočte se jako: $manhours = lidi \times hodiny$.
@@ -129,7 +128,7 @@
 			
 			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale přiřazen může být v jednu chvíli jen jednomu uživateli (\textit{assignee}). Úkolům lze také přiřadit \textit{deadline}.
 			
-			JIRA nabízí REST API a je closed source.
+			JIRA nabízí REST API a není open source.
 			
 		\subsection{Bugzilla}
 			Bugzilla \cite{bugzilla} je bug tracking nástroj, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. Samotná správa a práce s úkoly funguje stejně jako u nástroje JIRA.
@@ -150,20 +149,20 @@
 			
 			Funkčně bohatý nástroj, s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo podle \textit{deadlinu}. 
 			
-			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody\cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, aplikace je \textit{closed source}.
+			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody\cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, aplikace není open source.
 		
 			
 		\subsection{Trackie}
 			Trackie \cite{trackie} je on-line aplikace, která je určena pro správu úkolů na společných projektech. Ty lze zakládat a zvát do nich uživatele, v rámci projektů pak tvořit úkoly. Úkol může být někomu přiřazen, ale vždy jen jednomu uživateli. Funkčností i vzhledem jednoduché na použití, ale některé funkce oproti předchozím nástrojům chybí. Úkolům například nelze nastavit \textit{deadline}. Zobrazit je možné jen úkoly každého projektu zvlášť, nelze zobrazit přehled všech úkolů uživatele. 
 			
-			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a je closed source.
+			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a není open source.
 			
 		\subsection{FogBugz}
 			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě issue trackingu nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentu ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, i přesto se v aplikaci uživatel neztratí. 
 			
 			Uživatelé spolu mohou pracovat na úkolech (cases), které se dělí do projektů (projects). Na úkolu lze evidovat informace potřebné pro využití agilní metodiky plánování, včetně \textit{story points}. Úkolu je možné určit zodpovědného uživatele, odhad pracnosti a deadline. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá.
 			
-			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API a je closed source.
+			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API a není open source.
 
 	\section{Řešení pro jednotlivce}
 		\label{sec:solutions-individuals}
@@ -174,17 +173,17 @@
 			
 			Vytvoření nového úkolu se může provést zadáním (anglického) textu, aplikace sama rozpozná klíčová slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Go jogging at 1 PM every day} vytvoří úkol \textit{Go jogging}, který má \textit{deadline} ve 13 hodin a opakuje se každý den. 
 			
-			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a je closed source.
+			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a není open source.
 			
 		\subsection{Toodledo}
 			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (habits). To jsou úkoly, které se opakují ve volitelné dny každý týden, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po vykonání zvyku je možné označit ho za splněný a přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (notes), seznamy (lists), nebo nástiny (outlines). 
 			
-			Úkoly lze třídit do složek, nastavit jim \textit{deadline} a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a Webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a je closed source.
+			Úkoly lze třídit do složek, nastavit jim \textit{deadline} a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a Webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a není open source.
 			
 		\subsection{Google Inbox Reminders}
 			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (reminders). Ty lze kromě aplikace Inbox také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit \textit{deadline}, ale je možné je odložit (snooze) tak, aby se zobrazily později. Aktivní úkoly se zobrazují mezi příchozími e-maily.
 			
-			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a je closed source.
+			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a není open source.
 			
 			
 			
