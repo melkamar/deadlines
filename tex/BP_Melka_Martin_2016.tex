@@ -239,28 +239,28 @@
 				
 				\item Jako uživatel chci vytvářet úkoly soukromé nebo sdílené s ostatními uživateli a pracovními skupinami, abych nezapomněl na své nebo týmové úkoly, které je potřeba vypracovat. Úkol bude obsahovat následující informace:
 				\begin{itemize}
-					\item Název
-					\item Popis
-					\item Datum a čas začátku
-					\item Pracnost (\textit{manhours})
-					\item Priorita
-					\item Typ
+					\item název;
+					\item popis;
+					\item datum a čas začátku;
+					\item pracnost (\textit{manhours});
+					\item priorita;
+					\item typ:
 					\begin{itemize}
-						\item S deadlinem -- úkol má daný \textit{deadline}, kdy má být splněn
-						\item Rostoucí -- úkol nemá daný \textit{deadline}, ale jeho urgentnost postupně roste
+						\item s deadlinem -- úkol má daný \textit{deadline}, kdy má být splněn;
+						\item rostoucí -- úkol nemá daný \textit{deadline}, ale jeho urgentnost postupně roste.
 					\end{itemize}
-					\item Datum a čas \textit{deadlinu} (pro úkoly \uv{s deadlinem})
-					\item Rychlost růstu urgentnosti (pro \uv{rostoucí} úkoly)
-					\item Stav
+					\item datum a čas \textit{deadlinu} (pro úkoly \uv{s deadlinem});
+					\item rychlost růstu urgentnosti (pro \uv{rostoucí} úkoly);
+					\item stav:
 					\begin{itemize}
-						\item Otevřený
-						\item Rozpracovaný
-						\item Splněný
-						\item Zrušený
+						\item otevřený;
+						\item rozpracovaný;
+						\item splněný;
+						\item zrušený.
 					\end{itemize}
 				\end{itemize}
 				
-				\item Jako pozorovatel nebo pracovník úkolu ho chci sdílet s dalšími uživateli 
+				\item Jako pozorovatel nebo pracovník úkolu ho chci sdílet s dalšími uživateli.
 				
 				\item Jako pracovník úkolu ho chci modifikovat, abych mohl reagovat na případné změny. Změnit budu moct všechny údaje, kromě jeho typu.
 				
@@ -268,21 +268,21 @@
 				
 				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí -- moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem -- abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle následujících kritérií:
 				\begin{itemize}
-					\item Filtr
+					\item filtr:
 					\begin{itemize}
-						\item Role (pozorovatel / pracovník)
-						\item Typ
-						\item Stav
-						\item Priorita
+						\item role (pozorovatel / pracovník);
+						\item typ;
+						\item stav;
+						\item priorita.
 					\end{itemize}
-					\item Řazení
+					\item řazení:
 					\begin{itemize}
-						\item Název
-						\item Datum začátku úkolu
-						\item Datum \textit{deadlinu}
-						\item Rozpracovanost (poměr odpracováno ku celkové náročnosti)
-						\item Priorita
-						\item Urgentnost
+						\item název;
+						\item datum začátku úkolu;
+						\item datum \textit{deadlinu};
+						\item rozpracovanost (poměr odpracováno ku celkové náročnosti);
+						\item priorita;
+						\item urgentnost.
 					\end{itemize}
 				\end{itemize}
 				
@@ -296,8 +296,8 @@
 				
 				\item Jako uživatel chci zakládat pracovní skupiny a po založení se stát jejich adminem, abych se mohl sdružovat s dalšími uživateli a pracovat společně. Pracovní skupina obsahuje tyto informace:
 				\begin{itemize}
-					\item Název
-					\item Popis
+					\item název,
+					\item popis.
 				\end{itemize}
 				
 				\item Jako uživatel chci vidět seznam skupin, jichž jsem členem, manažerem nebo adminem, a jejich detaily, abych rychle viděl, se kterými skupinami spolupracuji.
@@ -516,7 +516,7 @@
 					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
 					
 				\item[UC 2.22 Opustit úkol] \hfill \\
-					Umožňuje Účastníkovi úkolu opustit ho. Účastníkem úkolu je možné být přímo a/nebo skrze skupinu. Opustit úkol lze pouze, pokud je Účastník součástí úkolu přímo.
+					Umožňuje Účastníkovi úkolu opustit ho. Účastníkem úkolu je možné být přímo nebo skrze skupinu. Opustit úkol lze pouze, pokud je Účastník součástí úkolu přímo.
 				
 					1. Scénář začíná, když se Účastník úkolu rozhodne opustit úkol. \\
 					2. <Zobrazit úkol> \\
@@ -628,9 +628,8 @@
 			\begin{description}
 				\item[UC 4.01 Zvýšení urgentnosti úkolů] \hfill \\
 					1. Scénář začíná po uplynutí časového intervalu pro zvyšování urgentnosti úkolů. \\
-					2. Aplikace načte každý úkol, jehož stav není Splněný ani Zrušený. \\
-					3. Pokud byla urgentnost úkolu aktualizována v nedávné době, scénář končí. \\
-					4. Aplikace vypočte novou hodnotu urgentnosti pro úkol. \\
+					2. Aplikace načte všechny úkoly, jejichž stav není Splněný ani Zrušený a které nebyly aktualizovány v nedávné době. Určení \uv{nedávné doby} je možné v nastavení aplikace. \\
+					4. Aplikace vypočte novou hodnotu urgentnosti pro každý z úkolů. \\
 			\end{description}
 			
 			
@@ -745,12 +744,12 @@
 			
 			Architektonický styl REST popisuje šest podmínek:
 			\begin{itemize}
-				\item Uniform Interface (Jednotné rozhraní)
-				\item Stateless (Bezstavovost)
-				\item Cacheable (Cachovatelnost)
-				\item Client-Server
-				\item Layered System (Systém z vrstev)
-				\item Code on Demand (Kód na vyžádání)
+				\item uniform interface (jednotné rozhraní), 
+				\item stateless (bezstavovost),
+				\item cacheable (cachovatelnost),
+				\item client-server,
+				\item layered system (systém z vrstev),
+				\item code on demand (kód na vyžádání).
 			\end{itemize}
 			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
 			
@@ -759,7 +758,7 @@
 			
 			
 			%TODO příloha, nebo online?
-			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze v sekci \ref{appdx:restapi} a dostupný na webu Apiary\footnote{\texttt{http://docs.deadlines.apiary.io/}}. Zde uvedu možné odpovědi aplikace na požadavky, dostupné \textit{endpoints} a popíšu jejich funkci. 
+			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze v sekci \ref{appdx:restapi} a dostupný na webu Apiary\cite{apiary-api}. Zde uvedu možné odpovědi aplikace na požadavky, dostupné \textit{endpoints} a popíšu jejich funkci. 
 			
 			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
