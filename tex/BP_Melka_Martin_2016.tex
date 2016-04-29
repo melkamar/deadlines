@@ -124,19 +124,19 @@
 		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často další funkce pro řízení projektů a integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
 		
 		\subsection{JIRA}
-			JIRA \cite{jira} je software, který nabízí bug tracking, issue tracking a funkce pro správu projektů. Je možné ho používat jak na vlastní HW infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
+			JIRA \cite{jira} je software, který nabízí systém pro řízení požadavků (angl. bug tracking či issue tracking) a funkce pro správu projektů. Je možné ho používat jak na vlastní infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
 			
 			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale přiřazen může být v jednu chvíli jen jednomu uživateli (\textit{assignee}). Úkolům lze také přiřadit \textit{deadline}.
 			
 			JIRA nabízí REST API a není open source.
 			
 		\subsection{Bugzilla}
-			Bugzilla \cite{bugzilla} je bug tracking nástroj, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. Samotná správa a práce s úkoly funguje stejně jako u nástroje JIRA.
+			Bugzilla \cite{bugzilla} je systém řízení požadavků, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. Samotná správa a práce s úkoly funguje stejně jako u nástroje JIRA.
 			
 			Bugzilla je open source, licencovaná pod MPL, a lze ji využít zdarma i pro komerční účely. Je nutné ji ale provozovat na vlastním hardware. Existují hosting služby, které jsou ale neoficiální a placené. Bugzilla nabízí REST API.
 			
 		\subsection{Redmine}		
-			Redmine \cite{redmine} je issue tracking nástroj, který nabízí více flexibility než Bugzilla a obsahuje i některé nástroje pro řízení projektů. Tyto nástroje mohou být přínosné pro větší projekty, které mají danou strukturu, ale nepočítám s tím, že by cílovou skupinu této práce zajímaly. Funkcionalita, která se týká správy úkolů, je srovnatelná s předchozími dvěma nástroji.
+			Redmine \cite{redmine} je systém řízení požadavků, který nabízí více flexibility než Bugzilla a obsahuje i některé nástroje pro řízení projektů. Tyto nástroje mohou být přínosné pro větší projekty, které mají danou strukturu, ale nepočítám s tím, že by cílovou skupinu této práce zajímaly. Funkcionalita, která se týká správy úkolů, je srovnatelná s předchozími dvěma nástroji.
 			
 			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě Bugzilly není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open source a nabízí REST API.
 
@@ -158,7 +158,7 @@
 			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a není open source.
 			
 		\subsection{FogBugz}
-			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě issue trackingu nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentu ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, i přesto se v aplikaci uživatel neztratí. 
+			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě podpory řízení požadavků nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentů ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, i přesto se v aplikaci uživatel neztratí. 
 			
 			Uživatelé spolu mohou pracovat na úkolech (cases), které se dělí do projektů (projects). Na úkolu lze evidovat informace potřebné pro využití agilní metodiky plánování, včetně \textit{story points}. Úkolu je možné určit zodpovědného uživatele, odhad pracnosti a deadline. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá.
 			
