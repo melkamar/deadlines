@@ -52,8 +52,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 09.04.2016 10:58
+ * This Controller class handles incoming requests made to an address "/task/**".
+ * <p>
+ * Actions performed by the controller deal with task listing, creating, reporting.
+ *
+ * @author Martin Melka
  */
 @Controller
 @RequestMapping(value = "/task")

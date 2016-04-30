@@ -40,8 +40,11 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 07.04.2016 21:09
+ * This Controller class handles incoming requests made to an address "/user/**".
+ * <p>
+ * Actions performed by the controller deal with user listing and creating.
+ *
+ * @author Martin Melka
  */
 @RestController
 public class UserController {
@@ -50,12 +53,23 @@ public class UserController {
     @Autowired
     private UserApi userApi;
 
+    /**
+     * Lists all existing users.
+     *
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     */
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = CTYPE_JSON)
     public ResponseEntity listUsers() {
         List<User> users = userApi.listUsers();
         return ResponseEntity.ok().body(users);
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param userCreateRequestBody A {@link UserCreateRequestBody} object containing details of the user to be created.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     */
     @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = CTYPE_JSON, produces = CTYPE_JSON)
     public ResponseEntity createUser(@RequestBody UserCreateRequestBody userCreateRequestBody) {
         try {
@@ -63,7 +77,7 @@ public class UserController {
                     userCreateRequestBody.getPassword(),
                     userCreateRequestBody.getName(),
                     userCreateRequestBody.getEmail());
-            return ResponseEntity.created(URI.create("/user/"+user.getId())).body(user);
+            return ResponseEntity.created(URI.create("/user/" + user.getId())).body(user);
         } catch (WrongParameterException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, e.getMessage()));
@@ -73,6 +87,11 @@ public class UserController {
         }
     }
 
+    /**
+     * Shows details of an existing user.
+     * @param id ID of the user whose details to show.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = CTYPE_JSON)
     public ResponseEntity userDetails(@PathVariable("id") long id) {
         try {
@@ -84,6 +103,14 @@ public class UserController {
         }
     }
 
+    /**
+     * Edits information of an existing user.
+     *
+     * @param userId ID of the authenticated user making the request.
+     * @param id ID of the user whose details to edit.
+     * @param request A {@link UserCreateRequestBody} object containing details of the edit.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.PUT, produces = CTYPE_JSON, consumes = CTYPE_JSON)
     public ResponseEntity editUser(@AuthenticationPrincipal Long userId,
                                    @PathVariable("id") Long id,
@@ -95,7 +122,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        if (!user.getId().equals(id)){
+        if (!user.getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
