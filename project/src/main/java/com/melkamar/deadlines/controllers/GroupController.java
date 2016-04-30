@@ -107,7 +107,7 @@ public class GroupController {
      * @param requestBody A {@link GroupRequestBody} containing details of the group to be created.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException   if the authenticated user ID does not exist. This should not happen.
-     * @throws WrongParameterException
+     * @throws WrongParameterException if the request contained unknown parameters.
      */
     @RequestMapping(value = "", method = RequestMethod.POST, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity createGroup(@AuthenticationPrincipal Long userId,
@@ -182,7 +182,7 @@ public class GroupController {
      * @param groupId ID of the group to be deleted.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
-     * @throws WrongParameterException
+     * @throws WrongParameterException if the request contained unknown parameters.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteGroup(@AuthenticationPrincipal Long userId,

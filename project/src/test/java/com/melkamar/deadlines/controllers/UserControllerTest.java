@@ -65,6 +65,23 @@ public class UserControllerTest {
     }
 
     @Test
+    public void testCreateUserNoBody() throws Exception {
+        when(userApi.createUser(any(), any(), any(), any())).thenReturn(user);
+        when(user.getId()).thenReturn(12467L);
+
+        MvcResult result = this.mvc.perform(MockMvcRequestBuilders
+                .post("/user").contentType("application/json"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("**** RESPONSE ****");
+        System.out.println(response);
+        System.out.println("**** RESPONSE ****");
+
+    }
+
+    @Test
     public void testCreateDuplicateUser() throws Exception {
         Mockito.when(userApi.createUser(any(), any(), any(), any())).thenThrow(new AlreadyExistsException("Foo msg"));
         MvcResult result = this.mvc.perform(MockMvcRequestBuilders
