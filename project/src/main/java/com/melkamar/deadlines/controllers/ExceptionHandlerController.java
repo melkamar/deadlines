@@ -33,18 +33,29 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 08.04.2016 14:32
+ * This class globally handles some exceptions thrown in Controllers.
+ *
+ * @author Martin Melka
  */
 @ControllerAdvice
 @EnableWebMvc
 public class ExceptionHandlerController {
 
+    /**
+     * Handles Not Found (404) made by {@link DoesNotExistException}s.
+     * @param e The exception thrown.
+     * @return Response to be sent to the client.
+     */
     @ExceptionHandler({DoesNotExistException.class})
     public ResponseEntity doesNotExist(DoesNotExistException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    /**
+     * Handles {@link WrongParameterException}s.
+     * @param e The exception thrown.
+     * @return Response to be sent to the client.
+     */
     @ExceptionHandler(WrongParameterException.class)
     public ResponseEntity wrongParameters(WrongParameterException e){
         return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, e.getMessage()));

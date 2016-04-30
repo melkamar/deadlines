@@ -49,8 +49,9 @@ import java.net.URI;
 import java.text.MessageFormat;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 12:31
+ * This Controller class handles incoming requests made to an address "/group/**".
+ *
+ * @author Martin Melka
  */
 @Controller
 @RequestMapping(value = "/group")
@@ -73,10 +74,10 @@ public class GroupController {
      * Lists groups in the system. Based on parameters it will list all groups, only groups the calling user is a
      * member of, or only groups in which he has a certain role.
      *
-     * @param userId
-     * @param role
-     * @return
-     * @throws DoesNotExistException
+     * @param userId ID of the authenticated user making the request.
+     * @param role   Optional parameter specifying groups to list.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
     @JsonView(JsonViews.Controller.GroupList.class)
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -99,6 +100,15 @@ public class GroupController {
         }
     }
 
+    /**
+     * Creates a group from the given parameters.
+     *
+     * @param userId      ID of the authenticated user making the request.
+     * @param requestBody A {@link GroupRequestBody} containing details of the group to be created.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID does not exist. This should not happen.
+     * @throws WrongParameterException
+     */
     @RequestMapping(value = "", method = RequestMethod.POST, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity createGroup(@AuthenticationPrincipal Long userId,
                                       @RequestBody GroupRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
@@ -106,18 +116,26 @@ public class GroupController {
 
         try {
             Group group = groupApi.createGroup(requestBody.getName(), user, requestBody.getDescription());
-            return ResponseEntity.created(URI.create("/group/"+group.getId())).body(group);
+            return ResponseEntity.created(URI.create("/group/" + group.getId())).body(group);
         } catch (AlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ErrorCodes.GROUP_NAME_ALREADY_EXISTS, e.getMessage()));
         }
     }
 
+    /**
+     * Shows details of a group.
+     *
+     * @param userId  ID of the authenticated user making the request.
+     * @param groupId ID of the group to show.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
+     */
     @JsonView(JsonViews.Controller.GroupDetails.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity groupDetails(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId) throws DoesNotExistException {
         User user = userApi.getUser(userId);
-        Group group = null;
+        Group group;
         try {
             group = groupApi.getGroup(groupId, user);
             return ResponseEntity.ok().body(group);
@@ -126,6 +144,15 @@ public class GroupController {
         }
     }
 
+    /**
+     * Edits information of an existing group.
+     *
+     * @param userId      ID of the authenticated user making the request.
+     * @param groupId     ID of the group to be edited.
+     * @param requestBody A {@link GroupRequestBody} object containing information to be edited.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity editGroup(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long groupId,
@@ -148,6 +175,15 @@ public class GroupController {
         }
     }
 
+    /**
+     * Delete an existing group.
+     *
+     * @param userId  ID of the authenticated user making the request.
+     * @param groupId ID of the group to be deleted.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
+     * @throws WrongParameterException
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteGroup(@AuthenticationPrincipal Long userId,
                                       @PathVariable("id") Long groupId) throws DoesNotExistException, WrongParameterException {
@@ -167,8 +203,11 @@ public class GroupController {
     /**
      * Offer a membership to a user.
      *
-     * @param userId
-     * @return
+     * @param userId      ID of the authenticated user making the request.
+     * @param groupId     ID of the group for which to offer the membership.
+     * @param requestBody A {@link MembershipOfferRequestBody} object containing details about the offer to make.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
      */
     @RequestMapping(value = "/{id}/member/offer", method = RequestMethod.POST)
     public ResponseEntity offerMembership(@AuthenticationPrincipal Long userId,
@@ -196,6 +235,19 @@ public class GroupController {
         }
     }
 
+    /**
+     * Edit role of a group member.
+     * <p>
+     * Used to promote and demote Managers in a group.
+     *
+     * @param userId       ID of the authenticated user making the request.
+     * @param groupId      ID of the group in which to edit a member's role.
+     * @param targetUserId ID of the user whose role is to be edited.
+     * @param requestBody  A {@link MemberRequestBody} object containing details of the edit to be made.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
+     * @throws WrongParameterException if the request contained unknown parameters.
+     */
     @RequestMapping(value = "/{id}/member/{memberid}", method = RequestMethod.PUT)
     public ResponseEntity editMemberRole(@AuthenticationPrincipal Long userId,
                                          @PathVariable("id") Long groupId,
@@ -235,6 +287,14 @@ public class GroupController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * @param userId       ID of the authenticated user making the request.
+     * @param groupId      ID of the group from which to remove a member.
+     * @param targetUserId ID of the user whom to remove from the group.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
+     * @throws WrongParameterException if the request contained unknown parameters.
+     */
     @RequestMapping(value = "/{id}/member/{memberid}", method = RequestMethod.DELETE)
     public ResponseEntity removeMember(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId,
@@ -255,6 +315,14 @@ public class GroupController {
         }
     }
 
+    /**
+     * @param userId       ID of the authenticated user making the request.
+     * @param groupId      ID of the group from which to remove a task.
+     * @param targetTaskId ID of the task to remove from the group.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
+     * @throws WrongParameterException if the request contained unknown parameters.
+     */
     @RequestMapping(value = "/{id}/task/{taskid}", method = RequestMethod.DELETE)
     public ResponseEntity removeTask(@AuthenticationPrincipal Long userId,
                                      @PathVariable("id") Long groupId,
