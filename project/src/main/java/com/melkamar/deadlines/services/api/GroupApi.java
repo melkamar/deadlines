@@ -117,35 +117,35 @@ public interface GroupApi {
 
     /**
      * Removes a user from a group identified by a {@link User} object.
-     *
+     * <p>
      * If manager is identical to toRemove, then the user is requesting their own removal and no group
      * permission checks are performed.
      *
-     * @param manager The user who is removing the member. Needs to be at least a manager of the group if different
-     *                from toRemove.
-     * @param group Group from which to remove the member.
+     * @param manager  The user who is removing the member. Needs to be at least a manager of the group if different
+     *                 from toRemove.
+     * @param group    Group from which to remove the member.
      * @param toRemove User to be removed from the group.
-     * @throws NotAllowedException if the removed user is Admin.
-     * @throws NotMemberOfException if manager or toRemove are not members of the group.
+     * @throws NotAllowedException      if the removed user is Admin.
+     * @throws NotMemberOfException     if manager or toRemove are not members of the group.
      * @throws GroupPermissionException if the manager does not have enough permissions.
-     * @throws WrongParameterException if any of the parameters is null.
+     * @throws WrongParameterException  if any of the parameters is null.
      */
     void removeMember(User manager, Group group, User toRemove) throws NotAllowedException, NotMemberOfException, GroupPermissionException, WrongParameterException;
 
     /**
      * Removes a member from a group identified by a {@link GroupMember} object.
-     *
+     * <p>
      * If manager is identical to toRemove, then the user is requesting their own removal and no group
      * permission checks are performed.
      *
-     * @param manager The user who is removing the member. Needs to be at least a manager of the group if different
-     *                from toRemove.
-     * @param group Group from which to remove the member.
+     * @param manager             The user who is removing the member. Needs to be at least a manager of the group if different
+     *                            from toRemove.
+     * @param group               Group from which to remove the member.
      * @param groupMemberToRemove GroupMember to be removed from the group.
-     * @throws NotAllowedException if the removed user is Admin.
-     * @throws NotMemberOfException if manager or toRemove are not members of the group.
+     * @throws NotAllowedException      if the removed user is Admin.
+     * @throws NotMemberOfException     if manager or toRemove are not members of the group.
      * @throws GroupPermissionException if the manager does not have enough permissions.
-     * @throws WrongParameterException if any of the parameters is null.
+     * @throws WrongParameterException  if any of the parameters is null.
      */
     void removeMember(User manager, Group group, GroupMember groupMemberToRemove) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException;
 
@@ -153,38 +153,83 @@ public interface GroupApi {
      * Adds a task as a shared task to the group.
      *
      * @param manager The user adding the task.
-     * @param group The group to which to add the task.
-     * @param task The task to be added.
-     * @throws WrongParameterException if any of the parameters is null.
-     * @throws NotMemberOfException if the manager is not a member of the group.
+     * @param group   The group to which to add the task.
+     * @param task    The task to be added.
+     * @throws WrongParameterException  if any of the parameters is null.
+     * @throws NotMemberOfException     if the manager is not a member of the group.
      * @throws GroupPermissionException if the manager does not have sufficient permissions.
-     * @throws AlreadyExistsException if the task is already shared with the group.
+     * @throws AlreadyExistsException   if the task is already shared with the group.
      */
     void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException;
 
     /**
      * Removes a shared task from the group.
-     *
+     * <p>
      * Also removes the task from all its members, if they were not participants on the task in an another way
      * (e.g. solo, or through another group).
-     *
+     * <p>
      * All "orphan" {@link com.melkamar.deadlines.model.TaskParticipant} objects are destroyed.
      *
      * @param manager The user removing the task.
-     * @param group The group from which the task is removed.
-     * @param task The task being removed.
-     * @throws WrongParameterException if any of the parameters is null.
-     * @throws NotMemberOfException if the manager is not a member
-     * @throws GroupPermissionException
+     * @param group   The group from which the task is removed.
+     * @param task    The task being removed.
+     * @throws WrongParameterException  if any of the parameters is null.
+     * @throws NotMemberOfException     if the manager is not a member
+     * @throws GroupPermissionException if the manager does not have sufficient permissions.
+     * @throws NotAllowedException      if the task is not shared with the group.
      */
     void leaveTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException;
 
-    //
+    /**
+     * Edits details of a group.
+     *
+     * @param admin          The user editing the group.
+     * @param group          The group to be edited.
+     * @param newDescription New description to add to the group.
+     * @throws NotMemberOfException     if the admin is not a member of the broup.
+     * @throws GroupPermissionException if the admin user does not have enough permissions in the group.
+     */
     void editDetails(User admin, Group group, String newDescription) throws NotMemberOfException, GroupPermissionException;
 
+    /**
+     * Set the Manager role for a member of a group.
+     *
+     * @param executor The user making the call.
+     * @param group    The group for which to change the role.
+     * @param member   The member for whom to change the role.
+     * @param newValue If true, the user will be made a Manager. If false, the user will be made a Member.
+     * @throws GroupPermissionException if the executor does not have sufficient permissions.
+     * @throws NotMemberOfException     if the executor or member are not members of the group.
+     * @throws WrongParameterException  if any of the parameters are null.
+     * @throws NotAllowedException      if the target user is an Admin of the group.
+     */
     void setManager(User executor, Group group, User member, boolean newValue) throws GroupPermissionException, NotMemberOfException, WrongParameterException, NotAllowedException;
 
+    /**
+     * Changes the admin of the group.
+     * <p>
+     * The Admin role will be transferred from the old admin onto a new one.
+     *
+     * @param admin    The current admin of the group.
+     * @param group    The group for which to change the admin.
+     * @param newAdmin The user who will become the new admin.
+     * @throws WrongParameterException  if any of the parameters is null.
+     * @throws NotMemberOfException     if the admin or newAdmin is not a member of the group.
+     * @throws GroupPermissionException if the admin is not an admin of the group.
+     */
     void changeAdmin(User admin, Group group, User newAdmin) throws WrongParameterException, NotMemberOfException, GroupPermissionException;
 
+    /**
+     * Deletes a group.
+     * <p>
+     * All the group-related connections such as GroupMember objects and task sharing will be removed as well.
+     * Work reports are not deleted.
+     *
+     * @param admin Admin of the group.
+     * @param group The group to be deleted.
+     * @throws NotMemberOfException     if admin is not a member of the group.
+     * @throws GroupPermissionException if admin does not have sufficient permissions.
+     * @throws WrongParameterException  if any of the parameters is null.
+     */
     void deleteGroup(User admin, Group group) throws NotMemberOfException, GroupPermissionException, WrongParameterException;
 }
