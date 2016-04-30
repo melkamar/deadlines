@@ -338,6 +338,8 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_MEMBER_OF_GROUP, e.getMessage()));
         } catch (GroupPermissionException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
+        } catch (NotAllowedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.TASK_NOT_OF_GROUP, e.getMessage()));
         }
     }
 

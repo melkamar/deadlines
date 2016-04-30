@@ -305,12 +305,16 @@ public class GroupApiImpl implements GroupApi {
     }
 
     @Override
-    public void leaveTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException {
+    public void leaveTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException, NotAllowedException {
         if (manager == null || group == null || task == null)
             throw new WrongParameterException(stringConstants.EXC_PARAM_ALL_NEED_NOT_NULL);
 
         if (!permissionHandler.hasGroupPermission(manager, group, MemberRole.MANAGER))
             throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MANAGER, manager, group));
+
+        if (!group.getSharedTasks().contains(task)){
+            throw new NotAllowedException("not a task of group!");
+        }
 
         // For all members of group remove this task/group connection to it
         Set<TaskParticipant> taskParticipants = taskparticipantDAO.findByTaskAndGroups(task, group);
@@ -382,7 +386,12 @@ public class GroupApiImpl implements GroupApi {
         // Leave all jobs associated with group
         Set<Task> sharedTasksCopy = new HashSet<>(group.getSharedTasks());
         for (Task task : sharedTasksCopy) {
-            leaveTask(admin, group, task);
+            try {
+                leaveTask(admin, group, task);
+            } catch (NotAllowedException e) {
+                System.out.println("Should not happen.");
+                e.printStackTrace();
+            }
         }
 
         // Remove admin

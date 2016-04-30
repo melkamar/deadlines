@@ -477,7 +477,7 @@ public class GroupApiImplTest {
 
     @Test
     @Transactional
-    public void leaveTask() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException {
+    public void leaveTask() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
         User userMember = userApi.createUser("Member", "password", "John Doe", "a@b.c");
         User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
         Group group = groupApi.createGroup("Groupname", userAdmin, "Random description");
@@ -509,6 +509,43 @@ public class GroupApiImplTest {
         Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
         Assert.assertTrue(userAdmin.getTasksOfUser().size() == 1);
         Assert.assertNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
+    }
+
+    @Test(expected = NotAllowedException.class)
+    @Transactional
+    public void leaveTaskNotTaskOfGroup() throws AlreadyExistsException, WrongParameterException, GroupPermissionException, NotMemberOfException, AlreadyExistsException, NotAllowedException {
+        User userMember = userApi.createUser("Member", "password", "John Doe", "a@b.c");
+        User userAdmin = userApi.createUser("Admin", "password", "John Doe", "c@b.c");
+        Group group = groupApi.createGroup("Groupname", userAdmin, "Random description");
+        Group group2 = groupApi.createGroup("Groupname2", userAdmin, "Random description");
+
+        Task task = taskApi.createTask(userMember, "TestTask", null, null, 0, LocalDateTime.now().plusDays(10));
+        Task task2 = taskApi.createTask(userMember, "TestTask2", null, null, 0, LocalDateTime.now().plusDays(101));
+        Task task3 = taskApi.createTask(userAdmin, "TestTask3", null, null, 0, LocalDateTime.now().plusDays(102));
+        groupApi.addMember(userAdmin, group, userMember);
+
+
+        Assert.assertTrue(task.getUsersOnTask().size() == 1); // userMember
+        Assert.assertTrue(group.getSharedTasks().size() == 0); // No shared task at start
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 1);
+        Assert.assertNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
+
+        groupApi.addTask(userAdmin, group, task);
+
+        Assert.assertTrue(task.getUsersOnTask().size() == 2); // userMember, admin
+        Assert.assertTrue(group.getSharedTasks().size() == 1);
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 2);
+        Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
+
+        groupApi.leaveTask(userAdmin, group2, task);
+
+        Assert.assertTrue(task.getUsersOnTask().size() == 2); // userMember, admin
+        Assert.assertTrue(group.getSharedTasks().size() == 1);
+        Assert.assertTrue(userMember.getTasksOfUser().size() == 2);
+        Assert.assertTrue(userAdmin.getTasksOfUser().size() == 2);
+        Assert.assertNotNull(taskParticipantDAO.findByUserAndTask(userAdmin, task));
     }
 
     @Test
