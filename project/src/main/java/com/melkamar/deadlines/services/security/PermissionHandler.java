@@ -41,8 +41,7 @@ import java.text.MessageFormat;
 import static com.melkamar.deadlines.model.MemberRole.ADMIN;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 18:18
+ * @author Martin Melka
  */
 @Service
 public class PermissionHandler {

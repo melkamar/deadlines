@@ -40,8 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 17:15
+ * @author Martin Melka
  */
 @SuppressWarnings("Duplicates")
 @RunWith(SpringJUnit4ClassRunner.class)

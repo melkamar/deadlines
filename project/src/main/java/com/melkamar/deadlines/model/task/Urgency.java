@@ -31,8 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 25.03.2016 17:45
+ * @author Martin Melka
  */
 @Entity
 public class Urgency {

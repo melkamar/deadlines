@@ -32,8 +32,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 13:55
+ * @author Martin Melka
  */
 @Entity
 @Table(name = "OFFER_TASK_GROUP")

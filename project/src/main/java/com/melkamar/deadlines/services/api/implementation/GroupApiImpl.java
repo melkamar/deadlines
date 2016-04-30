@@ -49,8 +49,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 15:52
+ * @author Martin Melka
  */
 @Service("groupApi")
 @Transactional

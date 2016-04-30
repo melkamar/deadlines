@@ -23,8 +23,7 @@
 package com.melkamar.deadlines.controllers.httpbodies;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 08.04.2016 11:10
+ * @author Martin Melka
  */
 public class UserCreateRequestBody {
     private String username;

@@ -23,8 +23,7 @@
 package com.melkamar.deadlines.controllers.httpbodies;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 09.04.2016 18:31
+ * @author Martin Melka
  */
 public class TaskReportRequestBody {
     private Double workDone;

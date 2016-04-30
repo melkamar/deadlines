@@ -25,8 +25,7 @@ package com.melkamar.deadlines.dao.urgency;
 import com.melkamar.deadlines.model.task.Urgency;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 06.04.2016 21:43
+ * @author Martin Melka
  */
 public interface UrgencyDAO {
     Urgency save(Urgency urgency);

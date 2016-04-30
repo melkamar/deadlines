@@ -30,8 +30,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 11.04.2016 11:36
+ * @author Martin Melka
  */
 @Component
 public class UrgencyUpdateJob {

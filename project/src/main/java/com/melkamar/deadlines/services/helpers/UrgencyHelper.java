@@ -34,8 +34,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 13:32
+ * @author Martin Melka
  */
 @Service
 public class UrgencyHelper {

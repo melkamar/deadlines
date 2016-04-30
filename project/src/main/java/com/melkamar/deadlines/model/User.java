@@ -40,8 +40,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 25.03.2016 12:49
+ * @author Martin Melka
  */
 
 @Entity

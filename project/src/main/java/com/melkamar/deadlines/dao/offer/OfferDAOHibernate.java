@@ -31,8 +31,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 18:40
+ * @author Martin Melka
  */
 @Service("offerDao")
 public class OfferDAOHibernate implements OfferDAO {

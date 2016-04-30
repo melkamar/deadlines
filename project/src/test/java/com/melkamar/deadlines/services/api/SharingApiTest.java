@@ -23,8 +23,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 18:22
+ * @author Martin Melka
  */
 //@Rollback(value = false)
 @RunWith(SpringJUnit4ClassRunner.class)

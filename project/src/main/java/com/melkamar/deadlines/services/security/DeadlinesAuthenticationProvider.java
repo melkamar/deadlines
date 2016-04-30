@@ -38,8 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 09.04.2016 9:46
+ * @author Martin Melka
  */
 @Component
 public class DeadlinesAuthenticationProvider implements AuthenticationProvider {

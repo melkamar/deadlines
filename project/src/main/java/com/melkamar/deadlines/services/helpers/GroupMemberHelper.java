@@ -36,8 +36,7 @@ import org.springframework.stereotype.Service;
 import java.text.MessageFormat;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 11:22
+ * @author Martin Melka
  */
 @Service
 public class GroupMemberHelper {

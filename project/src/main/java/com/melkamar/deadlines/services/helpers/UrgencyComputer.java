@@ -26,8 +26,7 @@ import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 06.04.2016 19:18
+ * @author Martin Melka
  */
 public interface UrgencyComputer {
     double computeDeadlineTaskUrgency(DeadlineTask task);

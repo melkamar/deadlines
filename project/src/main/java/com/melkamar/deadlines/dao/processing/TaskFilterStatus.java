@@ -29,8 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 15:43
+ * @author Martin Melka
  *
  * Filters given jobs based on their status
  */

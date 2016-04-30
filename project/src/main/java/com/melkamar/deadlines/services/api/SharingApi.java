@@ -33,10 +33,7 @@ import com.melkamar.deadlines.model.task.Task;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 11.04.2016 14:23
- *
- * {@link com.melkamar.deadlines.services.api.implementation.SharingApiImpl}
+ * @author Martin Melka
  */
 public interface SharingApi {
     UserTaskSharingOffer offerTaskSharing(User offerer, Task task, User offeredTo) throws NotMemberOfException, AlreadyExistsException;

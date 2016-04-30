@@ -27,8 +27,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 19:14
+ * @author Martin Melka
  */
 @Repository
 public interface TaskWorkRepository extends CrudRepository<TaskWork, Long> {

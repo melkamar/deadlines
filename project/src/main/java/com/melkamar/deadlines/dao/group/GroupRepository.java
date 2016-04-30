@@ -31,8 +31,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 11:16
+ * @author Martin Melka
  */
 @Repository
 public interface GroupRepository extends CrudRepository<Group, Long> {

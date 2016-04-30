@@ -30,8 +30,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 20:14
+ * @author Martin Melka
  */
 public interface GroupTaskSharingRepository extends CrudRepository<GroupTaskSharingOffer, Long> {
     GroupTaskSharingOffer findByOfferedToAndTaskOffered(Group group, Task task);

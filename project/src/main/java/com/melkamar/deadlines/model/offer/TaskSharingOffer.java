@@ -32,8 +32,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 13:55
+ * @author Martin Melka
  */
 @Entity
 public abstract class TaskSharingOffer extends Offer {

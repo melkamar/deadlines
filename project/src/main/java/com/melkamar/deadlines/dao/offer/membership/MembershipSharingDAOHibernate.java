@@ -33,8 +33,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 20:37
+ * @author Martin Melka
  */
 @Service("membershipSharingDao")
 public class MembershipSharingDAOHibernate implements MembershipSharingDAO {

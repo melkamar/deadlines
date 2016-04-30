@@ -28,8 +28,7 @@ import org.springframework.security.crypto.keygen.StringKeyGenerator;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 15:13
+ * @author Martin Melka
  */
 @Service
 public class HashAndSaltGenerator {

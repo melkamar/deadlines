@@ -25,8 +25,7 @@ package com.melkamar.deadlines.utils;
 import java.util.Random;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 17:33
+ * @author Martin Melka
  */
 public class RandomString {
     public static String getEmail(){

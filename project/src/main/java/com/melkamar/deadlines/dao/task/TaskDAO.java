@@ -30,8 +30,7 @@ import com.melkamar.deadlines.model.task.TaskStatus;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 15:14
+ * @author Martin Melka
  */
 public interface TaskDAO {
     long count();

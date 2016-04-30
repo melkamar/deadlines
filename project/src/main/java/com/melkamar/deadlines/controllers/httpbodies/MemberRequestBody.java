@@ -25,8 +25,7 @@ package com.melkamar.deadlines.controllers.httpbodies;
 import com.melkamar.deadlines.model.MemberRole;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 16:26
+ * @author Martin Melka
  */
 public class MemberRequestBody {
     private MemberRole role;

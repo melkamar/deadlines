@@ -27,8 +27,7 @@ import com.melkamar.deadlines.model.offer.Offer;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 18:40
+ * @author Martin Melka
  */
 public interface OfferDAO {
     Offer save(Offer offer);

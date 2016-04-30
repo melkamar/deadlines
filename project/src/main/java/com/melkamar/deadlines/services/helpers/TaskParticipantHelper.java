@@ -39,8 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.MessageFormat;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 15:44
+ * @author Martin Melka
  */
 @Service
 public class TaskParticipantHelper {

@@ -25,8 +25,7 @@ package com.melkamar.deadlines.utils;
 import java.util.Base64;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 18:29
+ * @author Martin Melka
  */
 public class BasicAuthHeaderBuilder {
     public static String buildAuthHeader(String username, String password) {

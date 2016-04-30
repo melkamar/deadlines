@@ -34,10 +34,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 11.04.2016 14:25
- *
- * Impl: {@link com.melkamar.deadlines.services.api.implementation.TaskApiImpl}
+ * @author Martin Melka
  */
 public interface TaskApi {
     Task createTask(User creator, String name, String description, Priority priority, double workEstimate, LocalDateTime deadline) throws WrongParameterException;

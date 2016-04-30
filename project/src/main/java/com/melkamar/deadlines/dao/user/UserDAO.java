@@ -27,8 +27,7 @@ import com.melkamar.deadlines.model.User;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 12:10
+ * @author Martin Melka
  */
 public interface UserDAO {
     long count();

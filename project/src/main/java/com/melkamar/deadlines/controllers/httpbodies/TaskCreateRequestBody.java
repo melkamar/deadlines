@@ -30,8 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 09.04.2016 13:19
+ * @author Martin Melka
  */
 public class TaskCreateRequestBody {
     private String name;

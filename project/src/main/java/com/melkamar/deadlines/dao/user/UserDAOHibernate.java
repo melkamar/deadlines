@@ -30,8 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 12:20
+ * @author Martin Melka
  */
 
 @Service("userDAO")

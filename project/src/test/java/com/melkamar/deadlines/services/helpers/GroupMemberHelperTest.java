@@ -1,7 +1,10 @@
 package com.melkamar.deadlines.services.helpers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.exceptions.AlreadyExistsException;
+import com.melkamar.deadlines.exceptions.GroupPermissionException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
@@ -23,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 12:16
+ * @author Martin Melka
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)

@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 15:42
+ * @author Martin Melka
+ *
  *
  * Filters given jobs based on user's role on them.
  */

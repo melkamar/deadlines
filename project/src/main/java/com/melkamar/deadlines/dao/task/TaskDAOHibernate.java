@@ -36,8 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 15:14
+ * @author Martin Melka
  */
 @Service("taskDAO")
 public class TaskDAOHibernate implements TaskDAO {

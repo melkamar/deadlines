@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 15:42
+ * @author Martin Melka
+ *
  * <p>
  * Filters given jobs based on their type (Deadline/Growing)
  */

@@ -39,8 +39,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 25.03.2016 17:42
+ * @author Martin Melka
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

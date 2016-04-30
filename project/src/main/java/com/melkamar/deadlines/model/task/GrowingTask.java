@@ -32,8 +32,7 @@ import javax.persistence.Entity;
 import java.util.Date;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 25.03.2016 17:42
+ * @author Martin Melka
  */
 @Entity
 @DiscriminatorValue("Growing")

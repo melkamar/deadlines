@@ -30,8 +30,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 11:32
+ * @author Martin Melka
  */
 public interface GroupMemberRepository extends CrudRepository<GroupMember, Long> {
     GroupMember findByUserAndGroup(User user, Group group);

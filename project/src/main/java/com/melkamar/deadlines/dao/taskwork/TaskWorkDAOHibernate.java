@@ -28,8 +28,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 19:14
+ * @author Martin Melka
  */
 @Service("taskWorkDAO")
 public class TaskWorkDAOHibernate implements TaskWorkDAO {

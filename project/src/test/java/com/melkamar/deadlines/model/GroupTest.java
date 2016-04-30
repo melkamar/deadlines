@@ -3,8 +3,6 @@ package com.melkamar.deadlines.model;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.dao.group.GroupDAO;
 import com.melkamar.deadlines.dao.user.UserDAO;
-import com.melkamar.deadlines.dao.user.UserDAOHibernate;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,14 +11,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 10:45
+ * @author Martin Melka
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)

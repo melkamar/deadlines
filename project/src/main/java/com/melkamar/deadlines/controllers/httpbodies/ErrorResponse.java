@@ -25,8 +25,7 @@ package com.melkamar.deadlines.controllers.httpbodies;
 import java.text.MessageFormat;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 08.04.2016 13:54
+ * @author Martin Melka
  */
 @SuppressWarnings("WeakerAccess")
 public class ErrorResponse {

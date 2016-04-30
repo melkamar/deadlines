@@ -27,8 +27,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 15:00
+ * @author Martin Melka
  */
 public class DateConvertor {
     public static Date localDateTimeToDate(LocalDateTime localDateTime){

@@ -33,10 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 11.04.2016 13:48
- *
- * {@link com.melkamar.deadlines.services.api.implementation.GroupApiImpl}
+ * @author Martin Melka
  */
 public interface GroupApi {
     Group createGroup(String name, User founder, String description) throws WrongParameterException, AlreadyExistsException;

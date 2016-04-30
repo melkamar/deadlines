@@ -1,7 +1,10 @@
 package com.melkamar.deadlines.services;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.exceptions.AlreadyExistsException;
+import com.melkamar.deadlines.exceptions.GroupPermissionException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
@@ -19,8 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 18:20
+ * @author Martin Melka
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)

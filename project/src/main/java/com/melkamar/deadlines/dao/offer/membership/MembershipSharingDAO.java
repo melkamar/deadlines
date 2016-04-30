@@ -29,8 +29,7 @@ import com.melkamar.deadlines.model.offer.MembershipOffer;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 20:37
+ * @author Martin Melka
  */
 public interface MembershipSharingDAO {
     Set<MembershipOffer> findAll();

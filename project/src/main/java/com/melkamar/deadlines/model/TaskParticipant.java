@@ -33,8 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 25.03.2016 18:07
+ * @author Martin Melka
  */
 @Entity
 @Table(name = "TASK_PARTICIPANT")

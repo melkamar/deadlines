@@ -28,8 +28,7 @@ import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 31.03.2016 11:45
+ * @author Martin Melka
  */
 @Service
 public class Authenticator {

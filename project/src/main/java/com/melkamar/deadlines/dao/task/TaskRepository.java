@@ -32,8 +32,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 15:14
+ * @author Martin Melka
  */
 @Repository
 public interface TaskRepository extends CrudRepository<Task, Long> {

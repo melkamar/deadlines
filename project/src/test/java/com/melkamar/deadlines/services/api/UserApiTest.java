@@ -24,8 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 15:21
+ * @author Martin Melka
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)

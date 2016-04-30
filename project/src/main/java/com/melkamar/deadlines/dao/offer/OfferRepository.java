@@ -27,8 +27,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 18:40
+ * @author Martin Melka
  */
 @Repository
 interface OfferRepository extends CrudRepository<Offer, Long> {

@@ -23,8 +23,7 @@
 package com.melkamar.deadlines.dao.processing;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 01.04.2016 14:49
+ * @author Martin Melka
  */
 public enum TaskOrdering {
     NONE,

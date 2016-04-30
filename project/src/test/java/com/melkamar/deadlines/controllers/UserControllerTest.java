@@ -23,8 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 08.04.2016 15:14
+ * @author Martin Melka
  */
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {

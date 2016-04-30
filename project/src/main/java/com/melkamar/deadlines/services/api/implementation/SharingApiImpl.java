@@ -47,8 +47,7 @@ import java.text.MessageFormat;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 31.03.2016 10:27
+ * @author Martin Melka
  */
 @Service("sharingApi")
 @Transactional

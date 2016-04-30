@@ -50,8 +50,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 12:52
+ * @author Martin Melka
  */
 @Service
 public class TaskApiImpl implements TaskApi {

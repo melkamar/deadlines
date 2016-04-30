@@ -1,7 +1,10 @@
 package com.melkamar.deadlines.dao.task;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.*;
+import com.melkamar.deadlines.exceptions.AlreadyExistsException;
+import com.melkamar.deadlines.exceptions.NotAllowedException;
+import com.melkamar.deadlines.exceptions.NotMemberOfException;
+import com.melkamar.deadlines.exceptions.WrongParameterException;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
@@ -21,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 07.04.2016 19:37
+ * @author Martin Melka
  */
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)

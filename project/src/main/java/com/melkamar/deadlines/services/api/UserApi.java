@@ -26,16 +26,12 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Task;
-import com.melkamar.deadlines.services.api.implementation.UserApiImpl;
 
 import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 11.04.2016 14:12
- *
- * {@link UserApiImpl}
+ * @author Martin Melka
  */
 public interface UserApi {
     User createUser(String username, String password, String name, String email) throws WrongParameterException, AlreadyExistsException;

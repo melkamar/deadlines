@@ -25,8 +25,7 @@ package com.melkamar.deadlines.controllers.httpbodies;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 15:58
+ * @author Martin Melka
  */
 public class MembershipOfferRequestBody {
     private List<Long> userIds;

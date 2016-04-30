@@ -27,8 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 06.04.2016 21:43
+ * @author Martin Melka
  */
 @Service("urgencyDao")
 public class UrgencyDAOHibernate implements UrgencyDAO {

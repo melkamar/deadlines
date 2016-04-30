@@ -3,9 +3,9 @@ package com.melkamar.deadlines.services.helpers.urgency;
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.GrowingTask;
 import com.melkamar.deadlines.model.task.Urgency;
-import com.melkamar.deadlines.utils.DateConvertor;
 import com.melkamar.deadlines.services.helpers.DefaultUrgencyComputer;
 import com.melkamar.deadlines.services.helpers.UrgencyComputer;
+import com.melkamar.deadlines.utils.DateConvertor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +15,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 06.04.2016 20:46
+ * @author Martin Melka
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultUrgencyComputerTest {

@@ -28,8 +28,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 17:30
+ * @author Martin Melka
  */
 public class JsonPrettyPrinter {
     public static String prettyPrint(String uglyJson){

@@ -29,8 +29,7 @@ import com.melkamar.deadlines.model.User;
 import javax.persistence.*;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 13:54
+ * @author Martin Melka
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

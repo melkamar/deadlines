@@ -34,8 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 09.04.2016 15:52
+ * @author Martin Melka
  */
 @Component
 public class DeadlinesAuthenticationEntryPoint implements AuthenticationEntryPoint {

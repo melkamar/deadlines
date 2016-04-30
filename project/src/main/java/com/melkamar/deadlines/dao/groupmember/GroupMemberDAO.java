@@ -29,8 +29,7 @@ import com.melkamar.deadlines.model.User;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 11:31
+ * @author Martin Melka
  */
 public interface GroupMemberDAO {
     long count();

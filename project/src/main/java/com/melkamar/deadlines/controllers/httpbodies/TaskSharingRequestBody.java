@@ -25,8 +25,7 @@ package com.melkamar.deadlines.controllers.httpbodies;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 09.04.2016 17:12
+ * @author Martin Melka
  */
 public class TaskSharingRequestBody {
     private List<Long> userIds;

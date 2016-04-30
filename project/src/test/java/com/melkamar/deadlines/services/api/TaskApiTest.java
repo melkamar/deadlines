@@ -9,8 +9,8 @@ import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.TaskParticipant;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.*;
-import com.melkamar.deadlines.utils.DateConvertor;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
+import com.melkamar.deadlines.utils.DateConvertor;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 14:36
+ * @author Martin Melka
  */
 //@Rollback(value = false)
 @RunWith(SpringJUnit4ClassRunner.class)

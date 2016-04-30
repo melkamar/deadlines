@@ -32,8 +32,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 27.03.2016 15:46
+ * @author Martin Melka
  */
 @Service("taskparticipantDAO")
 public class TaskParticipantDAOHibernate implements TaskParticipantDAO {

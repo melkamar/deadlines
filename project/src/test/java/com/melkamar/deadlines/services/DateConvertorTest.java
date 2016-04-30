@@ -7,11 +7,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 11.04.2016 11:22
+ @author Martin Melka
  *
  * Check that conversion Date <--> LocalDateTime yields expected results.
  * Compare the converted object to an original created in the same time and see

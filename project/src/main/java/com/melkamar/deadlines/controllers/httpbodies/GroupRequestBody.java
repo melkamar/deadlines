@@ -23,8 +23,7 @@
 package com.melkamar.deadlines.controllers.httpbodies;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 15:02
+ * @author Martin Melka
  */
 public class GroupRequestBody {
     private String name;

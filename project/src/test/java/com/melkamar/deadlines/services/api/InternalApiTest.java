@@ -4,7 +4,6 @@ import com.melkamar.deadlines.dao.task.TaskDAO;
 import com.melkamar.deadlines.model.task.DeadlineTask;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.model.task.TaskStatus;
-import com.melkamar.deadlines.model.task.Urgency;
 import com.melkamar.deadlines.services.api.implementation.InternalApiImpl;
 import com.melkamar.deadlines.services.helpers.UrgencyHelper;
 import org.junit.Assert;
@@ -24,8 +23,7 @@ import java.util.List;
 import static org.mockito.Matchers.eq;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 07.04.2016 20:03
+ * @author Martin Melka
  */
 @RunWith(MockitoJUnitRunner.class)
 public class InternalApiTest {

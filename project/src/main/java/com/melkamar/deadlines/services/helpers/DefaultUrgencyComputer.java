@@ -32,8 +32,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 06.04.2016 19:19
+ * @author Martin Melka
  * <p>
  * Calculates urgency of a task.
  * <h1>DeadlineTask computation is based on the formula:</h1>

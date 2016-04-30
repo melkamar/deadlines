@@ -30,8 +30,7 @@ import com.melkamar.deadlines.controllers.JsonViews;
 import javax.persistence.*;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 28.03.2016 11:11
+ * @author Martin Melka
  */
 @Entity
 @Table(name = "GROUP_MEMBER")

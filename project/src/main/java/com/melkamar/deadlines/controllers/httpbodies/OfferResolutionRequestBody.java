@@ -25,8 +25,7 @@ package com.melkamar.deadlines.controllers.httpbodies;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 11:10
+ * @author Martin Melka
  */
 public class OfferResolutionRequestBody {
     @JsonProperty(required = true)

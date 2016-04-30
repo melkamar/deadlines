@@ -29,8 +29,7 @@ import com.melkamar.deadlines.model.User;
 import javax.persistence.*;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 25.03.2016 19:15
+ * @author Martin Melka
  */
 @Entity
 public class TaskWork {

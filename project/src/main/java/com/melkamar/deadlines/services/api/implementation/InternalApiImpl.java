@@ -32,8 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 31.03.2016 10:27
+ * @author Martin Melka
  */
 @Service("internalApi")
 @Transactional
