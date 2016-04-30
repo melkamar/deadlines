@@ -26,6 +26,18 @@ package com.melkamar.deadlines.services.api;
  * @author Martin Melka
  */
 public interface InternalApi {
+    /**
+     * Updates urgencies of all active Tasks.
+     * <p>
+     * If the last urgency update has been recent, it will not be updated again.
+     */
     void updateAllUrgencies();
+
+    /**
+     * Updates urgencies of all active Tasks.
+     *
+     * @param force If true, will update all active tasks, regardless of whether the last update has happened
+     *              recently.
+     */
     void updateAllUrgencies(boolean force);
 }
