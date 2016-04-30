@@ -72,17 +72,28 @@ public class TaskController {
     private GroupApi groupApi;
 
     /**
-     * Lists jobs of the calling user.
+     * Lists tasks of the calling user with given filters and ordering.
      *
-     * @param userId
-     * @param order
-     * @param orderDirection
-     * @param roleFilter
-     * @param typeFilter
-     * @param statusFilter
-     * @param priorityFilters
-     * @return
-     * @throws DoesNotExistException
+     * @param userId          ID of the authenticated user making the request.
+     * @param groupId         Optional parameter. ID of the {@link Group} for which to list tasks. If null, all tasks from
+     *                        all groups of the user will be listed.
+     * @param order           Optional parameter. Specifies ordering of the listed tasks. Accepted values are listed
+     *                        in {@link TaskOrdering} class.
+     *                        Default ordering is based on Urgency, descending.
+     * @param orderDirection  Optional parameter. Specifies direction of the ordering.
+     *                        Accepted values are "asc" for ascending or "desc" for descending.
+     *                        Default direction is descending.
+     * @param roleFilter      Optional parameter. Filters tasks based on the User's role in them. Accepted values are listed
+     *                        in {@link StringConstants} as "FILTER_ROLE_*".
+     * @param typeFilter      Optional parameter. Filters tasks based on their type. Accepted values are listed
+     *                        in {@link StringConstants} as "FILTER_TYPE_*".
+     * @param statusFilter    Optional parameter. Filters tasks based on their status. Accepted values are listed
+     *                        in {@link StringConstants} as "FILTER_STATUS_*".
+     * @param priorityFilters Optional parameter. Filters tasks based on their priority. Accepted values are listed
+     *                        in {@link StringConstants} as "FILTER_PRIORITY_*".
+     *                        Multiple priorities may be specified in format "?priorityfilter=val1&priorityfilter=val2&..."
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
     @JsonView(JsonViews.Controller.TaskList.class)
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -124,6 +135,15 @@ public class TaskController {
         return ResponseEntity.ok().body(tasks);
     }
 
+    /**
+     * Creates a task.
+     *
+     * @param userId                ID of the authenticated user making the request.
+     * @param taskCreateRequestBody A {@link TaskCreateRequestBody} object containing details of the task to be created.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws WrongParameterException if the request is missing required parameters.
+     * @throws DoesNotExistException   if the authenticated user ID does not exist. This should not happen.
+     */
     @JsonView(JsonViews.Controller.TaskDetails.class)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
@@ -174,6 +194,14 @@ public class TaskController {
         return groups;
     }
 
+    /**
+     * Shows details of a task.
+     *
+     * @param userId ID of the authenticated user making the request.
+     * @param id     ID of the task to show.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a {@link Task} with the given id does not exist.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @JsonView(JsonViews.Controller.TaskDetails.class)
     public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId,
@@ -190,6 +218,16 @@ public class TaskController {
         }
     }
 
+    /**
+     * Edits an existing task.
+     *
+     * @param userId                ID of the authenticated user making the request.
+     * @param id                    ID of the task to edit.
+     * @param taskCreateRequestBody A {@link TaskCreateRequestBody} object containing details of the edit.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a {@link Task} with the given id does not exist.
+     * @throws WrongParameterException if the request is missing required parameters.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity editTask(@AuthenticationPrincipal Long userId,
                                    @PathVariable("id") Long id,
@@ -220,6 +258,16 @@ public class TaskController {
         }
     }
 
+    /**
+     * Resets the urgency of a growing task.
+     * <p>
+     * Cannot be used to reset the urgency of a deadline task.
+     *
+     * @param userId ID of the authenticated user making the request.
+     * @param taskId ID of the task to reset.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a {@link Task} with the given id does not exist.
+     */
     @RequestMapping(value = "/{id}/reseturgency", method = RequestMethod.POST)
     public ResponseEntity resetUrgency(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long taskId) throws DoesNotExistException {
@@ -240,14 +288,14 @@ public class TaskController {
     }
 
     /**
-     * Offers task to a list of Users and Groups.
+     * Offers task sharing to a list of Users and Groups.
      *
-     * @param userId
-     * @param id
-     * @param requestBody
-     * @return
-     * @throws DoesNotExistException
-     * @throws WrongParameterException
+     * @param userId      ID of the authenticated user making the request.
+     * @param id          ID of the task to share.
+     * @param requestBody A {@link TaskSharingRequestBody} object containing details of the task sharing.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a {@link Task} with the given id does not exist.
+     * @throws WrongParameterException if the request is missing required parameters.
      */
     @RequestMapping(value = "/share/{id}", method = RequestMethod.POST)
     public ResponseEntity shareTask(@AuthenticationPrincipal Long userId,
@@ -287,6 +335,14 @@ public class TaskController {
         }
     }
 
+    /**
+     * Removes the calling user from being a participant on a task.
+     *
+     * @param userId ID of the authenticated user making the request.
+     * @param id     ID of the task to leave.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a {@link Task} with the given id does not exist.
+     */
     @RequestMapping(value = "/leave/{id}", method = RequestMethod.POST)
     public ResponseEntity leaveTask(@AuthenticationPrincipal Long userId, @PathVariable("id") Long id) throws DoesNotExistException {
         User user = userApi.getUser(userId);
@@ -304,15 +360,22 @@ public class TaskController {
     }
 
     /**
-     * Change a role of a user at a task (WATCHER/WORKER).
+     * Change a role of a user at a task.
+     * <p>
+     * Used to change users between watchers and workers.
+     * <p>
+     * If targetUserId is specified, the role will be changed for this user rather than for the caller. In order to
+     * do that, the calling user has to be a Manager of the group with id targetGroupId and the target user has to be a
+     * member of that group.
      *
-     * @param userId
-     * @param id
-     * @param targetUserId
-     * @param targetGroupId
-     * @param targetRole
-     * @return
-     * @throws DoesNotExistException
+     * @param userId        ID of the authenticated user making the request.
+     * @param id            ID of the task at which to change a role.
+     * @param targetUserId  Optional parameter. ID of the user whose role should be changed.
+     * @param targetGroupId Optional parameter. ID of the group in regard to which the role should be changed.
+     * @param targetRole    The new role. Accepted values are values of {@link TaskRole}.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID, {@link Task} with the given id or target user or
+     *                                 group does not exist.
      * @throws WrongParameterException
      */
     @RequestMapping(value = "/role/{id}", method = RequestMethod.POST)
@@ -356,6 +419,15 @@ public class TaskController {
         return ResponseEntity.ok(task);
     }
 
+    /**
+     * Reports work done on a task.
+     *
+     * @param userId      ID of the authenticated user making the request.
+     * @param id          ID of the task to report on.
+     * @param requestBody A {@link TaskReportRequestBody} object containing details of the work report.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID or a {@link Task} with the given id does not exist.
+     */
     @RequestMapping(value = "/report/{id}", method = RequestMethod.POST)
     public ResponseEntity reportWork(@AuthenticationPrincipal Long userId,
                                      @PathVariable("id") Long id,
@@ -393,7 +465,7 @@ public class TaskController {
         List<TaskFilter> filters = new ArrayList<>();
 
         if (roleFilter != null && !roleFilter.isEmpty()) {
-            switch (roleFilter) {
+            switch (roleFilter.toLowerCase()) {
                 case StringConstants.FILTER_ROLE_WATCHER:
                     filters.add(new TaskFilterRole(user, TaskRole.WATCHER));
                     break;
@@ -406,7 +478,7 @@ public class TaskController {
         }
 
         if (typeFilter != null && !typeFilter.isEmpty()) {
-            switch (typeFilter) {
+            switch (typeFilter.toLowerCase()) {
                 case StringConstants.FILTER_TYPE_DEADLINE:
                     filters.add(new TaskFilterType(DeadlineTask.class));
                     break;
@@ -419,7 +491,7 @@ public class TaskController {
         }
 
         if (statusFilter != null && !statusFilter.isEmpty()) {
-            switch (statusFilter) {
+            switch (statusFilter.toLowerCase()) {
                 case StringConstants.FILTER_STATUS_OPEN:
                     filters.add(new TaskFilterStatus(TaskStatus.OPEN));
                     break;
@@ -443,7 +515,7 @@ public class TaskController {
             for (String value : priorityFilter) {
                 if (value == null || value.isEmpty()) continue;
 
-                switch (value) {
+                switch (value.toLowerCase()) {
                     case StringConstants.FILTER_PRIORITY_1:
                         priorities.add(Priority.LOWEST);
                         break;
@@ -476,7 +548,7 @@ public class TaskController {
         boolean descending;
         descending = direction == null || direction.isEmpty() || !direction.equals("asc");
 
-        switch (order) {
+        switch (order.toLowerCase()) {
             case TaskOrdering.STR_NAME:
                 if (descending) return TaskOrdering.NAME_DESC;
                 else return TaskOrdering.NAME_ASC;
