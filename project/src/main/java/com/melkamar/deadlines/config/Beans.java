@@ -32,7 +32,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import javax.servlet.Filter;
 
 /**
- * This class
+ * This class defines Beans to be used by other Spring components.
  *
  * @author Martin Melka
  */
@@ -49,6 +49,10 @@ public class Beans {
         return org.springframework.security.crypto.keygen.KeyGenerators.string();
     }
 
+    /**
+     * Presence of this Bean will make Hibernate verbosely log all SQL queries made.
+     * @return Filter to be used for logging.
+     */
     @Bean
     public Filter logFilter(){
         CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();

@@ -34,8 +34,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 07.04.2016 21:16
+ * This class configures Spring Security for REST API endpoints.
+ *
+ * @author Martin Melka
  */
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)

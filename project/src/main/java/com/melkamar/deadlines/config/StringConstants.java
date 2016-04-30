@@ -25,8 +25,9 @@ package com.melkamar.deadlines.config;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 26.03.2016 15:06
+ * This class defines string constants, such as error messages, used in the application.
+ *
+ * @author Martin Melka
  */
 @Service("stringConstants")
 public class StringConstants {

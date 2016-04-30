@@ -200,7 +200,7 @@ public class TaskController {
             Task task = taskApi.getTask(user, id);
 
             if (taskCreateRequestBody.getHoursToPeak() != null) {
-                return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.CANNOT_EDIT_GROWSPEED, "Growing speed of a task cannot be changed."));
+                return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.CANNOT_EDIT_HRS_TO_PEAK, "Hours to peak of a task cannot be changed."));
             }
 
             taskApi.editTask(user, task, taskCreateRequestBody.getDescription(), DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()), taskCreateRequestBody.getWorkEstimate(), taskCreateRequestBody.getPriority());
