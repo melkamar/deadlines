@@ -23,16 +23,17 @@
 package com.melkamar.deadlines.controllers;
 
 /**
- * Created by Martin Melka (martin.melka@gmail.com)
- * 10.04.2016 10:56
+ * This interface and the interface hierarchy it contains is used for selecting fields
+ * to include in Jackson Entity serialization.
+ *
+ * They are used solely with the {@link com.fasterxml.jackson.annotation.JsonView} annotation.
+ *
+ * @author Martin Melka
  */
 public interface JsonViews {
     interface Always {
     }
 
-    /**
-     *
-     */
     interface Group {
         interface Basic extends Always {
         }
@@ -56,9 +57,6 @@ public interface JsonViews {
         }
     }
 
-    /**
-     *
-     */
     interface Task {
         interface Minimal extends Always {
         }
@@ -86,16 +84,14 @@ public interface JsonViews {
         }
     }
 
-    /**
-     *
-     */
     interface Offer {
         interface Basic extends Always {
         }
     }
 
     /**
-     * ***************************************************************
+     * This interface and interfaces it defines are used to combine several entity-interfaces to selectively
+     * define which fields of various entities should be serialized in a Controller response.
      */
     interface Controller {
         interface OfferList extends Offer.Basic, Task.Minimal, User.Basic, Group.Basic {
