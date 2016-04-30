@@ -30,6 +30,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
+ * This class handles automatic Urgency updates of all active tasks in the system.
+ *
  * @author Martin Melka
  */
 @Component
@@ -41,6 +43,10 @@ public class UrgencyUpdateJob {
     @Value("${update.urgency.interval}")
     private String interval;
 
+    /**
+     * This method will be repeatedly run by Spring container in a given interval.
+     * The interval is specified in the configuration file under update.urgency.interval key in milliseconds.
+     */
     @Scheduled(fixedDelayString = "${update.urgency.interval}")
     public void updateUrgencies() {
         logger.info("Updating urgency. Interval: "+interval);
