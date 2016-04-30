@@ -1,8 +1,31 @@
+/*
+ * Copyright (c) 2016 Martin Melka
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.melkamar.deadlines.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
+import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import com.melkamar.deadlines.controllers.httpbodies.TaskCreateRequestBody;
 import com.melkamar.deadlines.controllers.httpbodies.TaskReportRequestBody;
 import com.melkamar.deadlines.controllers.httpbodies.TaskSharingRequestBody;
@@ -10,13 +33,12 @@ import com.melkamar.deadlines.dao.processing.*;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
-import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import com.melkamar.deadlines.model.task.*;
-import com.melkamar.deadlines.utils.DateConvertor;
 import com.melkamar.deadlines.services.api.GroupApi;
 import com.melkamar.deadlines.services.api.SharingApi;
 import com.melkamar.deadlines.services.api.TaskApi;
 import com.melkamar.deadlines.services.api.UserApi;
+import com.melkamar.deadlines.utils.DateConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +97,7 @@ public class TaskController {
         User user = userApi.getUser(userId);
 
         TaskOrdering taskOrdering = getTaskOrderingFromParam(order, orderDirection);
-        TaskFilter[] filters = null;
+        TaskFilter[] filters;
 
         try {
             filters = getTaskFiltersFromParam(user, roleFilter, typeFilter, statusFilter, priorityFilters);
@@ -298,7 +320,7 @@ public class TaskController {
                                          @PathVariable("id") Long id,
                                          @RequestParam(value = "targetUser", required = false) Long targetUserId,
                                          @RequestParam(value = "targetGroup", required = false) Long targetGroupId,
-                                         @RequestParam(value = "newRole", required = true) String targetRole) throws DoesNotExistException, WrongParameterException {
+                                         @RequestParam(value = "newRole") String targetRole) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
         Task task;
         try {
@@ -451,12 +473,8 @@ public class TaskController {
     private TaskOrdering getTaskOrderingFromParam(String order, String direction) {
         if (order == null || order.isEmpty()) return TaskOrdering.URGENCY_DESC;
 
-        boolean descending = true;
-        if (direction == null || direction.isEmpty() || !direction.equals("asc")) {
-            descending = true;
-        } else {
-            descending = false;
-        }
+        boolean descending;
+        descending = direction == null || direction.isEmpty() || !direction.equals("asc");
 
         switch (order) {
             case TaskOrdering.STR_NAME:

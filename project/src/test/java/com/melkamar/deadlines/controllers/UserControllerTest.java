@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -66,11 +67,16 @@ public class UserControllerTest {
     @Test
     public void testCreateDuplicateUser() throws Exception {
         Mockito.when(userApi.createUser(any(), any(), any(), any())).thenThrow(new AlreadyExistsException("Foo msg"));
-        this.mvc.perform(MockMvcRequestBuilders
-                .post("/user").content("{ \"username\":\"NewgUasasdername\", \"password\":\"haha\"} ").contentType("application/json"))
+        MvcResult result = this.mvc.perform(MockMvcRequestBuilders
+                .post("/user").content("{ \"username\":\"NewgUasasdername\", \"password\":\"haha\"} ").contentType("application/json")
+                .accept("application/json"))
                 .andExpect(status().isConflict())
                 .andExpect(content().string(StringContains.containsString(
-                        "\"errorCode\":" + ErrorCodes.USER_ALREADY_EXISTS)));
+                        "\"errorCode\":" + ErrorCodes.USER_ALREADY_EXISTS)))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println(response);
 
     }
 

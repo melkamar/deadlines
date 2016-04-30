@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2016 Martin Melka
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.melkamar.deadlines.controllers;
 
 /**
@@ -5,91 +27,91 @@ package com.melkamar.deadlines.controllers;
  * 10.04.2016 10:56
  */
 public interface JsonViews {
-    public static interface Always {
+    interface Always {
     }
 
     /**
      *
      */
-    public static interface Group {
-        public static interface Basic extends Always {
+    interface Group {
+        interface Basic extends Always {
         }
 
-        public static interface Details extends Basic {
+        interface Details extends Basic {
         }
 
-        public static interface AdminInfo {
-        }
-    }
-
-
-    public static interface User {
-        public static interface Minimal extends Always {
-        }
-
-        public static interface Basic extends Minimal {
-        }
-
-        public static interface Detail extends Basic {
+        interface AdminInfo {
         }
     }
 
-    /**
-     *
-     */
-    public static interface Task {
-        public static interface Minimal extends Always {
+
+    interface User {
+        interface Minimal extends Always {
         }
 
-        public static interface Basic extends Minimal {
+        interface Basic extends Minimal {
         }
 
-        public static interface Detail extends Basic {
-        }
-    }
-
-    public static interface TaskParticipant {
-        public static interface ShowTaskId extends Always {
-        }
-
-        public static interface ShowTaskName extends Always {
-        }
-
-        public static interface Basic extends Always {
-        }
-    }
-
-    public static interface GroupMember {
-        public static interface Basic extends Always {
+        interface Detail extends Basic {
         }
     }
 
     /**
      *
      */
-    public static interface Offer {
-        public static interface Basic extends Always {
+    interface Task {
+        interface Minimal extends Always {
+        }
+
+        interface Basic extends Minimal {
+        }
+
+        interface Detail extends Basic {
+        }
+    }
+
+    interface TaskParticipant {
+        interface ShowTaskId extends Always {
+        }
+
+        interface ShowTaskName extends Always {
+        }
+
+        interface Basic extends Always {
+        }
+    }
+
+    interface GroupMember {
+        interface Basic extends Always {
+        }
+    }
+
+    /**
+     *
+     */
+    interface Offer {
+        interface Basic extends Always {
         }
     }
 
     /**
      * ***************************************************************
      */
-    public static interface Controller {
-        public static interface OfferList extends Offer.Basic, Task.Minimal, User.Basic, Group.Basic {
+    interface Controller {
+        interface OfferList extends Offer.Basic, Task.Minimal, User.Basic, Group.Basic {
         }
 
-        public static interface GroupList extends User.Basic, Group.Basic, Group.AdminInfo {
+        interface GroupList extends User.Basic, Group.Basic, Group.AdminInfo {
         }
 
-        public static interface GroupDetails extends User.Basic, Group.Details, Task.Minimal, TaskParticipant.Basic, GroupMember.Basic,
+        interface GroupDetails extends User.Basic, Group.Details, Task.Minimal, TaskParticipant.Basic, GroupMember.Basic,
                 TaskParticipant.ShowTaskId, TaskParticipant.ShowTaskName {
         }
 
-        public static interface TaskList extends Task.Basic {
+        interface TaskList extends Task.Basic {
         }
 
-        public static interface TaskDetails extends Task.Detail, User.Minimal, Group.Basic, TaskParticipant.Basic {
+        interface TaskDetails extends Task.Detail, User.Minimal, Group.Basic, TaskParticipant.Basic {
         }
 
     }
