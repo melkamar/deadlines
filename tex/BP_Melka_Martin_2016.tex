@@ -1025,9 +1025,31 @@
 		Inicializační SQL skript pro vytvoření databáze je přiložen na médiu. %TODO kde je SQL skript?
 	
 	\section{Testování}
-		%TODO
-		Teorie o testování...
-
+		\label{sec:testing-theory}
+		Testy aplikace jsou nezbytnou součástí jejího vývoje a dlouhodobé udržitelnosti. Určují, jaké chování se od testované komponenty očekává a v případě chybného zásahu do její implementace programátora na problém upozorní. 
+		
+		\subsection{Nástroje}
+			\subsubsection{JUnit}
+			Framework Spring nabízí integraci s testovacím nástrojem JUnit. \cite{junit} Ten umožňuje psát automatizované jednotkové i integrační testy, v nichž programátor může kontrolovat a porovnávat obsah proměnných, vyhazované výjimky a další.
+			
+			JUnit lze použít samostatně bez spuštění Spring kontejneru, kdy se programátor musí postarat o inicializaci všech testovaných komponent, nebo v kombinaci s ním. V tom případě je dostupná veškerá funkcionalita jako za běhu aplikace, zejména \textit{dependency injection}.
+			
+			\subsubsection{Mockito}
+			Mockito \cite{mockito} je nástroj pro vytváření \textit{mock} objektů. To jsou jednoduché \uv{kopie} objektů s pevně daným chováním. Jejich účelem je izolování testované komponenty tak, aby veškeré testované chování pocházelo od ní a ne jejích závislostí.
+		
+		\subsection{Jednotkové testy}
+			Jednotkové testy jsou určené k testování nejmenších možných částí aplikace. Těmi jsou zpravidla jednotlivé třídy a jejich metody. Testy pak kontrolují, jestli se třída chová tak, jak by měla. Třídy, na nichž je testovaná část závislá, se zpravidla nahrazují \textit{mock} objekty.
+			
+			Jednotkové testy nevyžadují spuštění celého prostředí aplikace, jako například databáze a dalších komponent a jejich provedení je relativně rychlé. 
+		
+		\subsection{Integrační testy}
+			Integrační testy se zabývají testováním větších částí aplikace. Předpokládá se, že jednotlivé komponenty jsou otestované, fungují správně a ověřuje se správnost jejich spolupráce.
+			
+			Tímto způsobem budu v aplikaci testovat funkčnost vrstev, které jsou zodpovědné za hlavní logiku aplikace, tedy \textit{Business Services} a \textit{Controllers}. Testy budou odpovídat jednotlivým scénářům užití z kapitoly \ref{sec:usecases} a nabízených \textit{endpointů} z kapitoly \ref{sec:rest-api}.
+			
+			Při testování nejprve vytvořím počáteční, známý stav entit v aplikaci. Poté simuluji scénáře užití částí aplikace uživatelem, například zakládání skupin a úkolů, zasílání nabídek jiným uživatelům, přijímání nabídek a podobně. V průběhu scénáře ověřuji, že stav entit v aplikaci je takový, jaký očekávám.
+			
+			Při integračním testování vrstvy \textit{Controllers} u každého \textit{endpointu} simuluji zasílání validních i nevalidních požadavků a testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1160,22 +1182,14 @@ public ResponseEntity editUser(
 \chapter{Testování}
 	\label{chapter:testing}
 	
-	Testy aplikace jsou nezbytnou součástí jejího vývoje a dlouhodobé udržitelnosti. Určují, jaké chování se od testované komponenty očekává a v případě chybného zásahu do její implementace programátora na problém upozorní. Při implementaci aplikace Deadlines jsem zároveň psal i používal automatizované jednotkové a integrační testy. 
-	
-	Celkem jsem při implementaci aplikace napsal více než 150 testovacích případů. % TODO je to víc než 150? fix
+	V této kapitole popíšu, jakým způsobem jsem řešil testování aplikace při jejím vývoji tak, jak bylo popsáno v sekci \ref{sec:testing-theory}. 
 
 	Pro manuální spuštění testů na příkazové řádce je nejprve nutné nastavit cestu v systému, kde se má vytvořit testovací databáze. Konfigurace testovacího prostředí je umístěna v \texttt{src/test/resources/application.properties}. V tomto souboru je potřeba upravit položku \texttt{spring.datasource.url}, aby ukazovala na místo na disku, kam lze zapisovat. Testy se poté spustí příkazem \texttt{mvn test}.
 	
-	\section{Nástroje}
-		\subsection{JUnit}
-			Spring obsahuje integraci s testovacím frameworkem JUnit \cite{junit}. Ten umožňuje psaní automatizovaných jednotkových i integračních testů, v nichž programátor může kontrolovat a porovnávat obsah proměnných, vyhazované výjimky a další.
+	\section{Mockito}
+		Pro jednotkové testy jsem využil nástroj \textit{Mockito}, který umožňuje jednoduše vytvořit \uv{napodobeninu} objektu, definovat u ní chování a poté kontrolovat, jaké její metody s jakými parametry byly zavolány.
 			
-			JUnit lze použít samostatně bez spuštění Spring kontejneru, kdy se programátor musí postarat o inicializaci všech testovaných komponent, nebo v kombinaci se Springem. V tom případě je dostupná veškerá funkcionalita frameworku, zejména \textit{dependency injection}.
-		
-		\subsection{Mockito}
-			Mockito \cite{mockito} je nástroj pro vytváření \textit{mock} objektů. To jsou jednoduché \uv{kopie} objektů s pevně daným chováním. Jejich účelem je izolování testované komponenty tak, aby veškeré testované chování pocházelo od ní a ne jejích závislostí.
-			
-			Příkladem \textit{mockování} v mnou implementovaných testech je například mock rozhraní UserAPI:
+			Příkladem \textit{mockování} v mnou implementovaných testech je například mock rozhraní \texttt{UserAPI}:
 			\begin{Verbatim}
 @Mock
 UserApi userApi;
@@ -1184,15 +1198,13 @@ Mockito.when(
   userApi.getUser(any(Long.class))
 ).thenReturn(user);
 			\end{Verbatim}
-			Zde definuji chování objektu \texttt{userApi} takto: pokud je na objektu zavolána metoda \texttt{getUser} s jakýmkoliv parametrem typu \texttt{Long}, výsledkem bude objekt \texttt{user}.
+			Zde definuji chování objektu \texttt{userApi} takto: pokud je na objektu zavolána metoda \texttt{getUser} s jakýmkoliv parametrem typu \texttt{Long}, jejím výsledkem bude objekt \texttt{user}.
 		
 		
 	\section{Jednotkové testy}
-		Jednotkové testy mají za úkol testovat nejmenší možné části aplikace. Těmi jsou zpravidla jednotlivé třídy a jejich metody. Testy pak kontrolují, jestli se třída chová tak, jak by měla. Tímto způsobem jsem testoval třídy, které mají málo, nebo vůbec žádné závislosti. U tříd se závislostmi jsem jejich chování izoloval pomocí výše popsané techniky \textit{mockování} za použití nástroje Mockito. 
-		
-		Třídy s větším počtem závislostí jsem testoval za plného běhu kontejneru Spring bez mockování. Závislosti těchto tříd již byly otestovány izolovanými jednotkovými testy, takže se na jejich chování dá spolehnout a neovlivní chování testované třídy.
-		
-		Příkladem jednoho z kratších jednotkových testů controlleru je následující kód:
+		Jednotkovými testy jsem testoval třídy se žádnými, nebo několika málo závislostmi na ostatních třídách. %TODO
+	
+				Příkladem jednoho z kratších jednotkových testů controlleru je následující kód:
 		
 		\begin{Verbatim}
 @Mock
@@ -1221,13 +1233,10 @@ public void testListUsers() throws Exception {
 		Nakonec zkontroluji, zda controller zavolal metodu \texttt{userApi.listUsers()} tak, jak od něj očekávám. 
 		
 	\section{Integrační testy}
-		Integrační testy se zabývají testováním větších částí aplikace. Předpokládá se, že jednotlivé komponenty jsou otestované a fungují správně a ověřuje se správnost jejich spolupráce.
+
 		
-		V aplikaci Deadlines jsem takto testoval vrstvy \textit{Business Services} a \textit{Controllers}. Scénáře testování byly vytvořeny na základě scénářů užití z kapitoly \ref{sec:usecases} a nabízených \textit{endpointů} z kapitoly \ref{sec:rest-api}.
-		
-		Při testování nejprve vytvořím počáteční stav entit v aplikaci. Poté simuluji scénář použití částí aplikace uživatelem, například zakládání skupin a úkolů, zasílání nabídek jiným uživatelům, přijímání nabídek a podobně. V průběhu scénáře ověřuji, že stav entit v aplikaci je takový, jaký očekávám.
-		
-		Při integračním testování controllerů u každého endpointu simuluji zasílání validních i nevalidních požadavků a testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám. 
+		\section{Výsledky testování}
+			Celkem jsem při implementaci aplikace napsal více než 130 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Hlavním důvodem tohoto rozhodnutí byl fakt, že psaní ...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

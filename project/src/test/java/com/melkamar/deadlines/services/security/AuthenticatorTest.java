@@ -1,30 +1,31 @@
 package com.melkamar.deadlines.services.security;
 
-import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * @author Martin Melka
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = DeadlinesApplication.class)
-@WebAppConfiguration
+@RunWith(MockitoJUnitRunner.class)
 public class AuthenticatorTest {
-    User mockedUser = Mockito.mock(User.class);
-    @Autowired
-    private Authenticator authenticator;
+    @Mock
+    User mockedUser;
+
+    @Spy
+    private ShaPasswordEncoder passwordEncoder = new ShaPasswordEncoder();
+
+    @InjectMocks
+    private Authenticator authenticator = new Authenticator();
+
 
     @Before
     public void setUp() throws Exception {

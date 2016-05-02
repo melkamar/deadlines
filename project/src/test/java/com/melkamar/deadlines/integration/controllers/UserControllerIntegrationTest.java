@@ -1,4 +1,26 @@
-package com.melkamar.deadlines.integration;
+/*
+ * Copyright (c) 2016 Martin Melka
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.melkamar.deadlines.integration.controllers;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -105,16 +127,16 @@ public class UserControllerIntegrationTest {
 //
 //
         task1 = taskApi.createTask(user1, "Task1", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task2 = taskApi.createTask(user1, "Task2", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task3 = taskApi.createTask(user1, "Task3", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task4 = taskApi.createTask(user1, "Task4", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task5 = taskApi.createTask(user1, "Task5", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task6 = taskApi.createTask(user1, "Task6", RandomString.get("UserSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task7 = taskApi.createTask(user1, "Task7", RandomString.get("GroupSharing "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
-//        task8 = taskApi.createTask(user2, "Task8", RandomString.get("GroupSharing "), Priority.NORMAL, 15, 45);
-//        task9 = taskApi.createTask(user1, "Task9", RandomString.get("GroupTask "), Priority.NORMAL, 15, 45);
-//        task10 = taskApi.createTask(user3, "Task10", RandomString.get("GroupTask "), Priority.NORMAL, 15, 45);
-//        task11 = taskApi.createTask(user1, "Task11", RandomString.get("GroupTask "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+        task2 = taskApi.createTask(user1, "Task2", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+        task3 = taskApi.createTask(user1, "Task3", RandomString.get("Descr "), Priority.NORMAL, 15, LocalDateTime.now().plusHours(10));
+        task4 = taskApi.createTask(user1, "Task4", RandomString.get("UserSharing "), Priority.LOWEST, 15, LocalDateTime.now().plusHours(10));
+        task5 = taskApi.createTask(user1, "Task5", RandomString.get("UserSharing "), Priority.LOWEST, 15, LocalDateTime.now().plusHours(10));
+        task6 = taskApi.createTask(user1, "Task6", RandomString.get("UserSharing "), Priority.LOW, 15, LocalDateTime.now().plusHours(10));
+        task7 = taskApi.createTask(user1, "Task7", RandomString.get("GroupSharing "), Priority.LOW, 15, LocalDateTime.now().plusHours(10));
+        task8 = taskApi.createTask(user2, "Task8", RandomString.get("GroupSharing "), Priority.NORMAL, 15, 45);
+        task9 = taskApi.createTask(user1, "Task9", RandomString.get("GroupTask "), Priority.HIGH, 15, 45);
+        task10 = taskApi.createTask(user3, "Task10", RandomString.get("GroupTask "), Priority.HIGHEST, 15, 45);
+        task11 = taskApi.createTask(user1, "Task11", RandomString.get("GroupTask "), Priority.HIGHEST, 15, LocalDateTime.now().plusHours(10));
 //
 //        participantHelper.editOrCreateTaskParticipant(user3, task3, TaskRole.WORKER, null, false);
 //        groupApi.addTask(user3, group2, task3);
@@ -299,6 +321,25 @@ public class UserControllerIntegrationTest {
     @Test
     public void taskGet() throws Exception {
         final String url = "/task";
+
+        MvcResult result = mvc.perform(get(url)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
+    }
+
+    /**
+     * Get all jobs of the logged user.
+     */
+    @Transactional
+    @Test
+    public void taskGetPriorityF() throws Exception {
+        final String url = "/task?priorityfilter=lowest&priorityfilter=highest&order=priority&orderdirection=asc";
 
         MvcResult result = mvc.perform(get(url)
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))

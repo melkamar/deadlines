@@ -94,11 +94,11 @@ public class StringConstants {
     public final static String FILTER_STATUS_IN_PROGRESS = "inprogress";
     public final static String FILTER_STATUS_CANCELLED = "cancelled";
     public final static String FILTER_STATUS_COMPLETED = "completed";
-    public final static String FILTER_PRIORITY_1 = "1";
-    public final static String FILTER_PRIORITY_2 = "2";
-    public final static String FILTER_PRIORITY_3 = "3";
-    public final static String FILTER_PRIORITY_4 = "4";
-    public final static String FILTER_PRIORITY_5 = "5";
+    public final static String FILTER_PRIORITY_1 = "lowest";
+    public final static String FILTER_PRIORITY_2 = "low";
+    public final static String FILTER_PRIORITY_3 = "normal";
+    public final static String FILTER_PRIORITY_4 = "high";
+    public final static String FILTER_PRIORITY_5 = "highest";
 
     public final static String CONTENT_TYPE_APP_JSON = "application/json";
 }

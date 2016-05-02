@@ -117,57 +117,6 @@ public class OfferController {
     }
 
     /**
-     * Lists all pending membership offers for a user.
-     *
-     * @param userId ID of the authenticated user making the request.
-     * @return A {@link ResponseEntity} object containing details of the response to the client.
-     * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
-     */
-    @JsonView(JsonViews.Controller.OfferList.class)
-    @RequestMapping(value = "/membership", method = RequestMethod.GET)
-    public ResponseEntity listMembershipOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
-        User user = userApi.getUser(userId);
-        Set<MembershipOffer> offers = sharingApi.listMembershipOffersOfUser(user);
-
-        return ResponseEntity.ok(offers);
-    }
-
-    /**
-     * Resolves a pending membership offer for a user.
-     *
-     * @param userId      ID of the authenticated user making the request.
-     * @param id          ID of the {@link com.melkamar.deadlines.model.offer.MembershipOffer} to resolve.
-     * @param requestBody A {@link OfferResolutionRequestBody} object containing details of the resolution.
-     * @return A {@link ResponseEntity} object containing details of the response to the client.
-     * @throws DoesNotExistException   if the authenticated user ID or a {@link MembershipOffer} with the given ID does not exist.
-     * @throws WrongParameterException if the request contained unknown parameters.
-     */
-    @RequestMapping(value = "/membership/resolve/{id}", method = RequestMethod.POST)
-    public ResponseEntity resolveMembershipOffer(@AuthenticationPrincipal Long userId,
-                                                 @PathVariable("id") Long id,
-                                                 @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
-        User user = userApi.getUser(userId);
-        MembershipOffer offer = sharingApi.getMembershipOffer(id);
-
-        try {
-            Boolean accept = requestBody.isAccept();
-            if (accept == null) {
-                throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
-            }
-
-            Group group = sharingApi.resolveMembershipOffer(user, offer, accept);
-            return ResponseEntity.ok().build();
-        } catch (NotMemberOfException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_USER_NOT_OWNER, e.getMessage()));
-        } catch (GroupPermissionException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_OFFERER_NOT_PERMISSION, e.getMessage()));
-        } catch (AlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_ALREADY_MEMBER, e.getMessage()));
-        }
-
-    }
-
-    /**
      * Lists all pending task offers for a group.
      *
      * @param userId ID of the authenticated user making the request.
@@ -226,6 +175,59 @@ public class OfferController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_ENOUGH_GROUP_PERMISSION, e.getMessage()));
         }
     }
+
+    /**
+     * Lists all pending membership offers for a user.
+     *
+     * @param userId ID of the authenticated user making the request.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
+     */
+    @JsonView(JsonViews.Controller.OfferList.class)
+    @RequestMapping(value = "/membership", method = RequestMethod.GET)
+    public ResponseEntity listMembershipOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
+        User user = userApi.getUser(userId);
+        Set<MembershipOffer> offers = sharingApi.listMembershipOffersOfUser(user);
+
+        return ResponseEntity.ok(offers);
+    }
+
+    /**
+     * Resolves a pending membership offer for a user.
+     *
+     * @param userId      ID of the authenticated user making the request.
+     * @param id          ID of the {@link com.melkamar.deadlines.model.offer.MembershipOffer} to resolve.
+     * @param requestBody A {@link OfferResolutionRequestBody} object containing details of the resolution.
+     * @return A {@link ResponseEntity} object containing details of the response to the client.
+     * @throws DoesNotExistException   if the authenticated user ID or a {@link MembershipOffer} with the given ID does not exist.
+     * @throws WrongParameterException if the request contained unknown parameters.
+     */
+    @RequestMapping(value = "/membership/resolve/{id}", method = RequestMethod.POST)
+    public ResponseEntity resolveMembershipOffer(@AuthenticationPrincipal Long userId,
+                                                 @PathVariable("id") Long id,
+                                                 @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+        User user = userApi.getUser(userId);
+        MembershipOffer offer = sharingApi.getMembershipOffer(id);
+
+        try {
+            Boolean accept = requestBody.isAccept();
+            if (accept == null) {
+                throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
+            }
+
+            Group group = sharingApi.resolveMembershipOffer(user, offer, accept);
+            return ResponseEntity.ok().build();
+        } catch (NotMemberOfException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_USER_NOT_OWNER, e.getMessage()));
+        } catch (GroupPermissionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.OFFER_OFFERER_NOT_PERMISSION, e.getMessage()));
+        } catch (AlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_ALREADY_MEMBER, e.getMessage()));
+        }
+
+    }
+
+
 
     private void checkResolutionRequestBody(Boolean accept) throws WrongParameterException {
         if (accept == null) {

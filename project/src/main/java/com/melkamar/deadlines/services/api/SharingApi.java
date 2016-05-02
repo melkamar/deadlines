@@ -36,8 +36,41 @@ import java.util.Set;
  * @author Martin Melka
  */
 public interface SharingApi {
+    /**
+     * Offers a task sharing to a user.
+     *
+     * @param offerer The user offering the task.
+     * @param task The task being offered.
+     * @param offeredTo The user to whom the task is being offered.
+     * @return UserTaskSharingOffer object representing the offer.
+     * @throws NotMemberOfException if offerer is not a participant on the task.
+     * @throws AlreadyExistsException if the offeredTo user is already a participant on the task.
+     */
     UserTaskSharingOffer offerTaskSharing(User offerer, Task task, User offeredTo) throws NotMemberOfException, AlreadyExistsException;
+
+    /**
+     * Offers a task sharing to a group.
+     *
+     * @param offerer The user offering the task.
+     * @param task The task being offered.
+     * @param offeredTo The group to which the task is being offered.
+     * @return GroupTaskSharingOffer object representing the offer.
+     * @throws NotMemberOfException if offerer is not a participant on the task.
+     * @throws AlreadyExistsException if the group is already participating on the task.
+     */
     GroupTaskSharingOffer offerTaskSharing(User offerer, Task task, Group offeredTo) throws NotMemberOfException, AlreadyExistsException;
+
+    /**
+     * Offers
+     *
+     * @param offerer
+     * @param group
+     * @param offeredTo
+     * @return
+     * @throws NotMemberOfException
+     * @throws GroupPermissionException
+     * @throws AlreadyExistsException
+     */
     MembershipOffer offerMembership(User offerer, Group group, User offeredTo) throws NotMemberOfException, GroupPermissionException, AlreadyExistsException;
     //
     Set<UserTaskSharingOffer> listTaskOffersOfUser(User user);
