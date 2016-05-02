@@ -70,7 +70,7 @@
 
 	Tato práce se zabývá přehledem existujících řešení pro správu úkolů malých i velkých skupin a tvorbou backendu nové aplikace. Aplikace bude zaměřena na potřeby menších týmů a jednotlivců a bude umožňovat uživatelům vytvářet úkoly, sdílet je s ostatními uživateli, sdružovat se do skupin a zaznamenávat průběh práce na úkolech. 
 	
-	V první části porovnám současná řešení pro správu úkolů z pohledu malých týmů a jednotlivců. 
+	V první části porovnám současná řešení pro správu úkolů z různých kategorií podle jejich zaměření. 
 	
 	Ve druhé části se zabývám analýzou problému. Definuji požadavky na aplikaci ve formě uživatelských příběhů a podrobím je analýze.
 	
@@ -85,17 +85,33 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Slovník pojmů}
-	\begin{description}
-		\item[Deadline] je časová lhůta, do které je nutné dokončit nějakou práci. Jeho synonyma jsou uzávěrka a konečný termín.
+\chapter{Cíl práce a metodika}
+	V této kapitole představím cíle této bakalářské práce a metodiku použitou pro jejich dosažení.
+	\section{Cíl práce}
+		Cílem této práce je vytvořit přehled nejdůležitějších existujících aplikací pro správu úkolů, porovnat je a následně vytvořit prototyp serverové části nové aplikace, která bude přístupná přes rozhraní REST. Bude umožňovat vytvářet soukromé i sdílené úkoly, zakládat pracovní skupiny, přiřazovat zodpovědnosti a sledovat průběh práce na úkolech. 
 		
-		\item[Assignee] je člověk přidělený k určitému úkolu, je zodpovědný za práci na něm.
-		\item[Open source software] je softwarové dílo, k němuž jsou veřejně dostupné jeho zdrojové kódy.
-		\item[Gamifikace] je uplatňování technik z herního designu a herních principů do neherních oblastí. Slouží například k motivaci formou získávání bodů za určité činnosti a zobrazováním grafů jejich vývoje.
-		\item[Backend] je část webové aplikace, která nekomunikuje přímo s uživatelem. V kontextu této práce zprostředkovává aplikační logiku a s okolím komunikuje skrze definované rozhraní.
-		\item[Manhour] je jednotka práce. Jeden člověk odpracuje za hodinu jeden \textit{manhour}. Vypočte se jako: $manhours = lidi \times hodiny$.
-		\item[Embedded] znamená vestavěný, zabudovaný. 
-	\end{description}
+	\section{Metodika}
+		Nejprve určím kritéria, na která se budu při tvorbě přehledu existujících aplikací zaměřovat. Poté na základě popularity a vlastní zkušenosti vyberu několik aplikací, které rozdělím do tří kategorií podle jejich zaměření. Ty zhodnotím s přihlédnutím k určeným kritériím a shrnu jejich přednosti a nedostatky.
+		
+		V další části budu definovat funkční a nefunkční požadavky na aplikaci. Funkční požadavky budou ve formě příběhů (user stories). Na základě nich vytvořím případy užití (use cases) a následně doménový model, zachycující základní entity v aplikaci.
+		
+		Na základě analytické části navrhnu řešení implementace. To bude zahrnovat výběr konkrétních technologií, návrh rozhraní aplikace, architekturu, model tříd a databáze. Také zde popíšu způsob uchovávání hesel a postup při testování aplikace.
+
+		Následně přistoupím k samotné implementaci aplikace za použití navrhnutých technologií a postupů. Během implementace budu zároveň vytvářet automatizované testy. Výstupem této části bude nasaditelná aplikace a její zdrojový kód, dostupné na přiloženém médiu. 
+		
+		Nakonec vytvořím instalační příručku, které popíše, jak vytvořenou aplikaci nasadit a jaké prostředí je pro to potřeba.
+		
+%\chapter{Slovník pojmů}
+%	\begin{description}
+%		\item[Deadline] je časová lhůta, do které je nutné dokončit nějakou práci. Jeho synonyma jsou uzávěrka a konečný termín.
+%		
+%		\item[Assignee] je člověk přidělený k určitému úkolu, je zodpovědný za práci na něm.
+%		\item[Open source software] je softwarové dílo, k němuž jsou veřejně dostupné jeho zdrojové kódy.
+%		\item[Gamifikace] je uplatňování technik z herního designu a herních principů do neherních oblastí. Slouží například k motivaci formou získávání bodů za určité činnosti a zobrazováním grafů jejich vývoje.
+%		\item[Backend] je část webové aplikace, která nekomunikuje přímo s uživatelem. V kontextu této práce zprostředkovává aplikační logiku a s okolím komunikuje skrze definované rozhraní.
+%		\item[Manhour] je jednotka práce. Jeden člověk odpracuje za hodinu jeden \textit{manhour}. Vypočte se jako: $manhours = lidi \times hodiny$.
+%		\item[Embedded] znamená vestavěný, zabudovaný. 
+%	\end{description}
 \chapter{Současný stav}
 	\label{chapter:current-state}
 
@@ -741,15 +757,6 @@
 			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci. \cite{rest-dissertation} Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (resources). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
 			Zdroje v kontextu REST jsou identifikované pomocí URI a komunikovány mezi klientem a serverem v podobě reprezentací v libovolné textové, strojově zpracovatelné podobě (například JSON nebo XML). \cite{rest-youtube}
 			
-			Architektonický styl REST popisuje šest podmínek:
-			\begin{itemize}
-				\item uniform interface (jednotné rozhraní), 
-				\item stateless (bezstavovost),
-				\item cacheable (cachovatelnost),
-				\item client-server,
-				\item layered system (systém z vrstev),
-				\item code on demand (kód na vyžádání).
-			\end{itemize}
 			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
 			
 		\subsection{REST API aplikace Deadlines}
@@ -1029,7 +1036,9 @@
 		
 		Inicializační SQL skript pro vytvoření databáze je přiložen na médiu. %TODO kde je SQL skript?
 	
-	
+	\section{Testování}
+		%TODO
+		Teorie o testování...
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
