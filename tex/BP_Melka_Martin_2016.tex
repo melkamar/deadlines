@@ -761,8 +761,11 @@
 			
 			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
+			Těla požadavků i odpovědí jsou ve formátu JSON, obsah hlavičky \textit{Content-Type} je \textit{application/json}.
+			
 			\subsubsection{Odpovědi}
-			Každý \textit{endpoint} odpovídá na požadavek odpovědí, která obsahuje standardní HTTP kód popisující, jak volání dopadlo, a případně tělo ve formátu JSON. Zde jsou některé z HTTP kódů:
+			\label{sec:responses}
+			Každý \textit{endpoint} odpovídá na požadavek odpovědí, která obsahuje standardní HTTP kód popisující, jak volání dopadlo, a případně tělo. Zde jsou některé z HTTP kódů:
 			\begin{description}
 				\item[200 OK] Požadavek proběhl v pořádku.
 				\item[201 CREATED] Požadovaný objekt či záznam byl vytvořen. V hlavičce odpovědi s názvem \textit{Location} je uvedena relativní cesta k nově vytvořenému zdroji.
@@ -858,10 +861,7 @@
 			
 			\item[\texttt{/group/\{group\_id\}/task/\{task\_id\} [DELETE]}] \hfill \\
 				Odebere skupinu s ID \texttt{group\_id} z úkolu s ID \texttt{task\_id}. \formanagers
-			
-			\item[\texttt{/group/manager/offer/task/\{group\_id\} [GET, POST]}] \hfill \\
-				GET vrátí seznam všech nabídek ke sdílení úkolu se zadanou skupinou. \formanagers \\
-				POST přijme nebo zamítne nabídky ke sdílení úkolů se zadanou skupinou. Rozhodnutí a nabídky, kterých se týkají, jsou předané v těle požadavku. \formanagers
+		
 
 			\end{description}
 			
@@ -1365,54 +1365,266 @@ public void testListUsers() throws Exception {
 		\label{diagram:domain-model}
 	\end{figure}
 
-\chapter{Detaily REST API}
+\chapter{Detail REST API}
 	\label{appdx:restapi}
-	V této části uvedu pro každý API endpoint detaily o formátu požadavku, odpovědi a možné návratové kódy.
-	
-	\textbf{TODO - dopsat request a response JSON bodies}
 
-
+	\section{Chybové kódy}
+		\label{appdx:rest-error-codes}
+		\begin{description}
+			\item[1] Sometext
+			\item[2] Sometext			
+		\end{description}
+		
+		
+	\section{Endpointy}
+		V této části uvedu pro každý API endpoint detaily o formátu požadavku a odpovědi. Uvedené odpovědi předpokládají, že požadavek proběhl bez chyby. Pokud není uvedeno jinak, HTTP kód odpovědi je 200 OK. V případě chyby při zpracování požadavku aplikace vrací odpovídající chybový HTTP kód a v těle případně detaily chyby, jak jsem popsal v sekci \ref{sec:responses}.
+		
+		Nepovinná pole v požadavku jsou označena symbolem \texttt{-}.
 	
-	\section{\texttt{/user}}
-		\subsection{GET}
-			\begin{description}
-				\item[200 OK] \hfill
-					\begin{Verbatim}[obeytabs,tabsize=2]
+		\subsection{\texttt{GET /user}}
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
 [
 	{
 		"id": 1,
 		"username": "jdoe",
-		"email": "sample@email.com",
-		"name": "John Doe"
+		-"email": "sample@email.com",
+		-"name": "John Doe"
 	},
 	{
 		...
 	}
 ]
-				\end{Verbatim}
-				Pole \texttt{email} a \texttt{name} mohou v odpovědi chybět, pokud nejsou vyplněny.
-			\end{description}
-			
-		\subsection{POST}
+			\end{Verbatim}
 
-			Možné odpovědi:
-			\begin{description}
-				\item[201 CREATED] Vytvoření proběhlo bez chyb. \\
-					\begin{Verbatim}[obeytabs,tabsize=2]
+			
+		\subsection{\texttt{POST /user}}
+			Formát požadavku:
+			\begin{Verbatim}[obeytabs,tabsize=2]
 {
 	"username": "jdoe",
 	"password": "sample-password",
-	"email": "sample@email.com",
-	"name": "John Doe"
-}							
-					\end{Verbatim}
-					Pole \texttt{email} a \texttt{name} jsou nepovinná.\\
-				\item[400 BAD REQUEST] Požadavek je chybný. Detaily chyby jsou uvedeny v těle zprávy.
+	-"email": "sample@email.com",
+	-"name": "John Doe"
+}	
+			\end{Verbatim}
+			
+			\noindent
+			Formát odpovědi je stejný jako formát požadavku. Při úspěšném vytvoření uživatele je vrácen kód 201 CREATED.
+			
+
+		\subsection{\texttt{GET /user/\{user\_id\}}}
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"id": 1,
+	"username": "jdoe",
+	-"email": "sample@email.com",
+	-"name": "John Doe"
+}
+			\end{Verbatim}
+			
+		\subsection{\texttt{PUT /user/\{user\_id\}}}
+			Formát požadavku:
+			\begin{Verbatim}[obeytabs,tabsize=2]			
+{
+	-"password": "new-password",
+	-"email": "new@email.com",
+	-"name": "New Doe"
+}				
+			\end{Verbatim}
+			
+			\noindent
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"id": 1,
+	"username": "jdoe",
+	-"email": "new@email.com",
+	-"name": "New Doe"
+}
+			\end{Verbatim}
+
+
+		\subsection{\texttt{GET /task}}
+			Možné parametry:
+			\begin{description}
+				\item[order] určuje způsob řazení úkolů. Výchozí způsob je podle urgentnosti. Povolené hodnoty jsou: 
+				\begin{description}
+					\item[name] řazení podle jména;
+					\item[date] řazení podle data vytvoření úkolu;
+					\item[deadline] řazení podle deadlinu, úkoly bez deadlinu jsou umístěny na konec;
+					\item[worked] řazení podle procentuální rozpracovanosti;
+					\item[priority] řazení podle priority;
+					\item[urgency] řazení podle urgentnosti.
+				\end{description}
+				
+				\item[orderdirection] určuje směr řazení. Výchozí směr je sestupně. Povolené hodnoty jsou:
+				\begin{description}
+					\item[asc] řazení vzestupně;
+					\item[desc] řazení sestupně.
+				\end{description}
+				
+				\item[rolefilter] určuje filtr rolí -- budou zobrazeny pouze úkoly, v nichž má uživatel danou roli. Povolené hodnoty jsou:
+				\begin{description}
+					\item[watcher] zobrazí jen úkoly, v nichž je uživatel Pozorovatelem;
+					\item[worker] zobrazí jen úkoly, v nichž je uživatel Pracovníkem.
+				\end{description}
+				
+				\item[typefilter] určuje filtr podle typu úkolu. Povolené hodnoty jsou:
+				\begin{description}
+					\item[deadline] zobrazí jen úkoly s deadlinem;
+					\item[growing] zobrazí jen rostoucí úkoly.
+				\end{description}
+				
+				\item[statusfilter] určuje filtr podle stavu úkolu. Povolené hodnoty jsou:
+				\begin{description}
+					\item[open] zobrazí jen úkoly ve stavu \textit{otevřený};
+					\item[inprogress] zobrazí jen úkoly ve stavu \textit{rozpracovaný};
+					\item[completed] zobrazí jen úkoly ve stavu \textit{splněný};
+					\item[cancelled] zobrazí jen úkoly ve stavu \textit{zrušený}.
+				\end{description}							
+				
+				
+				\item[priorityfilter] určuje filtr podle priority. Jednotlivé hodnoty lze kombinovat pro zobrazení různých priorit. Povolené hodnoty jsou \textit{lowest}, \textit{low}, \textit{normal}, \textit{high} a \textit{highest}.
 			\end{description}
 			
-	\section{Chybové kódy}
-	\label{appdx:rest-error-codes}
-		%TODO chybové kódy
+			\noindent
+			Příklad URL požadavku na tento endpoint, který zobrazí všechny moje úkoly s prioritou 2 nebo 3, seřazené podle rozpracovanosti vzestupně:\\
+			\begin{Verbatim}[obeytabs,tabsize=2]
+  GET /task?order=worked
+           &orderdirection=asc
+           &priorityfilter=high
+           &priorityfilter=highest
+			\end{Verbatim}
+			
+			\noindent
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+[
+	{
+		"id": 4,
+		"name": "Task4",
+		"priority": "LOWEST",
+		"status": "OPEN",
+		"urgency": {
+			"lastUpdate": "2016-05-01 16:24",
+			"value": 85.31240623606338
+		},
+		"deadline": "2016-05-02 02:24",
+		"workedPercentage": 0.0,
+		"type": "DEADLINE"
+	},
+	{
+		...
+	}
+]
+			\end{Verbatim}
+			
+			
+		\subsection{\texttt{POST /task}}
+			Formát požadavku:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"name": "task name",
+	"description":"task description",
+	"priority": "LOW",
+	"workEstimate": "13",
+	"deadline":"2016-05-17 13:15",
+	"hoursToPeak":"3",
+	"groupIds":"1,3,8"
+}
+			\end{Verbatim}
+			Požadavek musí mít vyplněno právě jedno z polí \texttt{deadline} a \texttt{hoursToPeak}. Podle nich se určí typ vytvořeného úkolu.
+			
+			Pole \texttt{groupIds} může obsahovat ID skupin, v nichž je volající uživatel manažer. Úkol bude po vytvoření automaticky sdílen s těmito skupinami.
+			
+			\hfill \\
+			\noindent
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"id": 2,
+	"dateCreated": "2016-05-01 16:11",
+	"name": "task name",
+	"description": "task description",
+	"workEstimate": 13.0,
+	"priority": "LOW",
+	"status": "OPEN",
+	"urgency": {
+		"lastUpdate": "2016-05-01 16:11",
+		"value": 0.0
+	},
+	"workReports": [],
+	"participants": [
+		{
+			"solo": true,
+			"role": "WATCHER",
+			"user": {
+				"id": 1,
+				"username": "User1"
+			}
+		}
+	],
+	"hoursToPeak": 12.5 |or| "deadline": "2016-05-17 12:00",
+	"workedPercentage": 0.0,
+	"manhoursWorked": 0.0,
+	"groups": [
+		{
+			"id": 1,
+			"name": "Group1"
+		},
+		{
+			"id": 2,
+			"name": "Group4"
+		}
+	],
+	"type": "GROWING"
+}
+			\end{Verbatim}			
+			
+			V tomto příkladu je úkol s ID 2 sdílen s jedním uživatelem (\textit{User1}), který je v roli pozorovatele, a se dvěma skupinami (\textit{Group1}, \textit{Group4}).
+			
+			Při úspěšném vytvoření úkolu je vrácen kód 201 CREATED.
+			
+			
+		\subsection{\texttt{GET /task/\{task\_id\}}}
+		\subsection{\texttt{PUT /task/\{task\_id\}}}
+		\subsection{\texttt{POST /task/\{task\_id\}/reseturgency}}
+		\subsection{\texttt{POST /task/share/\{task\_id\}}}
+		\subsection{\texttt{POST /task/leave/\{task\_id\}}}
+		\subsection{\texttt{POST /task/role/\{task\_id\}}}
+		\subsection{\texttt{POST /task/report/\{task\_id\}}}
+		\subsection{\texttt{GET /offer/task/user}}
+		\subsection{\texttt{POST /offer/task/user/resolve/\{task\_offer\_id\}}}
+		\subsection{\texttt{GET /offer/task/group/\{group\_id\}}}
+		\subsection{\texttt{POST /offer/task/group/\{group\_id\}/resolve/\{task\_offer\_id\}}}
+		\subsection{\texttt{GET /offer/membership}}
+		\subsection{\texttt{POST /offer/membership/resolve/\{membership\_offer\_id\}}}
+		\subsection{\texttt{GET /group}}
+		\subsection{\texttt{POST /group}}
+		\subsection{\texttt{GET /group/\{group\_id\}}}
+		\subsection{\texttt{PUT /group/\{group\_id\}}}
+		\subsection{\texttt{DELETE /group/\{group\_id\}}}
+		\subsection{\texttt{POST /group/\{group\_id\}/member/offer}}
+		\subsection{\texttt{PUT /group/\{group\_id\}}/member/\{member\_id\}}
+		\subsection{\texttt{DELETE /group/\{group\_id\}}/member/\{member\_id\}}
+		\subsection{\texttt{DELETE /group/\{group\_id\}/task/\{task\_id\}}}
+		
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				\begin{description}
+					\item[]
+				\end{description}			
 
 \chapter{Komponenty aplikace}
 	\begin{figure}\centering
