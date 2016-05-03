@@ -1045,11 +1045,11 @@
 		\subsection{Integrační testy}
 			Integrační testy se zabývají testováním větších částí aplikace. Předpokládá se, že jednotlivé komponenty jsou otestované, fungují správně a ověřuje se správnost jejich spolupráce.
 			
-			Tímto způsobem budu v aplikaci testovat funkčnost vrstev, které jsou zodpovědné za hlavní logiku aplikace, tedy \textit{Business Services} a \textit{Controllers}. Testy budou odpovídat jednotlivým scénářům užití z kapitoly \ref{sec:usecases} a nabízených \textit{endpointů} z kapitoly \ref{sec:rest-api}.
+			Tímto způsobem budu v aplikaci testovat zejména funkčnost vrstev, které jsou zodpovědné za hlavní logiku aplikace, tedy \textit{Business Services} a \textit{Controllers}. Testy budou odpovídat jednotlivým scénářům užití z kapitoly \ref{sec:usecases} a nabízených \textit{endpointů} z kapitoly \ref{sec:rest-api}.
 			
-			Při testování nejprve vytvořím počáteční, známý stav entit v aplikaci. Poté simuluji scénáře užití částí aplikace uživatelem, například zakládání skupin a úkolů, zasílání nabídek jiným uživatelům, přijímání nabídek a podobně. V průběhu scénáře ověřuji, že stav entit v aplikaci je takový, jaký očekávám.
+			Při každém scénáři testování nejprve vytvořím počáteční, známý stav entit v aplikaci. Poté simuluji scénáře užití částí aplikace uživatelem, například zakládání skupin a úkolů, zasílání nabídek jiným uživatelům, přijímání nabídek a podobně. V průběhu scénáře ověřuji, že stav entit v aplikaci je takový, jaký očekávám.
 			
-			Při integračním testování vrstvy \textit{Controllers} u každého \textit{endpointu} simuluji zasílání validních i nevalidních požadavků a testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
+			Při integračním testování vrstvy \textit{Controllers} u každého \textit{endpointu} simuluji zasílání validních i nevalidních požadavků a kromě kontroly změn v entitách testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1202,41 +1202,139 @@ Mockito.when(
 		
 		
 	\section{Jednotkové testy}
-		Jednotkovými testy jsem testoval třídy se žádnými, nebo několika málo závislostmi na ostatních třídách. %TODO
+		Jednotkovými testy jsem testoval třídy se žádnými, nebo několika málo závislostmi na ostatních třídách. Testovat by se tímto způsobem daly i komplexnější třídy, ale bylo by nutné místo jejich závislostí vytvářet mock objekty. Z důvodu většího úsilí na jiných částech práce jsem od tohoto upustil a u složitějších tříd využíval jen integrační testy, ve kterých měly třídy přístup ke všem svým závislostem skrze framework Spring.
 	
-				Příkladem jednoho z kratších jednotkových testů controlleru je následující kód:
+		Příkladem jednoho z jednotkových testů je následující kód, testující správnost funkce třídy, která autentifikuje uživatele pomocí objektu, který ho reprezentuje, a hesla:
 		
-		\begin{Verbatim}
-@Mock
-UserApi userApi;
-@Mock
-User user;
-@InjectMocks
-UserController testedController;
-
-@Test
-public void testListUsers() throws Exception {
-  MockMvc mvc = MockMvcBuilders
-    .standaloneSetup(testedController)
-    .build();
-  mvc.perform(MockMvcRequestBuilders
-      .get("/user"))
-    .andExpect(status().isOk());
-  Mockito.verify(userApi, Mockito.times(1)).listUsers();
+		\begin{Verbatim}[obeytabs,tabsize=2]
+@RunWith(MockitoJUnitRunner.class)
+public class AuthenticatorTest {
+	@Mock
+	User mockedUser;
+	
+	@Spy
+	private ShaPasswordEncoder passwordEncoder = 
+	                             new ShaPasswordEncoder();
+	
+	@InjectMocks
+	private Authenticator authenticator = new Authenticator();
+	
+	
+	@Before
+	public void setUp() throws Exception {
+		Mockito.when(mockedUser.getUsername()).thenReturn("User2");
+		
+		Mockito.when(mockedUser.getPasswordHash())
+		   .thenReturn("375c3858a8d203ac6393d948098f797d7d871e32");
+		       
+		Mockito.when(mockedUser.getPasswordSalt())
+		   .thenReturn("c7badfd9725a9f2e");
+	}
+	
+	@Test
+	public void authenticate() throws Exception {
+		String correctPassword = "password";
+		String wrongPassword = "abcd";
+		
+		assertNull(authenticator.authenticate(mockedUser, 
+		                                      wrongPassword));
+		                                      
+		assertEquals(authenticator.authenticate(mockedUser, 
+		                                        correctPassword), 
+		             mockedUser);
+	}
 }
 		\end{Verbatim}
 		
-		V tomto testu třídy \texttt{UserController} nejprve za pomocí anotace \texttt{@Mock} vytvořím mock instance objektů. Anotace \texttt{@InjectMocks} poté informuje framework Mockito o tom, že má do takto anotované třídy vložit definované mock závislosti.
+				
+		V tomto testu třídy \texttt{Authenticator} nejprve za pomocí anotace \texttt{@Mock} vytvořím mock instanci třídy \texttt{User}. \texttt{@Spy} označuje \uv{plnohodnotný} Java objekt, který má být vložen do testované třídy jako závislost. Anotace \texttt{@InjectMocks} poté informuje framework Mockito o tom, že má do takto anotované třídy vložit její závislosti, v tomto případě objekty \texttt{passwordEncoder} a \texttt{authenticator}.
 		
-		Spring poskytuje třídu \texttt{MockMvc} určenou k testování MVC aplikací, jako je i tato. Controller inicializuji, aniž by bylo nutné spouštět celý Spring kontext. Poté simuluji zaslání GET požadavku na adresu \texttt{/user} a očekávám, že vrácený status bude 200 OK.
+		V metodě \texttt{setUp} definuji chování \textit{mock} objektu \texttt{mockedUser}, kterého využívám v následující metodě. V ní kontroluji, že v případě chybné kombinace uživatele a hesla vrací třída \texttt{null}, v případě správné kombinace pak objekt uživatele.
 		
-		Nakonec zkontroluji, zda controller zavolal metodu \texttt{userApi.listUsers()} tak, jak od něj očekávám. 
+		
 		
 	\section{Integrační testy}
+		Integrační testy jsem během vývoje využil pro testování správné funkčnosti tříd s větším počtem závislostí a tříd, které ze své podstaty vyžadují komunikaci s vnějšími systémy. To jsou například třídy \textit{Data Access Object}, které jsou zodpovědné za ukládání a načítání dat z databáze.
+		
+		\subsection{Vrstva Business Services}
+			\label{sec:testing-services}
+			Důkladně jsem integračními testy otestoval vrstvu \textit{Business Services}, která obsahuje hlavní logiku aplikace. Všechny případy užití z kapitoly \ref{sec:usecases} jsou v těchto testech obsaženy samostatně, i jako součást komplexnějších scénářů, kde jsou testovány v kombinaci s ostatními případy užití. Příkladem takového scénáře jsou následující kroky:
+			\begin{enumerate}
+				\item Vytvoření tří uživatelů a skupiny, v níž je první z nich Admin.
+				\item Vytvoření několika úkolů pro každého z uživatelů.
+				\item Sdílení úkolů Admina s jeho skupinou.
+				\item Kontrola, zda jsou uživatelé účastníky očekávaných úkolů.
+				\item Nabídka členství ve skupině od Admina jednomu z uživatelů a její přijetí uživatelem.
+				\item Kontrola, zda má skupina očekávané členy a zda je nový člen skupiny účastníkem svých soukromých i skupinových úkolů. Dále kontroluji, zda ostatním uživatelům nepřibyly ani neubyly úkoly.
+				\item Odchod člena ze skupiny.
+				\item Opět kontrola členů skupiny a účastníků úkolů.
+			\end{enumerate}
+		
+		\subsection{Vrstva Controllers}
+			Vrstva \textit{Controllers} je zodpovědná za zpracování příchozích požadavků, autentifikaci uživatele a volání odpovídajících metod vrstvy \textit{Business Services}. Ta je již otestovaná způsobem popsaným v sekci \ref{sec:testing-services}. Z tohoto důvodu testy vrstvy \textit{Controllers} nejsou zaměřené primárně na kontrolu správnosti manipulace s entitami a dat v databázi. Testovány jsou údaje obsažené v HTTP odpovědích aplikace, tedy jejich stavový kód, hlavičky a tělo. Jeden z testů má například následující strukturu:
+			
+			\begin{enumerate}
+				\item Zaslání autentifikovaného požadavku na změnu údajů a hesla uživatele metodou PUT na adresu \texttt{/user/id}, kde \texttt{id} je ID uživatele.
+				\item Kontrola, zda je vrácen kód 200 OK a hlavička \textit{Content-Type} je očekávaného typu.
+				\item Kontrola, zda je tělo odpovědi v očekávaném formátu a obsahuje upravená data.
+				\item Zaslání požadavku s původními autentifikačními údaji a kontrola, že byl vrácen kód 401 Unauthorized.
+				\item Zaslání požadavku s novými autentifikačními údaji a kontrola, že byl vrácen kód 200 OK.
+			\end{enumerate}
+						
+			K simulování zasílání požadavků na REST \textit{endpointy} a kontrolu odpovědí využívám třídu \texttt{MockMvcBuilders}, která je součástí testovacího modulu nástroje Spring. Použití její instance \texttt{mvc} je znázorněno v kódu pod tímto odstavcem. Uvedená metoda představuje test, který se skládá z výše uvedených bodů.
+			
+		\begin{Verbatim}[obeytabs,tabsize=2]
+@Transactional
+@Test
+public void userEditTest() throws Exception {
+
+	String newPwd = "new-password";
+	String newEmail = "another-email@hello.com";
+	String newName = "Brand new name";
+	
+	MvcResult result = mvc.perform(put("/user/" + user1.getId())
+	  .header("Authorization", BasicAuthHeaderBuilder
+                   .buildAuthHeader(user1.getUsername(), "pwd"))
+	  .content("{\"password\":\"" + newPwd
+	         + "\",\"email\":\"" + newEmail
+	         + "\",\"name\":\"" + newName + "\"}")
+	  .contentType(MediaType.APPLICATION_JSON))
+	  .andExpect(status().isOk())
+	  .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	  .andReturn();
+	
+	String response = result.getResponse().getContentAsString();
+	
+	JsonParser parser = new JsonParser();
+	JsonObject object = parser.parse(response).getAsJsonObject();
+	
+	Assert.assertEquals(newEmail, 
+	                    object.get("email").getAsString());
+	Assert.assertEquals(newName, 
+	                    object.get("name").getAsString());
+	
+	mvc.perform(get("/user/" + user1.getId())
+	  .header("Authorization", BasicAuthHeaderBuilder
+	               .buildAuthHeader(user1.getUsername(), "pwd"))
+	)
+	.andExpect(status().isUnauthorized());
+	
+	mvc.perform(get("/user/" + user1.getId())
+	  .header("Authorization", BasicAuthHeaderBuilder
+	               .buildAuthHeader(user1.getUsername(), newPwd))
+	)
+	.andExpect(status().isOk());
+}
+		
+		\end{Verbatim}
 
 		
-		\section{Výsledky testování}
-			Celkem jsem při implementaci aplikace napsal více než 130 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Hlavním důvodem tohoto rozhodnutí byl fakt, že psaní ...
+	\section{Výsledky testování}
+		Celkem jsem při implementaci aplikace napsal více než 130 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Testy pokrývají všechny vytyčené funkce, které má aplikace nabízet, jak je popisují případy užití v sekci \ref{sec:usecases}. 
+		
+		Výsledná aplikace, přiložená k této práci, prošla 100\% automatizovaných testů a neobsahuje tak žádné známé chyby.
+		
+		Případné chyby, které nebyly zachyceny automatizovanými testy, by mohly být odhaleny testováním samotnými uživateli. Takové testování jsem neprovedl, protože aplikace disponuje pouze rozhraním REST. Nenabízí žádné grafické rozhraní, které by mohlo být použité k testování i technicky nevzdělanými uživateli.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1258,14 +1356,14 @@ public void testListUsers() throws Exception {
 	\section{Uložiště dat}
 		Deadlines může pro persistenci dat využít dva typy uložiště. Prvním, doporučeným uložištěm je databáze MySQL. Návod na její instalaci je ale mimo rozsah této práce, proto jej zde neuvádím.
 	
-		Druhým typem uložiště je databáze H2. Tuto databázi není nutné nijak instalovat, aplikace ji automaticky vytvoří a celá je obsažena v jednom souboru na disku. Vhodná pro testování a zkušební provoz aplikace. Typ a konkrétní umístění datového uložiště lze nastavit v konfiguračním souboru.
+		Druhým typem uložiště je databáze H2. Tuto databázi není nutné nijak instalovat, aplikace ji automaticky vytvoří a celá je obsažena v jednom souboru na disku. Vhodná je pro testování a zkušební provoz aplikace. Typ a konkrétní umístění datového uložiště lze nastavit v konfiguračním souboru.
 	
 	\section{Nasazení WAR archivu}
-		K nasazení WAR archivu je nutné mít již nainstalovaný některý ze servlet kontejnerů. Nasazení aplikace bylo testováno na serveru Apache Tomcat verze 9.0.0.0 a návod se tak bude vztahovat právě k tomuto serveru. Předpokládané umístění instalace serveru je ve složce \$CATALINA\_HOME. Postup je následující:
+		K nasazení WAR archivu je nutné mít již nainstalovaný některý ze servlet kontejnerů. Nasazení aplikace bylo testováno na serveru Apache Tomcat verze 9.0.0.0 a návod se tak bude vztahovat právě k tomuto serveru. Předpokládané umístění instalace serveru je ve složce \texttt{\$CATALINA\_HOME}. Postup je následující:
 		\begin{enumerate}
 			\item Zkopírujte soubor \texttt{deadlines.war} do složky \texttt{\$CATALINA\_HOME/\allowbreak webapps/}.
 			\item Zkopírujte soubor \texttt{application.properties} do složky \texttt{\$CATALINA\_HOME/\allowbreak lib/\allowbreak deadlines/} a upravte potřebné informace.
-			\item Pokud používáte MySQL databázi, spusťte v ní inicializační skript \texttt{database\_init\_mysql.sql}.
+			\item Pokud jste v konfiguračním souboru nezvolili možnost automatického vytvoření schématu, spusťte v databázi inicializační skript \texttt{database\allowbreak \_init\allowbreak \_mysql.sql} pro vytvoření potřebných tabulek.
 			\item Spusťte server. Aplikace bude dostupná na adrese \texttt{<server>/deadlines}.
 		\end{enumerate}
 	
@@ -1274,6 +1372,7 @@ public void testListUsers() throws Exception {
 		\begin{enumerate}
 			\item Zkopírujte soubory \texttt{deadlines.jar} a \texttt{application.properties} do složky, odkud chcete aplikace spouštět.
 			\item Upravte konfigurační soubor.
+			\item Pokud jste v konfiguračním souboru nezvolili možnost automatického vytvoření schématu, spusťte v databázi inicializační skript \texttt{database\allowbreak \_init\allowbreak \_mysql.sql} pro vytvoření potřebných tabulek.
 			\item Spusťte aplikaci příkazem \texttt{java -jar deadlines.jar}.
 		\end{enumerate}
 		
@@ -1285,6 +1384,8 @@ public void testListUsers() throws Exception {
 
 \begin{conclusion}
 	Cílem této práce byla tvorba backend části aplikace, komunikující pomocí rozhraní REST, která má usnadňovat správu soukromých i sdílených úkolů jednotlivcům a malým týmům. Dílčími úkoly práce bylo provedení rešerše existujících řešení a formulování požadavků na aplikaci. Dále detailnější analýza požadavků a problémové domény, návrh řešení, jeho implementace a otestování správné funkčnosti.
+	
+	Tady odstavce o jednotlivých bodech v metodice... %TODO
 	
 	Cíl práce jsem ve stanoveném rozsahu splnil, aplikaci lze využívat podle případů užití definovaných během analýzy. Součástí práce je i kompletní dokumentace způsobu komunikace s aplikací. Vytyčená funkcionalita byla implementována, otestována a aplikaci je možné nasadit a provozovat.
 	
