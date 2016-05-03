@@ -1477,9 +1477,30 @@ public void userEditTest() throws Exception {
 
 	\section{Chybové kódy}
 		\label{appdx:rest-error-codes}
+		V této sekci uvedu chybové kódy, které může aplikace vrátit. Formát odpovědi s chybovým kódem lze nalézt v sekci \ref{sec:responses}.
+		
 		\begin{description}
-			\item[1] Sometext
-			\item[2] Sometext			
+			\item[1] Uživatelské jméno již existuje.
+			\item[2] Parametry v požadavku jsou chybné. Chybí, nebo obsahují nepovolené hodnoty.
+			\item[3] Chybný parametr pro filtr v požadavku.
+			\item[4] Uživatel nemá požadovanou roli v úkolu -- není pracovníkem.
+			\item[5] Uživatel není účastníkem úkolu.
+			\item[6] Chybné přihlašovací údaje.
+			\item[7] Nelze nastavit deadline na rostoucím úkolu.
+			\item[8] Nelze upravit rychlost růstu rostoucího úkolu.
+			\item[9] Uživatel je již účastníkem úkolu.
+			\item[10] Uživatel není členem skupiny.
+			\item[11] Uživatel nemá dostatečná práva ve skupině.
+			\item[12] Uživatel není vlastníkem zadané nabídky.
+			\item[13] Uživatel, který vytvořil nabídku, již nemá dostatečná práva pro její uskutečnění. Pokud například Manažer skupiny pozve uživatele do skupiny a přestane být Manažerem dříve, než je nabídka přijata, pak nebude přijetí uskutečněno.
+			\item[14] Uživatel je již členem skupiny.
+			\item[15] Úkol je již sdílen se skupinou.
+			\item[16] Parametr \texttt{role} má chybnou hodnotu.
+			\item[17] Jméno skupiny již existuje.
+			\item[18] Úkol není sdílen se skupinou.
+			\item[19] Role Admina nemůže být změněna tímto způsobem.
+			\item[20] Admin nemůže být odebrán ze skupiny.
+			\item[21] Úkolu s deadlinem nemůže být vynulována urgentnost.
 		\end{description}
 		
 		
