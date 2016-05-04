@@ -1327,9 +1327,10 @@ public void userEditTest() throws Exception {
 	\section{Výsledky testování}
 		Celkem jsem při implementaci aplikace napsal více než 130 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Testy pokrývají všechny vytyčené funkce, které má aplikace nabízet, jak je popisují případy užití v sekci \ref{sec:usecases}. 
 		
-		Výsledná aplikace, přiložená k této práci, prošla 100\% automatizovaných testů a neobsahuje tak žádné známé chyby.
+		Případné chyby, které nebyly zachyceny automatizovanými testy, by mohly být odhaleny testováním aplikace samotnými uživateli. Takové testování jsem neprovedl, protože aplikace disponuje pouze rozhraním REST. Nenabízí žádné grafické rozhraní, které by mohlo být použité k manuálnímu testování i technicky nevzdělanými uživateli.
 		
-		Případné chyby, které nebyly zachyceny automatizovanými testy, by mohly být odhaleny testováním samotnými uživateli. Takové testování jsem neprovedl, protože aplikace disponuje pouze rozhraním REST. Nenabízí žádné grafické rozhraní, které by mohlo být použité k testování i technicky nevzdělanými uživateli.
+		
+		Výsledná aplikace, která je přiložena k této práci, uspěla ve 100 \% automatizovaných testů a neobsahuje tak žádné známé chyby.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1337,12 +1338,12 @@ public void userEditTest() throws Exception {
 \chapter{Nasazení}
 	\label{chapter:deployment}
 	
-	V této sekci se budu věnovat popisu toho, jak postupovat při nasazování aplikace Deadlines do provozu.
+	V této kapitole se budu věnovat popisu postupu při nasazování aplikace Deadlines do provozu.
 	
 	Aplikace je distribuována a může být nasazena dvěma způsoby:
 	\begin{itemize}
-		\item WAR archiv pro nasazení do servlet kontejneru (například Apache Tomcat)
-		\item Spustitelný JAR, obsahující vlastní webserver
+		\item WAR archiv pro nasazení do servlet kontejneru (například Apache Tomcat).
+		\item Spustitelný JAR, obsahující vlastní webserver.
 	\end{itemize}
 	
 	\section{Verze Java}
@@ -1359,7 +1360,7 @@ public void userEditTest() throws Exception {
 			\item Zkopírujte soubor \texttt{deadlines.war} do složky \texttt{\$CATALINA\_HOME/\allowbreak webapps/}.
 			\item Zkopírujte soubor \texttt{application.properties} do složky \texttt{\$CATALINA\_HOME/\allowbreak lib/\allowbreak deadlines/} a upravte potřebné informace.
 			\item Pokud jste v konfiguračním souboru nezvolili možnost automatického vytvoření schématu, spusťte v databázi inicializační skript \texttt{database\allowbreak \_init\allowbreak \_mysql.sql} pro vytvoření potřebných tabulek.
-			\item Spusťte server. Aplikace bude dostupná na adrese \texttt{<server>/deadlines}.
+			\item Spusťte server. Aplikace bude dostupná na adrese \texttt{<server>/deadlines} na portu nastaveném v konfiguraci serveru.
 		\end{enumerate}
 	
 	\section{Nasazení JAR archivu}
@@ -1368,7 +1369,7 @@ public void userEditTest() throws Exception {
 			\item Zkopírujte soubory \texttt{deadlines.jar} a \texttt{application.properties} do složky, odkud chcete aplikace spouštět.
 			\item Upravte konfigurační soubor.
 			\item Pokud jste v konfiguračním souboru nezvolili možnost automatického vytvoření schématu, spusťte v databázi inicializační skript \texttt{database\allowbreak \_init\allowbreak \_mysql.sql} pro vytvoření potřebných tabulek.
-			\item Spusťte aplikaci příkazem \texttt{java -jar deadlines.jar}.
+			\item Spusťte aplikaci příkazem \texttt{java -jar deadlines.jar}. Dostupná bude na adrese \texttt{http://localhost/deadlines} na portu nastaveném v konfiguračním souboru.
 		\end{enumerate}
 		
 	
@@ -1378,15 +1379,29 @@ public void userEditTest() throws Exception {
 
 
 \begin{conclusion}
-	Cílem této práce byla tvorba backend části aplikace, komunikující pomocí rozhraní REST, která má usnadňovat správu soukromých i sdílených úkolů jednotlivcům a malým týmům. Dílčími úkoly práce bylo provedení rešerše existujících řešení a formulování požadavků na aplikaci. Dále detailnější analýza požadavků a problémové domény, návrh řešení, jeho implementace a otestování správné funkčnosti.
+	Cílem této práce byla tvorba backend části aplikace, komunikující pomocí rozhraní REST, která má usnadňovat správu soukromých i sdílených úkolů jednotlivcům a malým týmům. Dílčími úkoly práce bylo provedení rešerše existujících řešení a formulování požadavků na aplikaci. Následovala detailnější analýza požadavků a problémové domény, návrh řešení včetně nabízených rozhraní, jeho implementace a otestování správné funkčnosti.
 	
-	Tady odstavce o jednotlivých bodech v metodice... %TODO
+	% Závěr podle struktury metodiky
+	
+	V rámci rešeršní části jsem představil několik existujících aplikací, rozdělených do kategorií podle jejich cílové skupiny. Tyto aplikace jsem popsal z hlediska funkčnosti, nabízených rozhraní a dalších kritérií. Na závěr jsem zvážil, jaké funkce těchto aplikací jsou pro mou cílovou skupinu důležité a mají být společně s koncepty urgentnosti a rostoucích úkolů zahrnuty i v mé aplikaci. 
+	
+	V analytické části jsem na základě shrnutí rešerše vytvořil uživatelské příběhy, které definují funkční požadavky kladené na navrhovanou aplikaci. Pomocí nich jsem následně vytvořil model případů užití, jenž detailněji popsal očekávané interakce mezi aplikací a uživateli. Dále jsem vypracoval doménový model, zachycující entity aplikace a vztahy mezi nimi.
+	
+	Na začátku návrhové části práce jsem se věnoval výběru technologií pro implementaci a specifikaci REST rozhraní nabízeného aplikací. Dále jsem popsal význam urgentnosti úkolu a postup při jejím výpočtu pro oba typy úkolů, způsob ukládání hesel, autentifikaci uživatelů a architekturu aplikace. Z architektury jsem vyšel při tvorbě návrhového modelu, ve kterém jsem popsal strukturu aplikace na úrovní balíčků a tříd, vysvětlil jsem jejich zodpovědnosti a vztah k architektuře aplikace. V závěru jsem vysvětlil, jakým způsobem budu aplikaci při vývoji testovat.
+	
+	Po návrhu následoval vývoj aplikace, jemuž jsem se věnoval v kapitole implementace. Zde jsem uvedl informace o použitém vývojovém prostředí a nástroji pro automatizované sestavování (build) aplikace. Dále jsem v této části popsal způsob řešení některých implementačních detailů spolu s úryvky zdrojových kódů a jejich vysvětlením. Kompletní zdrojové kódy jsou k dispozici na přiloženém CD.
+	
+	Během implementace jsem paralelně psal testy, kterým jsem se věnoval v kapitole testování. Zde jsem popsal, jakým způsobem jsem testoval jednotlivé třídy i funkčnost aplikace jako celku. Uvedl jsem a vysvětlil příklady kódu testovacích metod spolu se scénáři, na nichž jsou testy založeny. Na závěr jsem zhodnotil výsledky testů a poukázal na jejich možné nedostatky.
+	
+	V poslední části práce jsem uvedl, jaký software je nutný k používání aplikace a vysvětlil, jakým způsobem ji lze nasadit do provozu. 
+	
+	% Konec závěru podle struktury metodiky
 	
 	Cíl práce jsem ve stanoveném rozsahu splnil, aplikaci lze využívat podle případů užití definovaných během analýzy. Součástí práce je i kompletní dokumentace způsobu komunikace s aplikací. Vytyčená funkcionalita byla implementována, otestována a aplikaci je možné nasadit a provozovat.
 	
-	Jelikož se jedná jen o serverovou část aplikace bez grafického rozhraní, je možnost jejího využití uživateli v současné podobě omezena. Představuje ale základní stavební prvek s dobře definovaným rozhraním komunikace, který lze rozšiřovat a integrovat s dalšími klientskými moduly.
+	Nedostatkem vytvořeného řešení je absence rolí uživatelů v rámci aplikace. Nelze tak určit administrátory s vyššími právy, kteří by se měli o její chod starat. To je spolu s klienty, nabízejícími grafické uživatelské rozhraní, možným námětem pro budoucí vývoj.
 	
-	Nedostatkem vytvořeného řešení je absence rolí uživatelů v rámci aplikace. Nelze tak určit administrátory s vyššími právy, kteří by se měli o její chod starat. To je, spolu s grafickým uživatelským rozhraním, námětem pro budoucí vývoj.
+	Jelikož se jedná jen o serverovou část aplikace bez grafického rozhraní, je možnost jejího využití uživateli v současné podobě omezena. Představuje ale základní stavební prvek s dobře definovaným rozhraním komunikace, který lze rozšiřovat a integrovat s klientskými aplikacemi.
 	
 	
 	 
