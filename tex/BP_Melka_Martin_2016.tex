@@ -1179,7 +1179,7 @@ public ResponseEntity editUser(
 	
 	V této kapitole popíšu, jakým způsobem jsem řešil testování aplikace při jejím vývoji tak, jak bylo popsáno v sekci \ref{sec:testing-theory}. 
 
-	Pro manuální spuštění testů na příkazové řádce je nejprve nutné nastavit cestu v systému, kde se má vytvořit testovací databáze. Konfigurace testovacího prostředí je umístěna v \texttt{src/test/resources/application.properties}. V tomto souboru je potřeba upravit položku \texttt{spring.datasource.url}, aby ukazovala na místo na disku, kam lze zapisovat. Testy se poté spustí příkazem \texttt{mvn test}.
+	Pro manuální spuštění testů na příkazové řádce je potřeba mít nainstalovaný nástroj Maven a JDK verze alespoň 1.8. Spuštění testů se provede příkazem \texttt{mvn clean test} v adresáři \texttt{project}.
 	
 	\section{Mockito}
 		Pro jednotkové testy jsem využil nástroj \textit{Mockito}, který umožňuje jednoduše vytvořit \uv{napodobeninu} objektu, definovat u ní chování a poté kontrolovat, jaké její metody s jakými parametry byly zavolány.
@@ -1325,7 +1325,7 @@ public void userEditTest() throws Exception {
 
 		
 	\section{Výsledky testování}
-		Celkem jsem při implementaci aplikace napsal více než 130 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Testy pokrývají všechny vytyčené funkce, které má aplikace nabízet, jak je popisují případy užití v sekci \ref{sec:usecases}. 
+		Celkem jsem při implementaci aplikace napsal více než 150 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Testy pokrývají všechny vytyčené funkce, které má aplikace nabízet, jak je popisují případy užití v sekci \ref{sec:usecases}. 
 		
 		Případné chyby, které nebyly zachyceny automatizovanými testy, by mohly být odhaleny testováním aplikace samotnými uživateli. Takové testování jsem neprovedl, protože aplikace disponuje pouze rozhraním REST. Nenabízí žádné grafické rozhraní, které by mohlo být použité k manuálnímu testování i technicky nevzdělanými uživateli.
 		
@@ -1666,12 +1666,12 @@ public void userEditTest() throws Exception {
 			\begin{Verbatim}[obeytabs,tabsize=2]
 {
 	"name": "task name",
-	"description":"task description",
+	-"description":"task description",
 	"priority": "LOW",
 	"workEstimate": "13",
 	"deadline":"2016-05-17 13:15",
 	"hoursToPeak":"3",
-	"groupIds":"1,3,8"
+	-"groupIds": [1, 3, 8]
 }
 			\end{Verbatim}
 			Požadavek musí mít vyplněno právě jedno z polí \texttt{deadline} a \texttt{hoursToPeak}. Podle nich se určí typ vytvořeného úkolu.
@@ -1742,7 +1742,12 @@ public void userEditTest() throws Exception {
 		"lastUpdate": "2016-05-06 16:17",
 		"value": 87.50850024146979
 	},
-	"workReports": [],
+	"workReports": [
+		{
+			"manhours": 10.2,
+			"userId": 1
+		}
+	],
 	"participants": [
 		{
 			"solo": true,
