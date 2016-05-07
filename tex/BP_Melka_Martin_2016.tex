@@ -38,7 +38,7 @@
 
 \newcommand{\forwatchers}{Povoleno jen pro Pozorovatele úkolu.}
 \newcommand{\forworkers}{Povoleno jen pro Pracovníky úkolu.}
-\newcommand{\foradmin}{Povoleno jen pro Admina skupiny.}
+\newcommand{\foradmin}{Povoleno jen pro Administrátora skupiny.}
 \newcommand{\formanagers}{Povoleno jen pro Manažery skupiny.}
 \newcommand{\formembers}{Povoleno jen pro Členy skupiny.}
 % _________________________________________________________________________
@@ -680,6 +680,8 @@
 	\label{chapter:design}
 	
 	V této kapitole představím technologie zvolené k vypracování aplikace a navrhnu REST API, které bude aplikace nabízet. Dále se budu věnovat architektuře aplikace, návrhovému modelu tříd a databázovému modelu. Tím vytvořím podklad pro následující implementaci prototypu aplikace pomocí zvolených technologií.
+	
+	Název aplikace vytvořené v rámci této práce bude \textit{Deadlines}.
 
 	\section{Technologie}
 	
@@ -689,14 +691,14 @@
 			Oproti jazykům C/C++ navíc Java disponuje automatickou správou paměti, nazvanou \textit{garbage collection}, takže vývojáři se nemusí tolik starat o životní cyklus objektů a následné \textit{memory leaks}. \cite{what-is-java} \cite{pjv-java}
 		
 		\subsection{Spring}
-			Spring je framework, který zjednodušuje tvorbu enterprise aplikací v Javě. \cite{spring} Jednou z výhod Springu je jeho podpora návrhového vzoru \textit{dependency injection}, díky kterému je program lépe modularizovatelný, testovatelný a znovupoužitelný.\cite{dependency-injection}
+			Spring je framework, který zjednodušuje tvorbu enterprise aplikací v Javě. \cite{spring} Jednou z výhod tohoto nástroje je jeho podpora návrhového vzoru \textit{dependency injection}, díky kterému je program lépe modularizovatelný, testovatelný a znovupoužitelný.\cite{dependency-injection}
 			
-			Další součástí Springu je webový modul \textit{Web MVC framework}. \cite{spring-mvc-framework} Ten umožňuje tvorbu webových aplikací podle architektonického vzoru MVC. Je také možné využít ho pro tvorbu \textit{RESTful} aplikace, což je cílem implementační části této práce.
+			Další součástí frameworku Spring je webový modul \textit{Web MVC framework}. \cite{spring-mvc-framework} Ten umožňuje tvorbu webových aplikací podle architektonického vzoru MVC. Je také možné využít ho pro tvorbu \textit{RESTful} aplikace, což je cílem implementační části této práce.
 			
 			\subsubsection{Spring Boot}
-				Nadstavbou k frameworku Spring je projekt Spring Boot. \cite{spring-boot} Vztah mezi Spring a Spring Boot je zobrazen na obrázku \ref{pic:spring-boot}. Byl vyvinut k usnadnění tvorby Spring aplikací. Představuje více \uv{dogmatický} (\textit{opinionated}) pohled na Spring, což znamená, že od vývojáře očekává \uv{standardní} chování podle zaběhlých postupů. \cite{opinionated-software} Vývojáře za to ale odstiňuje od nutnosti (nejen) počáteční konfigurace a nabízí navíc některé funkce, jako \textit{embedded server}, bezpečnost, metriky, kontrolu stavu aplikace a další. V případě, že výchozí konfigurace nevyhovuje, je možné si ji ručně přizpůsobit. \cite{spring-boot-blog}
+				Nadstavbou k frameworku Spring je projekt Spring Boot. \cite{spring-boot} Vztah mezi nástroji Spring a Spring Boot je zobrazen na obrázku \ref{pic:spring-boot}. Byl vyvinut k usnadnění tvorby Spring aplikací, hlavně v jejích počátečních fázích. Představuje více \uv{dogmatický} (\textit{opinionated}) pohled na Spring, což znamená, že od vývojáře očekává \uv{standardní} chování podle zaběhlých postupů. \cite{opinionated-software} Vývojáře odstiňuje od nutnosti (nejen) počáteční konfigurace a nabízí navíc některé funkce, jako například vestavěný server \textit{embedded server}, distribuovaný ve výsledném balíčku aplikace. V případě, že konfigurace, kterou Spring Boot poskytuje nevyhovuje, je možné si ji ručně přizpůsobit. \cite{spring-boot-blog}
 				
-				Spring Boot také umožňuje sestavit aplikaci do podoby jednoho JAR souboru (\uv{\textit{fat jar}}), který obsahuje vše, co je nutné k jejímu spuštění. Není tedy potřeba mít pro nasazení zprovozněný aplikační server, jako například Tomcat či GlassFish. Stále je ale možné aplikaci sestavit do WAR souboru a vlastní server použít.
+				Spring Boot také umožňuje sestavit aplikaci do podoby jednoho JAR souboru (\uv{\textit{fat jar}}), který obsahuje vše, co je nutné k jejímu spuštění. Díky vestavěnému serveru není nutné mít vlastní aplikační server, jako například Tomcat či GlassFish. Lze zvolit způsob distribuce aplikace, takže je možné ji zabalit i do WAR souboru a nasadit na existujícím serveru.
 				
 				\begin{figure}\centering
 					\includegraphics[width=0.5\textwidth]{spring-boot.png}
@@ -705,12 +707,12 @@
 				\end{figure}
 				
 		\subsection{Hibernate}
-			Hibernate \cite{hibernate} je framework pro platformu Java, usnadňující persistenci dat. Jedná se o nástroj pro ORM (objektově-relační mapování), který se stará o transformaci objektů aplikace do podoby vhodné pro uložení do relační databáze, jejich uložení, a následné načtení a transformaci z databáze zpět na objekty. Způsob mapování objektů do databáze lze nastavit buď v konfiguračním XML souboru, nebo přímo ve zdrojovém kódu anotacemi.
+			Hibernate \cite{hibernate} je framework pro platformu Java, usnadňující řešení persistence (uchovávání) dat. Jedná se o nástroj pro ORM (objektově-relační mapování), který se stará o transformaci objektů aplikace do podoby vhodné pro uložení do relační databáze, jejich uložení, a následné načtení a transformaci z databáze zpět na objekty. Způsob mapování objektů do databáze lze nastavit buď v konfiguračním XML souboru, nebo přímo ve zdrojovém kódu anotacemi.
 			
-			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny uložiště. Kód aplikace komunikuje s jeho API stejným způsobem, nehledě na typ databáze, ke které je připojen.
+			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny uložiště. Kód aplikace komunikuje s API Hibernate stejným způsobem, nehledě na typ databáze, ke které je framework připojen.
 		
 		\subsection{MySQL}
-			Persistence dat aplikace bude zprostředkována relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace.
+			Uložení dat aplikace bude zprostředkováno relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace a nasazení.
 			
 		\subsection{Apache Tomcat}
 			Pro nasazení aplikace bude použit server Apache Tomcat. \cite{tomcat} Je nenáročný na hardware a jednoduchý na zprovoznění. 
@@ -722,18 +724,18 @@
 		\subsection{API}
 			API (\textit{Application Programming Interface}) slouží k jednoduché a spolehlivé komunikaci mezi aplikacemi nebo moduly aplikace. API představuje kontrakt, kterým se \textit{producent} zavazuje k nabízení svých služeb v dané zdokumentované podobě, jež mohou být využity \textit{konzumenty}.
 			
-			Autoři knihy \textit{APIs: A Strategy Guide} \cite{apis-a-strategy-guide} definují API takto: (Přeloženo mnou z anglického originálu.)
+			Autoři knihy \textit{APIs: A Strategy Guide} \cite{apis-a-strategy-guide} definují API takto (přeloženo mnou z anglického originálu):
 			
 			\textit{API je v podstatě kontrakt. Ve chvíli, kdy tento kontrakt existuje, vývojáři tíhnou k využívání API, protože ví, že se na něj mohou spolehnout. Kontrakt zvyšuje důvěru, což zlepšuje použitelnost. Tento kontrakt také zefektivňuje spojení mezi producentem a konzumentem, protože rozhraní jsou dokumentována, jsou konzistentní a předvídatelná.} 
 	
 		\subsection{REST}
-			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci. \cite{rest-dissertation} Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (resources). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
+			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci. \cite{rest-dissertation} Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (\textit{resources}). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
 			Zdroje v kontextu REST jsou identifikované pomocí URI a komunikovány mezi klientem a serverem v podobě reprezentací v libovolné textové, strojově zpracovatelné podobě (například JSON nebo XML). \cite{rest-youtube}
 			
 			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
 			
 		\subsection{REST API aplikace Deadlines}
-			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze v sekci \ref{appdx:restapi}. Zde uvedu možné odpovědi aplikace na požadavky, dostupné \textit{endpoints} a popíšu jejich funkci. 
+			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze v sekci \ref{appdx:restapi}. Zde uvedu možné odpovědi aplikace na požadavky, dostupné koncové body (\textit{endpoints}) a popíšu jejich funkci. 
 			
 			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
@@ -741,7 +743,7 @@
 			
 			\subsubsection{Odpovědi}
 			\label{sec:responses}
-			Každý \textit{endpoint} odpovídá na požadavek odpovědí, která obsahuje standardní HTTP kód popisující, jak volání dopadlo, a případně tělo. Zde jsou některé z HTTP kódů:
+			Každý koncový bod odpovídá na požadavek odpovědí, která obsahuje standardní HTTP kód popisující, jak volání dopadlo, a případné tělo obsahující data odpovědi. Zde krátce popíšu některé z HTTP kódů:
 			\begin{description}
 				\item[200 OK] Požadavek proběhl v pořádku.
 				\item[201 CREATED] Požadovaný objekt či záznam byl vytvořen. V hlavičce odpovědi s názvem \textit{Location} je uvedena relativní cesta k nově vytvořenému zdroji.
@@ -751,6 +753,8 @@
 				\item[404 NOT FOUND] Požadovaný zdroj nebyl nalezen.
 				\item[409 CONFLICT] Objekt či záznam nemohl být vytvořen, protože již existuje.
 			\end{description}
+			Přehled všech HTTP kódů je k dispozici na stránkách W3 \cite{http-codes-w3}.
+			
 			Chybové odpovědi mohou obsahovat v těle odpovědi další informace o chybě. Tělo má následující formát:
 				\begin{Verbatim}[obeytabs,tabsize=2]
 {
@@ -758,13 +762,15 @@
 	"errorMessage": "Sample error message."
 }
 				\end{Verbatim}
-				Výčet možných chybových kódů se nachází v příloze v sekci \ref{appdx:rest-error-codes}.
+				Výčet možných chybových kódů aplikace se nachází v příloze v sekci \ref{appdx:rest-error-codes}.
 			
 			\hfill \\
 			
 			
-			\subsubsection{Endpointy}
+			\subsubsection{Koncové body}
 			\label{sec:rest-api}
+			V této sekci popisuji všechny koncové body (\textit{endpoints}) nabízené aplikací. U každého koncového bodu uvádím jeho adresu, povolené HTTP metody a jeho funkci. Detailní popis všech koncových bodů, jejich parametrů a formátu požadavků a odpovědí je k dispozici v příloze v sekci \ref{appdx:restapiEndpoints}.
+			
 			\begin{description}			
 			\item[\texttt{/user [GET, POST]}] \hfill \\
 				GET vrátí seznam všech uživatelů v systému. \\
@@ -776,8 +782,8 @@
 				GET vrátí informace uživatele s ID \texttt{user\_id}. \\
 				PUT upraví profil uživatele s ID \texttt{user\_id} předanými daty. Povoleno je měnit pouze profil volajícího uživatele.
 			
-			\item[\texttt{/task[\{?filter\&order\}] [GET, POST]}] \hfill \\
-				GET vrátí seznam všech úkolů volajícího uživatele, které odpovídají zadaným parametrům. Detailní popis možných parametrů je dostupný v příloze v sekci \ref{appdx:restapi}. \\
+			\item[\texttt{/task [GET, POST]}] \hfill \\
+				GET vrátí seznam všech úkolů volajícího uživatele, které odpovídají zadaným parametrům. \\
 				POST vytvoří nový úkol z poskytnutých dat. Volající uživatel se stane jeno Pozorovatelem.
 			
 			\item[\texttt{/task/\{task\_id\} [GET, PUT]}] \hfill \\
@@ -793,13 +799,13 @@
 			\item[\texttt{/task/leave/\{task\_id\} [POST]}] \hfill \\
 				Odebere volajícího uživatele z úkolu se zadaným ID. 
 			
-			\item[\texttt{/task/role/\{task\_id\}\{?newRole[\&targetUser\&targetGroup]\} [POST]}] \hfill \\
-				Nastaví roli volajícího uživatele v úkolu se zadaným ID na roli předanou v parametru \texttt{newRole}. Pozorovatel se tak může stát Pracovníkem a naopak. 
+			\item[\texttt{/task/role/\{task\_id\} [POST]}] \hfill \\
+				Nastaví roli volajícího uživatele v úkolu se zadaným ID na roli předanou v parametru. Pozorovatel se tak může stát Pracovníkem a naopak. 
 				
 				Volitelně lze také zadat ID skupiny a uživatele, jehož se má volání týkat. Pokud je volající uživatel Manažerem zadané skupiny a cílový uživatel jejím členem, pak je Manažerovi umožněno změnit roli uživatele.
 			
 			\item[\texttt{/task/report/\{task\_id\} [POST]}] \hfill \\
-				Vytvoří záznam o odvedené práci od volajícího uživatele na úkolu s předaným ID. Detaily záznamu jsou obsaženy v těle požadavku. \forworkers
+				Vytvoří záznam o odvedené práci volajícím uživatelem na úkolu s předaným ID. Detaily záznamu jsou obsaženy v těle požadavku. \forworkers
 				
 			\item[\texttt{/offer/task/user [GET]}] \hfill \\
 				Vrátí seznam nabídek ke sdílení úkolu pro volajícího uživatele.
@@ -819,9 +825,9 @@
 			\item[\texttt{/offer/membership/resolve/\{membership\_offer\_id\} [POST]}] \hfill \\
 				Přijme nebo zamítne nabídku ke vstupu do skupiny s předaným ID.  Volající uživatel musí být příjemcem nabídky.
 			
-			\item[\texttt{/group\{?role\} [GET, POST]}] \hfill \\
-				GET vrátí seznam skupin v aplikaci. Volitelný parametr \texttt{role} určuje, zda vracet všechny skupiny, nebo jen ty, jichž je volající členem v zadané roli. \\
-				POST vytvoří novou skupinu z informací předaných v těle požadavku. Volající uživatel se stane jejím Adminem.
+			\item[\texttt{/group [GET, POST]}] \hfill \\
+				GET vrátí seznam skupin v aplikaci. Parametrem lze určit, zda vracet všechny skupiny, nebo jen ty, jichž je volající členem s danou roli. \\
+				POST vytvoří novou skupinu z informací předaných v těle požadavku. Volající uživatel se stane jejím Administrátorem.
 			
 			\item[\texttt{/group/\{group\_id\} [GET, PUT, DELETE]}] \hfill \\
 				GET vrátí detaily skupiny se zadaným ID. \formembers \\
@@ -832,7 +838,7 @@
 				Zašle nabídku ke vstupu do skupiny se zadaným ID uživatelům předaným v těle požadavku. \formanagers
 
 			\item[\texttt{/group/\{group\_id\}/member/\{user\_id\} [PUT, DELETE]}] \hfill \\
-				PUT upraví záznam o členovi skupiny, identifikovaného jeho ID. Změní jeho roli ve skupině na tu předanou v těle požadavku. \formanagers \\
+				PUT upraví záznam o členovi skupiny, identifikovaného jeho ID. Změní jeho roli ve skupině na tu předanou v požadavku. \formanagers \\
 				DELETE Odebere uživatele s ID \texttt{user\_id} ze skupiny s ID \texttt{group\_id}. \formanagers
 			
 			\item[\texttt{/group/\{group\_id\}/task/\{task\_id\} [DELETE]}] \hfill \\
@@ -845,7 +851,7 @@
 	\section{Urgentnost}
 		Jedním z funkčních požadavků je výpočet \textit{urgentnosti} úkolů. Ta má vyjadřovat důležitost úkolu v daném momentě a má pomoct uživateli rozhodnout se, na kterém úkolu bude pracovat. Čím vyšší hodnota, tím je nutnější se danému úkolu věnovat. Výpočet hodnoty urgentnosti bude záviset na typu úkolu. Způsob výpočtu pro oba typy úkolů popíšu ve zbytku této sekce.
 		
-		Hodnota urgentnosti bude reálné číslo v intervalu $\langle 0; 200 \rangle$. Hodnota 100 značí, že by měl uživatel na úkolu začít pracovat v tuto chvíli. Např. pro úkol s deadlinem urgentnost 100 znamená, že do deadlinu v tuto chvíli zbývá stejně času, jako je odhad zbývající pracnosti úkolu.
+		Hodnota urgentnosti bude reálné číslo v intervalu $\langle 0; 200 \rangle$. Hodnota 100 značí, že by měl uživatel na úkolu začít pracovat v tuto chvíli. Např. pro úkol s termínem urgentnost 100 znamená, že do termínu v tuto chvíli zbývá stejně času, jako je odhad zbývající pracnosti úkolu.
 	
 		\subsection{Rostoucí úkol}
 			Rostoucí úkol obsahuje informaci o rychlosti růstu urgentnosti. Tato hodnota představuje, za kolik hodin má být urgentnost rovna 100. Růst urgentnosti je lineární a řídí se vztahem
@@ -855,21 +861,21 @@
 			kde $u$ je hodnota urgentnosti, $h$ je rychlost růstu a $z$ je počet hodin, které uběhly od vytvoření či vynulování úkolu.
 		
 		
-		\subsection{Úkol s deadlinem}
-			Úkol s deadlinem dosáhne urgentnosti 100, pokud do deadlinu zbývá přesně tolik času, jako je odhadovaná pracnost úkolu.
+		\subsection{Úkol s termínem}
+			Úkol s termínem dosáhne urgentnosti 100, pokud do termínu splnění zbývá přesně tolik času, jako je odhadovaná pracnost úkolu.
 		
-			Pro úkol s deadlinem definuji rezervu $r$ následujícím způsobem:
+			Pro úkol s termínem definuji rezervu $r$ následujícím způsobem:
 			\begin{equation}
 				r = \frac{t}{w} + \frac{t}{d}
 			\end{equation}
-			kde $t$ je čas do deadlinu v hodinách, $w$ je zbývající pracnost v hodinách a $d$ je konstanta. Experimentálně jsem stanovil, že $d=5$. 
+			kde $t$ je čas zbývající do termínu splnění v hodinách, $w$ je zbývající pracnost v hodinách a $d$ je konstanta. Experimentálně jsem stanovil, že $d=5$. 
 			
-			První zlomek udává, v jakém poměru je zbývající čas ku pracnosti. Například pokud do deadlinu zbývá 8 hodin a zbývající pracnost je 2 hodiny, výsledkem bude 4. Druhý zlomek slouží k úpravě rezervy v závislosti na zbývajícím čase. Čím méně času zbývá, tím menší bude tento člen. To z důvodu, aby rezerva u úkolu, kterému zbývá více času, byla větší, než u úkolu, který má času méně, i když jsou poměry času ku práci stejné. 
-			K této úpravě jsem přistoupil, protože chci, aby úkoly blíže deadlinu měly větší urgentnost než stejně rozpracované úkoly dále od deadlinu.
+			První zlomek udává, v jakém poměru je zbývající čas ku pracnosti. Například pokud do termínu zbývá 8 hodin a zbývající pracnost je 2 hodiny, výsledkem bude 4. Druhý zlomek slouží k úpravě rezervy v závislosti na zbývajícím čase. Čím méně času zbývá, tím menší bude tento člen. To z důvodu, aby rezerva u úkolu, kterému zbývá více času, byla větší, než u úkolu, který má času méně, i když jsou poměry času ku práci stejné. 
+			K této úpravě jsem přistoupil, protože chci, aby úkoly blíže termínu měly větší urgentnost než stejně rozpracované úkoly dále od termínu.
 			
 			Chci, aby hodnota urgentnosti rostla nejrychleji s rezervou pohybující se kolem čísla 1; urgentnost úkolů s velkou kladnou nebo zápornou rezervou není tak důležitá, jako urgentnost těch úkolů, na kterých by uživatel měl začít pracovat v tuto chvíli -- ty mají rezervu blízko číslu 1. 
 			
-			Urgentnost úkolu s deadlinem se tak řídí následující funkcí:
+			Urgentnost úkolu s termínem se tak řídí následující funkcí:
 				\begin{equation}
 				f(r)=
 				\begin{cases}
@@ -877,15 +883,15 @@
 					a^{r-1}\cdot b + c& \text{pro } r\geq 0
 				\end{cases}
 				\end{equation}
-			kde $a$, $b$ a $c$ jsou konstanty, zvolené jako $a=1.1$, $b=100$, $c=0$.
+			kde $a$, $b$ a $c$ jsou konstanty, které jsem empiricky zvolil jako $a=1.1$, $b=100$, $c=0$.
 
-			Urgentnost úkolu nezávisí na jeho prioritě. Vzorec pro urgentnost lze ale jednoduše upravit tak, aby se priorita zohlednila, a to dosazením odpovídající hodnoty za $c$.
+			Urgentnost úkolu nezávisí na jeho prioritě. Vzorec pro urgentnost lze ale jednoduše upravit tak, aby se priorita zohlednila, a to dosazením různých hodnot v závislosti na prioritě do proměnné $c$.
 			
 			Graf hodnoty urgentnosti vzhledem k rezervě je zobrazen na obrázku \ref{urgency-plot}.
 			
 			\begin{figure}\centering
 				\includegraphics[width=0.7\textwidth]{resources/urgency-plot.png}
-				\caption[Urgentnost úkolu s deadlinem]{Funkce urgentnosti pro úkol s deadlinem}
+				\caption[Urgentnost úkolu s termínem]{Funkce urgentnosti pro úkol s termínem}
 				\label{urgency-plot}
 			\end{figure}
 			
@@ -911,42 +917,28 @@
 		
 		Diagram architektury aplikace je zobrazen v příloze, na obrázku \ref{diagram:component-model}. 
 		
-		%TODO - chci popisovat komponenty? 
-		%\subsubsection{Controllers}
-		%\subsubsection{Bakground Jobs}
-		%\subsubsection{Security}
-		%\subsubsection{Business Services}
-		%\subsubsection{Model}
-		%\subsubsection{Data Access}
-		%\subsubsection{Hibernate}
-		%\subsubsection{Relational Database}				
-	
-	
-	
-	
-	
 	\section{Návrhový model}
 		V této sekci se budu věnovat návrhovému modelu tříd a jeho popisu. Ten vychází z analytického modelu, rozšiřuje množství tříd a doplňuje implementační detaily. Mezi ně patří atributy a jejich typy, metody, viditelnost. Definují se zde také rozhraní, typy tříd a aplikují návrhové vzory. \cite{navrhovy-model}
 		
 		Ve zbytku této sekce budu popisovat jednotlivé části návrhového modelu. Obrázek zobrazující všechny třídy, rozdělené do balíčků (\textit{packages}), je k dispozici v příloze, diagram \ref{diagram:packages-root}.
 		
 		\subsection{Balíček \texttt{config}}
-			Tento balíček obsahuje třídy využívané napříč celou aplikací. Jsou zde definovány hodnoty chybových kódů a zpráv, \textit{Beans} pro využití frameworkem Spring a nastavení pravidel pro autentifikaci na \textit{endpointech} aplikace.
+			Tento balíček obsahuje konfigurační třídy využívané napříč celou aplikací. Jsou zde definovány hodnoty chybových kódů a zpráv, \textit{Beans} pro využití frameworkem Spring a nastavení pravidel pro autentifikaci na \textit{endpointech} aplikace.
 			
 		\subsection{Balíček \texttt{controllers}}
 			Tento balíček reprezentuje vrstvu \textit{Controllers} v architektuře aplikace. Třídy \texttt{Controller} jsou zodpovědné za zpracování příchozích požadavků a zasílání odpovědí. Ověří autentifikaci požadavku a poté ho v odpovídajícím formátu delegují na vrstvu \textit{Business Service}. Odpoveď této vrstvy v odpovídajícím tvaru pošlou zpět.
 			
-			Třída \texttt{JsonViews} definuje hierarchii rozhraní, kterými lze filtrovat množství informací, které controller posílá v odpovědi.
+			Třída \texttt{JsonViews} definuje hierarchii rozhraní, kterými lze filtrovat množství informací, které mají být zasílány v odpovědi.
 			
 			Balíček \texttt{httpbodies} obsahuje definice \textit{POJO} objektů, které reprezentují strukturu těl požadavků a odpovědí.
 			
 		\subsection{Balíček \texttt{exceptions}}
-			Zde se nacházejí třídy vyjímek aplikace.
+			V tomto balíčku se nacházejí třídy výjimek aplikace.
 			
 		\subsection{Balíček \texttt{dao}}
 			Balíček reprezentuje vrstvu \textit{Data Access}, obsahuje třídy zprostředkovávající persistenci dat.
 			
-			Každá entita modelu zde má odpovídající podbalíček, který obsahuje rozhraní a třídy využité při jejím ukládání a načítání. Jeden z těchto podbalíčků, \texttt{group}, je zobrazen na obrázku \ref{diagram:package-dao}. Rozhraní \texttt{GroupDAO} definuje metody, které jsou nabízeny ostatním komponentám aplikace pro ukládání a načítání objektů \texttt{Group} z databáze. Třída \texttt{GroupDAOHibernate} je konkrétní implementací tohoto rozhraní, které využívá \textit{Hibernate}. Rozhraní \texttt{GroupRepository} představuje způsob komunikace právě s frameworkem \textit{Hibernate}.
+			Každá entita modelu zde má odpovídající podbalíček, který obsahuje rozhraní a třídy využité při jejím ukládání a načítání. Jeden z těchto podbalíčků, \texttt{group}, je zobrazen na obrázku \ref{diagram:package-dao}. Rozhraní \texttt{GroupDAO} definuje metody, které jsou nabízeny ostatním komponentám aplikace pro ukládání a načítání objektů \texttt{Group} z databáze. Třída \texttt{GroupDAOHibernate} je konkrétní implementací tohoto rozhraní, které využívá \textit{Hibernate}. Rozhraní \texttt{GroupRepository} realizuje komunikaci s frameworkem \textit{Hibernate}.
 			
 			Balíček \texttt{processing} obsahuje třídy a rozhraní, které umožňují filtrování a řazení načítaných dat.
 			
@@ -959,7 +951,7 @@
 		\subsection{Balíček \texttt{services}}
 			Detailní pohled na balíček je na obrázku \ref{diagram:package-services}. 
 			
-			Služby v balíčku reprezentují vrstvu \textit{Business Services}. Balíček obsahuje rozhraní definující operace, které je možné v aplikaci provádět, a v podbalíčku \texttt{implementation} třídy, které ho implementují.
+			Služby v balíčku reprezentují vrstvu \textit{Business Services}. Balíček obsahuje rozhraní definující operace, které je možné v aplikaci spouštět, a v podbalíčku \texttt{implementation} třídy, které je implementují.
 			
 			Podbalíček \texttt{security} obsahuje interní služby pro autentifikování příchozích požadavků a pro kontrolu, zda mají volající uživatelé dostatečná práva k provádění požadovaných akcí.
 			
@@ -978,7 +970,7 @@
 			Zde jsou zařazeny pomocné třídy, které nabízí různé statické metody, využívané zejména při testování.
 			
 		\subsection{Balíček \texttt{model}}
-			Tento balíček odpovídá stejnojmenné komponentě z diagramu architektury. Obsahuje třídy, které reprezentují business entity aplikace, analyzované v sekci \ref{sec:domain-model}. Třídy v sobě drží informace prostřednictvím atributů a relací k dalším třídám tohoto balíčku. Mají jen základní metody pro čtení a ukládání atributů. Veškerá manipulace se vztahy mezi třídami a udržování konzistentních referencí v případě obousměrných vztahů je zodpovědností \textit{Business Services} vrstvy. 
+			Tento balíček odpovídá stejnojmenné komponentě z diagramu architektury. Obsahuje třídy, které reprezentují business entity aplikace, analyzované v sekci \ref{sec:domain-model}. Třídy v sobě uchovávají informace prostřednictvím atributů a relací k dalším třídám tohoto balíčku. Mají jen základní metody pro čtení a ukládání atributů. Veškerá manipulace se vztahy mezi třídami a udržování konzistentních referencí v případě obousměrných vztahů je zodpovědností \textit{Business Services} vrstvy. 
 			
 			Diagram popisující detaily tříd a vztahy mezi nimi je zobrazen v příloze, na obrázku \ref{diagram:class-model}.
 			
@@ -1003,7 +995,7 @@
 		
 		Pro uložení třídy \texttt{Offer} jsem zvolil druhý způsob. Všechny podtypy mají společný atribut identifikující uživatele, který jej vytvořil, ale v ostatních atributech se liší. Proto má každý podtyp svou vlastní tabulku.
 		
-		Inicializační SQL skript pro vytvoření databáze je přiložen na médiu.
+		Inicializační SQL skript pro vytvoření databáze je přiložen na elektronickém médiu.
 	
 	\section{Testování}
 		\label{sec:testing-theory}
@@ -1016,7 +1008,7 @@
 			JUnit lze použít samostatně bez spuštění Spring kontejneru, kdy se programátor musí postarat o inicializaci všech testovaných komponent, nebo v kombinaci s ním. V tom případě je dostupná veškerá funkcionalita jako za běhu aplikace, zejména \textit{dependency injection}.
 			
 			\subsubsection{Mockito}
-			Mockito \cite{mockito} je nástroj pro vytváření \textit{mock} objektů. To jsou jednoduché \uv{kopie} objektů s pevně daným chováním. Jejich účelem je izolování testované komponenty tak, aby veškeré testované chování pocházelo od ní a ne jejích závislostí.
+			Mockito \cite{mockito} je nástroj pro vytváření \textit{mock} objektů. To jsou jednoduché \uv{kopie} objektů s pevně daným chováním. Jejich účelem je izolování testované komponenty tak, aby veškeré testované chování a případné chyby pocházely od ní a ne jejích závislostí.
 		
 		\subsection{Jednotkové testy}
 			Jednotkové testy jsou určené k testování nejmenších možných částí aplikace. Těmi jsou zpravidla jednotlivé třídy a jejich metody. Testy pak kontrolují, jestli se třída chová tak, jak by měla. Třídy, na nichž je testovaná část závislá, se zpravidla nahrazují \textit{mock} objekty.
@@ -1030,7 +1022,7 @@
 			
 			Při každém scénáři testování nejprve vytvořím počáteční, známý stav entit v aplikaci. Poté simuluji scénáře užití částí aplikace uživatelem, například zakládání skupin a úkolů, zasílání nabídek jiným uživatelům, přijímání nabídek a podobně. V průběhu scénáře ověřuji, že stav entit v aplikaci je takový, jaký očekávám.
 			
-			Při integračním testování vrstvy \textit{Controllers} u každého \textit{endpointu} simuluji zasílání validních i nevalidních požadavků a kromě kontroly změn v entitách testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
+			Při integračním testování vrstvy \textit{Controllers} u každého koncového bodu simuluji zasílání validních i nevalidních požadavků a kromě kontroly změn v entitách testuji, zda návratový kód a tělo odpovědi odpovídá tomu, co očekávám.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1502,6 +1494,7 @@ public void userEditTest() throws Exception {
 		
 		
 	\section{Endpointy}
+		\label{appdx:restapiEndpoints}
 		V této části uvedu pro každý API endpoint detaily o formátu požadavku a odpovědi. Uvedené odpovědi předpokládají, že požadavek proběhl bez chyby. Pokud není uvedeno jinak, HTTP kód odpovědi je 200 OK. V případě chyby při zpracování požadavku aplikace vrací odpovídající chybový HTTP kód a v těle případně detaily chyby, jak jsem popsal v sekci \ref{sec:responses}.
 		
 		Nepovinná pole v požadavku jsou označena symbolem \texttt{-}.
