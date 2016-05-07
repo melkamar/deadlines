@@ -1030,30 +1030,30 @@
 \chapter{Implementace}
 	\label{chapter:implementation}
 	
-	V této kapitole se budu věnovat bližšímu popisu průběhu implementace aplikace. % TODO
+	V této kapitole se věnuji bližšímu popisu průběhu implementace aplikace. V jednotlivých sekcích kapitoly komentuji některé aspekty implementace a uvádím příklady kódu. Kompletní zdrojový kód je přiložen na elektronickém médiu.
 	
 	\section{Vývojové prostředí}
 		Aplikaci jsem vyvíjel v prostředí IntelliJ IDEA od firmy JetBrains. Poskytuje dobrou podporu práce s frameworkem Spring, například nabízí funkce pro vkládání, zobrazování a navigování definovanými Spring Beans. Součástí je také nástroj pro ruční vytváření a posílání HTTP požadavků, který je užitečný pro základní testování REST rozhraní aplikace. Studentům ČVUT FIT je poskytována licence pro edici Ultimate po dobu studia zdarma.
 	
-		Projekt využívá nástroj Maven pro správu závislostí a verzí. Soubor \texttt{pom.xml} aplikace je potomkem \texttt{spring-boot-starter-parent}, který Spring Boot označuje jako \textit{starter POM}. Ten obsahuje vybrané komponenty typicky využívané u Spring projektů. Vývojář podle svých potřeb může dodefinovat další závislosti na požadovaných modulech.
+		V projektu využívám nástroj Maven pro správu závislostí a verzí. Soubor \texttt{pom.xml} aplikace je potomkem \texttt{spring-boot-starter-parent}, který Spring Boot označuje jako \textit{starter POM}. Ten obsahuje vybrané komponenty typicky využívané u Spring projektů. Vývojář podle svých potřeb může dodefinovat další závislosti na požadovaných modulech.
 		
 		Aplikace je postavena na Spring Boot verze 1.3.3.
 				
 	\section{Služby}
-		Služby (\textit{services}) v aplikaci jsou implementovány jako stejnojmenné komponenty frameworku Spring. Každou třídu anotovanou pomocí \texttt{@Service} Spring automaticky při startu aplikace detekuje a zaregistruje jako Bean. V ostatních komponentách je pak tuto službu možné využívat následující deklarací:
+		Služby (\textit{services}) v aplikaci jsou implementovány jako stejnojmenné komponenty frameworku Spring. Každou třídu anotovanou pomocí \texttt{@Service} Spring automaticky při startu aplikace detekuje a zaregistruje jako \textit{Bean}. V ostatních komponentách je pak tuto službu možné využívat následující deklarací:
 		\begin{Verbatim}
 @Autowired
 private ServiceClass service;
 		\end{Verbatim}
 		
-		Framework se postará o vložení instance odpovídající třídy, pokud je tato třída zaregistrována jako Bean. Deklarovaný typ může být i rozhraní, Spring pak poskytne třídu, která toto rozhraní implementuje a je zaregistrována s odpovídajícím jménem.
+		Framework se postará o vložení instance odpovídající třídy, pokud je tato třída zaregistrována jako \textit{Bean}. Deklarovaný typ může být i rozhraní, Spring pak poskytne třídu, která toto rozhraní implementuje a je zaregistrována s odpovídajícím jménem.
 		
-		Třídy z vrstvy služeb jsou anotovány jako \texttt{@Transactional}. Tím je zaručeno, že každá jejich metoda bude součástí jediné databázové transakce. Pokud v metodě dojde k výjimce, všechny dosud provedené změny budou vráceny a databáze zůstane nezměněna.
+		Třídy z vrstvy služeb jsou anotovány anotací \texttt{@Transactional}. Tím je zaručeno, že každá jejich metoda bude součástí jediné databázové transakce. Pokud metoda neskončí úspěšně a dojde v ní k výjimce, všechny dosud provedené změny budou automaticky vráceny a databáze zůstane nezměněna.
 	
 	\section{Aktualizace urgentnosti}
 		Aktualizace urgentnosti úkolů se provádí v případě vytvoření nebo úpravy úkolu a také periodicky. Využívá se k tomu třídy \texttt{UrgencyHelper}, která deleguje výpočet hodnoty na třídu implementující rozhraní \texttt{UrgencyComputer}, poté uloží získanou urgentnost a upraví čas její poslední aktualizace.
 		
-		Pro periodickou aktualizaci urgentnosti využívám \textit{task scheduling} frameworku Spring. Tato funkcionalita je aktivována anotací \texttt{@EnableScheduling} na kterékoliv konfigurační třídě. Spring poté automaticky vykonává požadované metody v zadaném intervalu:
+		Pro periodickou aktualizaci urgentnosti využívám \textit{task scheduling} frameworku Spring. Tuto funkcionalitu lze aktivovat anotací \texttt{@EnableScheduling} na kterékoliv konfigurační třídě. Spring poté automaticky vykonává požadované metody v zadaném intervalu:
 		\begin{Verbatim}
 @Scheduled(fixedDelayString = "${update.urgency.interval}")
 public void updateUrgencies() {
@@ -1064,11 +1064,11 @@ public void updateUrgencies() {
 		Interval aktualizace je načten z externího konfiguračního souboru z klíče \texttt{update.urgency.interval}.
 	
 	\section{Model}
-		Třídy reprezentující model aplikace jsou anotovány pomocí \texttt{@Entity}. Hibernate takto anotované třídy zpracuje a bude je možné serializovat a deserializovat jako objekty do a z databáze. Anotace na atributech entitní třídy určují název odpovídajícího sloupce v tabulce, integritní omezení, způsob mapování asociací, generování hodnot \textit{ID} a další možnosti.
+		Třídy reprezentující model aplikace jsou anotovány pomocí \texttt{@Entity}. Hibernate takto anotované třídy zpracuje a bude je možné serializovat a deserializovat jako objekty do a z databáze. Anotace na atributech entitních tříd určují název odpovídajícího sloupce v tabulce, integritní omezení, způsob mapování asociací, generování hodnot primáčních klíčů \textit{ID} a další možnosti.
 		
 		Hibernate umožňuje mapování \textit{m:n} asociací pomocí anotace \texttt{@JoinTable}, která definuje pomocnou tabulku, ve které se bude uchovávat informace o asociaci. Není tak nutné definovat pomocnou entitu, která by vztah dekomponovala.
 		
-		Pomocí anotací na atributech také definuji, jestli mají být při serializaci do JSON odpovědi zahrnuty či ne. Spring pro manipulaci s formátem JSON využívá knihovnu Jackson. Ta umožňuje následující:
+		Pomocí anotací na atributech také definuji, jestli mají být tyto atributy zahrnuty při serializaci třídy do JSON. Spring pro manipulaci s formátem JSON využívá knihovnu Jackson. Ta umožňuje následující:
 		\begin{Verbatim}
 @Column(name = COL_TASK_DESCRIPTION)
 @JsonView(JsonViews.Task.Detail.class)
@@ -1079,9 +1079,9 @@ protected String description;
 		
 		
 	\section{Persistence}
-		Pro každou třídu modelu je definováno rozhraní \texttt{DAO} s metodami, které musí poskytovatel persistence implementovat. Já v používám framework Hibernate, takže implementací těchto rozhraní jsou třídy \texttt{DAOHibernate}. Ty deleguje volání odpovídajících metod na rozhraní implementující \texttt{CrudRepository<T,ID>}, kde \texttt{T} je typ třídy, kterou chci serializovat, a \texttt{ID} je datový typ jejího primárního klíče.
+		Pro každou třídu modelu je definováno rozhraní \texttt{DAO} s metodami, které musí poskytovatel persistence implementovat. V aplikaci používám framework Hibernate, takže implementací těchto rozhraní jsou třídy \texttt{DAOHibernate}. Ty delegují volání metod na rozhraní implementující \texttt{CrudRepository<T,ID>}, kde \texttt{T} je typ třídy, kterou chci serializovat, a \texttt{ID} je datový typ jejího primárního klíče.
 		
-		V rozhraní, které implementuje \texttt{CrudRepository}, lze definovat metody podle dané jmenné konvence, pro které se při spuštění aplikace automaticky vygenerují odpovídající SQL dotazy. Toto je část definice \texttt{GroupRepository}, využívané třídou \texttt{GroupDAOHibernate}:
+		V rozhraní, které implementuje \texttt{CrudRepository}, lze definovat metody podle dané jmenné konvence. Podle nich se při spuštění aplikace automaticky vygenerují odpovídající SQL dotazy. Toto je část definice \texttt{GroupRepository}, využívané třídou \texttt{GroupDAOHibernate}:
 		\begin{Verbatim}
 @Repository
 public interface GroupRepository 
@@ -1106,7 +1106,7 @@ public interface GroupRepository
 	Dotazy mohou být i složitější, jako je tomu u metody \texttt{findByMembers\_User}. Ta vrátí seznam všech skupin, jichž je uživatel členem. V jejím \uv{přeloženém} SQL tvaru jsou automaticky vygenerována potřebná spojení tabulek (\textit{join}).
 	
 	\section{Autentifikace}
-		Zabezpečení a autentifikaci uživatelů řeší v aplikaci modul \textit{Spring Security}. \cite{spring-security} V konfigurační třídě \texttt{config.Security}, která je potomkem třídy \texttt{WebSecurityConfigurerAdapter}, provádím nastavení zabezpečení HTTP \textit{endpointů}:
+		Zabezpečení a autentifikaci uživatelů řeší v aplikaci modul \textit{Spring Security}. \cite{spring-security} V konfigurační třídě \texttt{config.Security}, která je potomkem třídy \texttt{WebSecurityConfigurerAdapter}, provádím nastavení zabezpečení koncových bodů:
 		\begin{Verbatim}
 @Override
 protected void configure(AuthenticationManagerBuilder auth) 
@@ -1127,26 +1127,26 @@ public void configure(HttpSecurity http) throws Exception {
 }
 		\end{Verbatim}
 	
-		S touto konfigurací budou povoleny anonymní dotazy na adresu \texttt{/user} s metodami GET a POST, u všech ostatních jsou požadovány přihlašovací údaje. Logika autentifikace uživatele ze zadaných údajů probíhá v mnou definovaném \texttt{authenticationProvider}. Pokud autentifikace uspěje, pak je ID volajícího uživatele předáno odpovídajícímu \textit{Controlleru}.
+		S touto konfigurací budou povoleny anonymní dotazy na adresu \texttt{/user} s metodami GET a POST, u všech ostatních jsou požadovány přihlašovací údaje. Logika autentifikace uživatele ze zadaných údajů probíhá v mnou definovaném \texttt{authenticationProvider}. Pokud autentifikace uspěje, pak je ID volajícího uživatele předáno odpovídající třídě \texttt{Controller}.
 	
-		Pokud nejsou poskytnuty údaje nebo autentifikace selže, volá se metoda v instanci \texttt{deadlinesAuthenticationEntryPoint}, která uživateli odpoví chybovým HTTP kódem.
+		Pokud nejsou poskytnuty údaje nebo autentifikace selže, volá se metoda v objektu \texttt{deadlinesAuthenticationEntryPoint}, která uživateli odpoví chybovým HTTP kódem.
 	
-	\section{Endpointy}
-		Komunikaci pomocí REST API zajišťují třídy anotované pomocí \texttt{@RestController}. Ty obsahují metody obsluhující jednotlivé \textit{endpointy}, které aplikace nabízí. Deklarace takové metody vypadá například takto:
+	\section{Koncové body}
+		Komunikaci REST API zajišťují třídy anotované pomocí \texttt{@RestController}. Ty obsahují metody obsluhující jednotlivé koncové body, které aplikace nabízí. Deklarace takové metody vypadá například takto:
 		\begin{Verbatim}
 @RequestMapping(value = "/user/{id}", 
                 method = RequestMethod.PUT, 
-                produces = CTYPE_JSON, 
-                consumes = CTYPE_JSON)
+                produces = MediaType.APPLICATION_JSON_VALUE, 
+                consumes = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity editUser(
           @AuthenticationPrincipal Long userId,
           @PathVariable("id") Long id,
           @RequestBody UserCreateRequestBody request) {}
 		\end{Verbatim}
 	
-	Anotace \texttt{@RequestMapping} určuje, jaká adresa a HTTP metoda bude touto metodou zpracována a jaký MIME typ \cite{mime-type} je akceptován a produkován. V parametrech je metodě předáno ID autentifikovaného uživatele, parametry z URL adresy a tělo požadavku deserializované do POJO objektu. 
+	Anotace \texttt{@RequestMapping} určuje, jaká adresa a HTTP metoda bude touto metodou zpracována a jaký MIME typ \cite{mime-type} je akceptován a produkován. V parametrech je metodě předáno ID autentifikovaného uživatele, parametry z URL adresy a tělo požadavku deserializované do \textit{POJO} objektu. 
 	
-	Metoda controlleru volá odpovídající služby v závislosti na předaných parametrech a jejich výsledek transformuje do odpovědi, kterou zasílá zpět.
+	Metoda objektu \texttt{Controller} volá odpovídající služby v závislosti na předaných parametrech a jejich výsledek transformuje do odpovědi, kterou zasílá zpět.
 	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
