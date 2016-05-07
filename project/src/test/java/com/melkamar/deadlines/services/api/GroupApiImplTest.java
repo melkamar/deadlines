@@ -10,6 +10,7 @@ import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
+import com.melkamar.deadlines.model.offer.MembershipOffer;
 import com.melkamar.deadlines.model.task.Task;
 import com.melkamar.deadlines.services.helpers.GroupMemberHelper;
 import org.junit.Assert;
@@ -286,7 +287,9 @@ public class GroupApiImplTest {
         Assert.assertEquals(userMember2.getMemberAs().size(), 0);
 
         //
-        groupApi.addMember(userAdmin, group, userMember);
+//        groupApi.addMember(userAdmin, group, userMember);
+        MembershipOffer membershipOffer = sharingApi.offerMembership(userAdmin, group, userMember);
+        sharingApi.resolveMembershipOffer(userMember, membershipOffer, true);
         /**
          * (s) - solo | (g) - group
          * group: task2, task3, task5 (members: admin, member)

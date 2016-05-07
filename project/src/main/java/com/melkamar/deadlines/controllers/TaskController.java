@@ -27,7 +27,6 @@ import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
 import com.melkamar.deadlines.controllers.httpbodies.TaskCreateRequestBody;
-import com.melkamar.deadlines.controllers.httpbodies.TaskReportRequestBody;
 import com.melkamar.deadlines.controllers.httpbodies.TaskSharingRequestBody;
 import com.melkamar.deadlines.dao.processing.*;
 import com.melkamar.deadlines.exceptions.*;
@@ -232,6 +231,7 @@ public class TaskController {
      * @throws WrongParameterException if the request is missing required parameters.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @JsonView(JsonViews.Controller.TaskDetails.class)
     public ResponseEntity editTask(@AuthenticationPrincipal Long userId,
                                    @PathVariable("id") Long id,
                                    @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws DoesNotExistException, WrongParameterException {
@@ -244,7 +244,11 @@ public class TaskController {
                 return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.CANNOT_EDIT_HRS_TO_PEAK, "Hours to peak of a task cannot be changed."));
             }
 
-            taskApi.editTask(user, task, taskCreateRequestBody.getDescription(), DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()), taskCreateRequestBody.getWorkEstimate(), taskCreateRequestBody.getPriority());
+            taskApi.editTask(user, task,
+                    taskCreateRequestBody.getDescription(),
+                    DateConvertor.dateToLocalDateTime(taskCreateRequestBody.getDeadline()),
+                    taskCreateRequestBody.getWorkEstimate(),
+                    taskCreateRequestBody.getPriority());
 
             if (taskCreateRequestBody.getStatus() != null) {
                 taskApi.setTaskStatus(user, task, taskCreateRequestBody.getStatus());
@@ -309,26 +313,40 @@ public class TaskController {
         try {
             Task task = taskApi.getTask(user, id);
 
-            for (Long offeredToId : requestBody.getUsers()) {
-                User offeredTo = userApi.getUser(offeredToId);
+            List<Long> elements = requestBody.getUsers();
+            if (elements != null) {
+                for (Long offeredToId : elements) {
+                    User offeredTo = userApi.getUser(offeredToId);
 
-                try {
-                    sharingApi.offerTaskSharing(user, task, offeredTo);
-                } catch (AlreadyExistsException e) {
-                    // Doesn't matter, just ignore it if user is already a member
+                    try {
+                        sharingApi.offerTaskSharing(user, task, offeredTo);
+                    } catch (AlreadyExistsException e) {
+                        // Doesn't matter, just ignore it if user is already a member
+                    }
+                }
+            }
+            elements = requestBody.getGroups();
+            if (elements != null) {
+                for (Long offeredToId : elements) {
+                    Group offeredTo = groupApi.getGroup(offeredToId);
+                    try {
+                        sharingApi.offerTaskSharing(user, task, offeredTo);
+                    } catch (AlreadyExistsException e) {
+                        // Doesn't matter, just ignore it if user is already a member
+                    }
                 }
             }
 
-            for (Long offeredToId : requestBody.getGroups()) {
-                Group offeredTo = groupApi.getGroup(offeredToId);
-                try {
-                    sharingApi.offerTaskSharing(user, task, offeredTo);
-                } catch (AlreadyExistsException e) {
-                    // Doesn't matter, just ignore it if user is already a member
-                }
-            }
+//            List<Long> testList = new ArrayList<>();
+//            testList.add(1L);
+//            testList.add(4L);
+//            testList.add(7L);
+//
+//            requestBody.setGroupIds(testList);
+//            requestBody.setUserIds(testList);
 
-            return ResponseEntity.ok(task);
+
+            return ResponseEntity.ok().build();
 
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));
@@ -419,29 +437,29 @@ public class TaskController {
             }
         }
 
-        return ResponseEntity.ok(task);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * Reports work done on a task.
      *
-     * @param userId      ID of the authenticated user making the request.
-     * @param id          ID of the task to report on.
-     * @param requestBody A {@link TaskReportRequestBody} object containing details of the work report.
+     * @param userId ID of the authenticated user making the request.
+     * @param id     ID of the task to report on.
+     * @param worked Parameter specifying number of worked hours to be reported.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID or a {@link Task} with the given id does not exist.
      */
     @RequestMapping(value = "/report/{id}", method = RequestMethod.POST)
     public ResponseEntity reportWork(@AuthenticationPrincipal Long userId,
                                      @PathVariable("id") Long id,
-                                     @RequestBody TaskReportRequestBody requestBody) throws DoesNotExistException {
+                                     @RequestParam(value = "worked") Double worked) throws DoesNotExistException {
         User user = userApi.getUser(userId);
 
         try {
             Task task = taskApi.getTask(user, id);
-            taskApi.reportWork(user, task, requestBody.getWorkDone());
+            taskApi.reportWork(user, task, worked);
 
-            return ResponseEntity.ok(task);
+            return ResponseEntity.ok().build();
 
         } catch (NotMemberOfException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(ErrorCodes.USER_NOT_PARTICIPANT, e.getMessage()));

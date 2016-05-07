@@ -278,7 +278,47 @@ public class UserControllerIntegrationTest {
     @Test
     public void userIdPut() throws Exception {
 
-        String newPwd = "dabra";
+        String newPwd = "new-password";
+        String newEmail = "another-email@hello.com";
+        String newName = "Brand new name";
+
+        MvcResult result = mvc.perform(put("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content("{\"password\":\"" + newPwd
+                        + "\",\"email\":\"" + newEmail
+                        + "\",\"name\":\"" + newName + "\"}")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        System.out.println("CODE: " + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(response));
+
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(response).getAsJsonObject();
+
+        Assert.assertEquals(newEmail, object.get("email").getAsString());
+        Assert.assertEquals(newName, object.get("name").getAsString());
+
+        mvc.perform(get("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andExpect(status().isUnauthorized());
+
+        mvc.perform(get("/user/" + user1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), newPwd))
+        )
+                .andExpect(status().isOk());
+    }
+
+    @Transactional
+    @Test
+    public void userIdPutFancy() throws Exception {
+
+        String newPwd = "new-password";
         String newEmail = "another-email@hello.com";
         String newName = "Brand new name";
 
@@ -293,8 +333,6 @@ public class UserControllerIntegrationTest {
                 .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        System.out.println("CODE: " + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrinter.prettyPrint(response));
 
         JsonParser parser = new JsonParser();
         JsonObject object = parser.parse(response).getAsJsonObject();

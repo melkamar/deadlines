@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.melkamar.deadlines.config.ErrorCodes;
 import com.melkamar.deadlines.config.StringConstants;
 import com.melkamar.deadlines.controllers.httpbodies.ErrorResponse;
-import com.melkamar.deadlines.controllers.httpbodies.OfferResolutionRequestBody;
 import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
@@ -43,9 +42,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.MessageFormat;
 import java.util.Set;
@@ -89,9 +88,9 @@ public class OfferController {
     /**
      * Resolves a pending task offer for a user.
      *
-     * @param userId      ID of the authenticated user making the request.
-     * @param id          ID of the {@link com.melkamar.deadlines.model.offer.UserTaskSharingOffer} to resolve.
-     * @param requestBody A {@link OfferResolutionRequestBody} object containing details of the resolution.
+     * @param userId ID of the authenticated user making the request.
+     * @param id     ID of the {@link com.melkamar.deadlines.model.offer.UserTaskSharingOffer} to resolve.
+     * @param accept Parameter specifying whether the offer is accepted or declined. Allowed values: true|false.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException   if the authenticated user ID or a {@link UserTaskSharingOffer} with the given ID does not exist.
      * @throws WrongParameterException if the request contained unknown parameters.
@@ -99,12 +98,12 @@ public class OfferController {
     @RequestMapping(value = "/task/user/resolve/{id}", method = RequestMethod.POST)
     public ResponseEntity resolveUserTaskOffer(@AuthenticationPrincipal Long userId,
                                                @PathVariable("id") Long id,
-                                               @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+                                               @RequestParam(value = "accept") Boolean accept) throws DoesNotExistException, WrongParameterException {
+//                                               @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
         UserTaskSharingOffer offer = sharingApi.getUserTaskSharingOffer(id);
 
         try {
-            Boolean accept = requestBody.isAccept();
             if (accept == null) {
                 throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
             }
@@ -147,7 +146,7 @@ public class OfferController {
      * @param userId      ID of the authenticated user making the request.
      * @param groupId     ID of the group for which to resolve the offer.
      * @param offerId     ID of the {@link com.melkamar.deadlines.model.offer.GroupTaskSharingOffer} to resolve.
-     * @param requestBody A {@link OfferResolutionRequestBody} object containing details of the resolution.
+     * @param accept Parameter specifying whether the offer is accepted or declined. Allowed values: true|false.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException   if the authenticated user ID or a {@link Group} or a {@link GroupTaskSharingOffer} with the given ID does not exist.
      * @throws WrongParameterException if the request contained unknown parameters.
@@ -156,15 +155,15 @@ public class OfferController {
     public ResponseEntity resolveGroupTaskOffer(@AuthenticationPrincipal Long userId,
                                                 @PathVariable("groupid") Long groupId,
                                                 @PathVariable("offerid") Long offerId,
-                                                @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+                                                @RequestParam(value = "accept") Boolean accept) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
         Group group = groupApi.getGroup(groupId);
 
         GroupTaskSharingOffer offer = sharingApi.getGroupTaskSharingOffer(offerId);
 
         try {
-            checkResolutionRequestBody(requestBody.isAccept());
-            Task task = sharingApi.resolveTaskSharingOffer(group, user, offer, requestBody.isAccept());
+            checkResolutionRequestBody(accept);
+            Task task = sharingApi.resolveTaskSharingOffer(group, user, offer, accept);
 
             return ResponseEntity.ok().build();
         } catch (NotMemberOfException e) {
@@ -197,7 +196,7 @@ public class OfferController {
      *
      * @param userId      ID of the authenticated user making the request.
      * @param id          ID of the {@link com.melkamar.deadlines.model.offer.MembershipOffer} to resolve.
-     * @param requestBody A {@link OfferResolutionRequestBody} object containing details of the resolution.
+     * @param accept Parameter specifying whether the offer is accepted or declined. Allowed values: true|false.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException   if the authenticated user ID or a {@link MembershipOffer} with the given ID does not exist.
      * @throws WrongParameterException if the request contained unknown parameters.
@@ -205,12 +204,11 @@ public class OfferController {
     @RequestMapping(value = "/membership/resolve/{id}", method = RequestMethod.POST)
     public ResponseEntity resolveMembershipOffer(@AuthenticationPrincipal Long userId,
                                                  @PathVariable("id") Long id,
-                                                 @RequestBody OfferResolutionRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
+                                                 @RequestParam(value = "accept") Boolean accept) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
         MembershipOffer offer = sharingApi.getMembershipOffer(id);
 
         try {
-            Boolean accept = requestBody.isAccept();
             if (accept == null) {
                 throw new WrongParameterException(MessageFormat.format(stringConstants.EXC_BODY_MUST_HAVE_FIELD, "accept:true|false"));
             }
@@ -226,7 +224,6 @@ public class OfferController {
         }
 
     }
-
 
 
     private void checkResolutionRequestBody(Boolean accept) throws WrongParameterException {

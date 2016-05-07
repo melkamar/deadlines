@@ -236,7 +236,7 @@ public abstract class Task {
         this.urgency = urgency;
     }
 
-    public void resetUrgency(){
+    public void resetUrgency() {
         this.urgency.update(0);
     }
 
@@ -262,16 +262,7 @@ public abstract class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", dateCreated=" + dateCreated +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", workEstimate=" + workEstimate +
-                ", priority=" + priority +
-                ", status=" + status +
-                ", urgency=" + urgency +
-                '}';
+        return name + " (id " + id + ")";
     }
 
     /**

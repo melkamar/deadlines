@@ -56,13 +56,6 @@ public class DeadlineTask extends Task {
     /***************************************************************/
 
     @Override
-    public String toString() {
-        return super.toString() + "DeadlineTask{" +
-                "deadline=" + deadline +
-                '}';
-    }
-
-    @Override
     public void updateUrgency(UrgencyComputer computer) {
         this.urgency.update(computer.computeDeadlineTaskUrgency(this));
     }

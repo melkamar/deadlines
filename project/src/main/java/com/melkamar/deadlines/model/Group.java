@@ -195,11 +195,7 @@ public class Group {
 
     @Override
     public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", name='" + name + '\'' +
-                '}' + super.toString();
+        return name+" (ID "+id+")";
     }
 
     @Override
