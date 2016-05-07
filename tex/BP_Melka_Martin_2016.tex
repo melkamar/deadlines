@@ -1162,7 +1162,7 @@ public ResponseEntity editUser(
 	\section{Mockito}
 		Pro jednotkové testy jsem využil nástroj \textit{Mockito}, který umožňuje jednoduše vytvořit \uv{napodobeninu} objektu, definovat u ní chování a poté kontrolovat, jaké její metody s jakými parametry byly zavolány.
 			
-			Příkladem \textit{mockování} v mnou implementovaných testech je například mock rozhraní \texttt{UserAPI}:
+			Příkladem \uv{mockování} v mnou implementovaných testech je například mock rozhraní \texttt{UserAPI}:
 			\begin{Verbatim}
 @Mock
 UserApi userApi;
@@ -1175,9 +1175,9 @@ Mockito.when(
 		
 		
 	\section{Jednotkové testy}
-		Jednotkovými testy jsem testoval třídy se žádnými, nebo několika málo závislostmi na ostatních třídách. Testovat by se tímto způsobem daly i komplexnější třídy, ale bylo by nutné místo jejich závislostí vytvářet mock objekty. Z důvodu většího úsilí na jiných částech práce jsem od tohoto upustil a u složitějších tříd využíval jen integrační testy, ve kterých měly třídy přístup ke všem svým závislostem skrze framework Spring.
+		Jednotkovými testy jsem testoval třídy se žádnými, nebo několika málo závislostmi na ostatních třídách. Testovat by se tímto způsobem daly i komplexnější třídy, ale bylo by nutné místo jejich závislostí vytvářet mock objekty. Z důvodu upřednostnění úsilí na jiných částech práce jsem od tohoto upustil a u složitějších tříd využíval jen integrační testy, ve kterých měly třídy přístup ke všem svým závislostem skrze framework Spring.
 	
-		Příkladem jednoho z jednotkových testů je následující kód, testující správnost funkce třídy, která autentifikuje uživatele pomocí objektu, který ho reprezentuje, a hesla:
+		Příkladem jednoho z jednotkových testů je následující kód, testující správnost funkce třídy, která autentifikuje uživatele pomocí objektu \texttt{User} a hesla:
 		
 		\begin{Verbatim}[obeytabs,tabsize=2]
 @RunWith(MockitoJUnitRunner.class)
@@ -1222,7 +1222,7 @@ public class AuthenticatorTest {
 				
 		V tomto testu třídy \texttt{Authenticator} nejprve za pomocí anotace \texttt{@Mock} vytvořím mock instanci třídy \texttt{User}. \texttt{@Spy} označuje \uv{plnohodnotný} Java objekt, který má být vložen do testované třídy jako závislost. Anotace \texttt{@InjectMocks} poté informuje framework Mockito o tom, že má do takto anotované třídy vložit její závislosti, v tomto případě objekty \texttt{passwordEncoder} a \texttt{authenticator}.
 		
-		V metodě \texttt{setUp} definuji chování \textit{mock} objektu \texttt{mockedUser}, kterého využívám v následující metodě. V ní kontroluji, že v případě chybné kombinace uživatele a hesla vrací třída \texttt{null}, v případě správné kombinace pak objekt uživatele.
+		V metodě \texttt{setUp} definuji chování \textit{mock} objektu \texttt{mockedUser}, kterého využívám v následující metodě. V ní kontroluji, že v případě chybné kombinace uživatele a hesla vrací třída \texttt{null}, v případě správné kombinace pak instanci třídy \texttt{User}.
 		
 		
 		
@@ -1244,7 +1244,7 @@ public class AuthenticatorTest {
 			\end{enumerate}
 		
 		\subsection{Vrstva Controllers}
-			Vrstva \textit{Controllers} je zodpovědná za zpracování příchozích požadavků, autentifikaci uživatele a volání odpovídajících metod vrstvy \textit{Business Services}. Ta je již otestovaná způsobem popsaným v sekci \ref{sec:testing-services}. Z tohoto důvodu testy vrstvy \textit{Controllers} nejsou zaměřené primárně na kontrolu správnosti manipulace s entitami a dat v databázi. Testovány jsou údaje obsažené v HTTP odpovědích aplikace, tedy jejich stavový kód, hlavičky a tělo. Jeden z testů má například následující strukturu:
+			Vrstva \textit{Controllers} je zodpovědná za zpracování příchozích požadavků, autentifikaci uživatele a volání odpovídajících metod vrstvy \textit{Business Services}. Ta je již otestovaná způsobem popsaným v sekci \ref{sec:testing-services}. Testy vrstvy \textit{Controllers} jsou zaměřené na kontrolu zpracování příchozích požadavků a správných údajů v HTTP odpovědích aplikace, tedy jejich stavového kódu, hlavičky a těla. Jeden z testů má například následující strukturu:
 			
 			\begin{enumerate}
 				\item Zaslání autentifikovaného požadavku na změnu údajů a hesla uživatele metodou PUT na adresu \texttt{/user/id}, kde \texttt{id} je ID uživatele.
@@ -1254,7 +1254,7 @@ public class AuthenticatorTest {
 				\item Zaslání požadavku s novými autentifikačními údaji a kontrola, že byl vrácen kód 200 OK.
 			\end{enumerate}
 						
-			K simulování zasílání požadavků na REST \textit{endpointy} a kontrolu odpovědí využívám třídu \texttt{MockMvcBuilders}, která je součástí testovacího modulu nástroje Spring. Použití její instance \texttt{mvc} je znázorněno v kódu pod tímto odstavcem. Uvedená metoda představuje test, který se skládá z výše uvedených bodů.
+			K simulování zasílání požadavků na REST \textit{endpointy} a kontrolu odpovědí využívám třídu \texttt{MockMvcBuilders}, která je součástí testovacího modulu frameworku Spring. Použití její instance \texttt{mvc} je znázorněno v kódu pod tímto odstavcem. Uvedená metoda představuje test, který se skládá z výše uvedených bodů.
 			
 		\begin{Verbatim}[obeytabs,tabsize=2]
 @Transactional
@@ -1303,12 +1303,12 @@ public void userEditTest() throws Exception {
 
 		
 	\section{Výsledky testování}
-		Celkem jsem při implementaci aplikace napsal více než 150 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Testy pokrývají všechny vytyčené funkce, které má aplikace nabízet, jak je popisují případy užití v sekci \ref{sec:usecases}. 
+		Celkem jsem při implementaci aplikace napsal více než 150 testovacích případů. Testy jsem nepsal pro všechny třídy a všechny jejich metody, ale jen pro ty, které byly svou funkcí netriviální. Testy pokrývají všechny vytyčené funkce, které má aplikace nabízet, jak je popisují případy užití v sekci \ref{sec:usecases} a všechny koncové body ze sekce \ref{sec:rest-api}.
 		
 		Případné chyby, které nebyly zachyceny automatizovanými testy, by mohly být odhaleny testováním aplikace samotnými uživateli. Takové testování jsem neprovedl, protože aplikace disponuje pouze rozhraním REST. Nenabízí žádné grafické rozhraní, které by mohlo být použité k manuálnímu testování i technicky nevzdělanými uživateli.
 		
 		
-		Výsledná aplikace, která je přiložena k této práci, uspěla ve 100 \% automatizovaných testů a neobsahuje tak žádné známé chyby.
+		Výsledná aplikace, která je přiložena k této práci, uspěla ve všech automatizovaných testech a neobsahuje tak žádné známé chyby.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1321,8 +1321,9 @@ public void userEditTest() throws Exception {
 	Aplikace je distribuována a může být nasazena dvěma způsoby:
 	\begin{itemize}
 		\item WAR archiv pro nasazení do servlet kontejneru (například Apache Tomcat).
-		\item Spustitelný JAR, obsahující vlastní webserver.
+		\item Spustitelný JAR, obsahující vlastní webový server.
 	\end{itemize}
+	Distribuované soubory aplikace mají název \texttt{deadlines-x.y.z}, kde \texttt{x.y.z} je číslo verze. Na tyto soubory se budu níže odkazovat bez uvádění jejich verze, tedy jen jako \texttt{deadlines}.
 	
 	\section{Verze Java}
 		K běhu aplikace je vyžadováno JRE alespoň verze 1.8.
@@ -1347,7 +1348,7 @@ public void userEditTest() throws Exception {
 			\item Zkopírujte soubory \texttt{deadlines.jar} a \texttt{application.properties} do složky, odkud chcete aplikace spouštět.
 			\item Upravte konfigurační soubor.
 			\item Pokud jste v konfiguračním souboru nezvolili možnost automatického vytvoření schématu, spusťte v databázi inicializační skript \texttt{database\allowbreak \_init\allowbreak \_mysql.sql} pro vytvoření potřebných tabulek.
-			\item Spusťte aplikaci příkazem \texttt{java -jar deadlines.jar}. Dostupná bude na adrese \texttt{http://localhost/deadlines} na portu nastaveném v konfiguračním souboru.
+			\item Spusťte aplikaci příkazem \texttt{java -jar deadlines.jar}. Dostupná bude na adrese \texttt{http://localhost/} na portu nastaveném v konfiguračním souboru.
 		\end{enumerate}
 		
 	
@@ -1357,17 +1358,17 @@ public void userEditTest() throws Exception {
 
 
 \begin{conclusion}
-	Cílem této práce byla tvorba backend části aplikace, komunikující pomocí rozhraní REST, která má usnadňovat správu soukromých i sdílených úkolů jednotlivcům a malým týmům. Dílčími úkoly práce bylo provedení rešerše existujících řešení a formulování požadavků na aplikaci. Následovala detailnější analýza požadavků a problémové domény, návrh řešení včetně nabízených rozhraní, jeho implementace a otestování správné funkčnosti.
+	Cílem této práce byla tvorba serverové části aplikace, komunikující přes rozhraní REST, která má usnadňovat správu soukromých i sdílených úkolů jednotlivcům a malým týmům. Dílčími úkoly práce bylo provedení rešerše existujících řešení a formulování požadavků na aplikaci. Následovala detailnější analýza požadavků a problémové domény, návrh řešení včetně nabízených rozhraní, jeho implementace a otestování správné funkčnosti.
 	
 	% Závěr podle struktury metodiky
 	
-	V rámci rešeršní části jsem představil několik existujících aplikací, rozdělených do kategorií podle jejich cílové skupiny. Tyto aplikace jsem popsal z hlediska funkčnosti, nabízených rozhraní a dalších kritérií. Na závěr jsem zvážil, jaké funkce těchto aplikací jsou pro mou cílovou skupinu důležité a mají být společně s koncepty urgentnosti a rostoucích úkolů zahrnuty i v mé aplikaci. 
+	V rámci rešeršní části jsem představil několik existujících aplikací, rozdělených do kategorií podle jejich cílové skupiny. Tyto aplikace jsem popsal a porovnal z hlediska funkčnosti, nabízených rozhraní a dalších kritérií. Na závěr jsem zvážil, jaké funkce těchto aplikací jsou pro mou cílovou skupinu důležité a mají být společně s koncepty urgentnosti a rostoucích úkolů zahrnuty i v mé aplikaci. 
 	
 	V analytické části jsem na základě shrnutí rešerše vytvořil uživatelské příběhy, které definují funkční požadavky kladené na navrhovanou aplikaci. Pomocí nich jsem následně vytvořil model případů užití, jenž detailněji popsal očekávané interakce mezi aplikací a uživateli. Dále jsem vypracoval doménový model, zachycující entity aplikace a vztahy mezi nimi.
 	
-	Na začátku návrhové části práce jsem se věnoval výběru technologií pro implementaci a specifikaci REST rozhraní nabízeného aplikací. Dále jsem popsal význam urgentnosti úkolu a postup při jejím výpočtu pro oba typy úkolů, způsob ukládání hesel, autentifikaci uživatelů a architekturu aplikace. Z architektury jsem vyšel při tvorbě návrhového modelu, ve kterém jsem popsal strukturu aplikace na úrovní balíčků a tříd, vysvětlil jsem jejich zodpovědnosti a vztah k architektuře aplikace. V závěru jsem vysvětlil, jakým způsobem budu aplikaci při vývoji testovat.
+	Na začátku návrhové části práce jsem se věnoval výběru technologií pro implementaci a specifikaci REST rozhraní nabízeného aplikací. Dále jsem popsal význam urgentnosti úkolu a postup při jejím výpočtu pro oba typy úkolů. Určil jsem způsob ukládání hesel, autentifikaci uživatelů a architekturu aplikace. Z architektury jsem vyšel při tvorbě návrhového modelu, ve kterém jsem popsal strukturu aplikace na úrovni balíčků a tříd, vysvětlil jsem jejich zodpovědnosti a vztah k architektuře aplikace. V závěru jsem nastínil, jakým způsobem budu aplikaci při vývoji testovat.
 	
-	Po návrhu následoval vývoj aplikace, jemuž jsem se věnoval v kapitole implementace. Zde jsem uvedl informace o použitém vývojovém prostředí a nástroji pro automatizované sestavování (build) aplikace. Dále jsem v této části popsal způsob řešení některých implementačních detailů spolu s úryvky zdrojových kódů a jejich vysvětlením. Kompletní zdrojové kódy jsou k dispozici na přiloženém CD.
+	Vývoji aplikace jsem se věnoval v kapitole implementace. Zde jsem uvedl informace o použitém vývojovém prostředí a nástroji pro automatizované sestavování (build) aplikace. Dále jsem v této části popsal způsob řešení některých implementačních detailů spolu s úryvky zdrojových kódů a jejich vysvětlením. 
 	
 	Během implementace jsem paralelně psal testy, kterým jsem se věnoval v kapitole testování. Zde jsem popsal, jakým způsobem jsem testoval jednotlivé třídy i funkčnost aplikace jako celku. Uvedl jsem a vysvětlil příklady kódu testovacích metod spolu se scénáři, na nichž jsou testy založeny. Na závěr jsem zhodnotil výsledky testů a poukázal na jejich možné nedostatky.
 	
@@ -1377,7 +1378,7 @@ public void userEditTest() throws Exception {
 	
 	Cíl práce jsem ve stanoveném rozsahu splnil, aplikaci lze využívat podle případů užití definovaných během analýzy. Součástí práce je i kompletní dokumentace způsobu komunikace s aplikací. Vytyčená funkcionalita byla implementována, otestována a aplikaci je možné nasadit a provozovat.
 	
-	Nedostatkem vytvořeného řešení je absence rolí uživatelů v rámci aplikace. Nelze tak určit administrátory s vyššími právy, kteří by se měli o její chod starat. To je spolu s klienty, nabízejícími grafické uživatelské rozhraní, možným námětem pro budoucí vývoj.
+	Nedostatkem vytvořeného řešení je absence rolí uživatelů v rámci aplikace. Nelze tak určit administrátory s vyššími právy, kteří by se měli o její chod starat. To je, spolu s klientskými aplikacemi, nabízejícími grafické uživatelské rozhraní, možným námětem pro budoucí vývoj.
 	
 	Jelikož se jedná jen o serverovou část aplikace bez grafického rozhraní, je možnost jejího využití uživateli v současné podobě omezena. Představuje ale základní stavební prvek s dobře definovaným rozhraním komunikace, který lze rozšiřovat a integrovat s klientskými aplikacemi.
 	
