@@ -1437,6 +1437,7 @@ public void userEditTest() throws Exception {
 	\item[IOC] Inversion of Control
 	\item[POJO] Plain Old Java Object
 	\item[JRE] Java Runtime Environment
+	\item[URL] Uniform Resource Locator
 \end{description}
 
 \chapter{Splnění kritérií rešerše}
@@ -1727,12 +1728,116 @@ public void userEditTest() throws Exception {
 			
 			
 		\subsection{\texttt{GET /task/\{task\_id\}}}
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"id": 1,
+	"dateCreated": "2016-05-06 16:17",
+	"name": "Task1",
+	"description": "Descr tekynvoc",
+	"workEstimate": 15.0,
+	"priority": "NORMAL",
+	"status": "OPEN",
+	"urgency": {
+		"lastUpdate": "2016-05-06 16:17",
+		"value": 87.50850024146979
+	},
+	"workReports": [],
+	"participants": [
+		{
+			"solo": true,
+			"role": "WATCHER",
+			"user": {
+				"id": 1,
+				"username": "User1"
+			}
+		}
+	],
+	"deadline": "2016-05-07 02:17",
+	"workedPercentage": 0.0,
+	"manhoursWorked": 0.0,
+	"groups": [],
+	"type": "DEADLINE"
+}
+			\end{Verbatim}
+			
+		
 		\subsection{\texttt{PUT /task/\{task\_id\}}}
+		Formát požadavku:
+		\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"description":"new task description",
+	"priority": "NORMAL",
+	"workEstimate": "42",
+	"deadline":"2016-05-17 13:15"
+}			
+		\end{Verbatim}	
+		
+		\noindent
+		Formát odpovědi:
+		\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"id": 1,
+	"dateCreated": "2016-05-06 16:31",
+	"name": "Task1",
+	"description": "new task description",
+	"workEstimate": 42.0,
+	"priority": "NORMAL",
+	"status": "OPEN",
+	"urgency": {
+		"lastUpdate": "2016-05-06 16:31",
+		"value": 87.50850024146979
+	},
+	"workReports": [],
+	"participants": [
+		{
+		"solo": true,
+		"role": "WORKER",
+		"user": {
+			"id": 1,
+			"username": "User1"
+			}
+		}
+	],
+	"deadline": "2016-05-17 13:15",
+	"workedPercentage": -1.0,
+	"manhoursWorked": 0.0,
+	"groups": [],
+	"type": "DEADLINE"
+}
+		\end{Verbatim}
+		
 		\subsection{\texttt{POST /task/\{task\_id\}/reseturgency}}
+			Tělo požadavku i tělo úspěšné odpovědi jsou prázdné.
+		
 		\subsection{\texttt{POST /task/share/\{task\_id\}}}
+		Formát požadavku:
+		\begin{Verbatim}[obeytabs,tabsize=2]
+{
+	"userIds":[
+		2, 3, 5
+	],
+	"groupIds":[
+		1, 3
+	]
+}
+		\end{Verbatim}
+		
+		\noindent
+		Tělo odpovědi je prázdné.
+		
 		\subsection{\texttt{POST /task/leave/\{task\_id\}}}
+			Tělo požadavku i tělo úspěšné odpovědi jsou prázdné.
+		
 		\subsection{\texttt{POST /task/role/\{task\_id\}}}
+			Tělo požadavku i tělo úspěšné odpovědi jsou prázdné.
+		
 		\subsection{\texttt{POST /task/report/\{task\_id\}}}
+			Obsahem URL parametru \texttt{worked} je desetinné číslo, určující počet odpracovaných hodin, které mají být zaznamenány.
+			
+			Například \texttt{POST /task/report/1?worked=5.3} zaznamená odpracování 5.3 hodin na úkolu s ID 1 volajícím uživatelem.
+			
+			
 		\subsection{\texttt{GET /offer/task/user}}
 		\subsection{\texttt{POST /offer/task/user/resolve/\{task\_offer\_id\}}}
 		\subsection{\texttt{GET /offer/task/group/\{group\_id\}}}
@@ -1798,6 +1903,8 @@ public void userEditTest() throws Exception {
 	\label{diagram:database-model-offers}
 \end{figure}
 
+
+% TODO program 
 
 
 
