@@ -327,7 +327,6 @@ public class GroupApiImpl implements GroupApi {
         group.removeTask(task);
         task.removeSharedGroup(group);
 
-        // TODO: 31.03.2016 REMOVE ASSERTION FOR PRODUCTION
         // After removing the task from a group there should be NO TaskParticipant connected to the Task and Group
         assert taskparticipantDAO.findByTaskAndGroups(task, group).size() == 0;
     }

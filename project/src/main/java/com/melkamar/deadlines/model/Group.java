@@ -74,12 +74,10 @@ public class Group {
     @JsonView(JsonViews.Group.Details.class)
     private Set<GroupMember> members = new HashSet<>();
 
-    // TODO: 02.04.2016 Added cascade-remove - if working, ok
     @OneToMany(mappedBy = "offeredTo", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Set<GroupTaskSharingOffer> taskOffers = new HashSet<>();
 
-    // TODO: 02.04.2016 Added cascade-remove - if working, ok
     @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Set<MembershipOffer> membershipOffers = new HashSet<>();

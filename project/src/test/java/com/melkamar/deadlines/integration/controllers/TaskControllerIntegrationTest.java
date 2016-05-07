@@ -181,7 +181,7 @@ public class TaskControllerIntegrationTest {
                 "\"priority\": \"LOW\"," +
                 "\"workEstimate\": \"13\"," +
                 "\"deadline\":\"2016-05-17 13:15\"," +
-                "\"groupIds\":[1]}";
+                "\"groupIds\":["+group1.getId()+"]}";
 
         MvcResult result = mvc.perform(post("/task")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
