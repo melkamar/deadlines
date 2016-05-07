@@ -33,7 +33,7 @@
 \newcommand{\critd}{Použití zdarma}
 \newcommand{\crite}{Funkce}
 \newcommand{\critf}{REST API}
-\newcommand{\critg}{Open source}
+\newcommand{\critg}{Otevřený zdrojový kód}
 
 
 \newcommand{\forwatchers}{Povoleno jen pro Pozorovatele úkolu.}
@@ -119,7 +119,7 @@
 		\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
 		\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
 		\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
-		\item \textbf{\critg} -- Aplikace by měla mít veřejně dostupné zdrojové kódy.
+		\item \textbf{\critg} -- Zdrojový kód aplikace by měl být veřejně dostupný (\textit{open source}).
 	\end{enumerate}
 	Uvedený přehled není vyčerpávající, věnuji se jen některým z těch nejznámějších řešení. 
 
@@ -130,64 +130,64 @@
 		\subsection{JIRA}
 			JIRA \cite{jira} je software, který nabízí systém pro řízení požadavků (angl. bug tracking či issue tracking) a funkce pro správu projektů. Je možné ho používat jak na vlastní infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
 			
-			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale přiřazen může být v jednu chvíli jen jednomu uživateli (\textit{assignee}). Úkolům lze také přiřadit \textit{deadline}.
+			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale přiřazen může být v jednu chvíli jen jednomu uživateli (\textit{assignee}). Úkolům lze také přiřadit termín splnění (\textit{deadline}).
 			
-			JIRA nabízí REST API a není open source.
+			JIRA nabízí REST API a nemá otevřený zdrojový kód.
 			
 		\subsection{Bugzilla}
 			Bugzilla \cite{bugzilla} je systém řízení požadavků, který je zaměřen hlavně na vývoj software. Je podobný nástroji JIRA, nicméně nenabízí takovou flexibilitu a i když by mohl být s dobře nastavenou politikou použitý pro správu úkolů u jiných než softwarových projektů, nebylo by použití intuitivní. Samotná správa a práce s úkoly funguje stejně jako u nástroje JIRA.
 			
-			Bugzilla je open source, licencovaná pod MPL, a lze ji využít zdarma i pro komerční účely. Je nutné ji ale provozovat na vlastním hardware. Existují hosting služby, které jsou ale neoficiální a placené. Bugzilla nabízí REST API.
+			Bugzilla má otevřený zdrojový kód, licencovaný pod MPL, a lze ji využít zdarma i pro komerční účely. Je nutné ji provozovat na vlastním hardware. Existují hosting služby, které jsou ale neoficiální a placené. Bugzilla nabízí REST API.
 			
 		\subsection{Redmine}		
 			Redmine \cite{redmine} je systém řízení požadavků, který nabízí více flexibility než Bugzilla a obsahuje i některé nástroje pro řízení projektů. Tyto nástroje mohou být přínosné pro větší projekty, které mají danou strukturu, ale nepočítám s tím, že by cílovou skupinu této práce zajímaly. Funkcionalita, která se týká správy úkolů, je srovnatelná s předchozími dvěma nástroji.
 			
-			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě nástroje Bugzilla není Redmine oficiálně použitelný on-line, soukromé hostingy jsou placené. Projekt je vyvíjen jako open source a nabízí REST API.
+			Použití je zdarma, ale je nutné nainstalovat na vlastním hardware. Stejně jako v případě nástroje Bugzilla není Redmine oficiálně dostupný přes internet, soukromé služby, které jej nabízejí, jsou placené. Projekt má otevřený zdrojový kód a nabízí REST API.
 
 	\section{Řešení pro střední a menší týmy}
 		\label{sec:solutions-teams}
-		Nástroje v této kategorii se snaží cílit na týmy, spíše než celé firmy, a práce s nimi není tak formální. Používat je lze on-line, není nutné vlastní instalace. Oproti řešením v bodu \ref{sec:solutions-companies} obsahují tyto méně funkcí, chybí hlavně různé manažerské nástroje a integrace s dalšími systémy.
+		Nástroje v této kategorii se snaží cílit na týmy, spíše než celé firmy, a práce s nimi není tak formální. Používat je většinou lze přes internet, není nutná vlastní instalace. Oproti řešením v bodu \ref{sec:solutions-companies} obsahují tyto nástroje zpravidla méně funkcí, chybí hlavně různé manažerské nástroje a integrace s dalšími systémy.
 	
 		\subsection{Trello}
-			Trello \cite{trello} je on-line aplikace, která vznikla v roce 2011. Způsob správy úkolů staví na konceptu \textit{kanban}\cite{kanban}. Umožňuje vytvářet nástěnky (boards), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (lists) a v nich karty (cards), které představují nejmenší jednotku práce - úkol. Ten má svou prioritu, \textit{deadline} a zodpovědné uživatele. Těch může být libovolný počet.
+			Trello \cite{trello} je aplikace, která vznikla v roce 2011. Lze ji používat přes internet. Způsob správy úkolů staví na konceptu \textit{kanban}\cite{kanban}. Umožňuje vytvářet nástěnky (\textit{boards}), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (\textit{lists}) a v nich karty (\textit{cards}), které představují nejmenší jednotku práce -- úkol. Ten má svou prioritu, termín splnění a zodpovědné uživatele. Těch může být libovolný počet.
 			
-			Je to funkčně bohatý nástroj s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo podle jejich \textit{deadlinu}. 
+			Je to funkčně bohatý nástroj s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo podle jejich termínu. 
 			
-			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody\cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, aplikace není open source.
+			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody \cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, aplikace nemá otevřený zdrojový kód.
 		
 			
 		\subsection{Trackie}
-			Trackie \cite{trackie} je on-line aplikace, která je určena pro správu úkolů na společných projektech. Ty lze zakládat a zvát do nich uživatele, v rámci projektů pak tvořit úkoly. Úkol může být někomu přiřazen, ale vždy jen jednomu uživateli. Funkčností i vzhledem jednoduché na použití, ale některé funkce oproti předchozím nástrojům chybí. Úkolům například nelze nastavit \textit{deadline}. Zobrazit je možné jen úkoly každého projektu zvlášť, nelze zobrazit přehled všech úkolů uživatele. 
+			Trackie \cite{trackie} je aplikace, která je určena pro správu úkolů na společných projektech. Ty lze zakládat a zvát do nich uživatele, v rámci projektů pak tvořit úkoly. Úkol může být přiřazen vždy jen jednomu uživateli. Funkčností i vzhledem jednoduché na použití, ale některé funkce oproti předchozím nástrojům chybí. Úkolům například nelze nastavit termín splnění. Zobrazit je možné jen úkoly každého projektu zvlášť, nelze zobrazit přehled všech úkolů uživatele. 
 			
-			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a není open source.
+			Aplikace nabízí 30denní zkušební dobu, po její uplynutí je placená. Nenabízí REST API a nemá otevřený zdrojový kód.
 			
 		\subsection{FogBugz}
-			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě podpory řízení požadavků nabízí i možnost agilního plánování\cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentů ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, i přesto se v aplikaci uživatel neztratí. 
+			FogBugz \cite{fogbugz} je nástroj řízení projektů, který kromě podpory řízení požadavků nabízí i možnost agilního plánování \cite{agile-planning}, správu podpory a zpětné vazby zákazníků, vytváření dokumentů ve stylu Wiki a další. Nabídkou funkcí je nejbohatší z trojice nástrojů v této kategorii, i přesto se v aplikaci uživatel neztratí. 
 			
-			Uživatelé spolu mohou pracovat na úkolech (cases), které se dělí do projektů (projects). Na úkolu lze evidovat informace potřebné pro využití agilní metodiky plánování, včetně \textit{story points}. Úkolu je možné určit zodpovědného uživatele, odhad pracnosti a deadline. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá.
+			Uživatelé spolu mohou pracovat na úkolech (\textit{cases}), které se dělí do projektů (\textit{projects}). Na úkolu lze evidovat informace potřebné pro využití agilní metodiky plánování, včetně \textit{story points}. Úkolu je možné určit zodpovědného uživatele, odhad pracnosti a termín. Na úkolu je možné průběžně zaznamenávat odpracovanou práci a zobrazovat kolik času na něm zbývá.
 			
-			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné ho používat jak on-line, tak na vlastním hardware. Nabízí REST API a není open source.
+			FogBugz nabízí 7denní zkušební dobu zdarma, poté je nutné za používání platit. Je možné jej používat přes internet i na vlastním hardware. Nabízí REST API a zdrojový kód není otevřený.
 
 	\section{Řešení pro jednotlivce}
 		\label{sec:solutions-individuals}
 		Poslední kategorií jsou nástroje pro správu úkolů jednotlivců. Některé z nich mohou umožňovat sdílení úkolů, takže by se daly zařadit i do kategorie \ref{sec:solutions-teams}, nicméně svým zaměřením cílí primárně na využití jako osobní úkolníček, proto jsou zařazeny zde. Také jsem do této kategorie zařadil nástroje, které nejsou primárně určeny pro správu úkolů, ale někteří je k tomuto účelu využívají, například kalendář nebo poznámky.
 		
 		\subsection{Todoist}
-			Todoist \cite{todoist} je on-line aplikace pro organizaci úkolů, která má uživatele motivovat k lepší produktivitě. Za splněné úkoly jsou přidělovány body (karma), jejichž historický vývoj je možné sledovat v grafu, lze nastavit denní a týdenní cíl a získávat další \uv{odměny} za jeho splnění. Úkoly lze rozdělit do projektů, nastavit jim \textit{deadline}, prioritu a opakování. Projekty je možné sdílet s dalšími uživateli a dají se zobrazit buď po projektech, ke kterým patří, nebo všechny na jednom místě -- ve schránce (inbox). 
+			Todoist \cite{todoist} je on-line aplikace pro organizaci úkolů, která má uživatele motivovat k lepší produktivitě. Za splněné úkoly jsou přidělovány body (karma), jejichž historický vývoj je možné sledovat v grafu, lze nastavit denní a týdenní cíl a získávat další \uv{odměny} za jeho splnění. Úkoly lze rozdělit do projektů, nastavit jim termín, prioritu a opakování. Projekty je možné sdílet s dalšími uživateli a dají se zobrazit buď po projektech, ke kterým patří, nebo všechny na jednom místě -- ve schránce (\textit{inbox}). 
 			
-			Vytvoření nového úkolu se může provést zadáním (anglického) textu, aplikace sama rozpozná klíčová slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Go jogging at 1 PM every day} vytvoří úkol \textit{Go jogging}, který má \textit{deadline} ve 13 hodin a opakuje se každý den. 
+			Vytvoření nového úkolu se může provést zadáním (anglického) textu, aplikace sama rozpozná klíčová slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Go jogging at 1 PM every day} vytvoří úkol \textit{Go jogging}, který má termín splnění ve 13 hodin a opakuje se každý den. 
 			
-			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a není open source.
+			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a nemá otevřený zdrojový kód.
 			
 		\subsection{Toodledo}
-			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (habits). To jsou úkoly, které se opakují ve volitelné dny každý týden, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po vykonání zvyku je možné označit ho za splněný a přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (notes), seznamy (lists), nebo nástiny (outlines). 
+			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (\textit{habits}). To jsou úkoly, které se opakují ve volitelné dny každý týden, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po vykonání zvyku je možné označit ho za splněný a přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (\textit{notes}), seznamy (\textit{lists}), nebo nástiny (\textit{outlines}). 
 			
-			Úkoly lze třídit do složek, nastavit jim \textit{deadline} a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a Webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a není open source.
+			Úkoly lze třídit do složek, nastavit jim termín a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a nemá otevřený zdrojový kód.
 			
 		\subsection{Google Inbox Reminders}
-			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (reminders). Ty lze kromě aplikace Inbox také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit \textit{deadline}, ale je možné je odložit (snooze) tak, aby se zobrazily později. Aktivní úkoly se zobrazují mezi příchozími e-maily.
+			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (\textit{reminders}). Ty lze kromě aplikace Inbox také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit termín splnění, ale je možné je odložit (\textit{snooze}) tak, aby se zobrazily později ve stanovený čas. Aktivní úkoly se zobrazují mezi příchozími e-maily.
 			
-			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a není open source.
+			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a nemá otevřené zdrojové kódy.
 			
 			
 			
@@ -208,11 +208,11 @@
 		
 		V aplikacích je u úkolu možné určit uživatele za něj odpovědné. Většinou lze přiřadit k úkolu v jednu chvíli jen jednoho uživatele, ale v nástroji Trello jich lze přiřadit libovolný počet. To může být pro některé typy úkolů užitečné. 
 		
-		Kromě \textit{deadlinu} a priority jako ve většině ostatních aplikací, lze ve FogBugz u úkolu nastavit i odhad pracnosti -- dobu, jakou by měla práce na úkolu trvat. Uživatel pracující na úkolu pak může průbězně zaznamenávat odpracovanou dobu a celá skupina tak vidí, v jaké fázi se úkol nachází. Toto chci zahrnout do výsledné aplikace a ještě rozšířit o další funkci. Na základě doby zbývající do \textit{deadlinu} a zbývající pracnosti na úkolu lze určit \uv{urgentnost}, tedy jakou má ještě uživatel rezervu, než \textit{deadline} zmešká. Tato informace o rezervě může uživatelům pomoct s rozhodováním, kterému úkolu se prioritně věnovat, aby jej ještě stihli.
+		Kromě termínu splnění a priority jako ve většině ostatních aplikací, lze v aplikaci FogBugz u úkolu nastavit i odhad pracnosti -- dobu, jakou by měla práce na úkolu trvat. Uživatel pracující na úkolu pak může průběžně zaznamenávat odpracovanou dobu a celá skupina tak vidí, v jaké fázi se úkol nachází. Toto chci zahrnout do výsledné aplikace a  rozšířit o další funkci. Na základě doby zbývající do termínu splnění a zbývající pracnosti na úkolu lze určit \uv{urgentnost}, tedy hodnotu, určující \uv{skutečnou} prioritu úkolu v danou chvíli. Tato informace může uživatelům pomoct s rozhodováním, kterému úkolu se věnovat, aby jej stihli dokončit před jeho termínem.
 		
-		Například Todoist nabízí možnost vytvořený úkol opakovat v zadaném intervalu. Google Inbox kromě opakování umožňuje také úkol odložit na později, čímž se na stanovenou dobu přestane zobrazovat v přehledu úkolů. V aplikaci chci vyjít z těchto funkcí a vytvořit funkci podobnou. Myšlenka je, že opakující se úkoly nebudou mít pevně daný \textit{deadline}. Uživatel se jim chce věnovat zhruba po nějakých intervalech, ale ne na den přesně. Při vytvoření úkol nebude důležitý, ale bude postupně nabývat na urgentnosti, až se důležitým stane. Poté uživatel úkol buď ukončí, nebo vynuluje a úkol znovu poroste.
+		Některé nástroje, například Todoist, nabízí možnost vytvořený úkol opakovat v zadaném intervalu. Google Inbox pak kromě opakování umožňuje také úkol odložit na později, čímž se na stanovenou dobu přestane zobrazovat v přehledu úkolů. V aplikaci chci vyjít z těchto funkcí a vytvořit funkci podobnou. Opakující se úkoly nebudou mít pevně daný termín splnění. Uživatel se jim bude chtít věnovat zhruba po určitých časových intervalech, které nejsou nutně přesné. Při vytvoření úkol nebude důležitý, ale bude postupně nabývat na urgentnosti, až se důležitým stane. Poté uživatel úkol buď ukončí, nebo vynuluje a úkol znovu poroste. Jeden ze způsobů použití takového úkolu může být například občasné zavolání přátelům či rodině.
 		
-		Backend část aplikace, jež bude výstupem této práce, bude zaměřením spadat na pomezí sekcí \ref{sec:solutions-teams} a \ref{sec:solutions-individuals}. Bude obsahovat vybrané funkce pro správu práce týmů i jednotlivců, které analyzuji v kapitole \ref{chapter:analysis}.
+		Serverová část aplikace, jež bude výstupem této práce, bude zaměřením spadat na pomezí sekcí \ref{sec:solutions-teams} a \ref{sec:solutions-individuals}. Bude obsahovat vybrané funkce pro správu práce týmů i jednotlivců, které analyzuji v kapitole \ref{chapter:analysis}.
 
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
