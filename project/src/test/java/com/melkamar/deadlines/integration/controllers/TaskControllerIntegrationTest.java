@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.melkamar.deadlines.integration;
+package com.melkamar.deadlines.integration.controllers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.model.Group;
@@ -39,6 +39,7 @@ import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
 import com.melkamar.deadlines.utils.JsonPrettyPrinter;
 import com.melkamar.deadlines.utils.RandomString;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,13 +61,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
- * 01.05.2016 16:37
+ * 07.05.2016 12:34
  */
 @SuppressWarnings("Duplicates")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 @WebAppConfiguration
-public class ResponsesTest {
+public class TaskControllerIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -170,8 +171,10 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void getUser() throws Exception {
-        MvcResult result = mvc.perform(get("/user"))
+    public void taskIdGet() throws Exception {
+        String request = "{\"email\":\"abraka\"}";
+        MvcResult result = mvc.perform(get("/task/" + task1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -182,9 +185,10 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void userPost() throws Exception {
-        String request = "{\"username\":\"Created User\",\"password\":\"abraka\"}";
-        MvcResult result = mvc.perform(post("/user")
+    public void taskIdPut() throws Exception {
+        String request = "{\"description\":\"abraka\"}";
+        MvcResult result = mvc.perform(put("/task/" + task1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -197,8 +201,53 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void userIdGet() throws Exception {
-        MvcResult result = mvc.perform(get("/user/" + user1.getId())
+    public void taskShare() throws Exception {
+        System.out.println(sharingApi.listTaskOffersOfGroup(user2, group3));
+
+        String request = "{\"userIds\":[ " + user2.getId() + "," + user3.getId() + " ], \"groupIds\":[" + group3.getId() + "]}";
+        System.out.println("Request: " + request);
+        MvcResult result = mvc.perform(post("/task/share/" + task1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+//        System.out.println("*****************************************************************************************");
+//        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
+//        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
+//        System.out.println("*****************************************************************************************");
+
+        System.out.println("OUTPUT---------");
+        System.out.println(result.getResponse().getContentAsString());
+        System.out.println("---------OUTPUT");
+
+        System.out.println(sharingApi.listTaskOffersOfGroup(user2, group3));
+        System.out.println("User1 sharing offers: " + sharingApi.listTaskOffersOfUser(user1));
+        System.out.println("User2 sharing offers: " + sharingApi.listTaskOffersOfUser(user2));
+        System.out.println("User3 sharing offers: " + sharingApi.listTaskOffersOfUser(user3));
+    }
+
+    @Transactional
+    @Test
+    public void taskLeave() throws Exception {
+        Assert.assertTrue(user1.getTasksOfUser().contains(task1));
+
+        MvcResult result = mvc.perform(post("/task/leave/" + task1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andReturn();
+
+
+        Assert.assertFalse(user1.getTasksOfUser().contains(task1));
+
+    }
+
+    @Transactional
+    @Test
+    public void taskRoleOwn() throws Exception {
+        Assert.assertTrue(taskApi.getTaskParticipant(user1, task1).getRole() == TaskRole.WORKER);
+
+        MvcResult result = mvc.perform(post("/task/role/" + task1.getId() + "?newRole=watcher")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
         )
                 .andReturn();
@@ -207,27 +256,69 @@ public class ResponsesTest {
         System.out.println("HTTP CODE:" + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
         System.out.println("*****************************************************************************************");
-    }
 
-    @Transactional
-    @Test
-    public void userIdPut() throws Exception {
-        String request = "{\"email\":\"abraka\"}";
-        MvcResult result = mvc.perform(put("/user/" + user1.getId())
+        Assert.assertTrue(taskApi.getTaskParticipant(user1, task1).getRole() == TaskRole.WATCHER);
+
+        result = mvc.perform(post("/task/role/" + task1.getId() + "?newRole=worker")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
         System.out.println("HTTP CODE:" + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
         System.out.println("*****************************************************************************************");
+
+        Assert.assertTrue(taskApi.getTaskParticipant(user1, task1).getRole() == TaskRole.WORKER);
+
     }
 
+    @Transactional
+    @Test
+    public void taskRoleGroupMember() throws Exception {
+
+//        group1, user2, task9
+        Assert.assertTrue(taskApi.getTaskParticipant(user2, task9).getRole() == TaskRole.WATCHER);
+
+        MvcResult result = mvc.perform(post("/task/role/" + task9.getId() + "?newRole=worker&targetUser=" + user2.getId() + "&targetGroup=" + group1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andReturn();
+
+        System.out.println("*****************************************************************************************");
+        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
+        System.out.println("*****************************************************************************************");
+
+        Assert.assertTrue(taskApi.getTaskParticipant(user2, task9).getRole() == TaskRole.WORKER);
+
+        result = mvc.perform(post("/task/role/" + task9.getId() + "?newRole=watcher&targetUser=" + user2.getId() + "&targetGroup=" + group1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andReturn();
+
+        System.out.println("*****************************************************************************************");
+        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
+        System.out.println("*****************************************************************************************");
+
+        Assert.assertTrue(taskApi.getTaskParticipant(user2, task9).getRole() == TaskRole.WATCHER);
+
+    }
+
+    @Transactional
+    @Test
+    public void taskReportWork() throws Exception {
+        double beginWork = task1.getManhoursWorked();
+        double reportWorked = 10.2;
+
+        MvcResult result = mvc.perform(post("/task/report/" + task1.getId() + "?worked=" + reportWorked)
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+        )
+                .andReturn();
 
 
+        Assert.assertEquals(beginWork + reportWorked, task1.getManhoursWorked(), 0.001);
 
-
-
+    }
 }

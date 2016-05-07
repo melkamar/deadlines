@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.melkamar.deadlines.integration;
+package com.melkamar.deadlines.integration.controllers;
 
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.model.Group;
@@ -39,12 +39,12 @@ import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
 import com.melkamar.deadlines.utils.JsonPrettyPrinter;
 import com.melkamar.deadlines.utils.RandomString;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,17 +56,18 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
- * 01.05.2016 16:37
+ * 07.05.2016 12:35
  */
 @SuppressWarnings("Duplicates")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 @WebAppConfiguration
-public class ResponsesTest {
+public class OfferControllerIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -170,8 +171,9 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void getUser() throws Exception {
-        MvcResult result = mvc.perform(get("/user"))
+    public void offerTaskUserGet() throws Exception {
+        MvcResult result = mvc.perform(get("/offer/task/user")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user3.getUsername(), "pwd")))
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -182,11 +184,29 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void userPost() throws Exception {
-        String request = "{\"username\":\"Created User\",\"password\":\"abraka\"}";
-        MvcResult result = mvc.perform(post("/user")
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
+    public void offerTaskUserResolve() throws Exception {
+        int tasksBefore = user2.getTasksOfUser().size();
+
+        MvcResult result = mvc.perform(post("/offer/task/user/resolve/" + taskSharingOfferTask4ToUser2.getId() + "?accept=true")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user2.getUsername(), "pwd")))
+                .andReturn();
+
+        Assert.assertEquals(tasksBefore + 1, user2.getTasksOfUser().size());
+
+        tasksBefore = user3.getTasksOfUser().size();
+
+        result = mvc.perform(post("/offer/task/user/resolve/" + taskSharingOfferTask6ToUser3.getId() + "?accept=false")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user3.getUsername(), "pwd")))
+                .andReturn();
+
+        Assert.assertEquals(tasksBefore, user3.getTasksOfUser().size());
+    }
+
+    @Transactional
+    @Test
+    public void offerTaskGroupGet() throws Exception {
+        MvcResult result = mvc.perform(get("/offer/task/group/" + group1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -197,10 +217,29 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void userIdGet() throws Exception {
-        MvcResult result = mvc.perform(get("/user/" + user1.getId())
-                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-        )
+    public void offerTaskGroupResolve() throws Exception {
+        int tasksBefore = group1.getSharedTasks().size();
+
+        MvcResult result = mvc.perform(post("/offer/task/group/" + group1.getId() + "/resolve/" + taskSharingOfferTask7ToGroup1.getId() + "?accept=true")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        Assert.assertEquals(tasksBefore + 1, group1.getSharedTasks().size());
+
+        tasksBefore = group1.getSharedTasks().size();
+
+        result = mvc.perform(post("/offer/task/group/" + group1.getId() + "/resolve/" + taskSharingOfferTask7ToGroup1.getId() + "?accept=false")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        Assert.assertEquals(tasksBefore, group1.getSharedTasks().size());
+    }
+
+    @Transactional
+    @Test
+    public void offerMembershipGet() throws Exception {
+        MvcResult result = mvc.perform(get("/offer/membership")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user2.getUsername(), "pwd")))
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -211,23 +250,25 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void userIdPut() throws Exception {
-        String request = "{\"email\":\"abraka\"}";
-        MvcResult result = mvc.perform(put("/user/" + user1.getId())
-                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
+    public void offerMembershipResolve() throws Exception {
+        int groupsBefore = user4.getGroupsOfUser().size();
+        int membersOfBefore = group1.getGroupMembers().size();
+
+        MvcResult result = mvc.perform(post("/offer/membership/resolve/" + membershipOfferGroup1ToUser4.getId() + "?accept=true")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user4.getUsername(), "pwd")))
                 .andReturn();
 
-        System.out.println("*****************************************************************************************");
-        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
-        System.out.println("*****************************************************************************************");
+        Assert.assertEquals(groupsBefore + 1, user4.getGroupsOfUser().size());
+        Assert.assertEquals(membersOfBefore + 1, group1.getGroupMembers().size());
+
+        groupsBefore = user2.getGroupsOfUser().size();
+        membersOfBefore = group2.getGroupMembers().size();
+
+        result = mvc.perform(post("/offer/membership/resolve/" + membershipOfferGroup2ToUser2.getId() + "?accept=false")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user2.getUsername(), "pwd")))
+                .andReturn();
+
+        Assert.assertEquals(groupsBefore, user2.getGroupsOfUser().size());
+        Assert.assertEquals(membersOfBefore, group2.getGroupMembers().size());
     }
-
-
-
-
-
-
 }

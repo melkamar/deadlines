@@ -20,10 +20,14 @@
  * SOFTWARE.
  */
 
-package com.melkamar.deadlines.integration;
+package com.melkamar.deadlines.integration.controllers;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.model.Group;
+import com.melkamar.deadlines.model.GroupMember;
+import com.melkamar.deadlines.model.MemberRole;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.offer.GroupTaskSharingOffer;
 import com.melkamar.deadlines.model.offer.MembershipOffer;
@@ -39,6 +43,7 @@ import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.utils.BasicAuthHeaderBuilder;
 import com.melkamar.deadlines.utils.JsonPrettyPrinter;
 import com.melkamar.deadlines.utils.RandomString;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,13 +65,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
- * 01.05.2016 16:37
+ * 07.05.2016 12:37
  */
 @SuppressWarnings("Duplicates")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DeadlinesApplication.class)
 @WebAppConfiguration
-public class ResponsesTest {
+public class GroupControllerIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -170,21 +175,64 @@ public class ResponsesTest {
 
     @Transactional
     @Test
-    public void getUser() throws Exception {
-        MvcResult result = mvc.perform(get("/user"))
+    public void groupGet() throws Exception {
+        MvcResult result = mvc.perform(get("/group")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
         System.out.println("HTTP CODE:" + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
         System.out.println("*****************************************************************************************");
+
+        // Check number fo groups of user
+        result = mvc.perform(get("/group?role=any")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        JsonParser parser = new JsonParser();
+        JsonArray array = parser.parse(result.getResponse().getContentAsString()).getAsJsonArray();
+
+        Assert.assertEquals(groupApi.listGroups(user1).size(), array.size());
+
+        // Check number fo groups of user of role ADMIN
+        result = mvc.perform(get("/group?role=admin")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        parser = new JsonParser();
+        array = parser.parse(result.getResponse().getContentAsString()).getAsJsonArray();
+
+        Assert.assertEquals(groupApi.listGroups(user1, MemberRole.ADMIN).size(), array.size());
+
+        // Check number fo groups of user of role MANAGER
+        result = mvc.perform(get("/group?role=manager")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        parser = new JsonParser();
+        array = parser.parse(result.getResponse().getContentAsString()).getAsJsonArray();
+
+        Assert.assertEquals(groupApi.listGroups(user1, MemberRole.MANAGER).size(), array.size());
+
+        // Check number fo groups of user of role MEMBER
+        result = mvc.perform(get("/group?role=member")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        parser = new JsonParser();
+        array = parser.parse(result.getResponse().getContentAsString()).getAsJsonArray();
+
+        Assert.assertEquals(groupApi.listGroups(user1, MemberRole.MEMBER).size(), array.size());
     }
 
     @Transactional
     @Test
-    public void userPost() throws Exception {
-        String request = "{\"username\":\"Created User\",\"password\":\"abraka\"}";
-        MvcResult result = mvc.perform(post("/user")
+    public void groupPost() throws Exception {
+        int beforeGroupsSize = groupApi.listGroups().size();
+        String request = "{\"name\":\"NewGroup\",\"description\":\"Description of the new group.\"}";
+        MvcResult result = mvc.perform(post("/group")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -193,41 +241,129 @@ public class ResponsesTest {
         System.out.println("HTTP CODE:" + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
         System.out.println("*****************************************************************************************");
+
+        Assert.assertEquals(beforeGroupsSize + 1, groupApi.listGroups().size());
     }
 
     @Transactional
     @Test
-    public void userIdGet() throws Exception {
-        MvcResult result = mvc.perform(get("/user/" + user1.getId())
+    public void groupPut() throws Exception {
+        String newDescription = "Brand new description of the new group.";
+
+        Assert.assertNotEquals(newDescription, group1.getDescription());
+
+        String request = "{\"description\":\"" + newDescription + "\"}";
+        MvcResult result = mvc.perform(put("/group/" + group1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        System.out.println("*****************************************************************************************");
+        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
+        System.out.println("*****************************************************************************************");
+
+        Assert.assertEquals(newDescription, group1.getDescription());
+    }
+
+    @Transactional
+    @Test
+    public void groupDelete() throws Exception {
+
+        int startGroups = groupApi.listGroups().size();
+
+        MvcResult result = mvc.perform(delete("/group/" + group1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andReturn();
+
+        Assert.assertEquals(startGroups - 1, groupApi.listGroups().size());
+    }
+
+    @Transactional
+    @Test
+    public void groupMemberOffer() throws Exception {
+        int user1Offers = user1.getMembershipOffers().size();
+        int user2Offers = user2.getMembershipOffers().size();
+        int user3Offers = user3.getMembershipOffers().size();
+        int user4Offers = user4.getMembershipOffers().size();
+
+
+        String request = "{\"userIds\": [ " + user2.getId() + ", " + user3.getId() + " ] }";
+        MvcResult result = mvc.perform(post("/group/" + group4.getId() + "/member/offer")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Assert.assertEquals(user1Offers, user1.getMembershipOffers().size());
+        Assert.assertEquals(user2Offers + 1, user2.getMembershipOffers().size());
+        Assert.assertEquals(user3Offers + 1, user3.getMembershipOffers().size());
+        Assert.assertEquals(user4Offers, user4.getMembershipOffers().size());
+    }
+
+    @Transactional
+    @Test
+    public void groupMemberPut() throws Exception {
+        GroupMember groupMemberUser2Group1 = null;
+        for (GroupMember member : user2.getMemberAs()) {
+            if (member.getGroup().equals(group1)) {
+                groupMemberUser2Group1 = member;
+                break;
+            }
+        }
+
+        Assert.assertNotNull(groupMemberUser2Group1);
+        Assert.assertTrue(groupMemberUser2Group1.getRole() == MemberRole.MEMBER);
+
+        String request = "{\"role\":\"MANAGER\"}";
+        MvcResult result = mvc.perform(put("/group/" + group1.getId() + "/member/" + user2.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Assert.assertTrue(groupMemberUser2Group1.getRole() == MemberRole.MANAGER);
+
+        request = "{\"role\":\"MEMBER\"}";
+        result = mvc.perform(put("/group/" + group1.getId() + "/member/" + user2.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        Assert.assertTrue(groupMemberUser2Group1.getRole() == MemberRole.MEMBER);
+    }
+
+    @Transactional
+    @Test
+    public void groupMemberDelete() throws Exception {
+        int groupsOfUser2 = user2.getGroupsOfUser().size();
+        int membersOfGroup1 = group1.getMembers().size();
+
+        MvcResult result = mvc.perform(delete("/group/" + group1.getId() + "/member/" + user2.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
         )
                 .andReturn();
 
-        System.out.println("*****************************************************************************************");
-        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
-        System.out.println("*****************************************************************************************");
+
+        Assert.assertEquals(groupsOfUser2 - 1, user2.getGroupsOfUser().size());
+        Assert.assertEquals(membersOfGroup1 - 1, group1.getMembers().size());
     }
 
     @Transactional
     @Test
-    public void userIdPut() throws Exception {
-        String request = "{\"email\":\"abraka\"}";
-        MvcResult result = mvc.perform(put("/user/" + user1.getId())
+    public void groupTaskDelete() throws Exception {
+        int groupsOfTask9 = task9.getSharedGroups().size();
+        int tasksOfGroup1 = group1.getSharedTasks().size();
+
+        MvcResult result = mvc.perform(delete("/group/" + group1.getId() + "/task/" + task9.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
-                .content(request)
-                .contentType(MediaType.APPLICATION_JSON))
+        )
                 .andReturn();
 
-        System.out.println("*****************************************************************************************");
-        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
-        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
-        System.out.println("*****************************************************************************************");
+
+        Assert.assertEquals(groupsOfTask9 - 1, task9.getSharedGroups().size());
+        Assert.assertEquals(tasksOfGroup1 - 1, group1.getSharedTasks().size());
     }
-
-
-
-
-
-
 }

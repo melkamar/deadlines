@@ -295,5 +295,9 @@ public abstract class Task {
 //    public String getType(){
 //        return this.taskTypeString();
 //    }
+
+    public Set<Group> getSharedGroups() {
+        return sharedGroups;
+    }
 }
 

@@ -75,7 +75,7 @@ public class GroupController {
      * member of, or only groups in which he has a certain role.
      *
      * @param userId ID of the authenticated user making the request.
-     * @param role   Optional parameter specifying groups to list.
+     * @param role   Optional parameter specifying groups to list. Accepted values: any|admin|manager|member
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
@@ -109,6 +109,7 @@ public class GroupController {
      * @throws DoesNotExistException   if the authenticated user ID does not exist. This should not happen.
      * @throws WrongParameterException if the request contained unknown parameters.
      */
+    @JsonView(JsonViews.Controller.GroupDetails.class)
     @RequestMapping(value = "", method = RequestMethod.POST, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity createGroup(@AuthenticationPrincipal Long userId,
                                       @RequestBody GroupRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
@@ -153,6 +154,7 @@ public class GroupController {
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
      */
+    @JsonView(JsonViews.Controller.GroupDetails.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = StringConstants.CONTENT_TYPE_APP_JSON)
     public ResponseEntity editGroup(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long groupId,
@@ -248,16 +250,16 @@ public class GroupController {
      * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
      * @throws WrongParameterException if the request contained unknown parameters.
      */
-    @RequestMapping(value = "/{id}/member/{memberid}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}/member/{userId}", method = RequestMethod.PUT)
     public ResponseEntity editMemberRole(@AuthenticationPrincipal Long userId,
                                          @PathVariable("id") Long groupId,
-                                         @PathVariable("memberid") Long targetUserId,
+                                         @PathVariable("userId") Long targetUserId,
                                          @RequestBody MemberRequestBody requestBody) throws DoesNotExistException, WrongParameterException { // V request těle bude prostě newrole:member/manager/admin
         User user = userApi.getUser(userId);
         Group group = groupApi.getGroup(groupId);
 
         if (requestBody.getRole() == null) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, "Field 'role' expected with values MEMBER,MANAGER,ADMIN"));
+            return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, "Field 'role' expected with values MEMBER,MANAGER"));
         }
 
         User targetUser = userApi.getUser(targetUserId);
@@ -295,10 +297,10 @@ public class GroupController {
      * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
      * @throws WrongParameterException if the request contained unknown parameters.
      */
-    @RequestMapping(value = "/{id}/member/{memberid}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}/member/{userId}", method = RequestMethod.DELETE)
     public ResponseEntity removeMember(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId,
-                                       @PathVariable("memberid") Long targetUserId) throws DoesNotExistException, WrongParameterException {
+                                       @PathVariable("userId") Long targetUserId) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
         Group group = groupApi.getGroup(groupId);
         User targetUser = userApi.getUser(targetUserId);
