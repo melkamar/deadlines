@@ -1830,6 +1830,15 @@ public void userEditTest() throws Exception {
 			Tělo požadavku i tělo úspěšné odpovědi jsou prázdné.
 		
 		\subsection{\texttt{POST /task/role/\{task\_id\}}}
+			URL parametry požadavku:
+			\begin{description}
+				\item[newRole] Nová role, která má být uživateli přiřazena.
+				\item[targetUser] Nepovinný parametr. ID uživatele, u kterého má být změna provedena.
+				\item[targetGroup] Nepovinný parametr. ID skupiny, v rámci které má být provedena změna role uživatele identifikovaného parametrem \texttt{targetUser}.
+			\end{description}
+			
+			
+			
 			Tělo požadavku i tělo úspěšné odpovědi jsou prázdné.
 		
 		\subsection{\texttt{POST /task/report/\{task\_id\}}}
@@ -1839,11 +1848,69 @@ public void userEditTest() throws Exception {
 			
 			
 		\subsection{\texttt{GET /offer/task/user}}
+			\label{endpoint:offerTaskUser}
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+[
+	{
+		"id": 2,
+		"offerer": {
+			"id": 1,
+			"username": "User1",
+			"email": "email@address.com",
+			"name": "User 1 name"
+		},
+		"taskOffered": {
+			"id": 5,
+			"name": "Task5",
+			"status": "OPEN",
+			"type": "DEADLINE"
+		}
+	},
+	{
+		...
+	}
+]
+			\end{Verbatim}
+		
 		\subsection{\texttt{POST /offer/task/user/resolve/\{task\_offer\_id\}}}
+			\label{endpoint:offerTaskUserResolve}
+			URL parametr \texttt{accept} určuje, zda bude nabídka přijata či odmítnuta. Možné hodnoty jsou \texttt{true} pro přijetí nabídky, či \texttt{false} pro odmítnutí nabídky.
+			
+			Například \texttt{POST /offer/task/user/resolve/3?accept=true} přijme nabídku na sdílení úkolu s uživatelem s ID 3.
+		
 		\subsection{\texttt{GET /offer/task/group/\{group\_id\}}}
+		Formát odpovědi je stejný jako v sekci \ref{endpoint:offerTaskUser}.
+		
 		\subsection{\texttt{POST /offer/task/group/\{group\_id\}/resolve/\{task\_offer\_id\}}}
+			Parametry jsou stejné jako v sekci \ref{endpoint:offerTaskUserResolve}.
+		
 		\subsection{\texttt{GET /offer/membership}}
+			Formát odpovědi:
+			\begin{Verbatim}[obeytabs,tabsize=2]
+[
+	{
+		"id": 6,
+		"offerer": {
+			"id": 1,
+			"username": "User1",
+			"email": "Email.mexjtreo@address.com",
+			"name": "Name mxooeryo"
+		},
+		"group": {
+			"id": 1,
+			"name": "Group1"
+		}
+	},
+	{
+		...
+	}
+]
+			\end{Verbatim}
+		
 		\subsection{\texttt{POST /offer/membership/resolve/\{membership\_offer\_id\}}}
+			Parametry jsou stejné jako v sekci \ref{endpoint:offerTaskUserResolve}.			
+		
 		\subsection{\texttt{GET /group}}
 		\subsection{\texttt{POST /group}}
 		\subsection{\texttt{GET /group/\{group\_id\}}}
