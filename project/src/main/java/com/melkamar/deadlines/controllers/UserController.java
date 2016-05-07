@@ -32,13 +32,10 @@ import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
@@ -50,10 +47,9 @@ import java.util.List;
  *
  * @author Martin Melka
  */
-@Controller
-@RequestMapping(value = "/user")
+@RestController
+@RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
-    final static String CTYPE_JSON = "application/json";
 
     @Autowired
     private UserApi userApi;
@@ -63,7 +59,7 @@ public class UserController {
      *
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      */
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = CTYPE_JSON)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listUsers() {
         List<User> users = userApi.listUsers();
         return ResponseEntity.ok().body(users);
@@ -75,7 +71,7 @@ public class UserController {
      * @param userCreateRequestBody A {@link UserCreateRequestBody} object containing details of the user to be created.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      */
-    @RequestMapping(value = "", method = RequestMethod.POST, consumes = CTYPE_JSON, produces = CTYPE_JSON)
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createUser(@RequestBody UserCreateRequestBody userCreateRequestBody) {
         try {
             User user = userApi.createUser(userCreateRequestBody.getUsername(),
@@ -97,7 +93,7 @@ public class UserController {
      * @param id ID of the user whose details to show.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = CTYPE_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity userDetails(@PathVariable("id") long id) {
         try {
             User user = userApi.getUser(id);
@@ -116,7 +112,7 @@ public class UserController {
      * @param request A {@link UserCreateRequestBody} object containing details of the edit.
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = CTYPE_JSON, consumes = CTYPE_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity editUser(@AuthenticationPrincipal Long userId,
                                    @PathVariable("id") Long id,
                                    @RequestBody UserCreateRequestBody request) {

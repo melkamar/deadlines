@@ -40,9 +40,9 @@ import com.melkamar.deadlines.services.api.TaskApi;
 import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -53,8 +53,8 @@ import java.text.MessageFormat;
  *
  * @author Martin Melka
  */
-@Controller
-@RequestMapping(value = "/group")
+@RestController
+@RequestMapping(value = "/group", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GroupController {
 
     @Autowired
@@ -110,7 +110,8 @@ public class GroupController {
      * @throws WrongParameterException if the request contained unknown parameters.
      */
     @JsonView(JsonViews.Controller.GroupDetails.class)
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = StringConstants.CONTENT_TYPE_APP_JSON)
+    @RequestMapping(value = "", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createGroup(@AuthenticationPrincipal Long userId,
                                       @RequestBody GroupRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
@@ -132,7 +133,7 @@ public class GroupController {
      * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
      */
     @JsonView(JsonViews.Controller.GroupDetails.class)
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = StringConstants.CONTENT_TYPE_APP_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity groupDetails(@AuthenticationPrincipal Long userId,
                                        @PathVariable("id") Long groupId) throws DoesNotExistException {
         User user = userApi.getUser(userId);
@@ -155,7 +156,7 @@ public class GroupController {
      * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
      */
     @JsonView(JsonViews.Controller.GroupDetails.class)
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = StringConstants.CONTENT_TYPE_APP_JSON)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity editGroup(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long groupId,
                                     @RequestBody GroupRequestBody requestBody) throws DoesNotExistException {
@@ -211,7 +212,7 @@ public class GroupController {
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID or a group with the given ID does not exist.
      */
-    @RequestMapping(value = "/{id}/member/offer", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/member/offer", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity offerMembership(@AuthenticationPrincipal Long userId,
                                           @PathVariable("id") Long groupId,
                                           @RequestBody MembershipOfferRequestBody requestBody) throws DoesNotExistException {
@@ -250,7 +251,7 @@ public class GroupController {
      * @throws DoesNotExistException   if the authenticated user ID or a group with the given ID does not exist.
      * @throws WrongParameterException if the request contained unknown parameters.
      */
-    @RequestMapping(value = "/{id}/member/{userId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}/member/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity editMemberRole(@AuthenticationPrincipal Long userId,
                                          @PathVariable("id") Long groupId,
                                          @PathVariable("userId") Long targetUserId,

@@ -40,9 +40,9 @@ import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.utils.DateConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -57,8 +57,8 @@ import java.util.List;
  *
  * @author Martin Melka
  */
-@Controller
-@RequestMapping(value = "/task")
+@RestController
+@RequestMapping(value = "/task", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TaskController {
     @Autowired
     private TaskApi taskApi;
@@ -98,7 +98,7 @@ public class TaskController {
      * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
     @JsonView(JsonViews.Controller.TaskList.class)
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listTasks(@AuthenticationPrincipal Long userId,
                                     @RequestParam(value = "group", required = false) Long groupId,
                                     @RequestParam(value = "order", required = false) String order,
@@ -147,8 +147,9 @@ public class TaskController {
      * @throws DoesNotExistException   if the authenticated user ID does not exist. This should not happen.
      */
     @JsonView(JsonViews.Controller.TaskDetails.class)
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity createTask(@AuthenticationPrincipal Long userId, @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
+    @RequestMapping(value = "", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity createTask(@AuthenticationPrincipal Long userId,
+                                     @RequestBody TaskCreateRequestBody taskCreateRequestBody) throws WrongParameterException, DoesNotExistException {
         User creator = userApi.getUser(userId);
 
         checkIfDeadlineXorGrowing(taskCreateRequestBody);
@@ -204,7 +205,7 @@ public class TaskController {
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID or a {@link Task} with the given id does not exist.
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(JsonViews.Controller.TaskDetails.class)
     public ResponseEntity taskDetails(@AuthenticationPrincipal Long userId,
                                       @PathVariable("id") Long id) throws DoesNotExistException {
@@ -230,7 +231,10 @@ public class TaskController {
      * @throws DoesNotExistException   if the authenticated user ID or a {@link Task} with the given id does not exist.
      * @throws WrongParameterException if the request is missing required parameters.
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}",
+            method = RequestMethod.PUT,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(JsonViews.Controller.TaskDetails.class)
     public ResponseEntity editTask(@AuthenticationPrincipal Long userId,
                                    @PathVariable("id") Long id,
@@ -304,7 +308,7 @@ public class TaskController {
      * @throws DoesNotExistException   if the authenticated user ID or a {@link Task} with the given id does not exist.
      * @throws WrongParameterException if the request is missing required parameters.
      */
-    @RequestMapping(value = "/share/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/share/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity shareTask(@AuthenticationPrincipal Long userId,
                                     @PathVariable("id") Long id,
                                     @RequestBody TaskSharingRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
@@ -339,15 +343,6 @@ public class TaskController {
                     }
                 }
             }
-
-//            List<Long> testList = new ArrayList<>();
-//            testList.add(1L);
-//            testList.add(4L);
-//            testList.add(7L);
-//
-//            requestBody.setGroupIds(testList);
-//            requestBody.setUserIds(testList);
-
 
             return ResponseEntity.ok().build();
 

@@ -99,6 +99,4 @@ public class StringConstants {
     public final static String FILTER_PRIORITY_3 = "normal";
     public final static String FILTER_PRIORITY_4 = "high";
     public final static String FILTER_PRIORITY_5 = "highest";
-
-    public final static String CONTENT_TYPE_APP_JSON = "application/json";
 }

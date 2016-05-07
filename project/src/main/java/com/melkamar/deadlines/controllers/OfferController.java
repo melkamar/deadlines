@@ -38,13 +38,10 @@ import com.melkamar.deadlines.services.api.SharingApi;
 import com.melkamar.deadlines.services.api.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.MessageFormat;
 import java.util.Set;
@@ -56,8 +53,8 @@ import java.util.Set;
  *
  * @author Martin Melka
  */
-@Controller
-@RequestMapping(value = "/offer")
+@RestController
+@RequestMapping(value = "/offer", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OfferController {
     @Autowired
     private SharingApi sharingApi;
@@ -76,7 +73,7 @@ public class OfferController {
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
-    @RequestMapping(value = "/task/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/task/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView(JsonViews.Controller.OfferList.class)
     public ResponseEntity listUserTaskOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
         User user = userApi.getUser(userId);
@@ -124,7 +121,7 @@ public class OfferController {
      * @throws DoesNotExistException if the authenticated user ID or a {@link Group} with the given ID does not exist.
      */
     @JsonView(JsonViews.Controller.OfferList.class)
-    @RequestMapping(value = "/task/group/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/task/group/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listGroupTaskOffers(@AuthenticationPrincipal Long userId,
                                               @PathVariable("id") Long id) throws DoesNotExistException {
         User user = userApi.getUser(userId);
@@ -183,7 +180,7 @@ public class OfferController {
      * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
     @JsonView(JsonViews.Controller.OfferList.class)
-    @RequestMapping(value = "/membership", method = RequestMethod.GET)
+    @RequestMapping(value = "/membership", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listMembershipOffers(@AuthenticationPrincipal Long userId) throws DoesNotExistException {
         User user = userApi.getUser(userId);
         Set<MembershipOffer> offers = sharingApi.listMembershipOffersOfUser(user);
