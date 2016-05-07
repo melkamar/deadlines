@@ -423,10 +423,8 @@
 				
 				\item[UC 2.03 Sdílet úkol] \hfill \\
 					1. Scénář začíná, když chce Účastník sdílet úkol. \\
-					2. <Zobrazit seznam uživatelů> \\
-					3. <Zobrazit seznam skupin> \\
-					4. Účastník zašle požadavek obsahující úkol, uživatele a skupiny, se kterými chce úkol sdílet. \\
-					5. Aplikace pošle zadaným uživatelům a skupinám nabídku ke sdílení úkolu.
+					2. Účastník zašle požadavek obsahující úkol, uživatele a skupiny, se kterými chce úkol sdílet. \\
+					3. Aplikace pošle zadaným uživatelům a skupinám nabídku ke sdílení úkolu.
 				
 				\item[UC 2.04 Zobrazit seznam mých úkolů] \hfill \\
 					1. Scénář začíná, když chce uživatel zobrazit své úkoly.\\
@@ -443,18 +441,16 @@
 				
 				\item[UC 2.07 Rozhodnout o příchozí nabídce sdílení úkolu] \hfill \\
 					1. Scénář začíná, když chce uživatel přijmout nebo zamítnout nabídku ke sdílení úkolu. \\
-					2. <Zobrazit seznam příchozích nabídek na sdílení úkolu> \\
-					3. Uživatel zašle požadavek s jeho rozhodnutím a nabídkou, které se týká. \\
-					4. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
+					2. Uživatel zašle požadavek s jeho rozhodnutím a nabídkou, které se týká. \\
+					3. Pokud je nabídka přijata, stává se uživatel pozorovatelem sdíleného úkolu. V opačném případě je nabídka smazána. \\
 				
 				\item[UC 2.08 Zobrazit seznam nabídek na sdílení úkolu] \hfill \\
 					Zobrazí seznam nabídek pro uživatele k připojení se ke sdílenému úkolu, v němž bude u každé nabídky uvedeno uživatelské a skutečné jméno sdílejícího uživatele a název úkolu.
 				
 				\item[UC 2.09 Založit pracovní skupinu] \hfill \\
 					1. Scénář začíná, když chce uživatel založit pracovní skupinu. \\
-					2. <Zobrazit seznam uživatelů> \\
-					3. Uživatel zašle požadavek obsahující jméno skupiny a volitelně její popis. \\
-					4. Aplikace vytvoří novou skupinu s daným názvem a popisem. Zakládající uživatel se stane jejím Adminem. \\
+					2. Uživatel zašle požadavek obsahující jméno skupiny a volitelně její popis. \\
+					3. Aplikace vytvoří novou skupinu s daným názvem a popisem. Zakládající uživatel se stane jejím Adminem. \\
 					
 				\item[UC 2.10 Rozhodnout o příchozí nabídce ke vstupu do skupiny] \hfill \\
 					Uživatel rozhodne, zda chce přijmout nebo odmítnout nabídku ke vstupu do skupiny. Pokud ji přijme, stane se jejím Členem.
@@ -473,10 +469,9 @@
 					
 				\item[UC 2.15 Zobrazit úkol] \hfill \\
 					1. Scénář začíná, když chce uživatel zobrazit detaily úkolu. \\
-					2. <Zobrazit seznam mých úkolů> \\
-					3. Uživatel zašle požadavek k zobrazení úkolu. \\
-					4. Pokud uživatel není účastníkem úkolu, scénář končí.  \\
-					5. Aplikace zobrazí všechny informace o úkolu, tedy identifikátor, název, popis, datum a čas začátku a \textit{deadlinu}, případně rychlost růstu. Dále pracnost, prioritu, typ, stav, urgentnost, záznamy o práci a seznam jeho Pracovníků, Pozorovatelů a zúčastněných skupin. \\
+					2. Uživatel zašle požadavek k zobrazení úkolu. \\
+					3. Pokud uživatel není účastníkem úkolu, scénář končí.  \\
+					4. Aplikace zobrazí všechny informace o úkolu, tedy identifikátor, název, popis, datum a čas začátku a \textit{deadlinu}, případně rychlost růstu. Dále pracnost, prioritu, typ, stav, urgentnost, záznamy o práci a seznam jeho Pracovníků, Pozorovatelů a zúčastněných skupin. \\
 					
 					
 				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -510,10 +505,9 @@
 					
 				\item[UC 2.20 Zadat odvedenou práci] \hfill \\
 					1. Scénář začíná, když uživatel odvedl nějakou práci a chce ji na úkolu zaznamenat. \\
-					2. <Zobrazit úkol> \\
-					3. Uživatel zašle požadavek s identifikátorem úkolu a počtem odpracovaných hodin. \\
-					4. Pokud uživatel není Pracovníkem daného úkolu, scénář končí.
-					5. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
+					2. Uživatel zašle požadavek s identifikátorem úkolu a počtem odpracovaných hodin. \\
+					3. Pokud uživatel není Pracovníkem daného úkolu, scénář končí.
+					4. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
 					
 				\item[UC 2.21 Vynulovat urgentnost rostoucího úkolu] \hfill \\
 					Umožňuje Pracovníkovi vynulovat urgentnost rostoucího úkolu.
@@ -522,10 +516,9 @@
 					Umožňuje Účastníkovi úkolu opustit ho. Účastníkem úkolu je možné být přímo nebo skrze skupinu. Opustit úkol lze pouze, pokud je Účastník součástí úkolu přímo.
 				
 					1. Scénář začíná, když se Účastník úkolu rozhodne opustit úkol. \\
-					2. <Zobrazit úkol> \\
-					3. Účastník zašle požadavek na opuštění úkolu. \\
-					4. Pokud nebyl úkol sdílen přímo s Účastníkem (ale jen skupinou, ve které je Členem), scénář končí. \\
-					5. Aplikace odebere Účastníka z úkolu. Pokud byl ale Účastník navíc součástí úkolu skrze skupinu, jíž je členem, nadále zůstane součástí úkolu skrze tuto skupinu.
+					2. Účastník zašle požadavek na opuštění úkolu. \\
+					3. Pokud nebyl úkol sdílen přímo s Účastníkem (ale jen skupinou, ve které je Členem), scénář končí. \\
+					4. Aplikace odebere Účastníka z úkolu. Pokud byl ale Účastník navíc součástí úkolu skrze skupinu, jíž je členem, nadále zůstane součástí úkolu skrze tuto skupinu.
 			\end{description}
 			
 			
@@ -541,7 +534,6 @@
 				\label{diagram:uc-shared}
 			\end{figure}
 			
-			% TODO projít usecases a u všech doplnit podmínky, jestli má uživatel právo to vykonat?
 			\begin{description}
 				\item[UC 3.01 Zobrazit seznam úkolů skupiny] \hfill \\
 					1. Scénář začíná, když chce Člen skupiny zobrazit úkoly své skupiny. \\
@@ -553,26 +545,23 @@
 					
 				\item[UC 3.02 Opustit skupinu] \hfill \\
 					1. Scénář začíná, když chce Člen opustit skupinu. \\
-					2. <Zobrazit seznam mých skupin> \\
-					3. Člen zašle požadavek na opuštění skupiny. \\
-					4. Pokud je Člen Adminem skupiny, opuštění je zamítnuto a scénář končí. \\
-					5. Aplikace odebere Člena ze skupiny a ze všech úkolů, jichž byl součástí skrze opouštěnou skupinu.
+					2. Člen zašle požadavek na opuštění skupiny. \\
+					3. Pokud je Člen Adminem skupiny, opuštění je zamítnuto a scénář končí. \\
+					4. Aplikace odebere Člena ze skupiny a ze všech úkolů, jichž byl součástí skrze opouštěnou skupinu.
 				
 				\item[UC 3.03 Zobrazit seznam mých skupin] \hfill \\
 					Zobrazí Členovi seznam názvů všech skupin, ve kterých je Členem.
 				
 				\item[UC 3.04 Zobrazit detail skupiny] \hfill \\
 					1. Scénář začíná, když Člen chce zobrazit detaily skupiny. \\
-					2. <Zobrazit seznam mých skupin> \\
-					3. Člen zašle požadavek na zobrazení detailů dané skupiny. \\
-					4. Pokud Člen nepatří do zvolené skupiny, je zobrazení odepřeno a scénář končí. \\
-					5. Aplikace zobrazí detaily skupiny, tedy její jméno, popis, seznam Členů, Manažerů a Admina.
+					2. Člen zašle požadavek na zobrazení detailů dané skupiny. \\
+					3. Pokud Člen nepatří do zvolené skupiny, je zobrazení odepřeno a scénář končí. \\
+					4. Aplikace zobrazí detaily skupiny, tedy její jméno, popis, seznam Členů, Manažerů a Admina.
 				
 				\item[UC 3.05 Pozvat uživatele do skupiny] \hfill \\
 					1. Scénář začíná, když Manažer chce pozvat uživatele do skupiny. \\
-					2. <Zobrazit seznam uživatelů> \\
-					3. Manažer pošle požadavek obsahující uživatele, které chce pozvat do skupiny. \\
-					4. Aplikace vytvoří abídku ke vstupu do skupiny zadaným uživatelům. \\
+					2. Manažer pošle požadavek obsahující uživatele, které chce pozvat do skupiny. \\
+					3. Aplikace vytvoří abídku ke vstupu do skupiny zadaným uživatelům. \\
 				
 				\item[UC 3.06 Přiřadit Členovi roli na úkolu] \hfill \\
 					Umožňuje přiřadit Členům skupiny roli Pozorovatele nebo Pracovníka na úkolech skupiny.
@@ -582,9 +571,8 @@
 					
 				\item[UC 3.08 Rozhodnout o nabídce sdílení úkolu se skupinou] \hfill \\
 					1. Scénář začíná, když Manažer chce rozhodnout o nabídce sdílení úkolu se skupinou. \\
-					2. <Zobrazit seznam nabídek na sdílení úkolu se skupinou> \\
-					3. Manažer pošle požadavek na přijetí či odmítnutí nabídky. \\
-					4. Aplikace provede požadovanou akci. Pokud Manažer nabídku odmítá, je smazána. Pokud Manažer nabídku přijímá, Aplikace úkol zařadí mezi úkoly skupiny a všichni Členové skupiny se stanou jeho Pozorovateli.
+					2. Manažer pošle požadavek na přijetí či odmítnutí nabídky. \\
+					3. Aplikace provede požadovanou akci. Pokud Manažer nabídku odmítá, je smazána. Pokud Manažer nabídku přijímá, Aplikace úkol zařadí mezi úkoly skupiny a všichni Členové skupiny se stanou jeho Pozorovateli.
 				
 				\item[UC 3.09 Vytvořit úkol pro skupinu] \hfill \\
 					Umožňuje Manažerovi vytvořit nový úkol a ihned ho nasdílet se svými skupinami.
@@ -594,9 +582,8 @@
 				
 				\item[UC 3.11 Odebrat skupinu z úkolu] \hfill \\
 					1. Scénář začíná, když chce Manažer odebrat skupinu z úkolu, aby už nebyla jeho součástí. \\
-					2. <Zobrazit seznam úkolů skupiny> \\
-					3. Manažer zašle požadavek na odebrání skupinu z vybraného úkolu. \\
-					4. Aplikace odebere úkol ze skupiny. U úkolu odebere skupinu a všechny Členy skupiny, pokud nejsou součástí úkolu i mimo skupinu. \\
+					2. Manažer zašle požadavek na odebrání skupinu z vybraného úkolu. \\
+					3. Aplikace odebere úkol ze skupiny. U úkolu odebere skupinu a všechny Členy skupiny, pokud nejsou součástí úkolu i mimo skupinu. \\
 					
 				\item[UC 3.12 Upravit detail skupiny] \hfill \\
 					Umožňuje Adminovi měnit popis skupiny.
@@ -609,17 +596,17 @@
 					
 				\item[UC 3.15 Smazat skupinu] \hfill \\
 					1. Scénář začíná, když se Admin rozhodne smazat skupinu. \\
-					2. <Zobrazit detail skupiny>\\
-					3. Admin zašle požadavek na smazání skupiny. \\
-					4. Aplikace odebere všechny ostatní členy ze skupiny -- Include(\uv{Odebrat uživatele ze skupiny}). \\
-					5. Aplikace odebere skupinu ze všech jejích úkolů -- Include(\uv{Odebrat skupinu z úkolu}). \\
-					6. Aplikace odebere Admina ze skupiny. \\
-					7. Aplikace smaže skupinu. \\
+					2. Admin zašle požadavek na smazání skupiny. \\
+					3. Aplikace odebere všechny ostatní členy ze skupiny. \\
+					4. Aplikace odebere skupinu ze všech jejích úkolů. \\
+					5. Aplikace odebere Admina ze skupiny. \\
+					6. Aplikace smaže skupinu. \\
 					
 			\end{description}
-				
-				
+
 			
+			
+			\subsubsection{Časově podmíněné případy užití}
 			Diagram \ref{diagram:uc-time} zachycuje časově závislé případy užití, které se pravidelně vykonávají bez přičinění uživatelů aplikace.
 			\begin{figure}\centering
 				\includegraphics[width=0.5\textwidth]{ea-diagrams/uc-time.png}
