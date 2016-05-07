@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class OfferResolutionRequestBody {
     @JsonProperty(required = true)
-    private Boolean accept;
+    public Boolean accept;
 
     public Boolean isAccept() {
         return accept;

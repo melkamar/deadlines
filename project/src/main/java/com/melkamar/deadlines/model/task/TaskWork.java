@@ -24,6 +24,8 @@ package com.melkamar.deadlines.model.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.melkamar.deadlines.controllers.JsonViews;
 import com.melkamar.deadlines.model.User;
 
 import javax.persistence.*;
@@ -43,6 +45,7 @@ public class TaskWork {
     Long id;
 
     @Column(name = COL_MANHOURS, nullable = false)
+    @JsonView(JsonViews.TaskWork.Basic.class)
     private final Double manhours;
 
     @ManyToOne
@@ -91,6 +94,7 @@ public class TaskWork {
     }
 
     @JsonProperty(value = "userId")
+    @JsonView(JsonViews.TaskWork.Basic.class)
     public Long getUserId(){
         return this.workedBy.getId();
     }

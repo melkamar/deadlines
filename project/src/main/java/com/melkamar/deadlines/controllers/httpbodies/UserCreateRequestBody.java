@@ -26,10 +26,10 @@ package com.melkamar.deadlines.controllers.httpbodies;
  * @author Martin Melka
  */
 public class UserCreateRequestBody {
-    private String username;
-    private String password;
-    private String name;
-    private String email;
+    public String username;
+    public String password;
+    public String name;
+    public String email;
 
     public String getUsername() {
         return username;

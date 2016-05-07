@@ -26,8 +26,8 @@ package com.melkamar.deadlines.controllers.httpbodies;
  * @author Martin Melka
  */
 public class GroupRequestBody {
-    private String name;
-    private String description;
+    public String name;
+    public String description;
 
     public String getName() {
         return name;

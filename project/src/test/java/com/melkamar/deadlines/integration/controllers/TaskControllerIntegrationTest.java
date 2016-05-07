@@ -22,6 +22,8 @@
 
 package com.melkamar.deadlines.integration.controllers;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.melkamar.deadlines.DeadlinesApplication;
 import com.melkamar.deadlines.model.Group;
 import com.melkamar.deadlines.model.User;
@@ -58,6 +60,7 @@ import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -171,45 +174,91 @@ public class TaskControllerIntegrationTest {
 
     @Transactional
     @Test
-    public void taskIdGet() throws Exception {
-        String request = "{\"email\":\"abraka\"}";
-        MvcResult result = mvc.perform(get("/task/" + task1.getId())
-                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+    public void taskPost() throws Exception {
+
+        String request = "{\"name\": \"task name\"," +
+                "\"description\":\"task description\"," +
+                "\"priority\": \"LOW\"," +
+                "\"workEstimate\": \"13\"," +
+                "\"deadline\":\"2016-05-17 13:15\"," +
+                "\"groupIds\":[1]}";
+
+        MvcResult result = mvc.perform(post("/task")
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
         System.out.println("HTTP CODE:" + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
         System.out.println("*****************************************************************************************");
+
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(result.getResponse().getContentAsString()).getAsJsonObject();
+
+        Assert.assertEquals(2, object.getAsJsonArray("participants").size());
+        Assert.assertEquals(1, object.getAsJsonArray("groups").size());
+    }
+
+    @Transactional
+    @Test
+    public void taskIdGet() throws Exception {
+        MvcResult result = mvc.perform(get("/task/" + task1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        System.out.println("*****************************************************************************************");
+        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
+        System.out.println("*****************************************************************************************");
+
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(result.getResponse().getContentAsString()).getAsJsonObject();
+
+        Assert.assertEquals("Task1", object.get("name").getAsString());
     }
 
     @Transactional
     @Test
     public void taskIdPut() throws Exception {
+        Assert.assertNotEquals("abraka", task1.getDescription());
         String request = "{\"description\":\"abraka\"}";
         MvcResult result = mvc.perform(put("/task/" + task1.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
         System.out.println("HTTP CODE:" + result.getResponse().getStatus());
         System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
         System.out.println("*****************************************************************************************");
+
+        JsonParser parser = new JsonParser();
+        JsonObject object = parser.parse(result.getResponse().getContentAsString()).getAsJsonObject();
+
+        Assert.assertEquals("abraka", object.get("description").getAsString());
     }
 
     @Transactional
     @Test
     public void taskShare() throws Exception {
-        System.out.println(sharingApi.listTaskOffersOfGroup(user2, group3));
+        int user4offers = user4.getTaskOffers().size();
+        int user3offers = user3.getTaskOffers().size();
+        int group3offers = group3.getTaskOffers().size();
 
-        String request = "{\"userIds\":[ " + user2.getId() + "," + user3.getId() + " ], \"groupIds\":[" + group3.getId() + "]}";
+        String request = "{\"userIds\":[ " + user4.getId() + ", " + user3.getId() + " ], \"groupIds\":[" + group3.getId() + "]}";
         System.out.println("Request: " + request);
         MvcResult result = mvc.perform(post("/task/share/" + task1.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(status().isOk())
                 .andReturn();
 
 //        System.out.println("*****************************************************************************************");
@@ -225,6 +274,11 @@ public class TaskControllerIntegrationTest {
         System.out.println("User1 sharing offers: " + sharingApi.listTaskOffersOfUser(user1));
         System.out.println("User2 sharing offers: " + sharingApi.listTaskOffersOfUser(user2));
         System.out.println("User3 sharing offers: " + sharingApi.listTaskOffersOfUser(user3));
+        System.out.println("User4 sharing offers: " + sharingApi.listTaskOffersOfUser(user4));
+
+        Assert.assertEquals(user4offers + 1, user4.getTaskOffers().size());
+        Assert.assertEquals(user3offers + 1, user3.getTaskOffers().size());
+        Assert.assertEquals(group3offers + 1, group3.getTaskOffers().size());
     }
 
     @Transactional
@@ -250,6 +304,7 @@ public class TaskControllerIntegrationTest {
         MvcResult result = mvc.perform(post("/task/role/" + task1.getId() + "?newRole=watcher")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
         )
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -283,6 +338,7 @@ public class TaskControllerIntegrationTest {
         MvcResult result = mvc.perform(post("/task/role/" + task9.getId() + "?newRole=worker&targetUser=" + user2.getId() + "&targetGroup=" + group1.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
         )
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -295,6 +351,7 @@ public class TaskControllerIntegrationTest {
         result = mvc.perform(post("/task/role/" + task9.getId() + "?newRole=watcher&targetUser=" + user2.getId() + "&targetGroup=" + group1.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
         )
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -315,10 +372,21 @@ public class TaskControllerIntegrationTest {
         MvcResult result = mvc.perform(post("/task/report/" + task1.getId() + "?worked=" + reportWorked)
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd"))
         )
+                .andExpect(status().isOk())
                 .andReturn();
 
 
         Assert.assertEquals(beginWork + reportWorked, task1.getManhoursWorked(), 0.001);
+
+        result = mvc.perform(get("/task/" + task1.getId())
+                .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        System.out.println("*****************************************************************************************");
+        System.out.println("HTTP CODE:" + result.getResponse().getStatus());
+        System.out.println(JsonPrettyPrinter.prettyPrint(result.getResponse().getContentAsString()));
+        System.out.println("*****************************************************************************************");
 
     }
 }

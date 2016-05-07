@@ -25,7 +25,7 @@ package com.melkamar.deadlines.controllers;
 /**
  * This interface and the interface hierarchy it contains is used for selecting fields
  * to include in Jackson Entity serialization.
- *
+ * <p>
  * They are used solely with the {@link com.fasterxml.jackson.annotation.JsonView} annotation.
  *
  * @author Martin Melka
@@ -68,6 +68,12 @@ public interface JsonViews {
         }
     }
 
+    interface TaskWork {
+        interface Basic extends Always {
+
+        }
+    }
+
     interface TaskParticipant {
         interface ShowTaskId extends Always {
         }
@@ -107,7 +113,7 @@ public interface JsonViews {
         interface TaskList extends Task.Basic {
         }
 
-        interface TaskDetails extends Task.Detail, User.Minimal, Group.Basic, TaskParticipant.Basic {
+        interface TaskDetails extends Task.Detail, User.Minimal, Group.Basic, TaskParticipant.Basic, TaskWork.Basic {
         }
 
     }

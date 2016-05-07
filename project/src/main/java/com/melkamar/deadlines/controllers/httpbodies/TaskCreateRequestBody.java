@@ -33,15 +33,15 @@ import java.util.List;
  * @author Martin Melka
  */
 public class TaskCreateRequestBody {
-    private String name;
-    private String description;
-    private Priority priority;
-    private double workEstimate;
-    private TaskStatus status;
+    public String name;
+    public String description;
+    public Priority priority;
+    public double workEstimate;
+    public TaskStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
-    private Date deadline;
-    private Double hoursToPeak;
-    private List<Long> groupIds;
+    public Date deadline;
+    public Double hoursToPeak;
+    public List<Long> groupIds;
 
     public List<Long> getGroupIds() {
         return groupIds;

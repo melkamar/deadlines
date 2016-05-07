@@ -28,8 +28,9 @@ import java.util.List;
  * @author Martin Melka
  */
 public class TaskSharingRequestBody {
-    private List<Long> userIds;
-    private List<Long> groupIds;
+    public List<Long> userIds = null;
+    public List<Long> groupIds = null;
+
 
     public List<Long> getGroups() {
         return groupIds;

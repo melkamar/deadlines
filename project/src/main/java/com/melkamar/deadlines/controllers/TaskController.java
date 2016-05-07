@@ -310,6 +310,9 @@ public class TaskController {
                                     @RequestBody TaskSharingRequestBody requestBody) throws DoesNotExistException, WrongParameterException {
         User user = userApi.getUser(userId);
 
+        if ((requestBody.getUsers() == null || requestBody.getUsers().isEmpty()) && (requestBody.getGroups() == null) || requestBody.getGroups().isEmpty())
+            return ResponseEntity.badRequest().body(new ErrorResponse(ErrorCodes.WRONG_PARAMETERS, "At least one user or group needs to be specified."));
+
         try {
             Task task = taskApi.getTask(user, id);
 

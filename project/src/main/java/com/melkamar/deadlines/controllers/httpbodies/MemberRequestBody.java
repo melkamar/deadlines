@@ -28,7 +28,7 @@ import com.melkamar.deadlines.model.MemberRole;
  * @author Martin Melka
  */
 public class MemberRequestBody {
-    private MemberRole role;
+    public MemberRole role;
 
     public MemberRole getRole() {
         return role;

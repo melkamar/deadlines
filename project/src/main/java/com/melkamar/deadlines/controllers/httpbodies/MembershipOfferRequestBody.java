@@ -28,7 +28,7 @@ import java.util.List;
  * @author Martin Melka
  */
 public class MembershipOfferRequestBody {
-    private List<Long> userIds;
+    public List<Long> userIds;
 
     public List<Long> getUserIds() {
         return userIds;

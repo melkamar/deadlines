@@ -58,6 +58,7 @@ import java.time.LocalDateTime;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by Martin Melka (martin.melka@gmail.com)
@@ -174,6 +175,7 @@ public class OfferControllerIntegrationTest {
     public void offerTaskUserGet() throws Exception {
         MvcResult result = mvc.perform(get("/offer/task/user")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user3.getUsername(), "pwd")))
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -189,6 +191,7 @@ public class OfferControllerIntegrationTest {
 
         MvcResult result = mvc.perform(post("/offer/task/user/resolve/" + taskSharingOfferTask4ToUser2.getId() + "?accept=true")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user2.getUsername(), "pwd")))
+                .andExpect(status().isOk())
                 .andReturn();
 
         Assert.assertEquals(tasksBefore + 1, user2.getTasksOfUser().size());
@@ -207,6 +210,7 @@ public class OfferControllerIntegrationTest {
     public void offerTaskGroupGet() throws Exception {
         MvcResult result = mvc.perform(get("/offer/task/group/" + group1.getId())
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -222,6 +226,7 @@ public class OfferControllerIntegrationTest {
 
         MvcResult result = mvc.perform(post("/offer/task/group/" + group1.getId() + "/resolve/" + taskSharingOfferTask7ToGroup1.getId() + "?accept=true")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user1.getUsername(), "pwd")))
+                .andExpect(status().isOk())
                 .andReturn();
 
         Assert.assertEquals(tasksBefore + 1, group1.getSharedTasks().size());
@@ -240,6 +245,7 @@ public class OfferControllerIntegrationTest {
     public void offerMembershipGet() throws Exception {
         MvcResult result = mvc.perform(get("/offer/membership")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user2.getUsername(), "pwd")))
+                .andExpect(status().isOk())
                 .andReturn();
 
         System.out.println("*****************************************************************************************");
@@ -256,6 +262,7 @@ public class OfferControllerIntegrationTest {
 
         MvcResult result = mvc.perform(post("/offer/membership/resolve/" + membershipOfferGroup1ToUser4.getId() + "?accept=true")
                 .header("Authorization", BasicAuthHeaderBuilder.buildAuthHeader(user4.getUsername(), "pwd")))
+                .andExpect(status().isOk())
                 .andReturn();
 
         Assert.assertEquals(groupsBefore + 1, user4.getGroupsOfUser().size());
