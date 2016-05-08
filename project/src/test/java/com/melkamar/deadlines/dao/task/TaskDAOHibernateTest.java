@@ -1,10 +1,7 @@
 package com.melkamar.deadlines.dao.task;
 
 import com.melkamar.deadlines.DeadlinesApplication;
-import com.melkamar.deadlines.exceptions.AlreadyExistsException;
-import com.melkamar.deadlines.exceptions.NotAllowedException;
-import com.melkamar.deadlines.exceptions.NotMemberOfException;
-import com.melkamar.deadlines.exceptions.WrongParameterException;
+import com.melkamar.deadlines.exceptions.*;
 import com.melkamar.deadlines.model.User;
 import com.melkamar.deadlines.model.task.Priority;
 import com.melkamar.deadlines.model.task.Task;
@@ -43,7 +40,7 @@ public class TaskDAOHibernateTest {
     @SuppressWarnings("Duplicates")
     @Transactional
     @Test
-    public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
+    public void findByStatus() throws WrongParameterException, NotMemberOfException, NotAllowedException, AlreadyExistsException, TaskPermissionException {
         User user = userApi.createUser("User1", "pwd", "Name", "email@something.cz");
         Task task1 = taskApi.createTask(user, "Task1", "Description", Priority.NORMAL, 10, 1);
         Task task2 = taskApi.createTask(user, "Task2", "Description", Priority.NORMAL, 10, 1);

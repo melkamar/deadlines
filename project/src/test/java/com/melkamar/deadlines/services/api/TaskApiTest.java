@@ -509,7 +509,7 @@ public class TaskApiTest {
 
     @Test
     @Transactional
-    public void listTasksFilterByStatus() throws AlreadyExistsException, WrongParameterException, NotMemberOfException, NotAllowedException, AlreadyExistsException {
+    public void listTasksFilterByStatus() throws AlreadyExistsException, WrongParameterException, NotMemberOfException, NotAllowedException, AlreadyExistsException, TaskPermissionException {
         User user = userApi.createUser("TestUser", "pwd", "Some name", "a@b.cb");
         Task task1 = taskApi.createTask(user, "CCC", null, null, 0, LocalDateTime.now().plusDays(12));
         Task task2 = taskApi.createTask(user, "AAA", null, null, 0, 1);

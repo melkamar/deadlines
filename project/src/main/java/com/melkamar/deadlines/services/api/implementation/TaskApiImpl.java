@@ -321,12 +321,12 @@ public class TaskApiImpl implements TaskApi {
     }
 
     @Override
-    public void setTaskStatus(User user, Task task, TaskStatus newStatus) throws NotMemberOfException, NotAllowedException {
+    public void setTaskStatus(User user, Task task, TaskStatus newStatus) throws NotMemberOfException, TaskPermissionException {
         TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
         if (taskParticipant == null)
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
         if (taskParticipant.getRole() != TaskRole.WORKER)
-            throw new NotAllowedException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
+            throw new TaskPermissionException(MessageFormat.format(stringConstants.EXC_USER_NOT_WORKER, user, task));
 
         task.setStatus(newStatus);
     }
