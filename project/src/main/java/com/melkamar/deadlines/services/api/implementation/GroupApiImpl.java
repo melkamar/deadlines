@@ -127,34 +127,16 @@ public class GroupApiImpl implements GroupApi {
         }
     }
 
-    /**
-     * Lists all existing groups.
-     *
-     * @return List of {@link Group}
-     */
     @Override
     public List<Group> listGroups() {
         return groupDAO.findAll();
     }
 
-    /**
-     * Lists all groups where User is a member.
-     *
-     * @param user
-     * @return List of {@link Group}
-     */
     @Override
     public List<Group> listGroups(User user) {
         return groupDAO.findByMembers_User(user);
     }
 
-    /**
-     * Lists all groups where User has a role.
-     *
-     * @param user
-     * @param role
-     * @return List of {@link Group}
-     */
     @Override
     public List<Group> listGroups(User user, MemberRole role) {
         return groupDAO.findByMembers_UserAndRole(user, role);
@@ -171,15 +153,6 @@ public class GroupApiImpl implements GroupApi {
         }
     }
 
-    /**
-     * Get group object only if user has permissions (only if he is a member of the group)
-     *
-     * @param groupId
-     * @param user
-     * @return
-     * @throws DoesNotExistException
-     * @throws NotMemberOfException
-     */
     @Override
     public Group getGroup(Long groupId, User user) throws DoesNotExistException, NotMemberOfException {
         Group group = groupDAO.findById(groupId);
@@ -194,22 +167,6 @@ public class GroupApiImpl implements GroupApi {
         return group;
     }
 
-//    @Override
-//    public List<Task> listTasks(User user, Group group, TaskOrdering ordering, TaskFilter... filters) throws NotMemberOfException, GroupPermissionException {
-//        if (!permissionHandler.hasGroupPermission(user, group, MemberRole.MEMBER))
-//            throw new GroupPermissionException(MessageFormat.format(stringConstants.EXC_GROUP_PERMISSION, MemberRole.MEMBER, user, group));
-//
-//        return taskApi.listTasks(group, ordering, filters);
-//    }
-
-
-    /**
-     * Adds a new member to the group. All jobs shared with the group will be shared with the new member as well.
-     *
-     * @param manager User "approving" the addition, needs to be at least a Manager of the group
-     * @param group   Group to add the user to
-     * @param newUser A user that should be added to the group
-     */
     @Override
     public void addMember(User manager, Group group, User newUser) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
         if (manager == null || group == null || newUser == null)
@@ -231,15 +188,6 @@ public class GroupApiImpl implements GroupApi {
         }
     }
 
-    /**
-     * Removes a user from a group. Manager either needs to be a Manager of the Group, or be equal to the user
-     * to be removed (indicating he himself requested the removal).
-     *
-     * @throws NotAllowedException      Admin cannot be removed from a group.
-     * @throws NotMemberOfException     Manager or User are not members of the group.
-     * @throws GroupPermissionException Manager does not have sufficient permissions.
-     * @throws WrongParameterException  One of parameters is null.
-     */
     @Override
     public void removeMember(User manager, Group group, User toRemove) throws NotAllowedException, NotMemberOfException, GroupPermissionException, WrongParameterException {
         if (manager == null || group == null || toRemove == null)
@@ -274,13 +222,6 @@ public class GroupApiImpl implements GroupApi {
         groupMemberHelper.deleteGroupMember(groupMemberToRemove);
     }
 
-    /**
-     * Adds a task as shared with the group.
-     *
-     * @param manager User approving the action. Must be at least a Manager.
-     * @param group   Group to share the task with.
-     * @param task    Task to share.
-     */
     @Override
     public void addTask(User manager, Group group, Task task) throws WrongParameterException, NotMemberOfException, GroupPermissionException, AlreadyExistsException {
         if (manager == null || group == null || task == null)

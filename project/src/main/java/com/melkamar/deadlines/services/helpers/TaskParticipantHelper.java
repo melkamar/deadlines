@@ -97,8 +97,8 @@ public class TaskParticipantHelper {
      * After removal checks if the TaskParticipant should still be associated with the Task or destroyed. (When
      * no other groups are connected and solo is false)
      *
-     * @param taskParticipant
-     * @param group
+     * @param taskParticipant {@link TaskParticipant} that should be removed from a group.
+     * @param group Group from which the {@link TaskParticipant} should be removed.
      */
     @Transactional
     public void removeGroupConnection(TaskParticipant taskParticipant, Group group) {
@@ -112,12 +112,16 @@ public class TaskParticipantHelper {
      * Removes a solo connection from {@link TaskParticipant}.
      * After removal checks if the TaskParticipant should still be associated with the Task or destroyed. (When
      * no other groups are connected and solo is false)
+     *
+     * @param user User to be removed from a task.
+     * @param task Task from which a connection should be removed.
+     * @throws NotMemberOfException if the user is not a participant on the task.
      */
     @Transactional
     public void removeSoloConnection(User user, Task task) throws NotMemberOfException {
         TaskParticipant taskParticipant = taskparticipantDAO.findByUserAndTask(user, task);
 
-        if (taskParticipant == null){
+        if (taskParticipant == null) {
             throw new NotMemberOfException(MessageFormat.format(stringConstants.EXC_USER_NOT_PARTICIPANT, user, task));
         }
 
@@ -127,14 +131,14 @@ public class TaskParticipantHelper {
     }
 
     @Transactional
-    public TaskParticipant getTaskParticipant(User user, Task task){
+    public TaskParticipant getTaskParticipant(User user, Task task) {
         return taskparticipantDAO.findByUserAndTask(user, task);
     }
 
     /**
      * If the TaskParticipant is not relevant (not solo or connected by a group), method will destroy it.
      *
-     * @param taskParticipant
+     * @param taskParticipant {@link TaskParticipant} object that should be destroyed if it is not needed anymore.
      */
     private void destroyIfNotRelevant(TaskParticipant taskParticipant) {
         if (!shouldBeDestroyed(taskParticipant)) return;

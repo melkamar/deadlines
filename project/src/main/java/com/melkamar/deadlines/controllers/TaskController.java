@@ -93,7 +93,7 @@ public class TaskController {
      *                        in {@link StringConstants} as "FILTER_STATUS_*".
      * @param priorityFilters Optional parameter. Filters tasks based on their priority. Accepted values are listed
      *                        in {@link StringConstants} as "FILTER_PRIORITY_*".
-     *                        Multiple priorities may be specified in format "?priorityfilter=val1&priorityfilter=val2&..."
+     *                        Multiple priorities may be specified in format "?priorityfilter=val1&amp;priorityfilter=val2&amp;..."
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException if the authenticated user ID does not exist. This should not happen.
      */
@@ -395,7 +395,7 @@ public class TaskController {
      * @return A {@link ResponseEntity} object containing details of the response to the client.
      * @throws DoesNotExistException   if the authenticated user ID, {@link Task} with the given id or target user or
      *                                 group does not exist.
-     * @throws WrongParameterException
+     * @throws WrongParameterException if the request is missing required parameters.
      */
     @RequestMapping(value = "/role/{id}", method = RequestMethod.POST)
     public ResponseEntity changeTaskRole(@AuthenticationPrincipal Long userId,

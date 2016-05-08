@@ -33,28 +33,6 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * @author Martin Melka
- * <p>
- * Calculates urgency of a task.
- * <h1>DeadlineTask computation is based on the formula:</h1>
- * urgency = |(a^reserve - 1) * b| + b + c for reserve <=0
- * urgency = a^(-reserve) * b + c,  for reserve >=0
- * <p>
- * Parameter a determines how "sharp" the urgency curve is.
- * Parameter b determines the "range" in which the urgency values will lie.
- * Parameter c determines offset of the curve in the y-axis.
- * <p>
- * <p>
- * Where reserve = [remaining time] / [remaining work] + [remaining time] / d.
- * Parameter d denotes the "significance" of remaining time. So if there are two jobs
- * with equal time-to-work ratio (e.g. 6:3 vs 4:2), the reserve will be greater for the task that has longer
- * until its deadline.
- * This way the jobs that are nearing their deadlines are prioritized over jobs that have equal
- * "reserve", but longer until their deadline.
- * <p>
- * E.g. there is 10 hours left on a task and 25 hours is left to its deadline.
- * Reserve therefore equals 25/10 = 2.5
- * <h1>GrowingTask computation is based on the formula:</h1>
- * linear ...
  */
 @Service("urgencyComputer")
 public class DefaultUrgencyComputer implements UrgencyComputer {
@@ -68,6 +46,31 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
     // If no work estimate set or worked more than the estimate, use this number instead.
     // That way urgency will still be generated for proper sorting (even though its values might be misleading)
     private static final double emptyRemainingWork = 0.5;
+
+    /**
+     * Calculates urgency of a task.
+     * <h1>DeadlineTask computation is based on the formula:</h1>
+     * urgency = |(a^reserve - 1) * b| + b + c for reserve &lt;=0
+     * urgency = a^(-reserve) * b + c,  for reserve &gt;=0
+     * <p>
+     * Parameter a determines how "sharp" the urgency curve is.
+     * Parameter b determines the "range" in which the urgency values will lie.
+     * Parameter c determines offset of the curve in the y-axis.
+     * <p>
+     * <p>
+     * Where reserve = [remaining time] / [remaining work] + [remaining time] / d.
+     * Parameter d denotes the "significance" of remaining time. So if there are two jobs
+     * with equal time-to-work ratio (e.g. 6:3 vs 4:2), the reserve will be greater for the task that has longer
+     * until its deadline.
+     * This way the jobs that are nearing their deadlines are prioritized over jobs that have equal
+     * "reserve", but longer until their deadline.
+     * <p>
+     * E.g. there is 10 hours left on a task and 25 hours is left to its deadline.
+     * Reserve therefore equals 25/10 = 2.5
+     * <h1>GrowingTask computation is linear.</h1>
+     */
+    public DefaultUrgencyComputer() {
+    }
 
     @Override
     public double computeDeadlineTaskUrgency(DeadlineTask task) {
@@ -85,9 +88,9 @@ public class DefaultUrgencyComputer implements UrgencyComputer {
 
         double urgencyValue;
         if (reserve >= 0) {
-            urgencyValue = Math.pow(a, -reserve+1) * b + c;
+            urgencyValue = Math.pow(a, -reserve + 1) * b + c;
         } else { // reserve < 0
-            urgencyValue = Math.abs((Math.pow(a, reserve-1) - 1) * b) + b + c;
+            urgencyValue = Math.abs((Math.pow(a, reserve - 1) - 1) * b) + b + c;
         }
 
         return urgencyValue;

@@ -100,10 +100,6 @@ public class TaskApiImpl implements TaskApi {
         return task;
     }
 
-    /**
-     * Creates a DeadlineTask. If groups is not null, then it will be immediately shared with the given groups.
-     * Creator must be manager of all of them.
-     */
     @Override
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate,
                            List<Group> groups, LocalDateTime deadline) throws
@@ -122,10 +118,6 @@ public class TaskApiImpl implements TaskApi {
         return newTask;
     }
 
-    /**
-     * Creates a GrowingTask. If groups is not null, then it will be immediately shared with the given groups.
-     * Creator must be manager of all of them.
-     */
     @Override
     public Task createTask(User creator, String name, String description, Priority priority, double workEstimate,
                            List<Group> groups, double hoursToPeak)
@@ -168,12 +160,6 @@ public class TaskApiImpl implements TaskApi {
         return taskWork;
     }
 
-    /**
-     * Lists jobs of the user, optionally applying filters and ordering to it.
-     *
-     * @param tasksOfUser
-     * @return
-     */
     @Override
     public List<Task> listTasks(User tasksOfUser, TaskOrdering ordering, TaskFilter... filters) {
         List<Task> tasks = getOrderedTasksOfUser(tasksOfUser, ordering);
@@ -290,10 +276,6 @@ public class TaskApiImpl implements TaskApi {
         return task;
     }
 
-    /**
-     * Changes a toChangeUser's role on a task. Will succeed if executor is toChangeUser, or if executor is a manager
-     * of a group the toChangeUser belongs to and which is participating on the task.
-     */
     @Override
     public void setTaskRole(User user, Task task, TaskRole newRole) throws NotMemberOfException {
         TaskParticipant taskParticipant = taskParticipantHelper.getTaskParticipant(user, task);
@@ -358,14 +340,6 @@ public class TaskApiImpl implements TaskApi {
         }
     }
 
-
-    /**
-     * Resets urgency of a GrowingTask. Does not affect DeadlineTasks.
-     *
-     * @param user
-     * @param task
-     * @return
-     */
     @Override
     public void resetUrgency(User user, Task task) throws NotAllowedException, NotMemberOfException, TaskPermissionException {
         if (!(task instanceof GrowingTask)) {

@@ -120,7 +120,7 @@ public abstract class Task {
         this.urgency = new Urgency();
     }
 
-    /*************************************************************/
+
 
     public boolean addParticipant(TaskParticipant participant) {
         return participants.add(participant);
@@ -174,9 +174,6 @@ public abstract class Task {
     public Set<TaskParticipant> getParticipants() {
         return participants;
     }
-
-    /*************************************************************/
-
 
     public Long getId() {
         return id;

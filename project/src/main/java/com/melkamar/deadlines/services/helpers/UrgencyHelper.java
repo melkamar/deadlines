@@ -74,6 +74,7 @@ public class UrgencyHelper {
     /**
      * Checks if enough time has passed and whether a Task Urgency object should be updated.
      *
+     * @param task Task to check for the need of updating.
      * @return True if the object should be updated, false otherwise.
      */
     public boolean needsUpdate(Task task) {

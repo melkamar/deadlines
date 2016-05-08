@@ -120,26 +120,11 @@ public class UserApiImpl implements UserApi {
         return user;
     }
 
-    /**
-     * Lists all users in the system.
-     *
-     * @return
-     */
     @Override
     public List<User> listUsers() {
         return userDAO.findAll();
     }
 
-    /**
-     * Removes the user from a group, including all his group-related jobs.
-     *
-     * @param user
-     * @param group
-     * @throws NotAllowedException
-     * @throws WrongParameterException
-     * @throws GroupPermissionException
-     * @throws NotMemberOfException
-     */
     @Override
     public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, NotMemberOfException {
         try {
