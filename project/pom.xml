@@ -5,7 +5,7 @@
 
     <groupId>com.melkamar</groupId>
     <artifactId>deadlines</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
     <packaging>${packaging.type}</packaging>
 
     <name>deadlines</name>
@@ -31,12 +31,14 @@
             </activation>
             <properties>
                 <packaging.type>jar</packaging.type>
+                <!--<spring.profiles.active>jar</spring.profiles.active>-->
             </properties>
         </profile>
         <profile>
             <id>war</id>
             <properties>
                 <packaging.type>war</packaging.type>
+                <!--<spring.profiles.active>war</spring.profiles.active>-->
             </properties>
             <dependencies>
                 <dependency>
