@@ -50,9 +50,9 @@
 \authorFN{Melka} %příjmení autora
 \authorWithDegrees{Martin Melka} %jméno autora včetně současných akademických titulů
 \supervisor{Ing. Josef Pavlíček, Ph.D.}
-\acknowledgements{Doplňte, máte-li komu a za co děkovat. V~opačném případě úplně odstraňte tento příkaz.}
+\acknowledgements{Mé poděkování patří vedoucímu práce, panu Ing. Josefu Pavlíčkovi, Ph.D., za jeho cenné rady a konzultace. Děkuji také své rodině a přítelkyni, kteří mi byli morální podporou během celého mého studia.}
 
-\abstractCS{Tato bakalářská práce se zabývá srovnáním existujících aplikací a tvorbou nové aplikace pro správu úkolů. Uživateli této aplikace budou jednotlivci a menší pracovní skupiny, které chtějí přidělovat zodpovědnosti a sledovat průběh práce na společných úkolech. Aplikace umožní lidem sdružovat se do skupin, spolupracovat na sdílených úkolech a zaznamenávat odvedenou práci. Součástí této práce je definice požadavků na aplikaci, srovnání navrhovaného řešení s existujícími aplikacemi, dále návrh, implementace, testování a nasazení aplikace. Výsledkem práce bude aplikační backend, vystavující funkcionalitu skrze REST rozhraní.}
+\abstractCS{Tato bakalářská práce se zabývá srovnáním existujících aplikací a tvorbou serverové části nové aplikace pro správu úkolů. Uživateli této aplikace budou jednotlivci a menší pracovní skupiny, které chtějí přidělovat zodpovědnosti a sledovat průběh práce na společných úkolech. Aplikace umožní lidem sdružovat se do skupin, spolupracovat na sdílených úkolech a zaznamenávat odvedenou práci. Součástí této práce je definice požadavků na aplikaci, srovnání navrhovaného řešení s existujícími aplikacemi, dále návrh, implementace, testování a nasazení aplikace. Výsledkem práce bude serverová část aplikace, vystavující funkcionalitu skrze REST rozhraní.}
 
 \abstractEN{The aim of this thesis is to compare available software applications for task management and to subsequently create an original one. The users of this application will be individuals and small-scale workgroups, who need to assign responsibilities for and track the progress of shared tasks. The application will allow users to form groups, work together on shared tasks and report the work done on them. This thesis consists of a definition of application requirements, comparison of current task management solutions and design, implementation, testing and deployment of the proposed application. The outcome of this thesis will be an application backend, which exposes its functionality through a REST interface.}
 \placeForDeclarationOfAuthenticity{V~Praze}
@@ -1416,6 +1416,7 @@ public void userEditTest() throws Exception {
 	\item[IOC] Inversion of Control
 	\item[POJO] Plain Old Java Object
 	\item[JRE] Java Runtime Environment
+	\item[JDK] Java Development Kit
 	\item[URL] Uniform Resource Locator
 \end{description}
 
@@ -2049,20 +2050,22 @@ public void userEditTest() throws Exception {
 \end{figure}
 
 
-% TODO program 
-
-
 
 \chapter{Obsah přiloženého CD}
-
-%upravte podle skutecnosti
 
 \begin{figure}
 	\dirtree{%
 		.1 readme.txt\DTcomment{stručný popis obsahu CD}.
-		.1 exe\DTcomment{adresář se spustitelnou formou implementace}.
+		.1 deployment\DTcomment{soubory pro nasazení aplikace}.
+		.2 application.properties\DTcomment{konfigurační soubor aplikace}.
+		.2 database\_init\_mysql.sql\DTcomment{inicializační skript databáze}.
+		.2 deadlines-1.1.1.jar\DTcomment{spustitelný soubor aplikace}.
+		.2 deadlines-1.1.1.war\DTcomment{soubor aplikace pro nasazení na serveru}.
+		.1 doc.
+		.2 ea\DTcomment{návrhová dokumentace v nástroji Enterprise Architect}.
+		.2 project\DTcomment{JavaDoc dokumentace zdrojových kódů}.
 		.1 src.
-		.2 impl\DTcomment{zdrojové kódy implementace}.
+		.2 project\DTcomment{zdrojové kódy implementace}.
 		.2 thesis\DTcomment{zdrojová forma práce ve formátu \LaTeX{}}.
 		.1 text\DTcomment{text práce}.
 		.2 thesis.pdf\DTcomment{text práce ve formátu PDF}.
