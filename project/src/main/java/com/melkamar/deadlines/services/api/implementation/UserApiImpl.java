@@ -34,6 +34,7 @@ import com.melkamar.deadlines.services.api.GroupApi;
 import com.melkamar.deadlines.services.api.UserApi;
 import com.melkamar.deadlines.services.helpers.TaskParticipantHelper;
 import com.melkamar.deadlines.services.security.HashAndSaltGenerator;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -140,8 +141,13 @@ public class UserApiImpl implements UserApi {
      * @throws NotMemberOfException
      */
     @Override
-    public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, GroupPermissionException, NotMemberOfException {
-        groupApi.removeMember(user, group, user);
+    public void leaveGroup(User user, Group group) throws NotAllowedException, WrongParameterException, NotMemberOfException {
+        try {
+            groupApi.removeMember(user, group, user);
+        } catch (GroupPermissionException e){
+            // this will not happen
+            Logger.getLogger(this.getClass()).error(e);
+        }
     }
 
     @Override
