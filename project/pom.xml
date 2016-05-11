@@ -5,7 +5,7 @@
 
     <groupId>com.melkamar</groupId>
     <artifactId>deadlines</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>${packaging.type}</packaging>
 
     <name>deadlines</name>
@@ -101,8 +101,6 @@
             <artifactId>spring-security-test</artifactId>
             <version>4.0.4.RELEASE</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
