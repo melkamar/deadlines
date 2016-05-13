@@ -15,11 +15,6 @@
 \usepackage{enumitem}
 \setlist[enumerate]{label*=\arabic*.}
 
-% % list of acronyms
-% \usepackage[acronym,nonumberlist,toc,numberedsection=autolabel]{glossaries}
-% \iflanguage{czech}{\renewcommand*{\acronymname}{Seznam pou{\v z}it{\' y}ch zkratek}}{}
-% \makeglossaries
-
 \newcommand{\tg}{\mathop{\mathrm{tg}}} %cesky tangens
 \newcommand{\cotg}{\mathop{\mathrm{cotg}}} %cesky cotangens
 
@@ -62,9 +57,6 @@
 
 \begin{document}
 
-% \newacronym{CVUT}{{\v C}VUT}{{\v C}esk{\' e} vysok{\' e} u{\v c}en{\' i} technick{\' e} v Praze}
-% \newacronym{FIT}{FIT}{Fakulta informa{\v c}n{\' i}ch technologi{\' i}}
-
 \begin{introduction}
 	Výpočetní technika umožnila rozvoj rychlejší a efektivnější komunikace, práce a vůbec způsobu života. Je běžné mít svůj kalendář on-line a sdílet ho s ostatními, případně používat některý nástroj s funkcí úkolníčku. Zejména ve velkých firmách, kde existuje silná potřeba koordinovat úsilí mnoha lidí, tak vznikla poptávka po nástrojích pro správu úkolů, které by jim umožnily efektivnější rozdělování zodpovědností a práce. Řešení, které na tento popud vznikly, slouží právě potřebám velkých firem. Potřeby menších skupin a jednotlivců jsou ale jiné. Pro ně jsou tyto nástroje příliš komplexní, těžkopádné a nedostatečně intuitivní.
 
@@ -87,19 +79,8 @@
 
 		Následně přistoupím k samotné implementaci aplikace za použití navrhnutých technologií a postupů. Během implementace budu zároveň vytvářet automatizované testy. Výstupem této části bude nasaditelná aplikace a její zdrojový kód, dostupné na přiloženém médiu. 
 		
-		Nakonec vytvořím instalační příručku, které popíše, jak vytvořenou aplikaci nasadit a jaké prostředí je pro to potřeba.
+		Nakonec vytvořím instalační příručku, která popíše, jak vytvořenou aplikaci nasadit a jaké prostředí je pro to nutné. Také zde odkážu na běžící, veřejně dostupnou instanci aplikace.
 		
-%\chapter{Slovník pojmů}
-%	\begin{description}
-%		\item[Deadline] je časová lhůta, do které je nutné dokončit nějakou práci. Jeho synonyma jsou uzávěrka a konečný termín.
-%		
-%		\item[Assignee] je člověk přidělený k určitému úkolu, je zodpovědný za práci na něm.
-%		\item[Open source software] je softwarové dílo, k němuž jsou veřejně dostupné jeho zdrojové kódy.
-%		\item[Gamifikace] je uplatňování technik z herního designu a herních principů do neherních oblastí. Slouží například k motivaci formou získávání bodů za určité činnosti a zobrazováním grafů jejich vývoje.
-%		\item[Backend] je část webové aplikace, která nekomunikuje přímo s uživatelem. V kontextu této práce zprostředkovává aplikační logiku a s okolím komunikuje skrze definované rozhraní.
-%		\item[Manhour] je jednotka práce. Jeden člověk odpracuje za hodinu jeden \textit{manhour}. Vypočte se jako: $manhours = lidi \times hodiny$.
-%		\item[Embedded] znamená vestavěný, zabudovaný. 
-%	\end{description}
 \chapter{Současný stav}
 	\label{chapter:current-state}
 
@@ -115,7 +96,7 @@
 	Pracuji s tím, že pro cílovou skupinu této práce jsou důležitá následující kritéria:
 	\begin{enumerate}
 		\item \textbf{\crita} -- Uživatelé nechtějí spravovat vlastní hardware, kde by jim aplikace běžela. Začít používat aplikaci má být otázka maximálně několika málo minut.
-		\item \textbf{\critb} -- Kritérium jsem hodnotil subjektivně, podle mého názoru na pět kvalitativních složek použitelnosti. \cite{usability} Uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat. 
+		\item \textbf{\critb} -- Kritérium jsem hodnotil subjektivně, podle mého názoru na pět kvalitativních složek použitelnosti \cite{usability}. Uživatel by se neměl ztratit ve funkcích aplikace a měl by být schopen rychle pochopit, jak s aplikací pracovat. 
 		\item \textbf{\critc} -- 	Aplikace by měla obsahovat jen základní funkce, které uživatel využije. Větší množství funkcí, které uživatele nezajímají, ztěžují orientaci v aplikaci, což souvisí s předchozím bodem.
 		\item \textbf{\critd} -- Aplikace by měla být použitelná zdarma. V případě, že se jedná o \textit{freemium} model, měla by její neplacená část stačit k běžnému používání a neomezovat výrazně uživatele.
 		\item \textbf{\critf} -- Aplikace by měla nabízet rozhraní REST API pro možnost vlastní integrace na její funkce.
@@ -128,7 +109,7 @@
 		Řešení této kategorie se zaměřují na větší počet uživatelů a mimo základní správy úkolů nabízí často další funkce pro řízení projektů a integraci s dalšími systémy. Používají se zejména v oblasti vývoje software, ale dají se využít i v jiných oblastech.
 		
 		\subsection{JIRA}
-			JIRA \cite{jira} je software, který nabízí systém pro řízení požadavků (angl. bug tracking či issue tracking) a funkce pro správu projektů. Je možné ho používat jak na vlastní infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit. \cite{jira-lic-nonprofit}}, v druhém případě je použití placené. 
+			JIRA \cite{jira} je software, který nabízí systém pro řízení požadavků (angl. bug tracking či issue tracking) a funkce pro správu projektů. Je možné ho používat jak na vlastní infrastruktuře, tak on-line. V prvním případě je použití zdarma za určitých podmínek\footnote{Zdarma pro veřejně dostupný open-source software projekt\cite{jira-lic-opensource} a pro neziskové, nevládní, neakademické, nekomerční a sekulární instituce, které by si jinak nemohly software dovolit \cite{jira-lic-nonprofit}.}, v druhém případě je použití placené. 
 			
 			Nabízí širokou funkcionalitu a např. možnost upravovat podle potřeb životní cyklus úkolů. To ho činí využitelným i mimo vývoj software. Množství nabízených funkcí jde ale nad potřeby cílové skupiny této práce a technicky méně zdatné uživatele může mást. Na úkolech lze pracovat ve více lidech, ale přiřazen může být v jednu chvíli jen jednomu uživateli (\textit{assignee}). Úkolům lze také přiřadit termín splnění (\textit{deadline}).
 			
@@ -149,11 +130,11 @@
 		Nástroje v této kategorii se snaží cílit na týmy, spíše než celé firmy, a práce s nimi není tak formální. Používat je většinou lze přes internet, není nutná vlastní instalace. Oproti řešením v bodu \ref{sec:solutions-companies} obsahují tyto nástroje zpravidla méně funkcí, chybí hlavně různé manažerské nástroje a integrace s dalšími systémy.
 	
 		\subsection{Trello}
-			Trello \cite{trello} je aplikace, která vznikla v roce 2011. Lze ji používat přes internet. Způsob správy úkolů staví na konceptu \textit{kanban}\cite{kanban}. Umožňuje vytvářet nástěnky (\textit{boards}), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (\textit{lists}) a v nich karty (\textit{cards}), které představují nejmenší jednotku práce -- úkol. Ten má svou prioritu, termín splnění a zodpovědné uživatele. Těch může být libovolný počet.
+			Trello \cite{trello} je aplikace, která vznikla v roce 2011. Lze ji používat přes internet. Způsob správy úkolů staví na konceptu \textit{kanban} \cite{kanban}. Umožňuje vytvářet nástěnky (\textit{boards}), které reprezentují projekty. K nástěnkám lze přizvat další uživatele a pracovat na nich společně. Na nástěnkách se dají vytvářet seznamy (\textit{lists}) a v nich karty (\textit{cards}), které představují nejmenší jednotku práce -- úkol. Ten má svou prioritu, termín splnění a zodpovědné uživatele. Těch může být libovolný počet.
 			
 			Je to funkčně bohatý nástroj s jednoduchým ovládáním i pro netechnické uživatele. Na profilu uživatele lze zobrazit všechny přiřazené karty a ty seřadit podle nástěnky, kam patří, nebo podle jejich termínu. 
 			
-			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody \cite{trello-pricing}, ale menší týmy se moho obejít bez nich. Existuje i REST API\cite{trello-api}, aplikace nemá otevřený zdrojový kód.
+			Trello je možné používat zdarma s libovolným počtem spolupracovníků. Placené varianty přináší určité výhody \cite{trello-pricing}, ale menší týmy se mohou obejít bez nich. Existuje i REST API \cite{trello-api}, aplikace nemá otevřený zdrojový kód.
 		
 			
 		\subsection{Trackie}
@@ -175,19 +156,19 @@
 		\subsection{Todoist}
 			Todoist \cite{todoist} je on-line aplikace pro organizaci úkolů, která má uživatele motivovat k lepší produktivitě. Za splněné úkoly jsou přidělovány body (karma), jejichž historický vývoj je možné sledovat v grafu, lze nastavit denní a týdenní cíl a získávat další \uv{odměny} za jeho splnění. Úkoly lze rozdělit do projektů, nastavit jim termín, prioritu a opakování. Projekty je možné sdílet s dalšími uživateli a dají se zobrazit buď po projektech, ke kterým patří, nebo všechny na jednom místě -- ve schránce (\textit{inbox}). 
 			
-			Vytvoření nového úkolu se může provést zadáním (anglického) textu, aplikace sama rozpozná klíčová slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Go jogging at 1 PM every day} vytvoří úkol \textit{Go jogging}, který má termín splnění ve 13 hodin a opakuje se každý den. 
+			Vytvoření nového úkolu se může provést zadáním textu (v angličtině), aplikace sama rozpozná klíčová slova a není tak nutné nastavovat vlastnosti úkolů ručně. Například heslo \textit{Go jogging at 1 PM every day} vytvoří úkol \textit{Go jogging}, který má termín splnění ve 13 hodin a opakuje se každý den. 
 			
-			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další.\cite{todoist-compare-premium} Todoist nabízí REST API\cite{todoist-api} a nemá otevřený zdrojový kód.
+			Placená verze nabízí větší množství otevřených projektů a úkolů, hledání v úkolech, notifikace a další \cite{todoist-compare-premium}. Todoist nabízí REST API \cite{todoist-api} a nemá otevřený zdrojový kód.
 			
 		\subsection{Toodledo}
 			Toodledo \cite{toodledo} je on-line aplikace, která kromě úkolů umožňuje vytvářet si zvyky (\textit{habits}). To jsou úkoly, které se opakují ve volitelné dny každý týden, jež mají uživatelům pomoci vypěstovat si a dodržovat dobré návyky. Po vykonání zvyku je možné označit ho za splněný a přidat k jeho splnění číslo nebo hodnocení. Mezi další možnosti patří poznámky (\textit{notes}), seznamy (\textit{lists}), nebo nástiny (\textit{outlines}). 
 			
-			Úkoly lze třídit do složek, nastavit jim termín a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API\cite{toodledo-api} a nemá otevřený zdrojový kód.
+			Úkoly lze třídit do složek, nastavit jim termín a prioritu. Spolupráce s dalšími uživateli vyžaduje placenou verzi aplikace a webové rozhraní aplikace je oproti nástroji Todoist poměrně nepřehledné. Toodledo nabízí REST API \cite{toodledo-api} a nemá otevřený zdrojový kód.
 			
 		\subsection{Google Inbox Reminders}
-			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (\textit{reminders}). Ty lze kromě aplikace Inbox také zobrazit v kalendáři Google Calendar.\cite{gcal} Úkolům nelze nastavit termín splnění, ale je možné je odložit (\textit{snooze}) tak, aby se zobrazily později ve stanovený čas. Aktivní úkoly se zobrazují mezi příchozími e-maily.
+			Inbox \cite{ginbox} je e-mailový klient od společnosti Google, který kromě práce s e-maily umožňuje vytváření jednoduchých úkolů (\textit{reminders}). Ty lze kromě aplikace Inbox také zobrazit v kalendáři Google Calendar \cite{gcal}. Úkolům nelze nastavit termín splnění, ale je možné je odložit (\textit{snooze}) tak, aby se zobrazily později ve stanovený čas. Aktivní úkoly se zobrazují mezi příchozími e-maily.
 			
-			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API\cite{ginbox-no-api} a nemá otevřené zdrojové kódy.
+			Úkoly nelze nijak třídit, ani u nich určovat prioritu. Jediná informace v úkolu je jeho popis. Pro základní potřeby dostačující, ale jinak funkčně chudý nástroj zatím nenabízí API \cite{ginbox-no-api} a nemá otevřené zdrojové kódy.
 			
 			
 			
@@ -202,7 +183,7 @@
 	\section{Shrnutí}
 		Přehled kritérií stanovených na začátku kapitoly \ref{chapter:current-state} a jejich splnění uvedenými nástroji prezentuji v příloze v tabulce \ref{table:criteria}.
 		
-		Všechny nástroje umožňují vytvářet úkoly, ale v možnostech se liší. Nyní zvážím, které funkce jsou užitečné pro cílovou skupinu této práce a mají být obsaženy ve výsledné aplikaci. Při odkazování se k nástrojům nebo aplikacím v této sekci mám na mysli ty představené výše.
+		Všechny nástroje umožňují vytvářet úkoly, ale v možnostech se liší. Nyní zvážím, které funkce jsou užitečné pro cílovou skupinu této práce a mají být obsaženy ve výsledné aplikaci.
 		
 		Většina nástrojů umožňuje úkoly sdílet s jinými uživateli a společně s nimi pracovat na projektu. Možnost seskupit se do jednoho celku se spolupracovníky je užitečná, proto budou v aplikaci existovat pro uživatele pracovní skupiny.
 		
@@ -223,7 +204,7 @@
 	V této kapitole se budu věnovat specifikování požadavků na aplikaci a jejich analýze. To mi poskytne konkrétní přehled o tom, co má výsledná aplikace umět a jaké entity v ní budou existovat.
 	
 	\section{Požadavky na aplikaci}
-		Požadavky na aplikaci popíšu pomocí uživatelských příběhů (\textit{user stories}). \cite{user-stories} Jedná se o jednoduchý způsob, jakým vyjádřit požadavek na aplikaci z pohledu jejího uživatele. Měl by být krátký a napsán v terminologii uživatele budoucí aplikace.
+		Požadavky na aplikaci popíšu pomocí uživatelských příběhů (\textit{user stories}) \cite{user-stories}. Jedná se o jednoduchý způsob, jakým vyjádřit požadavek na aplikaci z pohledu jejího uživatele. Měl by být krátký a napsán v terminologii uživatele budoucí aplikace.
 		
 		Formální způsob zápisu uživatelského příběhu se dá popsat například takto: \cite{user-stories-applied-book}
 		\begin{center}
@@ -269,7 +250,7 @@
 				
 				\item Jako uživatel chci znát \textit{urgentnost} úkolů, abych věděl, kterým úkolům se mám věnovat tak, abych stihl jejich termín. Čím méně času zbývá na vypracování úkolu vzhledem k jeho pracnosti a termínu, tím více je urgentní.
 				
-				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí -- moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem -- abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle následujících kritérií:
+				\item Jako uživatel chci zobrazit všechny úkoly, kterých jsem součástí. Tedy moje osobní i sdílené se mnou nebo pracovní skupinou, již jsem členem, abych měl přehled o tom, co je potřeba udělat. Zobrazení by mělo jít filtrovat a řadit podle následujících kritérií:
 				\begin{itemize}
 					\item filtr:
 					\begin{itemize}
@@ -293,7 +274,7 @@
 				
 				\item Jako pracovník úkolu na něm chci zaznamenávat odvedenou práci, abych měl já i mí spolupracovníci lepší představu o tom, kolik práce na něm zbývá.
 				
-				\item Jako pracovník úkolu ho prohlašovat úkol za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
+				\item Jako pracovník úkolu chci mít možnost prohlašovat úkol za splněný, uzavřený, nebo znovuotevřený, abych dal najevo, v jakém stavu se úkol nachází.
 				
 				\item Jako pracovník na rostoucím úkolu chci vynulovat jeho urgentnost, aby poté, co jsem ho splnil, dočasně přestal být důležitý. Tuto funkci využiji při opakovaných úkolech.
 				
@@ -336,13 +317,13 @@
 		\end{enumerate}
 		
 	\section{Model případů užití}
-		Uživatelské příběhy ze sekce \ref{sec:user-stories} nyní budu specifikovat detailněji pomocí modelu případů užití (\textit{use case model}). Uživatelský příěh by měl obsahovat tolik informací, aby i technicky nezkušený uživatel dokázal pochopit, co má aplikace dělat. Oproti tomu případy užití popisují konkrétní interakce uživatele s aplikací, tedy chování, které má aplikace mít, aby splnila potřeby na ní kladené. \cite{user-stories-vs-use-cases}
+		Uživatelské příběhy ze sekce \ref{sec:user-stories} nyní budu specifikovat detailněji pomocí modelu případů užití (\textit{use case model}). Uživatelský příběh by měl obsahovat tolik informací, aby i technicky nezkušený uživatel dokázal pochopit, co má aplikace dělat. Oproti tomu případy užití popisují konkrétní interakce uživatele s aplikací, tedy chování, které má aplikace mít, aby splnila potřeby na ní kladené \cite{user-stories-vs-use-cases}.
 		
-		Případů užití typicky bude více než uživatelských příběhů \cite{si-usecases}, protože příběhy jsou více obecné, a tak na pokrytí jednoho může být potřeba více interakcí s aplikací a tedy více případů užití.
+		Případů užití aplikace je zpravidla více než uživatelských příběhů \cite{si-usecases}. Příběhy jsou obecnější, a tak na pokrytí jednoho může být potřeba více interakcí s aplikací a tedy více případů užití.
 		
 		\subsection{Účastníci}
 			Aplikace bude rozlišovat účastníky na základě několika kritérií a těm bude dostupné různé množství funkcí. Účastníci jsou zobrazeni podle standardu UML na obrázku \ref{diagram:actors}.
-			Účastníky jsou v tomto případě uživatelé, kteří budou aplikaci používat. Každý uživatel může v různých případech užití vystupovat jako jiný účastník, v rámci jednotlivých případů užití ale musí být neměnný. \cite{uml-unified-process} 
+			Účastníky jsou v tomto případě uživatelé, kteří budou aplikaci používat. Každý uživatel může v různých případech užití vystupovat jako jiný účastník, v rámci jednotlivých případů užití ale musí být neměnný \cite{uml-unified-process}.
 			
 			Účastníci od sebe mohou dědit, v tom případě potomek může kromě svých akcí vykonávat navíc všechny akce svého rodiče.
 			\begin{description}
@@ -371,7 +352,7 @@
 					Pracovník úkolu je součástí úkolu v aktivní roli. Na úkolu pracuje a má tak zpřístupněny některé funkce navíc oproti Pozorovateli.
 				
 				\item[Čas] \hfill \\ 								
-					Účastník Čas nereprezentuje žádného fyzického uživatele, ale spouští události, které mají nastat s uplynulým časem. \cite{uml-unified-process}
+					Účastník Čas nereprezentuje žádného fyzického uživatele, ale spouští události, které mají nastat s uplynulým časem \cite{uml-unified-process}.
 					
 
 			\end{description}			
@@ -506,7 +487,7 @@
 				\item[UC 2.20 Zadat odvedenou práci] \hfill \\
 					1. Scénář začíná, když uživatel odvedl nějakou práci a chce ji na úkolu zaznamenat. \\
 					2. Uživatel zašle požadavek s identifikátorem úkolu a počtem odpracovaných hodin. \\
-					3. Pokud uživatel není Pracovníkem daného úkolu, scénář končí.
+					3. Pokud uživatel není Pracovníkem daného úkolu, scénář končí. \\
 					4. Aplikace k úkolu přidá zadaný počet odpracovaných hodin. \\
 					
 				\item[UC 2.21 Vynulovat urgentnost rostoucího úkolu] \hfill \\
@@ -560,7 +541,7 @@
 				\item[UC 3.05 Pozvat uživatele do skupiny] \hfill \\
 					1. Scénář začíná, když Manažer chce pozvat uživatele do skupiny. \\
 					2. Manažer pošle požadavek obsahující uživatele, které chce pozvat do skupiny. \\
-					3. Aplikace vytvoří abídku ke vstupu do skupiny zadaným uživatelům. \\
+					3. Aplikace vytvoří nabídku ke vstupu do skupiny zadaným uživatelům. \\
 				
 				\item[UC 3.06 Přiřadit Členovi roli na úkolu] \hfill \\
 					Umožňuje přiřadit Členům skupiny roli Pozorovatele nebo Pracovníka na úkolech skupiny.
@@ -630,9 +611,9 @@
 		
 	\section{Doménový model}
 		\label{sec:domain-model}
-		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi. \cite{domain-model} Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen entity a jejich vlastnosti dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
+		Doménový model slouží k popisu dat, zachycení hlavních entit, se kterými bude aplikace pracovat, a vztahů mezi nimi \cite{domain-model}. Jedná se o abstraktní pohled na problém, a tak diagram obsahuje jen entity a jejich vlastnosti dané předchozími kroky analýzy. Nejsou v něm implementační detaily, jako například konkrétní atributy a metody.
 		
-		Diagram doménového modelu je zobrazen na obrázku \ref{diagram:domain-model}. Znázorňuje vztahy mezi entitami a některá omezení, jako například vzájemnou výlučnost. \cite{domain-model-multiple-association} V této části se dále budu věnovat popisu jednotlivých entit modelu.
+		Diagram doménového modelu je zobrazen v příloze na obrázku \ref{diagram:domain-model}. Znázorňuje vztahy mezi entitami a některá omezení, jako například vzájemnou výlučnost \cite{domain-model-multiple-association}. V této části se dále budu věnovat popisu jednotlivých entit modelu.
 		
 		\subsection{User}
 			Entita User reprezentuje uživatele aplikace. Uchovává jeho uživatelské jméno, které je unikátní v rámci aplikace, e-mail, jméno a heslo k jeho přihlášení.
@@ -686,19 +667,19 @@
 	\section{Technologie}
 	
 		\subsection{Java}
-			Již v zadání práce je avizováno, že aplikace bude postavena na platformě Java. \cite{java} Jazyk Java byl vyvinutý společností Sun Microsystems a veřejnosti představen v roce 1996. Syntaxí je podobný C/C++ a je silně objektově orientovaný. Program napsaný v Javě je kompilován do podoby \textit{bytecode}, který je následně spouštěn na \textit{Java Virtual Machine} (JVM), který bytecode interpretuje. To znamená, že jazyk je platformně nezávislý -- \textit{bytecode} vzniklý kompilací zdrojového Java kódu je možné spustit na jakékoliv platformě, pokud na ní je přítomný odpovídající \textit{JVM}. 
+			Již v zadání práce je avizováno, že aplikace bude postavena na platformě Java \cite{java}. Jazyk Java byl vyvinutý společností Sun Microsystems a veřejnosti představen v roce 1996. Syntaxí je podobný C/C++ a je silně objektově orientovaný. Program napsaný v Javě je kompilován do podoby \textit{bytecode}, který je následně spouštěn na \textit{Java Virtual Machine} (JVM), který bytecode interpretuje. To znamená, že jazyk je platformně nezávislý -- \textit{bytecode} vzniklý kompilací zdrojového Java kódu je možné spustit na jakékoliv platformě, pokud na ní je přítomný odpovídající \textit{JVM}. 
 			
-			Oproti jazykům C/C++ navíc Java disponuje automatickou správou paměti, nazvanou \textit{garbage collection}, takže vývojáři se nemusí tolik starat o životní cyklus objektů a následné \textit{memory leaks}. \cite{what-is-java} \cite{pjv-java}
+			Oproti jazykům C/C++ navíc Java disponuje automatickou správou paměti, nazvanou \textit{garbage collection}, takže vývojáři se nemusí starat o životní cyklus objektů a případné úniky paměti (\textit{memory leaks}) \cite{what-is-java, pjv-java}.
 		
 		\subsection{Spring}
-			Spring je framework, který zjednodušuje tvorbu enterprise aplikací v Javě. \cite{spring} Jednou z výhod tohoto nástroje je jeho podpora návrhového vzoru \textit{dependency injection}, díky kterému je program lépe modularizovatelný, testovatelný a znovupoužitelný.\cite{dependency-injection}
+			Spring je framework, který zjednodušuje tvorbu enterprise aplikací v Javě \cite{spring}. Jednou z výhod tohoto nástroje je jeho podpora návrhového vzoru \textit{dependency injection}, díky kterému je program lépe modularizovatelný, testovatelný a znovupoužitelný \cite{dependency-injection}.
 			
-			Další součástí frameworku Spring je webový modul \textit{Web MVC framework}. \cite{spring-mvc-framework} Ten umožňuje tvorbu webových aplikací podle architektonického vzoru MVC. Je také možné využít ho pro tvorbu \textit{RESTful} aplikace, což je cílem implementační části této práce.
+			Další součástí frameworku Spring je webový modul \textit{Web MVC framework}. Ten umožňuje tvorbu webových aplikací podle architektonického vzoru MVC. Je také možné jej použít pro tvorbu \textit{RESTful} aplikace, což je cílem implementační části této práce.
 			
 			\subsubsection{Spring Boot}
-				Nadstavbou k frameworku Spring je projekt Spring Boot. \cite{spring-boot} Vztah mezi nástroji Spring a Spring Boot je zobrazen na obrázku \ref{pic:spring-boot}. Byl vyvinut k usnadnění tvorby Spring aplikací, hlavně v jejích počátečních fázích. Představuje více \uv{dogmatický} (\textit{opinionated}) pohled na Spring, což znamená, že od vývojáře očekává \uv{standardní} chování podle zaběhlých postupů. \cite{opinionated-software} Vývojáře odstiňuje od nutnosti (nejen) počáteční konfigurace a nabízí navíc některé funkce, jako například vestavěný server \textit{embedded server}, distribuovaný ve výsledném balíčku aplikace. V případě, že konfigurace, kterou Spring Boot poskytuje nevyhovuje, je možné si ji ručně přizpůsobit. \cite{spring-boot-blog}
+				Nadstavbou k frameworku Spring je projekt Spring Boot \cite{spring-boot}. Vztah mezi nástroji Spring a Spring Boot je zobrazen na obrázku \ref{pic:spring-boot}. Byl vyvinut k usnadnění tvorby Spring aplikací, hlavně v jejích počátečních fázích. Představuje více \uv{dogmatický} (\textit{opinionated}) pohled na Spring, což znamená, že od vývojáře očekává \uv{standardní} chování podle zaběhlých postupů \cite{opinionated-software}. Vývojáře odstiňuje od nutnosti (nejen) počáteční konfigurace a nabízí navíc některé funkce, jako například vestavěný server \textit{embedded server}, distribuovaný ve výsledném balíčku aplikace. V případě, že konfigurace, kterou Spring Boot poskytuje nevyhovuje, je možné si ji ručně přizpůsobit \cite{spring-boot-blog}.
 				
-				Spring Boot také umožňuje sestavit aplikaci do podoby jednoho JAR souboru (\uv{\textit{fat jar}}), který obsahuje vše, co je nutné k jejímu spuštění. Díky vestavěnému serveru není nutné mít vlastní aplikační server, jako například Tomcat či GlassFish. Lze zvolit způsob distribuce aplikace, takže je možné ji zabalit i do WAR souboru a nasadit na existujícím serveru.
+				Spring Boot také umožňuje jednoduše sestavit aplikaci do podoby jednoho JAR souboru (\uv{\textit{fat jar}}), který obsahuje vše, co je nutné k jejímu spuštění. Díky vestavěnému serveru není nutné mít vlastní aplikační server, jako například Tomcat či GlassFish. Lze zvolit způsob distribuce aplikace, takže je možné ji zabalit i do WAR souboru a nasadit na existujícím serveru.
 				
 				\begin{figure}\centering
 					\includegraphics[width=0.5\textwidth]{spring-boot.png}
@@ -709,13 +690,13 @@
 		\subsection{Hibernate}
 			Hibernate \cite{hibernate} je framework pro platformu Java, usnadňující řešení persistence (uchovávání) dat. Jedná se o nástroj pro ORM (objektově-relační mapování), který se stará o transformaci objektů aplikace do podoby vhodné pro uložení do relační databáze, jejich uložení, a následné načtení a transformaci z databáze zpět na objekty. Způsob mapování objektů do databáze lze nastavit buď v konfiguračním XML souboru, nebo přímo ve zdrojovém kódu anotacemi.
 			
-			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny uložiště. Kód aplikace komunikuje s API Hibernate stejným způsobem, nehledě na typ databáze, ke které je framework připojen.
+			Kromě usnadnění práce s databází je další výhodou Hibernate možnost jednoduché změny úložiště. Kód aplikace komunikuje s API Hibernate stejným způsobem, nehledě na typ databáze, ke které je framework připojen.
 		
 		\subsection{MySQL}
-			Uložení dat aplikace bude zprostředkováno relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL. \cite{db-ranking} Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snažší řešení problémů během implementace a nasazení.
+			Uložení dat aplikace bude zprostředkováno relační databází. Pro výběr databáze jsem se řídil jejich popularitou a podmínkou použití zdarma. Nejpopulárnější takovou databází je MySQL \cite{db-ranking}. Aplikace nebude mít takové požadavky na persistentní vrstvu, aby nějak ovlivnily výběr databáze. Funkce, které budou potřeba, splňují všechny uvažované možnosti. Větší popularita MySQL bude znamenat lepší podporu komunity a snazší řešení problémů během implementace a nasazení.
 			
 		\subsection{Apache Tomcat}
-			Pro nasazení aplikace bude použit server Apache Tomcat. \cite{tomcat} Je nenáročný na hardware a jednoduchý na zprovoznění. 
+			Pro nasazení aplikace bude použit server Apache Tomcat \cite{tomcat}. Je nenáročný na hardware a jednoduchý na zprovoznění. 
 		
 	
 	\section{REST API}
@@ -729,15 +710,15 @@
 			\textit{API je v podstatě kontrakt. Ve chvíli, kdy tento kontrakt existuje, vývojáři tíhnou k využívání API, protože ví, že se na něj mohou spolehnout. Kontrakt zvyšuje důvěru, což zlepšuje použitelnost. Tento kontrakt také zefektivňuje spojení mezi producentem a konzumentem, protože rozhraní jsou dokumentována, jsou konzistentní a předvídatelná.} 
 	
 		\subsection{REST}
-			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci. \cite{rest-dissertation} Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (\textit{resources}). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
-			Zdroje v kontextu REST jsou identifikované pomocí URI a komunikovány mezi klientem a serverem v podobě reprezentací v libovolné textové, strojově zpracovatelné podobě (například JSON nebo XML). \cite{rest-youtube}
+			Termín REST (REpresentational State Transfer) byl poprvé zaveden v roce 2000 Royem Fieldingem v jeho dizertační práci \cite{rest-dissertation}. Ve zkratce se jedná o koncept designu distribuované architektury. Definuje rozhraní, které je použitelné pro jednotný přístup ke zdrojům (\textit{resources}). Těmi mohou být data nebo stavy aplikace, popsatelné konkrétními daty.
+			Zdroje v kontextu REST jsou identifikované pomocí URI a komunikovány mezi klientem a serverem v podobě reprezentací v libovolné textové, strojově zpracovatelné podobě (například JSON nebo XML) \cite{rest-youtube}.
 			
 			Popis architektury REST není předmětem této práce, takže se mu dále nebudu věnovat.
 			
 		\subsection{REST API aplikace Deadlines}
 			Kompletní popis API, včetně požadovaného obsahu požadavků a možných odpovědí, je vypsán v příloze v sekci \ref{appdx:restapi}. Zde uvedu možné odpovědi aplikace na požadavky, dostupné koncové body (\textit{endpoints}) a popíšu jejich funkci. 
 			
-			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication}. \cite{http-basic-auth} Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
+			Pokud není uvedeno jinak, všechna volání API musí být autentifikovaná použitím \textit{HTTP Basic Access Authentication} \cite{http-basic-auth}. Jméno a heslo pro \textit{Basic Authentication} jsou uživatelské jméno a heslo uživatele.
 			
 			Těla požadavků i odpovědí jsou ve formátu JSON, obsah hlavičky \textit{Content-Type} je \textit{application/json}.
 			
@@ -753,7 +734,7 @@
 				\item[404 NOT FOUND] Požadovaný zdroj nebyl nalezen.
 				\item[409 CONFLICT] Objekt či záznam nemohl být vytvořen, protože již existuje.
 			\end{description}
-			Přehled všech HTTP kódů je k dispozici na stránkách W3 \cite{http-codes-w3}.
+			Přehled všech HTTP kódů je k dispozici na stránkách W3 konsorcia \cite{http-codes-w3}.
 			
 			Chybové odpovědi mohou obsahovat v těle odpovědi další informace o chybě. Tělo má následující formát:
 				\begin{Verbatim}[obeytabs,tabsize=2]
@@ -826,7 +807,7 @@
 				Přijme nebo zamítne nabídku ke vstupu do skupiny s předaným ID.  Volající uživatel musí být příjemcem nabídky.
 			
 			\item[\texttt{/group [GET, POST]}] \hfill \\
-				GET vrátí seznam skupin v aplikaci. Parametrem lze určit, zda vracet všechny skupiny, nebo jen ty, jichž je volající členem s danou roli. \\
+				GET vrátí seznam skupin v aplikaci. Parametrem lze určit, zda vracet všechny skupiny, nebo jen ty, jichž je volající členem s danou rolí. \\
 				POST vytvoří novou skupinu z informací předaných v těle požadavku. Volající uživatel se stane jejím Administrátorem.
 			
 			\item[\texttt{/group/\{group\_id\} [GET, PUT, DELETE]}] \hfill \\
@@ -849,7 +830,7 @@
 			
 			
 	\section{Urgentnost}
-		Jedním z funkčních požadavků je výpočet \textit{urgentnosti} úkolů. Ta má vyjadřovat důležitost úkolu v daném momentě a má pomoct uživateli rozhodnout se, na kterém úkolu bude pracovat. Čím vyšší hodnota, tím je nutnější se danému úkolu věnovat. Výpočet hodnoty urgentnosti bude záviset na typu úkolu. Způsob výpočtu pro oba typy úkolů popíšu ve zbytku této sekce.
+		Jedním z funkčních požadavků je výpočet \textit{urgentnosti} úkolů. Urgentnost má vyjadřovat důležitost úkolu v daném momentě a má pomoct uživateli rozhodnout se, na kterém úkolu bude pracovat. Čím vyšší hodnota, tím je nutnější se danému úkolu věnovat. Výpočet hodnoty urgentnosti bude záviset na typu úkolu. Způsob výpočtu pro oba typy úkolů popíšu ve zbytku této sekce.
 		
 		Hodnota urgentnosti bude reálné číslo v intervalu $\langle 0; 200 \rangle$. Hodnota 100 značí, že by měl uživatel na úkolu začít pracovat v tuto chvíli. Např. pro úkol s termínem urgentnost 100 znamená, že do termínu v tuto chvíli zbývá stejně času, jako je odhad zbývající pracnosti úkolu.
 	
@@ -870,7 +851,7 @@
 			\end{equation}
 			kde $t$ je čas zbývající do termínu splnění v hodinách, $w$ je zbývající pracnost v hodinách a $d$ je konstanta. Experimentálně jsem stanovil, že $d=5$. 
 			
-			První zlomek udává, v jakém poměru je zbývající čas ku pracnosti. Například pokud do termínu zbývá 8 hodin a zbývající pracnost je 2 hodiny, výsledkem bude 4. Druhý zlomek slouží k úpravě rezervy v závislosti na zbývajícím čase. Čím méně času zbývá, tím menší bude tento člen. To z důvodu, aby rezerva u úkolu, kterému zbývá více času, byla větší, než u úkolu, který má času méně, i když jsou poměry času ku práci stejné. 
+			První zlomek udává, v jakém poměru je zbývající čas ku pracnosti. Například pokud do termínu zbývá 8 hodin a zbývající pracnost jsou 2 hodiny, výsledkem bude 4. Druhý zlomek slouží k úpravě rezervy v závislosti na zbývajícím čase. Čím méně času zbývá, tím menší bude tento člen. To z důvodu, aby rezerva u úkolu, kterému zbývá více času, byla větší, než u úkolu, který má času méně, i když jsou poměry času ku práci stejné. 
 			K této úpravě jsem přistoupil, protože chci, aby úkoly blíže termínu měly větší urgentnost než stejně rozpracované úkoly dále od termínu.
 			
 			Chci, aby hodnota urgentnosti rostla nejrychleji s rezervou pohybující se kolem čísla 1; urgentnost úkolů s velkou kladnou nebo zápornou rezervou není tak důležitá, jako urgentnost těch úkolů, na kterých by uživatel měl začít pracovat v tuto chvíli -- ty mají rezervu blízko číslu 1. 
@@ -899,11 +880,11 @@
 
 	
 	\section{Autentifikace}
-		Ukládání hesel uživatelů v databázi v čistém textu představuje bezpečnostní riziko. V případě, že dojde k úniku dat databáze, může útočník získat přihlašovací jména i hesla a tím i možnost přihlásit se do aplikace jako kterýkoliv uživatel. Z tohoto důvodu je vhodné neukládat samotná hesla, ale jen jejich \uv{otisk}. Ten se z hesla vytvoří pomocí \textit{hash funkce}. \cite{hash-function} Při použití vhodné funkce se jedná o relativně bezpečný způsob, kterým ověřovat uživatele, aniž by mohlo dojít k úniku jejich hesel.
+		Ukládání hesel uživatelů v databázi v čistém textu představuje bezpečnostní riziko. V případě, že dojde k úniku dat databáze, může útočník získat přihlašovací jména i hesla a tím i možnost přihlásit se do aplikace jako kterýkoliv uživatel. Z tohoto důvodu je vhodné neukládat samotná hesla, ale jen jejich \uv{otisk}. Ten se z hesla vytvoří pomocí \textit{hash funkce} \cite{hash-function}. Při použití vhodné funkce se jedná o relativně bezpečný způsob, kterým lze ověřovat uživatele, aniž by mohlo dojít k úniku jejich hesel.
 		
-		Nevýhodou této metody autentifikace je fakt, že pro uživatele se stejným heslem funkce vygeneruje vždy stejný otisk. To znamená, že při prolomení hesla jednoho uživatele mohou být ohroženi i další uživatelé, kteří mají stejné heslo. Navíc existují tabulky, které obsahují předpočítané výstupy hash funkcí a vstupní řetězce, které těmto výstupům odpovídají, tzv. \textit{rainbow tables}. \cite{rainbow-table} Ty mohou být použity pro zrychlení prolamování slabších hesel. 
+		Nevýhodou této metody autentifikace je fakt, že pro uživatele se stejným heslem funkce vygeneruje vždy stejný otisk. To znamená, že při prolomení hesla jednoho uživatele mohou být ohroženi i další uživatelé, kteří mají stejné heslo. Existují také tabulky, které obsahují předpočítané výstupy hash funkcí a vstupní řetězce, které těmto výstupům odpovídají, tzv. \textit{rainbow tables} \cite{rainbow-table}. Ty mohou být použity pro zrychlení prolamování slabších hesel. 
 		
-		Z tohoto důvodu v aplikaci kromě hashování používám metodu \textit{solení}. Ta spočívá v tom, že se otisk negeneruje jen z hesla, ale navíc se k němu přidá náhodně vygenerovaný řetězec, tzv. \textit{sůl}. Stejná hesla tak budou mít rozdílné otisky a znemožní se využití \textit{rainbow tables} a slovníkových útoků. V databázi bude pro autentifikaci uložena dvojice \texttt{(hash(heslo, sůl), sůl)}. \cite{hash-function}
+		Z tohoto důvodu v aplikaci kromě hashování používám metodu \textit{solení}. Ta spočívá v tom, že se otisk negeneruje jen z hesla, ale navíc se k němu přidá náhodně vygenerovaný řetězec, tzv. \textit{sůl}. Stejná hesla tak budou mít rozdílné otisky a znemožní se využití \textit{rainbow tables} a slovníkových útoků. V databázi bude pro autentifikaci uložena dvojice \texttt{(hash(heslo, sůl), sůl)} \cite{hash-function}.
 				
 	\section{Architektura}
 		Architektura aplikace popisuje způsob, jakým je členěna na logické celky a jak ty mezi sebou komunikují. Úroveň složitosti architektury souvisí s nefunkčními požadavky na aplikaci. Větší nároky, například na škálovatelnost, výkon, bezpečnost a další aspekty, znamenají nutnost navrhnout dostatečně robustní architekturu, která jim bude vyhovovat. 
@@ -918,7 +899,7 @@
 		Diagram architektury aplikace je zobrazen v příloze, na obrázku \ref{diagram:component-model}. 
 		
 	\section{Návrhový model}
-		V této sekci se budu věnovat návrhovému modelu tříd a jeho popisu. Ten vychází z analytického modelu, rozšiřuje množství tříd a doplňuje implementační detaily. Mezi ně patří atributy a jejich typy, metody, viditelnost. Definují se zde také rozhraní, typy tříd a aplikují návrhové vzory. \cite{navrhovy-model}
+		V této sekci se budu věnovat návrhovému modelu tříd a jeho popisu. Ten vychází z analytického modelu, rozšiřuje množství tříd a doplňuje implementační detaily. Mezi ně patří atributy a jejich typy, metody, viditelnost. Definují se zde také rozhraní, typy tříd a aplikují návrhové vzory \cite{navrhovy-model}.
 		
 		Ve zbytku této sekce budu popisovat jednotlivé části návrhového modelu. Obrázek zobrazující všechny třídy, rozdělené do balíčků (\textit{packages}), je k dispozici v příloze, diagram \ref{diagram:packages-root}.
 		
@@ -1003,7 +984,7 @@
 		
 		\subsection{Nástroje}
 			\subsubsection{JUnit}
-			Framework Spring nabízí integraci s testovacím nástrojem JUnit. \cite{junit} Ten umožňuje psát automatizované jednotkové i integrační testy, v nichž programátor může kontrolovat a porovnávat obsah proměnných, vyhazované výjimky a další.
+			Framework Spring nabízí integraci s testovacím nástrojem JUnit \cite{junit}. Ten umožňuje psát automatizované jednotkové i integrační testy, v nichž programátor může kontrolovat a porovnávat obsah proměnných, vyhazované výjimky a další.
 			
 			JUnit lze použít samostatně bez spuštění Spring kontejneru, kdy se programátor musí postarat o inicializaci všech testovaných komponent, nebo v kombinaci s ním. V tom případě je dostupná veškerá funkcionalita jako za běhu aplikace, zejména \textit{dependency injection}.
 			
@@ -1064,7 +1045,7 @@ public void updateUrgencies() {
 		Interval aktualizace je načten z externího konfiguračního souboru z klíče \texttt{update.urgency.interval}.
 	
 	\section{Model}
-		Třídy reprezentující model aplikace jsou anotovány pomocí \texttt{@Entity}. Hibernate takto anotované třídy zpracuje a bude je možné serializovat a deserializovat jako objekty do a z databáze. Anotace na atributech entitních tříd určují název odpovídajícího sloupce v tabulce, integritní omezení, způsob mapování asociací, generování hodnot primáčních klíčů \textit{ID} a další možnosti.
+		Třídy reprezentující model aplikace jsou anotovány pomocí \texttt{@Entity}. Hibernate takto anotované třídy zpracuje a bude je možné serializovat a deserializovat jako objekty do a z databáze. Anotace na atributech entitních tříd určují název odpovídajícího sloupce v tabulce, integritní omezení, způsob mapování asociací, generování hodnot primárních klíčů \textit{ID} a další možnosti.
 		
 		Hibernate umožňuje mapování \textit{m:n} asociací pomocí anotace \texttt{@JoinTable}, která definuje pomocnou tabulku, ve které se bude uchovávat informace o asociaci. Není tak nutné definovat pomocnou entitu, která by vztah dekomponovala.
 		
@@ -1092,7 +1073,7 @@ public interface GroupRepository
 }
 		\end{Verbatim}
 		
-	Metody definované v rozhraní není nutné vůbec implementovat, jsou automaticky generovány frameworkem. Názvy metod tvoří jednoduché i složené databázové dotazy, informace o syntaxi a klíčových slovech je k dispozici v dokumentaci modulu \textit{Spring Data}. \cite{dao-query-methods}
+	Metody definované v rozhraní není nutné vůbec implementovat, jsou automaticky generovány frameworkem. Názvy metod tvoří jednoduché i složené databázové dotazy, informace o syntaxi a klíčových slovech je k dispozici v dokumentaci modulu \textit{Spring Data} \cite{dao-query-methods}.
 	
 	Například volání metody \texttt{findByName("jmeno")} se přeloží na následující databázový dotaz, jehož odpověď je deserializována do instance třídy \texttt{Group}:
 	\begin{Verbatim}
@@ -1106,7 +1087,7 @@ public interface GroupRepository
 	Dotazy mohou být i složitější, jako je tomu u metody \texttt{findByMembers\_User}. Ta vrátí seznam všech skupin, jichž je uživatel členem. V jejím \uv{přeloženém} SQL tvaru jsou automaticky vygenerována potřebná spojení tabulek (\textit{join}).
 	
 	\section{Autentifikace}
-		Zabezpečení a autentifikaci uživatelů řeší v aplikaci modul \textit{Spring Security}. \cite{spring-security} V konfigurační třídě \texttt{config.Security}, která je potomkem třídy \texttt{WebSecurityConfigurerAdapter}, provádím nastavení zabezpečení koncových bodů:
+		Zabezpečení a autentifikaci uživatelů řeší v aplikaci modul \textit{Spring Security} \cite{spring-security}. V konfigurační třídě \texttt{config.Security}, která je potomkem třídy \texttt{WebSecurityConfigurerAdapter}, provádím nastavení zabezpečení koncových bodů:
 		\begin{Verbatim}
 @Override
 protected void configure(AuthenticationManagerBuilder auth) 
@@ -1366,7 +1347,7 @@ public void userEditTest() throws Exception {
 	
 	V rámci rešeršní části jsem představil několik existujících aplikací, rozdělených do kategorií podle jejich cílové skupiny. Tyto aplikace jsem popsal a porovnal z hlediska funkčnosti, nabízených rozhraní a dalších kritérií. Na závěr jsem zvážil, jaké funkce těchto aplikací jsou pro mou cílovou skupinu důležité a mají být společně s koncepty urgentnosti a rostoucích úkolů zahrnuty i v mé aplikaci. 
 	
-	V analytické části jsem na základě shrnutí rešerše vytvořil uživatelské příběhy, které definují funkční požadavky kladené na navrhovanou aplikaci. Pomocí nich jsem následně vytvořil model případů užití, jenž detailněji popsal očekávané interakce mezi aplikací a uživateli. Dále jsem vypracoval doménový model, zachycující entity aplikace a vztahy mezi nimi.
+	V analytické části jsem na základě shrnutí rešerše vytvořil uživatelské příběhy, které definují funkční požadavky kladené na navrhovanou aplikaci. Pomocí nich jsem následně vytvořil model případů užití. Tento model detailněji popsal očekávané interakce mezi aplikací a uživateli. Dále jsem vypracoval doménový model, zachycující entity aplikace a vztahy mezi nimi.
 	
 	Na začátku návrhové části práce jsem se věnoval výběru technologií pro implementaci a specifikaci REST rozhraní nabízeného aplikací. Dále jsem popsal význam urgentnosti úkolu a postup při jejím výpočtu pro oba typy úkolů. Určil jsem způsob ukládání hesel, autentifikaci uživatelů a architekturu aplikace. Z architektury jsem vyšel při tvorbě návrhového modelu, ve kterém jsem popsal strukturu aplikace na úrovni balíčků a tříd, vysvětlil jsem jejich zodpovědnosti a vztah k architektuře aplikace. V závěru jsem nastínil, jakým způsobem budu aplikaci při vývoji testovat.
 	
@@ -1410,7 +1391,6 @@ public void userEditTest() throws Exception {
 \appendix
 
 \chapter{Seznam použitých zkratek}
-% \printglossaries
 \begin{description}
 	\item[HW] Hardware
 	\item[SW] Software
@@ -1447,6 +1427,7 @@ public void userEditTest() throws Exception {
 			\item[+] Splněno
 			\item[*] Zdarma na vlastním HW.
 			\item[**] Zdarma jen bez spolupráce na úkolech
+			\item[N/A] Pro daný nástroj nemá kritérium význam.
 			\item Kr. 1 -- \crita
 			\item Kr. 2 -- \critb
 			\item Kr. 3 -- \critc
@@ -1470,7 +1451,7 @@ public void userEditTest() throws Exception {
 
 	\section{Chybové kódy}
 		\label{appdx:rest-error-codes}
-		V této sekci uvedu chybové kódy, které může aplikace vrátit. Formát odpovědi s chybovým kódem lze nalézt v sekci \ref{sec:responses}.
+		V této sekci uvedu chybové kódy, které může aplikace vrátit v těle odpovědi. Její formát s lze nalézt v sekci \ref{sec:responses}.
 		
 		\begin{description}
 			\item[1] Uživatelské jméno již existuje.
