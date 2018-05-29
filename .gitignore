@@ -13,7 +13,5 @@ project/target/
 *.iml
 files/
 project/out/
-deployment/deadlines-1.0.0.jar
-deployment/deadlines-1.0.0.war
 project/deadlines-testing.mv.db
 project/src/main/resources/application.properties
